@@ -1,0 +1,30 @@
+@import "@src/components/scss/base/core/colors/palette-variables.scss";
+
+.card-form-multiple {
+    background-color: transparent;
+}
+
+.table-form {
+    width: 100%;
+    margin-top: 20px;
+    tbody{
+        width: 100%;
+    }
+    td{
+        height: 50px;
+    }
+    td:nth-child(1) {
+        width: 10%;
+    }
+    td:nth-child(2) {
+        width: 35%;
+        padding-right: 25px;
+    }
+}
+
+.input-menu{
+    &.active{
+        font-weight: bold;
+        color: map-get($primary-color, "base" );
+    }   
+}

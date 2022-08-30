@@ -1,0 +1,43 @@
+.box-voice-call{
+    height           : 400px;
+    display          : flex;
+    align-items      : center;
+    border-radius    : 7px;
+    justify-content  : center;
+    background-color : #252338;
+}
+
+.box-center-text {
+    gap: 1ch;
+    height          : 400px;
+    display         : flex;
+    align-items     : center;
+    justify-content : center;
+    flex-direction  : column;
+}
+
+.chat-app-window  .user-chats .border-none .avatar img {
+    border: none!important;
+}
+
+.hide-content {
+    display: none;
+}
+
+.show-content:hover .hide-content {
+    display          : block;
+    padding          : 0px;
+    opacity          : 0.9;
+    background       :  rgba(black, 0.5);
+    margin-top       : -20px!important;
+    padding-top      : 0px!important;
+    border-radius    : 0px 0px 7px 7px;
+}
+
+.img-video{
+    width           : min-content!important;
+    height          : 400px!important;
+    max-width       : 50%!important;
+    min-width       : 100%!important;
+    border-radius   : 7px;
+}

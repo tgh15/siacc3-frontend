@@ -1,0 +1,24 @@
+
+@import "../../components/scss/base/core/colors/palette-variables.scss";
+
+//sidebar
+.notification-nav{
+    position: fixed;
+    text-align: left;
+    width: 23%;
+    .nav-pills{
+        .nav-link{
+            margin-bottom: 1em;
+            justify-content: start;
+        }
+    }
+}
+
+// list
+.notification-list{
+    margin-bottom: 15px;
+
+    &.unread{
+        background-color: map-get($primary-color, "base" );
+    }
+}

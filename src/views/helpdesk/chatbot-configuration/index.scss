@@ -1,0 +1,9 @@
+@import "@src/components/scss/base/core/colors/palette-variables.scss";
+
+.rst__moveHandle{
+    background-color: map-get($primary-color, "base");
+}
+
+// .node-item {
+//     height: 200px;
+// }

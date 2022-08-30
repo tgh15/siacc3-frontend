@@ -1,0 +1,31 @@
+.table-information{
+    width: 500px;
+    table-layout: fixed;
+    margin: 5px 5px 0px 0px;
+    
+    .title{
+       border-spacing: 10px; 
+        font-weight: bold;
+        vertical-align: top; 
+    }
+}
+
+.modal-detail .modal-content{
+    width: 1100px;
+    margin-left: -50%;
+}
+
+.table-detail{
+    margin-top: 2em;
+    width: 100%;
+
+    th{
+        
+        width: 40%;
+        vertical-align: top;
+    }
+    td{
+        padding-bottom: 25px;
+        vertical-align: top;
+    }
+}

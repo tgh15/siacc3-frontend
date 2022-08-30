@@ -1,0 +1,85 @@
+.height-scroll{
+    height              : 400px!important;
+    border-radius       : 20px 20px 0px 0px;
+    background-size     : 200px;
+    background-repeat   : repeat;
+}
+
+.scroll{
+    width    : 100%;
+    display  : block;
+    overflow : auto;
+}
+
+::-webkit-scrollbar {
+    display: none;
+}
+
+.shadow-boxs{
+    box-shadow      : rgba(149, 157, 165, 0.2) 0px 8px 24px;
+    border-radius   : 7px;
+}
+
+.button-bg{
+    width           : 100%;
+    padding         : 20px;
+    background      : linear-gradient(180deg, rgba(3,116,60,1) 50%, rgba(88,158,123,1) 81%, rgba(192,210,200,1) 100%);
+    border-radius   : 18px;
+    margin-bottom   : 15px; 
+}
+
+.button-text{
+    color       : #fff;
+    margin      : 0px;
+    font-size   : 17px;
+    font-weight : bold;
+}
+
+.img-dashboard-right{
+    width         : 75px;
+    height        : 75px;
+    margin-bottom : 15px;
+}
+
+.img-news-dashboard-left{
+    z-index      : 3;
+    position     : absolute;
+    margin-top   : -420px;
+    margin-right : -410px;
+}
+
+.img-likes-dashboard-left{
+    position    : absolute;
+    margin-top  : -310px;
+    margin-left : -310px;
+}
+
+.img-post-dashboard-left{
+    z-index: 2;
+    margin-top: -160px;
+    margin-left: 170px;
+}
+
+.img-rating-dashboard-left{
+    position    : absolute;
+    margin-top  : 250px;
+    margin-left : -230px;
+}
+
+.img-chart-dashboard-left{
+    position    : absolute;
+    margin-top  : 190px;
+    margin-left : 250px;
+}
+
+.green-bg{
+    border        : 1px solid #ecedf4; 
+    background    : linear-gradient(153deg, rgba(0,116,59,1) 64%, rgba(207,229,218,1) 99%, rgba(255,255,255,1) 100%);
+    margin-bottom : 1rem;
+}
+
+.white-bg{
+    color       : #E2E4E3;
+    border      : 1px solid #ecedf4; 
+    background  : #E2E4E3;
+}

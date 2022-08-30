@@ -1,0 +1,17 @@
+@import '../../../scss/base/core/colors/palette-variables.scss';
+// @import '../core/colors/palette-variables';
+.room-items{
+    padding: 10px 20px !important;
+
+    span:nth-child(1){
+        font-weight: 800;
+    }
+}
+
+.room-items:hover{
+    background-color: rgba(map-get($primary-color,"base"),1);
+    span{
+        color :white !important;
+        font-weight: bold;        
+    }
+}

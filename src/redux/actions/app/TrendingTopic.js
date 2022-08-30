@@ -1,0 +1,1 @@
+export const setTrendingRedux = value=>dispatch=>dispatch({type:"SET_TRENDING",value:value})

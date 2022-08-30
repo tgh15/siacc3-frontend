@@ -1,0 +1,182 @@
+@import "../bootstrap-extended/include"; // Bootstrap includes
+@import "../components/include"; // Components includes
+
+@import "../core/colors/palette-variables";
+
+@import "bootstrap/scss/mixins/_gradients";
+@import "bootstrap/scss/mixins/gradients";
+
+//Variables
+$chat-image-back-color: #f2f0f7;
+$chat-head-footer-height: 65px;
+$chat-widget-head-footer-height: 56px;
+$chat-widget-height: 390px;
+
+.user-chats {
+    width: 100%;
+    padding: 0.5em 0.5rem;
+    background-image: url($chat-bg-light);
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    height: 100%;
+    font-size: 9pt;
+    .chat {
+        .chat-avatar {
+            display: inline-block;
+            width: 100%;
+            position: relative;
+            top: 35px;
+            text-align: right;
+        }
+        .chat-body {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            align-items: end;
+            margin-left: -40px;
+
+            .chat-content {
+                min-width: 11em;
+                float: right;
+                padding: 0.7rem 1rem;
+                margin: 0 1rem 10px 0;
+                clear: both;
+                color: $white;
+                @include gradient-directional(
+                    map-get($primary-color, "base"),
+                    map-get($primary-color, "lighten-2"),
+                    80deg
+                );
+                border-radius: $border-radius;
+                box-shadow: 0 4px 8px 0 rgba($black, 0.12);
+                max-width: 75%;
+
+                p {
+                    margin: 0;
+                }
+                span {
+                    float: right;
+                    margin-top: 5px;
+                    font-size: 0.7rem;
+                }
+                .overlay {
+                    float: right;
+                    border-radius: 50%;
+                    cursor: pointer;
+                    background-color: rgba($black, 0.12);
+                    text-align: right;
+                    opacity: 0;
+                }
+                .chat-forward {
+                    font-size: 9pt;
+                    margin-bottom: 10px;
+                    color: rgba($white, 0.6);
+                }
+                .chat-replied {
+                    border-radius: 5%;
+                    background-color: rgba($black, 0.32);
+                    padding: 0.4em 0.8em;
+                    margin: 0.5em -0.2em;
+                    div {
+                        font-size: 9pt;
+                        color: map-get($warning-color, "base");
+                    }
+                }
+
+                .chat-image {
+                    img {
+                        max-width: 200px;
+                        cursor: pointer;
+                    }
+                }
+
+                .chat-file {
+                    display: flex;
+                    justify-content: space-between;
+                    div:nth-child(2) {
+                        margin-left: 50px;
+                        cursor: pointer;
+                        svg {
+                            color: $white;
+                        }
+                    }
+                }
+            }
+            .chat-content:hover {
+                .overlay {
+                    opacity: 1;
+                }
+            }
+
+            .chat-public-report {
+                min-width: 12em;
+                cursor: pointer;
+                text-decoration: underline;
+                font-weight: bolder;
+                color: map-get($white-color, "base");
+            }
+        }
+        // Chat area left css
+        &.chat-left {
+            .chat-name {
+                text-align: start !important;
+                font-weight: bold;
+                color: map-get($primary-color, "base" );
+            }
+            .chat-avatar {
+                text-align: left !important;
+            }
+            .chat-body {
+                align-items: start !important;
+                margin-left: 40px !important;
+
+                .chat-content {
+                    float: left;
+                    margin: 0 0 10px 1rem;
+                    color: $body-color;
+                    background: none;
+                    background-color: lighten($white, 18%);
+                }
+                .overlay {
+                    color: map-get($primary-color, "base");
+                    background-color: rgba(map-get($primary-color, "base"), 0.1);
+                    opacity: 0;
+                }
+
+                .chat-replied {
+                    div {
+                        color: map-get($primary-color, "base");
+                    }
+                }
+
+                .chat-forward {
+                    color: rgba(map-get($primary-color, "base"), 0.8);
+                }
+
+                .chat-file {
+                    div:nth-child(2) {
+                        svg {
+                            color: map-get($primary-color, "base");
+                        }
+                    }
+                }
+                .chat-public-report {
+
+                    color: map-get($warning-color, "base");
+                }
+            }
+        }
+    }
+}
+
+.chat-reply {
+    display: flex;
+    justify-content: space-between;
+    color: $white;
+    background-color: rgba(map-get($primary-color, "base"), 1);
+    padding: 10px;
+    svg {
+        cursor: pointer;
+    }
+}

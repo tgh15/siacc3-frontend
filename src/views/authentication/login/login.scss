@@ -1,0 +1,21 @@
+// @import "../core/colors/palette-variables";
+@import "@src/components/scss/base/core/colors/palette-variables.scss";
+
+.wrap-qrcode {
+    p{
+        margin-top: 4px;
+    }
+    .icon {
+        width: 24px;
+        height: 24px;
+        margin-top: 4px;
+    }
+
+    .colored {
+        height: 18px;
+        margin-right: 5px;
+        background-color: map-get($primary-color, "base"); /* defines the background color of the image */
+        mask: url("@src/assets/icons/qrcode.svg") no-repeat center / contain;
+        -webkit-mask: url("@src/assets/icons/qrcode.svg") no-repeat center / contain;
+    }
+}

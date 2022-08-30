@@ -1,0 +1,110 @@
+.ant-layout, .ant-layout * {
+    box-sizing: border-box;
+}
+
+.ant-card-bordered {
+    border: 1px solid #f0f0f0;
+}
+
+.ant-card {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    color: rgba(0,0,0,.85);
+    font-size: 14px;
+    font-variant: tabular-nums;
+    line-height: 1.5715;
+    list-style: none;
+    -webkit-font-feature-settings: 'tnum';
+    font-feature-settings: 'tnum';
+    position: relative;
+    border-radius: 8px;
+}
+
+.text-center {
+    text-align: center!important;
+}
+
+.border-non {
+    border: none!important;
+}
+
+.emp-card {
+    margin-top: 10px !important;
+    border-radius: 7px !important;
+    color: #fff!important;
+    background-image: url("@src/assets/images/bg/bg-profile.jpg");
+    border-radius: 14px!important;
+}
+
+.logo-kejaksaan {
+    width: 7vh;
+    height: 7vh;
+    padding: 10px;
+    display: inline-block;
+    z-index: 1;
+    margin-bottom: -15px;
+    background: #fff;
+}
+
+.ant-image {
+    position: relative;
+    display: inline-block;
+}
+
+element.style {
+    width: 60px;
+}
+
+.emp-card-profile{
+    border-radius: 12px!important;
+    background: #447e22!important;
+    opacity: 0.9!important;
+    color: #fff!important;
+    border: none!important;
+    margin-bottom: 18px!important;
+}
+
+.ant-image-img {
+    display: block;
+    width: 100%;
+    height: auto;
+}
+
+.img-profile, .logo-kejaksaan {
+    border-radius: 10px;
+    position: relative;
+}
+
+.bg-img-badge{
+    background: rgb(30,35,47);
+    border-radius: 100%!important;
+    width: 93px;
+    height: 90px;
+    padding: 4px;
+    margin: auto!important;
+}
+
+.bg-img-badges{
+    /* background: #999aa123; */
+    background: rgb(30,35,47);
+    border-radius: 100%!important;
+    width: 73px;
+    height: 70px;
+    padding: 4px;
+    margin: auto!important;
+    margin-bottom: 5px!important;
+}
+
+.box-badge{
+    border          : 1px solid #456efb;
+    height          : 160px;
+    padding         : 3px 15px;
+    background      : rgba(49, 106, 238, 0.062);
+    text-align      : center!important;
+    border-radius   : 10px;
+    margin-bottom   : 25px;
+    overflow        : auto;
+    display         : block;
+    width           : 100%;
+}

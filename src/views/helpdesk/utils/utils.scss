@@ -1,0 +1,31 @@
+
+@import '../../../components/scss/base/bootstrap-extended/include';
+@import '../../../components/scss/base/components/include';
+
+@import "../../../components/scss/base/core/colors/palette-variables";
+
+.title-card:hover{
+    color : map-get($primary-color, "base" );
+    text-decoration: underline;
+}
+
+.ps__rail-y{
+    z-index: 999;
+}
+
+
+.ps__thumb-x{
+    display: none;
+  }
+
+.card-item {
+    &.active{
+    background-color: map-get($primary-color, "base" );
+    color: white;
+
+    .title-card:hover{
+        color : map-get($white-color, "base" );
+        text-decoration: underline;
+    }
+    }
+}

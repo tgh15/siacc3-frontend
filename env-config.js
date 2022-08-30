@@ -1,0 +1,9 @@
+window._env_ = {
+  REACT_APP_API_GATEWAY: "",
+  REACT_APP_SOCKET_URL: "",
+  REACT_APP_ERROR_TRACKING: "false",
+  REACT_APP_CORS_ORIGIN: "",
+  REACT_APP_DIGITAL_IDENTIFICATION: "",
+  REACT_APP_MAPBOX_API: "pk.eyJ1IjoiemVwaHlyZm4iLCJhIjoiY2trNzI5bWN1MDlubDJ1cW94Z3hicm9qdCJ9.HPNjaaL1I5rkMdSg1AJf5g",
+  REACT_APP_MAPBOX_MAP_SKIN: "mapbox://styles/zephyrfn/ckra22zgd4uh517m5plawan4p",
+}

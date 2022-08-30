@@ -1,0 +1,89 @@
+#
+#                                      █▄░█ █▀█ ▀█▀ █▀▀
+#                                      █░▀█ █▄█ ░█░ ██▄
+#
+#   -----------------------| CI WORKFLOW   |   main => beta => prod |-----------------------
+#
+#     - don't use "script:" unless you want to override the template
+#       use before or after script instead
+#     - tell the author before make some changes (customizing can break the workflow and ..
+#       make the author have an headache)
+#     - if you want to create a new branch describe the branch with name that descibe the 
+#       perpouse of it
+#   ----------------------------------------------------------------------------------------
+
+include:
+  - project: 'microservice-repos/ci-template'
+    ref: main
+    file: '/job-build/default.yml'
+  - project: 'microservice-repos/ci-template'
+    ref: main
+    file: '/template-siacc.yml'
+  - project: 'microservice-repos/ci-template'
+    ref: main
+    file: '/job-deliver/push-to-prod.yml'
+
+stages:
+  - build
+  - deliver
+
+build:
+  only:
+    - main
+    - beta
+  tags:
+    - udev
+    - shell
+  stage: build
+  before_script:
+    - echo "$CI_REGISTRY_PASSWORD" | docker login $CI_REGISTRY -u $CI_REGISTRY_USER --password-stdin;
+  # script:
+  #   -
+  after_script:
+    - docker logout
+
+deliver:
+  only:
+    - main
+    - beta
+  tags:
+    - udev
+    - shell
+  stage: deliver
+  variables:
+    DEV_SERVER: "siacc-dev"
+    DEV_TARGET_NAME: "feeds"
+    DEV_NMESPACE: "siacc-v2"
+    ORCESTRATORS_DEV: "docker-compose"
+    BETA_SERVER: "cp-siacc-beta"
+    BETA_TARGET_NAME: "feeds"
+    BETA_NAMESPACE: "siacc-v2"
+    ORCESTRATORS_BETA: "kubernetes"
+  before_script:
+    - echo "before script"
+  # script:
+  #   -
+  after_script:
+    - echo "after script"
+
+push-to-prod:
+  only:
+    - prod
+  tags:
+    - udev
+    - shell
+  stage: deliver
+  variables:
+    WORKDIR: "SIACC"
+    RLI_REPO: feeds
+    PROD_REPO: test
+    BRANCH: "prod"
+    TARGET_BRANCH: "main"
+  before_script:
+    - git config --global user.name "a3 infiniti"
+    - git config --global user.email "dev.a3infiniti@outlook.com"
+  # script:
+  #   -
+  after_script:
+    - echo "after script"
+

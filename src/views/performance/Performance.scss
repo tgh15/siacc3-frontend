@@ -1,0 +1,19 @@
+.table-ranking{
+    width: 100%;
+    border: solid;
+}
+
+.title{
+    text-align: left;
+    padding: 5px 0px 5px 10px;
+    font-weight: bold;
+}
+
+.ranking{
+    text-align: right;
+    padding: 5px 10px 5px 0px;
+}
+
+.selected {
+    border: solid 3px #176138;
+}

@@ -1,0 +1,24 @@
+<svg width="180" height="180" viewBox="0 0 180 180" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_2071_23846)">
+<rect width="180" height="180" rx="90" fill="url(#paint0_linear_2071_23846)"/>
+<rect x="96.6786" y="-45" width="297.614" height="16.3636" transform="rotate(44.9012 96.6786 -45)" fill="#EFEFEF" fill-opacity="0.06"/>
+<rect x="80.7962" y="-29.0627" width="297.614" height="16.3636" transform="rotate(44.9012 80.7962 -29.0627)" fill="#EFEFEF" fill-opacity="0.06"/>
+<rect x="64.9138" y="-13.1255" width="297.614" height="16.3636" transform="rotate(44.9012 64.9138 -13.1255)" fill="#EFEFEF" fill-opacity="0.06"/>
+<rect x="49.0312" y="2.81201" width="297.614" height="16.3636" transform="rotate(44.9012 49.0312 2.81201)" fill="#EFEFEF" fill-opacity="0.06"/>
+<rect x="33.1488" y="18.7493" width="297.614" height="16.3636" transform="rotate(44.9012 33.1488 18.7493)" fill="#EFEFEF" fill-opacity="0.06"/>
+<rect x="17.2664" y="34.6865" width="297.614" height="16.3636" transform="rotate(44.9012 17.2664 34.6865)" fill="#EFEFEF" fill-opacity="0.06"/>
+<rect x="1.38391" y="50.6238" width="297.614" height="16.3636" transform="rotate(44.9012 1.38391 50.6238)" fill="#EFEFEF" fill-opacity="0.06"/>
+<rect x="-14.4985" y="66.561" width="297.614" height="16.3636" transform="rotate(44.9012 -14.4985 66.561)" fill="#EFEFEF" fill-opacity="0.06"/>
+<rect x="-30.381" y="82.4985" width="297.614" height="16.3636" transform="rotate(44.9012 -30.381 82.4985)" fill="#EFEFEF" fill-opacity="0.06"/>
+<circle cx="90" cy="90" r="76.7273" stroke="#D9DBE9" stroke-width="2"/>
+</g>
+<defs>
+<linearGradient id="paint0_linear_2071_23846" x1="15.8291" y1="31.5" x2="167.061" y2="63.9268" gradientUnits="userSpaceOnUse">
+<stop stop-color="#45A065"/>
+<stop offset="1" stop-color="#186239"/>
+</linearGradient>
+<clipPath id="clip0_2071_23846">
+<rect width="180" height="180" rx="90" fill="white"/>
+</clipPath>
+</defs>
+</svg>

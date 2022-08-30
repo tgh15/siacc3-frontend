@@ -1,0 +1,21 @@
+.qrcode {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    
+    svg{
+        align-self: flex-end;
+        margin-bottom: 0.5em;
+        cursor: pointer;
+    }
+
+    p {
+        font-weight: bolder;
+    }
+    span {
+        margin-top: 1.5em;
+    }
+    img {
+        width: 70%;
+    }
+}

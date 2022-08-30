@@ -1,0 +1,48 @@
+@import '../../../../components/scss/base/bootstrap-extended/include';
+@import '../../../../components/scss/base/components/include';
+
+@import "../../../../components/scss/base/core/colors/palette-variables";
+
+$chat-image-back-color: #f2f0f7;
+
+.empty-chat{
+    min-height: 95%;
+    border-radius: 10px;
+    background-image: url($chat-bg-light);
+    background-color: $chat-image-back-color;
+    background-position: center;
+
+    .chat-app-window {
+        height: 150%;
+        .start-chat-area {
+            height: inherit;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            .start-chat-icon,
+            .start-chat-text {
+              margin-top: 14em;
+              background: $white;
+              box-shadow: 0 4px 8px 0 rgba($black, 0.12) !important;
+              color: $body-color;
+            }
+            .start-chat-text {
+              margin-top: 1em !important;
+              padding: 0.5rem 1rem;
+              border-radius: calc(#{$border-radius} * 4);
+              cursor: pointer;
+            }
+            .start-chat-icon {
+              border-radius: 50%;
+              padding: 2rem;
+              svg,
+              i {
+                height: 4rem;
+                width: 4rem;
+                font-size: 4rem;
+              }
+            }
+          }
+    }
+}

@@ -1,0 +1,26 @@
+
+.profile-qrcode {
+    // background-image: url("@src/assets/images/bg/bg-profile11.png");
+    height: 450px;
+    display: flex;
+    justify-items: center;
+    align-items: center;
+    .logo-mask{
+        position: absolute;
+        margin: auto 60px -10px 70px;
+        border-radius: 5%;
+        width: 50px;
+        padding: 5px;
+        background-color: white;
+
+    }
+    .card-name{
+        background-color:#558937;
+        padding: 15px;
+        border-radius: 5%;
+        width: 200px;
+        height: 100px;
+        color: #fff !important;
+        margin-top: 48px;
+    }
+}

@@ -1,0 +1,51 @@
+@import "../bootstrap-extended/include"; // Bootstrap includes
+@import "../components/include"; 
+
+@import "../core/colors/palette-variables";
+
+.card-user{
+    margin: 10px;
+    cursor: pointer;
+
+    &.active{
+        background-color: map-get($primary-color, "base" );
+        color : $white;
+    }
+}
+
+.card-selected{
+    margin: 10px 0;
+    padding: 10px;
+    border-radius: 5px;
+    border : 1px solid map-get($secondary-color, "base");
+    display: flex;
+    flex-wrap: wrap;
+
+    p{
+        width: 100%;
+        font-size: 10pt;
+        font-weight: bold;
+    }
+
+
+    .column{
+        max-width: 25em;
+        justify-content: space-between;
+        padding: 5px;
+        border: 1px solid map-get($secondary-color, "base" );
+        background-color: rgba(map-get($primary-color, "base" ),0.8);
+        color: $white;
+        border-radius: 5px;
+        margin-right: 10px;
+        margin-bottom: 10px;
+
+        svg{
+            margin-left: 1em;
+            cursor: pointer;
+        }
+    }
+
+    .attachment-icon{
+        background-color: transparent;
+    }
+}
