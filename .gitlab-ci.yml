@@ -19,9 +19,6 @@ include:
   - project: 'microservice-repos/ci-template'
     ref: main
     file: '/template-siacc.yml'
-  - project: 'microservice-repos/ci-template'
-    ref: main
-    file: '/job-deliver/push-to-prod.yml'
 
 stages:
   - build
@@ -39,24 +36,19 @@ build:
     - echo "$CI_REGISTRY_PASSWORD" | docker login $CI_REGISTRY -u $CI_REGISTRY_USER --password-stdin;
   # script:
   #   -
-  after_script:
-    - docker logout
 
 deliver:
   only:
     - main
     - beta
-  tags:
-    - udev
-    - shell
   stage: deliver
   variables:
     DEV_SERVER: "siacc-dev"
-    DEV_TARGET_NAME: "feeds"
-    DEV_NMESPACE: "siacc-v2"
+    DEV_TARGET_NAME: "siaccred_ui"
+    # DEV_NAMESPACE: "siacc-v2"
     ORCESTRATORS_DEV: "docker-compose"
     BETA_SERVER: "cp-siacc-beta"
-    BETA_TARGET_NAME: "feeds"
+    BETA_TARGET_NAME: "siaccred_ui"
     BETA_NAMESPACE: "siacc-v2"
     ORCESTRATORS_BETA: "kubernetes"
   before_script:
@@ -75,8 +67,8 @@ push-to-prod:
   stage: deliver
   variables:
     WORKDIR: "SIACC"
-    RLI_REPO: feeds
-    PROD_REPO: test
+    RLI_REPO: "frontend-siacc"
+    PROD_REPO: "5a1d82cc6821588af2f0fa110bf71946"
     BRANCH: "prod"
     TARGET_BRANCH: "main"
   before_script:
