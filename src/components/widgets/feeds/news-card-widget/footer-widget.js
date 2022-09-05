@@ -39,6 +39,7 @@ export const WidgetCardNewsBottom = (props)=>{
         ratings,
         newsType,
         viewList,
+        viewListCombine,
         viewCounts,
         commentCounts,
         setShowViewForm,
@@ -212,7 +213,7 @@ export const WidgetCardNewsBottom = (props)=>{
                                                 <p>Dilihat Oleh :</p>
                                             </Row>
                                             {
-                                                viewList != null && viewList.sort((a,b) => {return a.level - b.level}).map((data, index ) => (
+                                                viewListCombine != null  && viewListCombine.sort((a,b) => {return a.level - b.level}).map((data, index ) => (
                                                     index < 5 ?
                                                         <Row className="px-1 pb-1">
                                                             <Col md={3} className="text-center">
@@ -227,7 +228,7 @@ export const WidgetCardNewsBottom = (props)=>{
                                                 ))
                                             }
                                             { 
-                                                viewList != null && viewList.length > 5 ?
+                                                viewListCombine != null && viewListCombine.length > 5 ?
                                                     <Row className="mx-0 pl-1">
                                                         <p type="flat" class="text-primary cursor-pointer" onClick={() => {setShowViewForm(true); setPopView(false)}}>Lihat Semuanya...</p>
                                                     </Row>

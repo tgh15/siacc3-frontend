@@ -138,7 +138,8 @@ export const NewsWidget = (props) => {
     const [viewCount,setViewCount]                              = useState(viewerCount);
     const [pageViewList, setPageViewList]                       = useState(1);
     const [viewListLeader, setViewListLeader]                   = useState(null);
-    const [totalPageViewList, setTotalPageViewList]              = useState(null);
+    const [viewListCombine, setViewListCombine]                 = useState(null);
+    const [totalPageViewList, setTotalPageViewList]             = useState(null);
     const [pageViewListLeader, setPageViewListLeader]           = useState(1);
     const [totalPageViewListLeader, setTotalPageViewListLeader] = useState(null);
 
@@ -465,11 +466,14 @@ export const NewsWidget = (props) => {
 
                         setTotalPageViewList(Math.ceil(viewListAgen_.length/10));
                         setTotalPageViewListLeader(Math.ceil(viewListLeader_.length/10));
+
                         setViewList(viewListAgen_);
                         setViewListLeader(viewListLeader_);
+                        setViewListCombine(res.data.slice(0,6))
                     }else{
                         setViewList([]);
                         setViewListLeader([]);
+                        setViewListCombine([]);
                     }
 
                 }
@@ -1186,6 +1190,8 @@ export const NewsWidget = (props) => {
                                 ratings         = {ratings}
                                 newsType        = {newsType}
                                 viewList        = {viewList}
+                                viewListLeader  = {viewListLeader}
+                                viewListCombine = {viewListCombine}
                                 viewCounts      = {viewCount}
                                 commentCounts   = {commentCount}
                                 ratings_check   = {ratings_check}
