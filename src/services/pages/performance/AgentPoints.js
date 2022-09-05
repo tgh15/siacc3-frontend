@@ -5,7 +5,7 @@ const AgentPoints = ({page, formData, onSuccess, onFail }) => {
 
     const params ={
         is_paginate :true,
-        limit : 20,
+        limit : 10,
         page : page
     }
 

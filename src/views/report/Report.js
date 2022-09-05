@@ -206,8 +206,8 @@ const Report = (props) => {
                     {
                         data.data.map((data_) => (
                             <>
-                                {_bodyData.push(data_.data != null ? data_.data : 0)}
-                                {data_.data != null ? _sum += data_.data : _sum += 0}
+                                {_bodyData.push(data_.data != null ? data_.data.length : 0)}
+                                {data_.data != null ? _sum += data_.data.length : _sum += 0}
                             </>
                         ))
                     }

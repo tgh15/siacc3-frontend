@@ -154,7 +154,17 @@ const MyChart = ({identity_id, chart, chartTitle, index, handleDelete, options, 
             )       
     }   
 }
-const BodyDashboardComponent = ({rows, handleDelete, handleUpdate}) => {
+const BodyDashboardComponent = (props) => {
+
+    const {
+        rows, 
+        handleDelete,
+        handleUpdate,
+        exportToJpg,     
+        exportToPng,     
+        exportToPdf,     
+        printToPdf  
+    }                                                   = props;
 
     const [detailChartData, setDetailChartData]         = useState(null);
     const [detailChartVisible, setDetailChartVisible]   = useState(false);

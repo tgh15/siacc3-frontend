@@ -166,70 +166,71 @@ const FormReport = (props) => {
                         is_formatted : true
                     }
                 }
+
+                props.onSubmit(formData);
+
             }else{
-                console.log(request, 'request');
+
                 if(request.content != null && request.content.filter(e => e.value == 10 || e.value == 11).length > 0){
-                    CustomToast('warning', 'ada.')
-                }else{
-                    CustomToast('warning', 'Tidak ada.')
-                }
-
-                if(request.content != null){
-                    request.content.map((data) => (
-                        _newOrder.push(data.value)
-                    ));
-                }
-    
-                //Get Category Filter
-                if(request.filter_category != null){
-                    request.filter_category.map((data) => (
-                        _newFilter.push({
-                            report_filter_type_id: 1,
-                            keyword : data.label
-                        })
-                    ));
-                }
-    
-                if(request.filter_workunit != null){
-                    request.filter_workunit.map((data) => (
-                        _newFilter.push({
-                            report_filter_type_id: 2,
-                            keyword : data.value
-                        })
-                    ));
-                };
-    
-                if(request.filter_agent != null){
-                    request.filter_agent.map((data) => (
-                        _newFilter.push({
-                            report_filter_type_id: 3,
-                            keyword : data.value
-                        })
-                    ));
-                };
-
-                if(request.time != null){
-                    formData.time = moment(request.time).format('YYYY-MM-DDTH:mm:ssZ');
-                }
-    
-                if(request.repeat != null){
-                    formData.repeat = request.repeat;
-                }
-                
-                formData = {
-                    model : {
-                        title        : request.title,
-                        start        : moment(startDate).format('YYYY-MM-DDTH:mm:ssZ'),
-                        end          : moment(endDate).format('YYYY-MM-DDTH:mm:ssZ'),
-                        contents_id  : _newOrder,
-                        filters      : _newFilter,
-                        is_formatted : false
+                    if(request.content != null){
+                        request.content.map((data) => (
+                            _newOrder.push(data.value)
+                        ));
                     }
-                }
+        
+                    //Get Category Filter
+                    if(request.filter_category != null){
+                        request.filter_category.map((data) => (
+                            _newFilter.push({
+                                report_filter_type_id: 1,
+                                keyword : data.label
+                            })
+                        ));
+                    }
+        
+                    if(request.filter_workunit != null){
+                        request.filter_workunit.map((data) => (
+                            _newFilter.push({
+                                report_filter_type_id: 2,
+                                keyword : data.value
+                            })
+                        ));
+                    };
+        
+                    if(request.filter_agent != null){
+                        request.filter_agent.map((data) => (
+                            _newFilter.push({
+                                report_filter_type_id: 3,
+                                keyword : data.value
+                            })
+                        ));
+                    };
+    
+                    if(request.time != null){
+                        formData.time = moment(request.time).format('YYYY-MM-DDTH:mm:ssZ');
+                    }
+        
+                    if(request.repeat != null){
+                        formData.repeat = request.repeat;
+                    }
+                    
+                    formData = {
+                        model : {
+                            title        : request.title,
+                            start        : moment(startDate).format('YYYY-MM-DDTH:mm:ssZ'),
+                            end          : moment(endDate).format('YYYY-MM-DDTH:mm:ssZ'),
+                            contents_id  : _newOrder,
+                            filters      : _newFilter,
+                            is_formatted : false
+                        }
+                    }
 
+                    props.onSubmit(formData);
+
+                }else{
+                    CustomToast('warning', 'Isi laporan harus menggunakan Satuan Kerja atau Nama Agen.');
+                }
             }
-            console.log(formData);
-            // props.onSubmit(formData);
         }
     };
 

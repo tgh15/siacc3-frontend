@@ -1,4 +1,5 @@
-import React, { useState, useEffect }                   from 'react';
+import React, { useState, useEffect, useCallback }      from 'react';
+
 import CustomToast                                      from '../../components/widgets/custom-toast';
 import { BodyDashboardComponent, TopWidgetDashboard }   from '../../components/widgets/dashboard-components';
 import ContainerFluid                                   from '../../components/widgets/fluid';
@@ -171,6 +172,90 @@ const DashboardComponent = (props) => {
         )
     };
 
+    const exportToJpg = useCallback(() => {
+        if (ref.current === null) {
+            return
+        }
+
+        toJpeg(ref.current, { cacheBust: true, backgroundColor: 'white' , style: { padding: '5px' }})
+            .then((dataUrl) => {
+                const link      = document.createElement('a')
+                link.download   = 'dashboar-export.jpeg'
+                link.href       = dataUrl
+                link.click()
+            })
+            .catch((err) => {
+                error_handler(err, 'export to jpg');
+            })
+    }, [ref]);
+
+    const exportToPng = useCallback(() => {
+        if (ref.current === null) {
+            return
+        }
+
+        toJpeg(ref.current, { cacheBust: true, style: { padding: '5px' }})
+            .then((dataUrl) => {
+                const link      = document.createElement('a')
+                link.download   = 'dashboard-export.png'
+                link.href       = dataUrl
+                link.click()
+            })
+            .catch((err) => {
+                error_handler(err, 'export to png');
+            })
+    }, [ref]);
+
+    const exportToPdf = useCallback(() => {
+        let doc = new jsPDF('p', 'mm', "a3", {
+            orientation: "landscape",
+            
+        });
+
+        var width  = doc.internal.pageSize.getWidth();
+        var height = doc.internal.pageSize.getHeight();
+
+        if (ref.current === null) {
+            return
+        }
+
+        toPng(ref.current, { cacheBust: true, style: { padding: '5px' }})
+            .then((dataUrl) => {
+                doc.addImage(dataUrl,'PNG',1,1, width-10, height-110);
+                doc.save(`export-dashboard.pdf`);
+            })
+            .catch((err) => {
+                error_handler(err, 'export to pdf');
+            })
+    }, [ref]);
+
+    const printToPdf = useCallback(() => {
+        let doc = new jsPDF('p', 'mm', "a3", {
+            orientation: "potrait",
+            
+        });
+
+        var width  = doc.internal.pageSize.getWidth();
+        var height = doc.internal.pageSize.getHeight();
+
+        if (ref.current === null) {
+            return
+        }
+
+        toPng(ref.current, { cacheBust: true, style: { padding: '5px' }})
+            .then((dataUrl) => {
+                doc.addImage(dataUrl, 'PNG',1,1, width-10, height-110);
+                
+                let print = window.open(doc.output('bloburl'), '_blank');
+                print.print();
+
+                return doc;
+            })
+            .catch((err) => {
+                error_handler(err, 'export to pdf');
+            })
+    }, [ref]);
+
     useEffect(() => {
         getDashboardLayout();
 
@@ -199,6 +284,10 @@ const DashboardComponent = (props) => {
                             rows            = {dashboardLayout}
                             handleDelete    = {handleDelete}
                             handleUpdate    = {handleUpdate}
+                            exportToJpg     = {exportToJpg}
+                            exportToPng     = {exportToPng}
+                            exportToPdf     = {exportToPdf}
+                            printToPdf      = {printToPdf}
                         />
                     :
                         <CustomTableNotAuthorized/>
