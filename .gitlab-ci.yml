@@ -77,6 +77,4 @@ push-to-prod:
   # script:
   #   -
   after_script:
-<<<<<<< HEAD
     - echo "after script"
-
