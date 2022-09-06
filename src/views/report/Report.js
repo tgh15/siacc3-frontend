@@ -512,10 +512,10 @@ const Report = (props) => {
     };
 
     useEffect(() => {
-        if(detailResults != null && detailResults.is_formatted === false){
-            getHeader();        
-        }else{
+        if(detailResults != null && "is_formatted" in detailResults && detailResults.is_formatted === true){
             getHeaderFormatted();
+        }else{
+            getHeader();        
         }
 
     }, [detailResults]);
@@ -575,19 +575,19 @@ const Report = (props) => {
                             </Button.Ripple>,
                             <div>
                                 <Button.Ripple color="primary" className="mr-1" onClick={() => {
-                                    if(detailResults != null && detailResults.is_formatted === false){
-                                        printPDF()
-                                    }else{
+                                    if(detailResults != null && "is_formatted" in detailResults && detailResults.is_formatted === true){
                                         printFormatPDF()
+                                    }else{
+                                        printPDF()
                                     }
                                 }}>
                                     Print PDF
                                 </Button.Ripple>
                                 <Button.Ripple color="primary" className="mr-1" onClick={() => {
-                                    if(detailResults != null && detailResults.is_formatted === false){
-                                        createPDF();
-                                    }else{
+                                    if(detailResults != null && "is_formatted" in detailResults && detailResults.is_formatted === true){
                                         createFormatPDF();
+                                    }else{
+                                        createPDF();
                                     }
                                 }}>
                                     Export PDF
@@ -599,7 +599,11 @@ const Report = (props) => {
                     scrollable  = {true}
                 >
                     {
-                        detailResults != null && detailResults.is_formatted === false ?
+                        detailResults != null && "is_formatted" in detailResults && detailResults.is_formatted === true ?
+                            <DetailDataFormatted
+                                detailReport                = {props.detailResults}
+                            />
+                        :
                             <DetailData
                                 onCancel                    = {() => { setIsDetailResultsVisible(!isDetailResultsVisible) }} 
                                 detailReport                = {props.detailResults}
@@ -608,10 +612,7 @@ const Report = (props) => {
                                 isDetailResultsVisible      = {props.isDetailResultsVisible}
                                 setIsDetailResultsVisible   = {props.setIsDetailResultsVisible}
                             />
-                        :
-                            <DetailDataFormatted
-                                detailReport                = {props.detailResults}
-                            />
+                            
                     }
                 </ModalBase>
 
