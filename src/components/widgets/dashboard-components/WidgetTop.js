@@ -6,7 +6,7 @@ import {
     Minimize, 
     Plus 
 }                                       from 'react-feather'
-import {Row,Col, Button}                from 'reactstrap'
+import {Row,Col, Button, UncontrolledButtonDropdown, DropdownToggle, DropdownMenu, DropdownItem}                from 'reactstrap'
 import { ModalBase }                    from '../modals-base'
 import { ModalAddChart }                from './ModalAddChart'
 
@@ -20,6 +20,11 @@ const TopWidgetDashboard = (props) => {
         roleAdd,
         roleLink, 
         roleExport,
+
+        //print
+        exportToJpg,     
+        exportToPng,     
+        exportToPdf,     
     } = props;
 
     const [fullscr,setFcr]          = useState(false);
@@ -124,13 +129,16 @@ const TopWidgetDashboard = (props) => {
                 &nbsp;
                 {
                     roleExport ? 
-                        <Button 
-                            size        = "md"
-                            color       = "primary" 
-                            className   = "btn-icon" 
-                        >
-                            <CornerUpRight size={14} />
-                        </Button>
+                        <UncontrolledButtonDropdown>
+                            <DropdownToggle caret color="primary">
+                                <CornerUpRight size={14}/>
+                            </DropdownToggle>
+                            <DropdownMenu>
+                                <DropdownItem tag='button' onClick={() => {exportToJpg()}}>Ekspor ke jpg</DropdownItem>
+                                <DropdownItem tag='button' onClick={() => {exportToPng()}}>Ekspor ke png</DropdownItem>
+                                <DropdownItem tag='button' onClick={() => {exportToPdf()}}>Ekspor ke pdf</DropdownItem>
+                            </DropdownMenu>
+                        </UncontrolledButtonDropdown>
                     :
                         null
                 }

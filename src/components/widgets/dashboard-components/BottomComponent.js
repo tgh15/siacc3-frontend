@@ -160,10 +160,8 @@ const BodyDashboardComponent = (props) => {
         rows, 
         handleDelete,
         handleUpdate,
-        exportToJpg,     
-        exportToPng,     
-        exportToPdf,     
-        printToPdf  
+        printToPdf,
+        chartRef
     }                                                   = props;
 
     const [detailChartData, setDetailChartData]         = useState(null);
@@ -185,52 +183,54 @@ const BodyDashboardComponent = (props) => {
 
     return (
         <Fragment>
-        {
-            Array.isArray(rows) && rows.length > 0 ?
-                rows.map((data) => (
-                    <Fragment>
-                        <Row>
-                            {
-                                data.layout != null && data.layout.col.length > 0 ?
-                                    data.layout.col != undefined ?
-                                        data.layout.col.map((data2,index) => (
-                                            <Col 
-                                                lg  = {data2.width}
-                                                style = {{ display: 'flex'}}
-                                            >
-                                                <MyChart
-                                                    data                = {data2.source}
-                                                    chart               = {data2.chart}
-                                                    width               = {data2.widht}
-                                                    index               = {index}
-                                                    options             = {data2.options}
-                                                    chartTitle          = {data2.name}
-                                                    identity_id         = {data.id}
-                                                    handleDelete        = {handleDelete}
-                                                    handleUpdate        = {handleUpdate}
-                                                    detailChartAction   = {detailChartAction}
-                                                />
-                                            </Col>
-                                        ))
-                                    :
-                                        <CustomTableBodyEmpty/>
-                                :
-                                    <CustomTableBodyEmpty/>
-                            }
-                        </Row>
-                    </Fragment>
-                ))
-            :
-                <CustomTableBodyEmpty/>
-        }
+            <div ref={chartRef}>
+                {
+                    Array.isArray(rows) && rows.length > 0 ?
+                        rows.map((data) => (
+                            <Fragment>
+                                <Row>
+                                    {
+                                        data.layout != null && data.layout.col.length > 0 ?
+                                            data.layout.col != undefined ?
+                                                data.layout.col.map((data2,index) => (
+                                                    <Col 
+                                                        lg  = {data2.width}
+                                                        style = {{ display: 'flex'}}
+                                                    >
+                                                        <MyChart
+                                                            data                = {data2.source}
+                                                            chart               = {data2.chart}
+                                                            width               = {data2.widht}
+                                                            index               = {index}
+                                                            options             = {data2.options}
+                                                            chartTitle          = {data2.name}
+                                                            identity_id         = {data.id}
+                                                            handleDelete        = {handleDelete}
+                                                            handleUpdate        = {handleUpdate}
+                                                            detailChartAction   = {detailChartAction}
+                                                        />
+                                                    </Col>
+                                                ))
+                                            :
+                                                <CustomTableBodyEmpty/>
+                                        :
+                                            <CustomTableBodyEmpty/>
+                                    }
+                                </Row>
+                            </Fragment>
+                        ))
+                    :
+                        <CustomTableBodyEmpty/>
+                }
+            </div>
 
-        <DetailChartData
-            detailChartData         = {detailChartData}
-            detailChartToggle       = {detailChartToggle}   
-            detailChartVisible      = {detailChartVisible}
-            setDetailChartData      = {setDetailChartData}
-            setDetailChartVisible   = {setDetailChartVisible}
-        />
+            <DetailChartData
+                detailChartData         = {detailChartData}
+                detailChartToggle       = {detailChartToggle}   
+                detailChartVisible      = {detailChartVisible}
+                setDetailChartData      = {setDetailChartData}
+                setDetailChartVisible   = {setDetailChartVisible}
+            />
 
         </Fragment>
     )
