@@ -1,32 +1,34 @@
-import React, { useState, useEffect, useCallback }      from 'react';
+import React, { useState, useEffect, useCallback, useRef }      from 'react';
 
-import CustomToast                                      from '../../components/widgets/custom-toast';
-import { BodyDashboardComponent, TopWidgetDashboard }   from '../../components/widgets/dashboard-components';
-import ContainerFluid                                   from '../../components/widgets/fluid';
+import CustomToast                                              from '../../components/widgets/custom-toast';
+import { BodyDashboardComponent, TopWidgetDashboard }           from '../../components/widgets/dashboard-components';
+import ContainerFluid                                           from '../../components/widgets/fluid';
+
+import { jsPDF }                                                from "jspdf";
+import { toJpeg, toPng }                                        from 'html-to-image';
 
 //API
-import dashboardAPI                                     from '../../services/pages/dashboard';
+import dashboardAPI                                             from '../../services/pages/dashboard';
 
-import Helper                                           from '../../helpers';
-import CustomTableNotAuthorized                         from '../../components/widgets/custom-table/CustomTableNotAuthorized';
-import { ModalBase } from '../../components/widgets/modals-base';
-import { ModalDetailChart } from '../../components/widgets/dashboard-components/ModalDetailChart';
-import { ModalDetailChartUpdate } from '../../components/widgets/dashboard-components/ModalDetailChartUpdate';
-
+import Helper                                                   from '../../helpers';
+import CustomTableNotAuthorized                                 from '../../components/widgets/custom-table/CustomTableNotAuthorized';
+import { ModalBase }                                            from '../../components/widgets/modals-base';
+import { ModalDetailChartUpdate }                               from '../../components/widgets/dashboard-components/ModalDetailChartUpdate';
 
 const DashboardComponent = (props) => {
 
-    const [grids, setGrids]                                 = useState([]);
-    const [modalShow,setModalShow]                          = useState(false);
-    const [detailLayout, setDetailLayout]                   = useState(null);
-    const [selectedIndex, setSelectedIndex]                 = useState(null);
-    const [dashboardLayout, setDashboardLayout]             = useState([]);
-    const [detailLayoutCol, setDetailLayoutCol]             = useState(null);
-    const [isUpdateLayoutVisible, setIsUpdateLayoutVisible] = useState(false);
-    const [selectedDataSource, setSelectedDataSource]       = useState(null);
-    const [chartSource, setChartSource]                     = useState(null)
+    const ref                                                   = useRef();
 
-    const {getRoleByMenuStatus}                             = Helper;
+    const [modalShow,setModalShow]                              = useState(false);
+    const [chartSource, setChartSource]                         = useState(null)
+    const [detailLayout, setDetailLayout]                       = useState(null);
+    const [selectedIndex, setSelectedIndex]                     = useState(null);
+    const [dashboardLayout, setDashboardLayout]                 = useState([]);
+    const [detailLayoutCol, setDetailLayoutCol]                 = useState(null);
+    const [isUpdateLayoutVisible, setIsUpdateLayoutVisible]     = useState(false);
+    const [selectedDataSource, setSelectedDataSource]           = useState(null);
+
+    const {getRoleByMenuStatus}                                 = Helper;
 
     const getDashboardLayout = () => {
         
@@ -276,17 +278,20 @@ const DashboardComponent = (props) => {
                     roleAdd         = {getRoleByMenuStatus('Dashboard', 'add')}
                     roleLink        = {getRoleByMenuStatus('Dashboard', 'export')}
                     roleExport      = {getRoleByMenuStatus('Dashboard', 'link')}
+
+                    exportToJpg     = {exportToJpg}
+                    exportToPng     = {exportToPng}
+                    exportToPdf     = {exportToPdf}
                 />
                 
                 {
                     getRoleByMenuStatus('Dashboard', 'List') ? 
                         <BodyDashboardComponent 
+                            chartRef        = {ref}     
                             rows            = {dashboardLayout}
                             handleDelete    = {handleDelete}
                             handleUpdate    = {handleUpdate}
-                            exportToJpg     = {exportToJpg}
-                            exportToPng     = {exportToPng}
-                            exportToPdf     = {exportToPdf}
+
                             printToPdf      = {printToPdf}
                         />
                     :
