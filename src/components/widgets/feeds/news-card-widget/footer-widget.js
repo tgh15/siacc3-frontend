@@ -216,10 +216,10 @@ export const WidgetCardNewsBottom = (props)=>{
                                                 viewListCombine != null  && viewListCombine.sort((a,b) => {return a.level - b.level}).map((data, index ) => (
                                                     index < 5 ?
                                                         <Row className="px-1 pb-1">
-                                                            <Col md={3} className="text-center">
-                                                                <Avatar src={data.photo} onError={fallbackImage_}/>
-                                                            </Col>
-                                                            <Col md={9} className="d-flex align-items-center">
+                                                            <Col md={4} className="text-center">
+                                                                <Avatar img={data.photo} onError={fallbackImage_}/>
+                                                            </Col> 
+                                                            <Col md={8} className="d-flex align-items-center">
                                                                 {data.name}
                                                             </Col>
                                                         </Row>
