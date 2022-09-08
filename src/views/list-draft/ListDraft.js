@@ -101,23 +101,6 @@ const ListDraft = (props) => {
                                             placeholder = "Cari Draft" 
                                         />
                                     </div>
-                                    {/* { 
-                                        props.AvaiableShareAll ? 
-                                            <Share 
-                                                size  = {20}
-                                                style = {{ cursor: 'pointer' }}
-                                            /> 
-                                        : null 
-                                    }
-
-                                    <div className="d-flex ml-3">
-                                        <Input 
-                                            type     = "checkbox" 
-                                            style    = {{ cursor: 'pointer' }}
-                                            onChange = {() => props.setAvaiableShareAll(!props.AvaiableShareAll)}
-                                        />
-                                        <p>Select</p>
-                                    </div> */}
                                 </div>
                             </div>
 
@@ -298,43 +281,6 @@ const ListDraft = (props) => {
                         </CardBody>
                     </Card>
                 </Col>
-                {/* <Col 
-                    md = '4' 
-                    sm = '12'
-                >
-                    <div style={{ position: 'fixed' }}>
-                        <Card>
-                            <CardHeader style={{ padding: '21px 0px 0px 21px' }}>
-                                <h5 style={{ fontWeight: 'bold' }}>Rencent Update</h5>
-                            </CardHeader><hr/>
-                            <CardBody style={{ paddingTop: '0px' }}>
-                                <Card style={{ border: '1px solid #d9dbe9' }}>
-                                    <CardBody>
-                                        header
-                                        <h6 style={{ fontWeight: 'bold' }}>
-                                            Seruan Aksi Dengan Tema Mencari Keadilan Bagi Masyarakat Jogjakarta
-                                        </h6>
-
-                                        content image
-                                        <div style={{ background: '#606061', textAlign: 'center', borderRadius:'10px', padding: '30px', marginBottom: '10px', marginTop: '10px' }}>
-                                            <img 
-                                                alt         = "logo" 
-                                                src         = {defaultPhoto}
-                                                style       = {{ width: '230px', objectFit:'cover' }}
-                                                className   = 'img-fluid' 
-                                            />
-                                        </div>
-
-                                        content text
-                                        <p className="text-justify m-0">
-                                            Rabu 1 Desember 2021
-                                        </p>
-                                    </CardBody>
-                                </Card>
-                            </CardBody>
-                        </Card>
-                    </div>
-                </Col> */}
             </Row>
         </Fragment>
     );

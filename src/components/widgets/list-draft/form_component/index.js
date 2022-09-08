@@ -136,7 +136,6 @@ export const EditDraftComponent = ({getDraftAPI, data, closeModal})=>{
     const [isCompleted, setIsCompleted]           = useState(false);
     const [deleteDraft, setDeleteDraft]           = useState([]);
     const [previewForm, setPreviewForm]           = useState(null);
-    const [draftLoading, setDraftLoading]         = useState(false);
     const [draftAttachments, setDraftAttachments] = useState(null);
 
     const {attachments,setAttachments}            = useContext(BerandaFileContext)
@@ -170,6 +169,7 @@ export const EditDraftComponent = ({getDraftAPI, data, closeModal})=>{
         formData.latitude       = data.latitude
         formData.longitude      = data.longitude
         formData.location_name  = data.location_name
+
         if(selected === 'draft'){
             formData.id         = data.id
             formData.uuid       = localStorage.getItem('uuid');
@@ -180,8 +180,8 @@ export const EditDraftComponent = ({getDraftAPI, data, closeModal})=>{
             formData.category   = formData.category.map((data) => ((parseInt(data.value))))
         }
 
-        setIsCompleted(true);
         if(selected === 'agent_report'){
+            setIsCompleted(true);
             feedsAgentReportAPI.createAgentReport({...formData}).then(
                 res => {
                     if( res.data != null ){
@@ -390,29 +390,40 @@ export const EditDraftComponent = ({getDraftAPI, data, closeModal})=>{
                 show    = {previewForm} 
                 title   = "Preview Berita"
                 size    = "lg" 
-                setShow = {(par) => setPreviewForm(par)}
+                setShow = {(par) => {setPreviewForm(par); setIsCompleted(false)}}
                 footer  = {
                     <>
                         <Button 
                             size        = "md" 
                             color       = "primary"
                             className   = "mr-1"
-                            onClick     = {() => setPreviewForm(false)}
+                            onClick     = {() => {setPreviewForm(false); setIsCompleted(false)}}
                         >
-                            {/* <Edit2 size={14}/>&nbsp; */}
                             Batal
-                        </Button>   
-                        <Button 
-                            size        = "md" 
-                            type        = "submit"
-                            color       = "primary"
-                            form        = 'form_draft_news'
-                            onClick     = {() => setSelected('agent_report')}
-                            className   = "ml-1" 
-                        >
-                            {/* <Send size={14}/>&nbsp; */}
-                            Kirim
-                        </Button>  
+                        </Button>
+                        {
+                            !isCompleted ? 
+                                <Button
+                                    size        = "md" 
+                                    type        = "submit"
+                                    color       = "primary"
+                                    form        = 'form_draft_news'
+                                    onClick     = {() => setSelected('agent_report')}
+                                    className   = "ml-1" 
+                                >
+                                    Kirim
+                                </Button> 
+                            :
+                                <Button 
+                                    size        = "sm" 
+                                    color       = "primary"
+
+                                    disabled    = {true} 
+                                >
+                                    <Spinner/>
+                                </Button>
+                        }
+                         
                     </>
                 }
             >
@@ -421,6 +432,7 @@ export const EditDraftComponent = ({getDraftAPI, data, closeModal})=>{
                     video               = {processAttachments("Video").concat(processAttachmentsOff("Video"))}
                     audio               = {processAttachments("Audio").concat(processAttachmentsOff("Audio"))}
                     images              = {processAttachments("Image").concat(processAttachmentsOff("Image"))}
+                    loading             = {isCompleted}
                     dataNews            = {getValues()}
                     location            = {data.location_name}
                     attachments         = {attachments}
@@ -789,33 +801,19 @@ export const EditDraftComponent = ({getDraftAPI, data, closeModal})=>{
                         className   = "w-50 mr-1"
                         onClick     = {() => setSelected('draft')}
                     >
-                        {/* <Edit2 size={14}/>&nbsp; */}
                         Simpan Draft
                     </Button>
-                    {                
-                        !isCompleted ? 
-                            <Button 
-                                size        = "md" 
-                                type        = "submit"
-                                color       = "primary"
-                                value       = "agent_report"
-                                onClick     = {() => setSelected('preview')}
-                                className   = "w-50 ml-1" 
-                            >
-                                {/* <Send size={14}/>&nbsp; */}
-                                Preview
-                            </Button>
-                        :
-                            <Button 
-                                size        = "sm" 
-                                color       = "primary"
-                                // onClick     = {()=>{sendDataHandler()}} 
-                                // className   = "btn-block"
-                                disabled    = {true} 
-                            >
-                                <Spinner/>
-                            </Button>
-                    }           
+
+                    <Button 
+                        size        = "md" 
+                        type        = "submit"
+                        color       = "primary"
+                        value       = "agent_report"
+                        onClick     = {() => setSelected('preview')}
+                        className   = "w-50 ml-1" 
+                    >
+                        Preview
+                    </Button>
                     
                 </FormGroup>
             </Form>

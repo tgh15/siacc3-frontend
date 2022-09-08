@@ -127,14 +127,14 @@ export const ApprovedNewsWidget = (props) => {
                 {
                     "method" in props ? 
                         <Fragment>
-                            <p className="text-justify">
+                            <p className="text-justify mt-1">
                                 {agent_report.when_}, telah terjadi {agent_report.what}, 
                                 bertempat di {agent_report.where} {agent_report.who}. 
                                 Kejadian ini terjadi karena {agent_report.why}, {agent_report.how}
                             </p>
                         </Fragment>
                     : 
-                        <p className="text-justify">
+                        <p className="text-justify mt-1">
                             {teks}
                         </p>
                 }
