@@ -15,66 +15,20 @@
 include:
   - project: 'microservice-repos/ci-template'
     ref: main
-    file: '/job-build/default.yml'
-  - project: 'microservice-repos/ci-template'
-    ref: main
-    file: '/template-siacc.yml'
-
-stages:
-  - build
-  - deliver
-
-build:
-  only:
-    - main
-    - beta
-  tags:
-    - udev
-    - shell
-  stage: build
-  before_script:
-    - echo "$CI_REGISTRY_PASSWORD" | docker login $CI_REGISTRY -u $CI_REGISTRY_USER --password-stdin;
-  # script:
-  #   -
+    file: '/template-siacc2.yml'
 
 deliver:
-  only:
-    - main
-    - beta
-  stage: deliver
   variables:
-    DEV_SERVER: "siacc-dev"
     DEV_TARGET_NAME: "siaccred_ui"
-    # DEV_NAMESPACE: "siacc-v2"
     ORCESTRATORS_DEV: "docker-compose"
-    BETA_SERVER: "cp-siacc-beta"
-    BETA_TARGET_NAME: "siaccred_ui"
-    BETA_NAMESPACE: "siacc-v2"
-    ORCESTRATORS_BETA: "kubernetes"
-  before_script:
-    - echo "before script"
-  # script:
-  #   -
-  after_script:
-    - echo "after script"
+    DEV_TARGET_NAME: "siaccred_ui"
+    ORCESTRATORS_BETA: "docker-compose"
 
 push-to-prod:
-  only:
-    - prod
-  tags:
-    - udev
-    - shell
-  stage: deliver
   variables:
     WORKDIR: "SIACC"
     RLI_REPO: "frontend-siacc"
     PROD_REPO: "5a1d82cc6821588af2f0fa110bf71946"
     BRANCH: "prod"
     TARGET_BRANCH: "main"
-  before_script:
-    - git config --global user.name "a3 infiniti"
-    - git config --global user.email "dev.a3infiniti@outlook.com"
-  # script:
-  #   -
-  after_script:
-    - echo "after script"
+
