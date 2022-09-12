@@ -17,16 +17,14 @@ import Helper                       from '../../../../helpers';
 
 export const NewsPreview = (props) => {
     const { 
-        location,  
-        feedsTitle, 
-        images,
         video, 
         audio,
-        attachmentFiles,
         links, 
-        dataNews, 
-        setSelected,
-        setPreviewForm
+        images,
+        loading,
+        location,  
+        dataNews,
+        attachmentFiles,
     } = props;
 
     return (

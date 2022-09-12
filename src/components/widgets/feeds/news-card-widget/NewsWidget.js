@@ -153,7 +153,6 @@ export const NewsWidget = (props) => {
         comment: "",
     }) ;
 
-
     const ref           = useRef();
     const select        = useSelector(state => {return state});
     const dispatcher    = useDispatch();
@@ -1077,9 +1076,9 @@ export const NewsWidget = (props) => {
                                         {
                                             parse(
                                                 `
-                                                ${dataNews.when_}, telah terjadi ${dataNews.what}, 
-                                                bertempat di ${dataNews.where} ${dataNews.who}. 
-                                                Kejadian ini terjadi karena ${dataNews.why}, ${dataNews.how}
+                                                    ${dataNews.when_}, telah terjadi ${dataNews.what}, 
+                                                    bertempat di ${dataNews.where} ${dataNews.who}. 
+                                                    Kejadian ini terjadi karena ${dataNews.why}, ${dataNews.how}
                                                 `
                                             )
                                         }
@@ -1090,7 +1089,9 @@ export const NewsWidget = (props) => {
                                 </Fragment>
                             :
                                 "detail" in props ?
-                                    parse(bodyText)
+                                    <p className='text-justify mt-1'>
+                                        {parse(bodyText)}
+                                    </p>
                                 :
                                     <p className="text-justify mt-1 mb-2">
                                         {
