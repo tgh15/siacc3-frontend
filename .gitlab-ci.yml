@@ -31,4 +31,3 @@ push-to-prod:
     PROD_REPO: "5a1d82cc6821588af2f0fa110bf71946"
     BRANCH: "prod"
     TARGET_BRANCH: "main"
-
