@@ -176,7 +176,7 @@ export const ApprovedNewsWidget = (props) => {
                         statePosition       = {statePosition}
                     />
                     { 
-                        localStorage.getItem('role') == 'Verifikator Pusat' ?
+                        localStorage.getItem('role') == 'Verifikator Pusat' || localStorage.getItem('role') == 'Admin' ?
                             agent_report.status == 1 ? 
                                 <UncontrolledButtonDropdown direction='left'>
                                     <Button 
@@ -223,7 +223,7 @@ export const ApprovedNewsWidget = (props) => {
                     }
 
                     { 
-                        localStorage.getItem('role') == 'Verifikator Daerah' ?
+                        localStorage.getItem('role') == 'Verifikator Daerah' || localStorage.getItem('role') == 'Admin Daerah'?
                             agent_report.status == 0 ? 
                                 <UncontrolledButtonDropdown direction='left'>
                                     <Button 
