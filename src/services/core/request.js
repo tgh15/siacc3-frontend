@@ -42,6 +42,7 @@ export const Get = (path, params) => {
         ).catch(
             err => {
                 if(err.response){
+                    redirectlogout(err)
                     reject(err.response);
                 }else if(err.request) {
                     reject(err.request);
