@@ -1,18 +1,16 @@
 // ** React Imports
-import { Suspense, useContext, lazy, useEffect, useState, useMemo } from 'react'
+import { Suspense, lazy, useEffect, useState } from 'react'
 
 // ** Utils
 import { isUserLoggedIn } from '@utils'
 import { useLayout } from '../components/utility/hooks/useLayout'
-// import { AbilityContext } from '../components/utility/context/Can'
 import { useRouterTransition } from '../components/utility/hooks/useRouterTransition'
 
 // ** Custom Components
-// import Spinner from '@components/spinner/Loading-spinner' // Uncomment if your require content fallback
 import LayoutWrapper from '@layouts/components/layout-wrapper'
 
 // ** Router Components
-import { BrowserRouter as AppRouter, Route, Switch, Redirect, useHistory } from 'react-router-dom'
+import { BrowserRouter as AppRouter, Route, Switch, Redirect } from 'react-router-dom'
 
 // ** Routes & Default Routes
 import { DefaultRoute, Routes, HelpdeskRoute } from './routes/index'
@@ -21,8 +19,9 @@ import { DefaultRoute, Routes, HelpdeskRoute } from './routes/index'
 import BlankLayout from '@layouts/BlankLayout'
 import VerticalLayout from '@src/layouts/VerticalLayout'
 import HorizontalLayout from '@src/layouts/HorizontalLayout'
+
 import { initializeApp } from 'firebase/app'
-import { getMessaging, getToken, onMessage } from 'firebase/messaging'
+import { getMessaging, getToken } from 'firebase/messaging'
 
 const Router = () => {
 
@@ -30,9 +29,6 @@ const Router = () => {
   const [layout, setLayout] = useLayout()
   const [transition, setTransition] = useRouterTransition()
   const [fcmToken, setFcmToken] = useState(null)
-
-  // ** ACL Ability Context
-  // const ability = useContext(AbilityContext)
 
   // ** Default Layout
   const DefaultLayout = layout === 'horizontal' ? 'HorizontalLayout' : 'VerticalLayout'
@@ -45,6 +41,7 @@ const Router = () => {
 
   // ** Return Filtered Array of Routes & Paths
   const LayoutRoutesAndPaths = layout => {
+
     const LayoutRoutes  = []
     const LayoutPaths   = []
 
@@ -102,16 +99,15 @@ const Router = () => {
        */
 
       return <Redirect to='/login' />
+
     } else if (route.meta && route.meta.authRoute && isUserLoggedIn()) {
+
       // ** If route has meta and authRole and user is Logged in then redirect user to home page (DefaultRoute)
       if(localStorage.getItem('role') === 'Helpdesk'){
         return <Redirect to='/helpdesk'/>
       }else{
         return <Redirect to='/beranda'/>
       }
-      // } else if (isUserLoggedIn() && !ability.can(action || 'read', resource)) {
-      //   // ** If user is Logged in and doesn't have ability to visit the page redirect the user to Not Authorized
-      //   return <Redirect to='/misc/not-authorized' />
     }
     else {
       // ** If none of the above render component
@@ -190,9 +186,12 @@ const Router = () => {
                               : {})}
                           /*eslint-enable */
                           >
-                            {/* <route.component {...props} /> */}
-                            <FinalRoute route={route} messaging={messaging}
-                              fcmToken={fcmToken}  {...props} />
+                            <FinalRoute 
+                              route={route} 
+                              fcmToken={fcmToken}  
+                              messaging={messaging}
+                              {...props} 
+                            />
                           </LayoutWrapper>
                         </Suspense>
                       )
@@ -239,18 +238,11 @@ const Router = () => {
       });
   }, [])
   
-  let history = useHistory();
   return (
     <AppRouter basename={process.env.REACT_APP_BASENAME}>
+
       <Switch>
-        {/* If user is logged in Redirect user to DefaultRoute else to login */}
-        {/* <Route
-          exact
-          path='/'
-          render={() => {
-            return isUserLoggedIn() ? <Redirect to={DefaultRoute} /> : <Redirect to='/login' />
-          }}
-        /> */}
+
         {
           localStorage.getItem('role') ?
             <Route
@@ -274,13 +266,15 @@ const Router = () => {
         <Route
           exact
           path='/not-authorized'
-          render={props => (
+          render={() => (
             <Layouts.BlankLayout>
               <NotAuthorized />
             </Layouts.BlankLayout>
           )}
         />
+
         {ResolveRoutes()}
+
         {/* NotFound Error page */}
         <Route path='*' component={Error} />
 

@@ -10,6 +10,7 @@ import CustomToast                              from "../../../components/widget
 
 const ConfirmOtp = ({ email, username, password, fcmToken }) => {
 
+    //function to change email letter to * symbol
     const showEmail = email.replace(/(.{2})(.*)(?=@)/,
     function(gp1, gp2, gp3) { 
       for(let i = 0; i < gp3.length; i++) { 
@@ -50,10 +51,12 @@ const ConfirmOtp = ({ email, username, password, fcmToken }) => {
             otp: data.otp,
             onSuccess: (res) => {
                 setLoading(false);
+                
                 let userData = {
                     "name"  : res.data.biodata.name,
                     "photo" : res.data.biodata.photo,
                 }
+
                 localStorage.setItem("userData", JSON.stringify(userData));
                 localStorage.setItem("uuid", res.data.biodata.uuid);
                 localStorage.setItem("uuid_user", res.data.biodata.uuid_user);

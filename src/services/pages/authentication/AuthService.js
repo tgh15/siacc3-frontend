@@ -1,4 +1,4 @@
-import { authURL } from "."
+import { authURL }      from "."
 import FetchServices from "../../core/Axios"
 import { Post, Put } from "../../core/request"
 
@@ -44,7 +44,6 @@ const logout = ({ token, onSuccess, onFail }) => {
             }).catch((err) => {
                 onFail(err.data.message)
             })
-        
     }
 }
 

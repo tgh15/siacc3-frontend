@@ -6,7 +6,7 @@ const BerandaFileProvider = ({children})=>{
 
     const contextProviderMemo = useMemo(()=>({attachments,setAttachments}),[attachments,setAttachments])
 
-    return <BerandaFileContext.Provider value={contextProviderMemo} >{children}</BerandaFileContext.Provider>
+    return <BerandaFileContext.Provider value={contextProviderMemo}>{children}</BerandaFileContext.Provider>
 }
 
 export {BerandaFileContext,BerandaFileProvider}
