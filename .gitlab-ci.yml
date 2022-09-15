@@ -13,21 +13,34 @@
 #   ----------------------------------------------------------------------------------------
 
 include:
-  - project: 'microservice-repos/ci-template'
+  - project: 'rumahlogic/public-ci-templates'
     ref: main
-    file: '/template-siacc2.yml'
+    file: 'template.yml'
 
 deliver:
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main" || $CI_COMMIT_BRANCH == "beta"
+      when: always
+    - when: never
   variables:
+    DEV_SERVER: "siacc-dev"
+    BETA_SERVER: "cp-siacc-beta"
     DEV_TARGET_NAME: "siaccred_ui"
     ORCESTRATORS_DEV: "docker-compose"
-    DEV_TARGET_NAME: "siaccred_ui"
+    BETA_TARGET_NAME: "frontend_siacc"
     ORCESTRATORS_BETA: "docker-compose"
 
 push-to-prod:
+  rules:
+    - if: $CI_COMMIT_BRANCH == "prod"
+      when: always
+    - when: never
   variables:
     WORKDIR: "SIACC"
-    RLI_REPO: "frontend-siacc"
-    PROD_REPO: "5a1d82cc6821588af2f0fa110bf71946"
+    DEVELOPMENT_REPO: "git@gitlab.com:microservice-repos/siacc/frontend-siacc"
+    PRODUCTION_REPO: "git@gitlab.com-prod:a3infiniti-microservices/5a1d82cc6821588af2f0fa110bf71946"
     BRANCH: "prod"
     TARGET_BRANCH: "main"
+  before_script:
+    - git config --global user.name "a3 infiniti"
+    - git config --global user.email "dev.a3infiniti@outlook.com"
