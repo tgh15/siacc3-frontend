@@ -22,7 +22,13 @@ deliver:
     - if: $CI_COMMIT_BRANCH == "main" || $CI_COMMIT_BRANCH == "beta"
       when: always
     - when: never
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main" || $CI_COMMIT_BRANCH == "beta"
+      when: always
+    - when: never
   variables:
+    DEV_SERVER: "siacc-dev"
+    BETA_SERVER: "cp-siacc-beta"
     DEV_SERVER: "siacc-dev"
     BETA_SERVER: "cp-siacc-beta"
     DEV_TARGET_NAME: "siaccred_ui"
@@ -31,6 +37,10 @@ deliver:
     ORCESTRATORS_BETA: "docker-compose"
 
 push-to-prod:
+  rules:
+    - if: $CI_COMMIT_BRANCH == "prod"
+      when: always
+    - when: never
   rules:
     - if: $CI_COMMIT_BRANCH == "prod"
       when: always

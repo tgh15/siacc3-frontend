@@ -1,37 +1,61 @@
-import { Link } from 'react-router-dom'
-import InputPasswordToggle from '../../../components/widgets/input-password-toggle'
-import { Form, FormGroup, Label, Input, Button, Card, CardBody, FormFeedback, Spinner } from 'reactstrap'
+import { useRef, useState }             from 'react'
+import { Link }                         from 'react-router-dom'
+import { 
+        Card, 
+        Form, 
+        Label, 
+        Input, 
+        Button, 
+        CardBody, 
+        FormGroup, 
+    }                                   from 'reactstrap'
+
+import { useForm }                      from 'react-hook-form'
+import { yupResolver }                  from '@hookform/resolvers/yup'
+import * as yup                         from 'yup'
+
+//Assets
+import Logo                             from '@src/assets/images/logo/logo_dark.svg'
+
+//Service
+import AuthService                      from '../../../services/pages/authentication/AuthService'
+
+//Custom Component
+import ButtonHelp                       from './ButtonHelp'
+import ConfirmOtp                       from './ConfirmOtp'
+import CustomToast                      from '@src/components/widgets/custom-toast'
+import ImageRounded                     from '@src/components/widgets/image-rounded'
+import SubmitButton                     from '@src/components/widgets/submit-button'
+import { ModalBase }                    from '@src/components/widgets/modals-base'
+import InputPasswordToggle              from '@src/components/widgets/input-password-toggle'
+
+//Utils
+import { secondsToMs }                  from '@utils'
+
+//Scss
 import '../../../components/scss/base/pages/page-auth.scss'
-import { useRef, useState } from 'react'
-import { ModalBase } from '../../../components/widgets/modals-base'
-import ConfirmOtp from './ConfirmOtp'
-import Logo from '@src/assets/images/logo/logo_dark.svg'
-import ImageRounded from '@src/components/widgets/image-rounded'
-import { useForm } from 'react-hook-form'
-import { yupResolver } from '@hookform/resolvers/yup'
-import * as yup from 'yup'
-import SubmitButton from '../../../components/widgets/submit-button'
-import CustomToast from '../../../components/widgets/custom-toast'
-import AuthService from '../../../services/pages/authentication/AuthService'
-import { useHistory } from "react-router-dom";
 import "./login.scss";
-import ButtonHelp from './ButtonHelp'
 
 const Login = props => {
 
-    let fcmToken = props.fcmToken
-    const history = useHistory()
-    const [confirmOtp, setConfirmOtp] = useState(false)
-    const [isLoading, setIsLoading] = useState(false)
-    const [email, setEmail] = useState(false)
-    const [username, setUsername] = useState(false)
-    const [password, setPassword] = useState(false)
-    const [showPopup, setShowPopup] = useState(false)
-    const [isPending, setPending] = useState(false)
+    let {fcmToken}                      = props
+
+    const [email, setEmail]             = useState(false)
+    const [username, setUsername]       = useState(false)
+    const [password, setPassword]       = useState(false)
+    const [isPending, setPending]       = useState(false)
+    const [isLoading, setIsLoading]     = useState(false)
+    const [confirmOtp, setConfirmOtp]   = useState(false)
     const [pendingTime, setPendingTime] = useState(60);
 
+    let intervalRef                     = useRef()
 
-    let intervalRef = useRef()
+    //schema for form validation
+    const schema                        = yup.object().shape({
+        username: yup.string().required('Kolom nama pengguna tidak boleh kosong.'),
+        password: yup.string().required('Kolom kata sandi tidak boleh kosong.'),
+    }).required();
+
     const decreasePendingTime = () => setPendingTime((prev) => {
         if (prev <= 0) {
             setPendingTime(60);
@@ -41,11 +65,6 @@ const Login = props => {
         return prev - 1
     });
 
-    const schema = yup.object().shape({
-        username: yup.string().required(),
-        password: yup.string().required(),
-    }).required();
-
     const { register, errors, handleSubmit } = useForm({ mode: "onChange", resolver: yupResolver(schema) })
 
     const onSubmit = data => {
@@ -53,6 +72,7 @@ const Login = props => {
         setPassword(data.password);
 
         let formData;
+        
         if (fcmToken) {
             formData = {
                 username: data.username,
@@ -67,20 +87,24 @@ const Login = props => {
         }
 
         setIsLoading(true);
+        
         AuthService.post({
             data: formData,
             onSuccess: (res) => {
-                console.log(res, 'err');
+
                 setIsLoading(false);
+
                 if (res.message === "otp") {
                     setEmail(res.data.email)
                     setPassword(data.password)
                     setConfirmOtp(true)
                 } else {
+
                     let userData = {
-                        "name": res.data.biodata.name,
-                        "photo": res.data.biodata.photo,
+                        "name"  : res.data.biodata.name,
+                        "photo" : res.data.biodata.photo,
                     }
+
                     localStorage.setItem("userData", JSON.stringify(userData));
                     localStorage.setItem("uuid", res.data.biodata.uuid);
                     localStorage.setItem("uuid_user", res.data.biodata.uuid_user);
@@ -102,6 +126,7 @@ const Login = props => {
                     }
                 }
             },
+
             onFail: (err) => {
                 setIsLoading(false);
                 console.log(err, 'disini')
@@ -116,67 +141,95 @@ const Login = props => {
         })
     }
 
-    function secondsToMs(d) {
-        d = Number(d);
-        var m = Math.floor(d % 3600 / 60);
-        var s = Math.floor(d % 3600 % 60);
-
-        var mDisplay = m > 0 ? m + (m == 1 ? " menit" : " menit") : "";
-        var sDisplay = s > 0 ? s + (s == 1 ? " detik" : " detik") : "";
-        return mDisplay + sDisplay;
-    }
-
     return (
         <div className='auth-wrapper auth-v1 px-2'>
             <div className='auth-inner py-2'>
                 <Card className='mb-0'>
                     <CardBody>
-                        <ModalBase show={confirmOtp} center={true} setShow={(par) => {
-                            setConfirmOtp(par)
-                        }} title={"Otentikasi Akun Data"}>
+                        <ModalBase 
+                            show    = {confirmOtp} 
+                            title   = {"Otentikasi Akun Data"}
+                            center  = {true} 
+                            setShow = {(par) => { setConfirmOtp(par)}} 
+                        >
                             <div className="container-fluid">
-                                <ConfirmOtp email={email} username={username} password={password} fcmToken={fcmToken} />
+                                <ConfirmOtp 
+                                    email    = {email} 
+                                    username = {username} 
+                                    password = {password} 
+                                    fcmToken = {fcmToken} 
+                                />
                             </div>
                         </ModalBase>
-                        <Link className='brand-logo' to='/' onClick={e => e.preventDefault()}>
-                            <ImageRounded src={Logo} width={50} />
+
+                        <Link 
+                            to          = '/' 
+                            onClick     = {e => e.preventDefault()}
+                            className   = 'brand-logo' 
+                        >
+                            <ImageRounded 
+                                src     = {Logo} 
+                                width   = {50} 
+                            />
                             <h1 className='brand-text text-primary ml-1 mt-1'>SIACC</h1>
                         </Link>
 
-                        {isPending ? <p className='text-center text-danger' style={{ fontWeight: "bolder" }}>
-                            Password Salah Sebanyak 3x! <br />
-                            Silahkan Tunggu {secondsToMs(pendingTime)} <br />
-                            Untuk Dapat Mencoba login kembali
-                        </p> : null}
+                        {
+                            isPending ? 
+                                <p 
+                                    style       = {{ fontWeight: "bolder" }}
+                                    className   = 'text-center text-danger' 
+                                >
+                                    Password Salah Sebanyak 3x! <br />
+                                    Silahkan Tunggu {secondsToMs(pendingTime)} <br />
+                                    Untuk Dapat Mencoba login kembali
+                                </p> 
+                            : 
+                                null
+                        }
 
-                        <Form className='auth-login-form mt-2' onSubmit={handleSubmit(onSubmit)}>
+                        <Form 
+                            onSubmit    = {handleSubmit(onSubmit)}
+                            className   = 'auth-login-form mt-2' 
+                        >
                             <FormGroup>
-                                <Label className='form-label' for='login-username'>
+                                <Label 
+                                    for         = 'login-username'
+                                    className   = 'form-label' 
+                                >
                                     Nama Pengguna
                                 </Label>
+
                                 <Input
-                                    type='text'
-                                    id='username'
-                                    placeholder='Nama Pengguna'
-                                    name="username"
-                                    innerRef={register({ required: true })}
-                                    invalid={(errors.username) ? true : false}
-                                    autoFocus />
-                                {errors && errors.username && <FormFeedback>{errors.username.message}</FormFeedback>}
+                                    id          = 'username'
+                                    type        = 'text'
+                                    name        = "username"
+                                    invalid     = {(errors.username) ? true : false}
+                                    innerRef    = {register({ required: true })}
+                                    autoFocus 
+                                    placeholder = 'Nama Pengguna'
+                                />
+
+                                {errors && errors.username && <Label className="text-danger">{errors.username.message}</Label>}
+
                             </FormGroup>
                             <FormGroup>
                                 <div className='d-flex justify-content-between'>
-                                    <Label className='form-label' for='login-password'>
-                                        Password
+                                    <Label 
+                                        for         = 'login-password'
+                                        className   = 'form-label' 
+                                    >
+                                        Kata Sandi
                                     </Label>
                                 </div>
                                 <InputPasswordToggle
-                                    name="password"
-                                    innerRef={register({ required: true })}
-                                    invalid={(errors.password) ? true : false}
-                                    className='input-group-merge'
-                                    id='login-password' />
-                                {errors && errors.password && <FormFeedback>{errors.password.message}</FormFeedback>}
+                                    id          = 'login-password' 
+                                    name        = "password"
+                                    invalid     = {(errors.password) ? true : false}
+                                    innerRef    = {register({ required: true })}
+                                    className   = 'input-group-merge'
+                                />
+                                {errors && errors.password && <Label className="text-danger">{errors.password.message}</Label>}
                             </FormGroup>
                             <div className='d-flex justify-content-between'>
                                 <FormGroup>
@@ -187,29 +240,37 @@ const Login = props => {
                                 <FormGroup>
                                     <Link to='/login-qrcode'>
                                         <div className="d-flex wrap-qrcode" >
-                                            <div class="icon colored"></div>
+                                            <div className="icon colored"></div>
                                             <p className="mb-2">Login By QR Code</p>
                                         </div>
                                     </Link>
                                 </FormGroup>
                             </div>
-                            {!isPending ?
-                                <SubmitButton size="sm" color="primary" isBlock={true} isLoading={isLoading}>
-                                    Masuk
-                                </SubmitButton>
+                            {
+                                !isPending ?
+                                    <SubmitButton 
+                                        size        = "sm" 
+                                        color       = "primary" 
+                                        isBlock     = {true} 
+                                        isLoading   = {isLoading}
+                                    >
+                                        Masuk
+                                    </SubmitButton>
                                 :
-                                <Button.Ripple color="primary" disabled={true} block={true} >
-                                    Masuk
-                                </Button.Ripple>
+                                    <Button.Ripple 
+                                        color       = "primary" 
+                                        block       = {true} 
+                                        disabled    = {true} 
+                                    >
+                                        Masuk
+                                    </Button.Ripple>
                             }
                         </Form>
                     </CardBody>
                 </Card>
             </div>
 
-            <ButtonHelp
-                onClick={(par) => setShowPopup(par)} 
-            />
+            <ButtonHelp/>
 
         </div>
     )
