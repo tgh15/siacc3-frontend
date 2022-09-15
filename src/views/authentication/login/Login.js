@@ -8,7 +8,6 @@ import {
         Button, 
         CardBody, 
         FormGroup, 
-        FormFeedback 
     }                                   from 'reactstrap'
 
 import { useForm }                      from 'react-hook-form'
@@ -88,6 +87,7 @@ const Login = props => {
         }
 
         setIsLoading(true);
+        
         AuthService.post({
             data: formData,
             onSuccess: (res) => {
