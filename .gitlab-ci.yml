@@ -44,3 +44,4 @@ push-to-prod:
   before_script:
     - git config --global user.name "a3 infiniti"
     - git config --global user.email "dev.a3infiniti@outlook.com"
+ 
