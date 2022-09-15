@@ -53,8 +53,8 @@ const Login = props => {
 
     //schema for form validation
     const schema                        = yup.object().shape({
-        username: yup.string().required(),
-        password: yup.string().required(),
+        username: yup.string().required('Kolom nama pengguna tidak boleh kosong.'),
+        password: yup.string().required('Kolom kata sandi tidak boleh kosong.'),
     }).required();
 
     const decreasePendingTime = () => setPendingTime((prev) => {
@@ -209,7 +209,8 @@ const Login = props => {
                                     autoFocus 
                                     placeholder = 'Nama Pengguna'
                                 />
-                                {errors && errors.username && <FormFeedback>{errors.username.message}</FormFeedback>}
+
+                                {errors && errors.username && <Label className="text-danger">{errors.username.message}</Label>}
 
                             </FormGroup>
                             <FormGroup>
@@ -218,7 +219,7 @@ const Login = props => {
                                         for         = 'login-password'
                                         className   = 'form-label' 
                                     >
-                                        Password
+                                        Kata Sandi
                                     </Label>
                                 </div>
                                 <InputPasswordToggle
@@ -226,10 +227,9 @@ const Login = props => {
                                     name        = "password"
                                     invalid     = {(errors.password) ? true : false}
                                     innerRef    = {register({ required: true })}
-                                    className   ='input-group-merge'
+                                    className   = 'input-group-merge'
                                 />
-                                {errors && errors.password && <FormFeedback>{errors.password.message}</FormFeedback>}
-                                
+                                {errors && errors.password && <Label className="text-danger">{errors.password.message}</Label>}
                             </FormGroup>
                             <div className='d-flex justify-content-between'>
                                 <FormGroup>
@@ -240,20 +240,30 @@ const Login = props => {
                                 <FormGroup>
                                     <Link to='/login-qrcode'>
                                         <div className="d-flex wrap-qrcode" >
-                                            <div class="icon colored"></div>
+                                            <div className="icon colored"></div>
                                             <p className="mb-2">Login By QR Code</p>
                                         </div>
                                     </Link>
                                 </FormGroup>
                             </div>
-                            {!isPending ?
-                                <SubmitButton size="sm" color="primary" isBlock={true} isLoading={isLoading}>
-                                    Masuk
-                                </SubmitButton>
+                            {
+                                !isPending ?
+                                    <SubmitButton 
+                                        size        = "sm" 
+                                        color       = "primary" 
+                                        isBlock     = {true} 
+                                        isLoading   = {isLoading}
+                                    >
+                                        Masuk
+                                    </SubmitButton>
                                 :
-                                <Button.Ripple color="primary" disabled={true} block={true} >
-                                    Masuk
-                                </Button.Ripple>
+                                    <Button.Ripple 
+                                        color       = "primary" 
+                                        block       = {true} 
+                                        disabled    = {true} 
+                                    >
+                                        Masuk
+                                    </Button.Ripple>
                             }
                         </Form>
                     </CardBody>
