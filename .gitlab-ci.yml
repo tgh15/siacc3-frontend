@@ -22,10 +22,6 @@ deliver:
     - if: $CI_COMMIT_BRANCH == "main" || $CI_COMMIT_BRANCH == "beta"
       when: always
     - when: never
-  rules:
-    - if: $CI_COMMIT_BRANCH == "main" || $CI_COMMIT_BRANCH == "beta"
-      when: always
-    - when: never
   variables:
     DEV_SERVER: "siacc-dev"
     BETA_SERVER: "cp-siacc-beta"
@@ -38,10 +34,6 @@ deliver:
   when: on_success
 
 push-to-prod:
-  rules:
-    - if: $CI_COMMIT_BRANCH == "prod"
-      when: always
-    - when: never
   rules:
     - if: $CI_COMMIT_BRANCH == "prod"
       when: always
