@@ -35,6 +35,7 @@ deliver:
     ORCESTRATORS_DEV: "docker-compose"
     BETA_TARGET_NAME: "frontend_siacc"
     ORCESTRATORS_BETA: "docker-compose"
+  when: on_success
 
 push-to-prod:
   rules:
