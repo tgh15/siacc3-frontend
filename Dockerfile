@@ -6,6 +6,7 @@ FROM node:14 as builder
 WORKDIR /app
 RUN yarn
 COPY . .
+RUN apt-get -y install build-essential nghttp2 libnghttp2-dev libssl-dev
 
 #delete package json
 RUN rm -rf /app/package-lock.json
