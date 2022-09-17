@@ -29,6 +29,7 @@ deliver:
     ORCESTRATORS_DEV: "docker-compose"
     BETA_TARGET_NAME: "frontend_siacc"
     ORCESTRATORS_BETA: "docker-compose"
+  when: on_success
 
 push-to-prod:
   rules:
@@ -44,4 +45,3 @@ push-to-prod:
   before_script:
     - git config --global user.name "a3 infiniti"
     - git config --global user.email "dev.a3infiniti@outlook.com"
- 
