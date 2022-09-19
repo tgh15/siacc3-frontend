@@ -36,6 +36,9 @@ import { secondsToMs }                  from '@utils'
 import '../../../components/scss/base/pages/page-auth.scss'
 import "./login.scss";
 
+import authAPI from '../../../services/pages/authentication/auth'
+
+
 const Login = props => {
 
     let {fcmToken}                      = props
@@ -68,6 +71,7 @@ const Login = props => {
     const { register, errors, handleSubmit } = useForm({ mode: "onChange", resolver: yupResolver(schema) })
 
     const onSubmit = data => {
+        console.log("ada", data)
         setUsername(data.username);
         setPassword(data.password);
 
@@ -87,58 +91,46 @@ const Login = props => {
         }
 
         setIsLoading(true);
-        
-        AuthService.post({
-            data: formData,
-            onSuccess: (res) => {
 
+        authAPI.loginUser(formData, fcmToken).then(
+            res => {
                 setIsLoading(false);
-
-                if (res.message === "otp") {
-                    setEmail(res.data.email)
-                    setPassword(data.password)
-                    setConfirmOtp(true)
-                } else {
-
-                    let userData = {
-                        "name"  : res.data.biodata.name,
-                        "photo" : res.data.biodata.photo,
-                    }
-
-                    localStorage.setItem("userData", JSON.stringify(userData));
-                    localStorage.setItem("uuid", res.data.biodata.uuid);
-                    localStorage.setItem("uuid_user", res.data.biodata.uuid_user);
-                    localStorage.setItem("role", res.data.biodata.user_group[0].name);
-                    localStorage.setItem("position_id", res.data.biodata.position_id);
-                    localStorage.setItem("workunit_id", res.data.biodata.workunit_id);
-                    localStorage.setItem("workunit", res.data.biodata.workunit);
-                    localStorage.setItem("menu", JSON.stringify(res.data.menu));
-
-                    if (!process.env.NODE_ENV || process.env.NODE_ENV === 'production') {
-                    } else {
-                        localStorage.setItem("token", res.data.token);
-                    }
-
-                    if (localStorage.getItem('role') === 'Helpdesk') {
-                        window.location.href = "/helpdesk/home";
-                    } else {
-                        window.location.href = "/beranda";
+                
+                if (res.is_error === false) {
+                    if (res.message === "otp") {
+                        setEmail(res.data.email);
+                        setPassword(data.password);
+                        setConfirmOtp(true);
+                    }else {
+                        localStorage.setItem("userData", JSON.stringify(res.data.biodata));
+                        localStorage.setItem("menu", JSON.stringify(res.data.menu));
+                        localStorage.setItem("username", res.data.username);
+    
+                        if (!process.env.NODE_ENV || process.env.NODE_ENV === 'production') {
+                        } else {
+                            localStorage.setItem("token", res.data.token);
+                        }
+    
+                        if (localStorage.getItem('role') === 'Helpdesk') {
+                            window.location.href = "/helpdesk/home";
+                        } else {
+                            window.location.href = "/beranda";
+                        }
                     }
                 }
-            },
-
-            onFail: (err) => {
+            }, err => {
                 setIsLoading(false);
-                console.log(err, 'disini')
+                console.log(err.code);
+
                 if (err == "pending for 1 minutes") {
-                    setPending(true)
+                    setPending(true);
                     intervalRef.current = setInterval(decreasePendingTime, 1000);
                 } else {
                     clearInterval(intervalRef.current);
-                    CustomToast("danger", err)
+                    CustomToast("danger", err);
                 }
             }
-        })
+        )
     }
 
     return (
