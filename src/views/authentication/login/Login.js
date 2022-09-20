@@ -53,7 +53,7 @@ const Login = props => {
     //schema for form validation
     const schema                        = yup.object().shape({
         username: yup.string().required('Kolom nama pengguna tidak boleh kosong.'),
-        password: yup.string().required('Kolom kata sandi tidak boleh kosong.'),
+        password: yup.string().required('Kolom kata tidak boleh kosong.'),
     }).required();
 
     const decreasePendingTime = () => setPendingTime((prev) => {
@@ -87,7 +87,7 @@ const Login = props => {
         }
 
         setIsLoading(true);
-        
+
         AuthService.post({
             data: formData,
             onSuccess: (res) => {
@@ -129,7 +129,6 @@ const Login = props => {
 
             onFail: (err) => {
                 setIsLoading(false);
-                console.log(err, 'disini')
                 if (err == "pending for 1 minutes") {
                     setPending(true)
                     intervalRef.current = setInterval(decreasePendingTime, 1000);
