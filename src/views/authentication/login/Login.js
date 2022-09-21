@@ -71,7 +71,7 @@ const Login = props => {
     const { register, errors, handleSubmit } = useForm({ mode: "onChange", resolver: yupResolver(schema) })
 
     const onSubmit = data => {
-        console.log("ada", data)
+        console.log("Ada", data);
         setUsername(data.username);
         setPassword(data.password);
 
@@ -92,16 +92,18 @@ const Login = props => {
 
         setIsLoading(true);
 
-        authAPI.loginUser(formData, fcmToken).then(
+        authAPI.loginUser(formData).then(
             res => {
                 setIsLoading(false);
+
+                console.log("res", res)
                 
                 if (res.is_error === false) {
-                    if (res.message === "otp") {
+                    if (res.code === "auth_login_get_otp") {
                         setEmail(res.data.email);
                         setPassword(data.password);
                         setConfirmOtp(true);
-                    }else {
+                    } else {
                         localStorage.setItem("userData", JSON.stringify(res.data.biodata));
                         localStorage.setItem("menu", JSON.stringify(res.data.menu));
                         localStorage.setItem("username", res.data.username);
@@ -122,13 +124,13 @@ const Login = props => {
                 setIsLoading(false);
                 console.log(err.code);
 
-                if (err == "pending for 1 minutes") {
-                    setPending(true);
-                    intervalRef.current = setInterval(decreasePendingTime, 1000);
-                } else {
-                    clearInterval(intervalRef.current);
-                    CustomToast("danger", err);
-                }
+                // if (err == "pending for 1 minutes") {
+                //     setPending(true);
+                //     intervalRef.current = setInterval(decreasePendingTime, 1000);
+                // } else {
+                //     clearInterval(intervalRef.current);
+                //     CustomToast("danger", err);
+                // }
             }
         )
     }
