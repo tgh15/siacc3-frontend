@@ -1,27 +1,27 @@
 import { 
     useRef, 
     Fragment, 
-    useEffect, 
     useState, 
-} from 'react';
-import { Col, Media, Row }  from 'reactstrap';
+    useEffect, 
+}                                       from 'react';
+import { Col, Media, Row }              from 'reactstrap';
 
-import Avatar               from '@components/avatar';
-import Skeleton             from 'react-loading-skeleton';
+import Avatar                           from '@components/avatar';
+import Skeleton                         from 'react-loading-skeleton';
 
 //Components
-import Helper               from '../../../helpers';
-import TourFilter           from './TourFilter';
-import headerTable          from './headerTable';
-import CustomTable          from '../../../components/widgets/custom-table';
-import CustomToast          from '../../../components/widgets/custom-toast';
-import SearchTable          from '../../../components/widgets/custom-table/SearchTable';
-import ButtonFilter         from '../../../components/widgets/custom-table/ButtonFilter';
-import { ModalBase }        from '../../../components/widgets/modals-base';
-import CustomTableBody      from '../../../components/widgets/custom-table/CustomTableBody';
-import UserActivityApi      from '../../../services/pages/configuration/user-activity';
-import CustomTablePaginate  from '../../../components/widgets/custom-table/CustomTablePaginate';
-import CustomTableBodyEmpty from '../../../components/widgets/custom-table/CustomTableBodyEmpty';
+import Helper                           from '../../../helpers';
+import TourFilter                       from './TourFilter';
+import headerTable                      from './headerTable';
+import CustomTable                      from '../../../components/widgets/custom-table';
+import CustomToast                      from '../../../components/widgets/custom-toast';
+import SearchTable                      from '../../../components/widgets/custom-table/SearchTable';
+import ButtonFilter                     from '../../../components/widgets/custom-table/ButtonFilter';
+import { ModalBase }                    from '../../../components/widgets/modals-base';
+import CustomTableBody                  from '../../../components/widgets/custom-table/CustomTableBody';
+import UserActivityApi                  from '../../../services/pages/configuration/user-activity';
+import CustomTablePaginate              from '../../../components/widgets/custom-table/CustomTablePaginate';
+import CustomTableBodyEmpty             from '../../../components/widgets/custom-table/CustomTableBodyEmpty';
 
 
 const UserActivity = (props) => {
@@ -107,7 +107,7 @@ const UserActivity = (props) => {
                     sm = {{ size: 4, offset: 7 }} 
                     id = "search-data"
                 >
-                    <SearchTable onSearch={(par) => {
+                    <SearchTable onSearch= {(par) => {
                             filter.current     = "all"; 
                             pageActive.current = 1; 
                             searchTerm.current = par; 
