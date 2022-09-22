@@ -19,9 +19,11 @@ import SearchTable                      from '../../../components/widgets/custom
 import ButtonFilter                     from '../../../components/widgets/custom-table/ButtonFilter';
 import { ModalBase }                    from '../../../components/widgets/modals-base';
 import CustomTableBody                  from '../../../components/widgets/custom-table/CustomTableBody';
-import UserActivityApi                  from '../../../services/pages/configuration/user-activity';
-import CustomTablePaginate              from '../../../components/widgets/custom-table/CustomTablePaginate';
+import UserActivityAPI                  from '../../../services/pages/configuration/user-activity';
+import CustomTablePaginate              from '../../../components/widgets/custom-table/CustomTablePaginateV2';
 import CustomTableBodyEmpty             from '../../../components/widgets/custom-table/CustomTableBodyEmpty';
+import { Eye } from 'react-feather';
+import DetailUserActivity from './DetailUserActivity';
 
 
 const UserActivity = (props) => {
@@ -37,9 +39,78 @@ const UserActivity = (props) => {
     const pageActive                    = useRef(1);
 
     //State
-    const [listData, setListData]       = useState(false);
-    const [pagination, setPagination]   = useState(false);
-    const [filterModal, setFilterModal] = useState(false);
+    const [search, setSearch]                                   = useState(null);
+    const [listData, setListData]                               = useState(null);
+    const [pagination, setPagination]                           = useState(false);
+    const [filterModal, setFilterModal]                         = useState(false);
+    const [selectedDetail, setSelectedDetail]                   = useState(null);
+    const [detailListData, setDetailListData]                   = useState(null);
+    const [paginationDetail, setPaginationDetail]               = useState(false);
+    const [isDetailActivityVisible, setIsDetailActivityVisible] = useState(false);
+
+    const handleDetail = (data) => {
+        setSelectedDetail(data);
+        setIsDetailActivityVisible(true);
+    };
+
+    const getUserActivity = (page = 1) => {
+
+        if(selectedDetail == null){
+            setListData(null);
+        }else{
+            setDetailListData(null);
+        }
+
+        const param = {
+            page : page,
+        }
+
+        if(selectedDetail != null){
+            param.uuid = selectedDetail.uuid
+        }else{
+            param.list = true
+        }
+
+        if(search != null){
+            param.keyword = search
+        }
+
+        UserActivityAPI.getUserActivity(param).then(
+            res => {
+
+                if(!res.is_error){
+                    if(res.data.result != null){
+
+                        if(selectedDetail == null){
+                            setListData(res.data.result);
+                            setPagination(res.data.pagination);
+                        }else{
+                            setDetailListData(res.data.result)
+                            setPaginationDetail(res.data.pagination);
+                        }
+
+                    }else{
+                        if(selectedDetail == null){
+                            setListData([]);
+                            setPagination(res.data.pagination);
+                        }else{
+                            setDetailListData([]);
+                            setPaginationDetail(res.data.pagination);
+                        }
+                    }
+                }else{
+                    CustomToast("danger", res.code);
+                }
+            },
+            err => { 
+                CustomToast("danger", err.code);
+            }
+        )
+    }
+
+    useEffect(() => {
+        getUserActivity();
+    }, [selectedDetail, search]);
 
     useEffect(() => {
         if (query.get('action') === 'get'){
@@ -51,37 +122,9 @@ const UserActivity = (props) => {
         }
     }, []);
 
-    useEffect(() => {
-        getData();
-    }, []);
-
-    const getData = () => {
-        let params = {
-            page    : pageActive.current,
-            filter  : filter.current,
-            search  : searchTerm.current
-        }
-        setListData(false);
-
-        UserActivityApi.get({
-            onSuccess: (res) => {
-                setListData(res.data);
-                var customPagination = {
-                    has_next        : (res.next == "") ? false : true,
-                    has_previous    : (res.prev == "") ? false : true,
-                    current_page    : res.current_page,
-                    total_page      : res.total_page,
-                    data_total      : res.total
-                }
-                setPagination(customPagination);
-            }, onFail: (err) => {
-                CustomToast("danger", err.message);
-            }, params: params
-        })
-    };
-
     return (
         <Fragment>
+            {/* Modal Tour */}
             <ModalBase
                 size    = "sm"
                 show    = {filterModal}
@@ -89,29 +132,39 @@ const UserActivity = (props) => {
                 setShow = {(par) => { setFilterModal(par) }}
             >
                 <TourFilter
-                    onReset         = {() => { getData(); setFilterModal(!filterModal);}}
-                    onFilter        = {() => { getData(); setFilterModal(!filterModal);}}
+                    onReset         = {() => { getUserActivity(); setFilterModal(!filterModal);}}
+                    onFilter        = {() => { getUserActivity(); setFilterModal(!filterModal);}}
                     setFilter       = {(par) => {filter.current = par}}
                     setPageActive   = {(par) => {pageActive.current = par}}
                     setSearchTerm   = {(par) => {searchTerm.current = par}}
                 />
             </ModalBase>
 
-            <Row>
-                <div id="filter-data">
-                    <Col md={1}>
-                        <ButtonFilter onClick={() => {setFilterModal(!filterModal)}}/>
-                    </Col>
-                </div>
+            {/* Modal Detail Log */}
+            <DetailUserActivity
+                setSearch                   = {setSearch}
+                pagination                  = {paginationDetail}
+                detailListData              = {detailListData}
+                selectedDetail              = {selectedDetail}
+                getUserActivity             = {getUserActivity}
+                setSelectedDetail           = {setSelectedDetail}
+                isDetailActivityVisible     = {isDetailActivityVisible}
+                setIsDetailActivityVisible  = {setIsDetailActivityVisible}
+            />
+
+            <Row className="mr-0">
+                <Col md={3}>
+                    <ButtonFilter onClick={() => {setFilterModal(!filterModal)}}/>
+                </Col>
                 <Col 
-                    sm = {{ size: 4, offset: 7 }} 
+                    md = {{size : 4, offset : 5}}
                     id = "search-data"
+                    className = "d-flex justify-content-end px-0"
                 >
                     <SearchTable onSearch= {(par) => {
                             filter.current     = "all"; 
                             pageActive.current = 1; 
-                            searchTerm.current = par; 
-                            getData(); 
+                            setSearch(par);
                         }}
                     />
                 </Col>
@@ -119,11 +172,11 @@ const UserActivity = (props) => {
 
             {/* pagination */}
             <CustomTablePaginate 
-                onNext          = {() => {pageActive.current = pagination.current_page+1; getData()}} 
-                onPrev          = {() => {pageActive.current = pagination.current_page-1; getData()}}
+                getData         = {(params) => { getUserActivity(params.page)}}
                 pagination      = {pagination}  
+                placeholder     = "Cari Aktifitas Pengguna"
                 offsetSearch    = {10} 
-            /><br/>
+            />
             
             {/* table */}
             <CustomTable
@@ -132,30 +185,49 @@ const UserActivity = (props) => {
             >
                 {
                     listData && listData.map((data, i) => (
-                        <div id = "activity-table">
+                        <div 
+                            id          = "activity-table" 
+                        >
                             <CustomTableBody key={i}>
-                                <Col md="2">
+                                <Col md="2" className="d-flex align-items-center">
                                     {Helper.dateIndo(data.time)}
                                 </Col>
-                                <Col md="5">
-                                <Media>
-                                    <Media left href='#'>
-                                        <Avatar 
-                                            img         = {data.avatar} 
-                                            status      = 'online'
-                                            onError     = {fallbackImage_}
-                                            imgHeight   = '40' 
-                                            imgWidth    = '40' 
-                                        />
-                                    </Media>
-                                    <Media body>
-                                        <Media className="mb-0 ml-1">{data.name}</Media>
-                                            <h6 className="text-muted ml-1 mt-0">{data.origin} </h6>
+                                <Col md="3" className='d-flex align-items-center'>
+                                    <div className='d-flex align-items-center'>
+
+                                        <Media left href='#'>
+                                            <Avatar 
+                                                img         = {data.avatar} 
+                                                onError     = {fallbackImage_}
+                                                imgWidth    = '40' 
+                                                imgHeight   = '40' 
+                                            />
                                         </Media>
-                                    </Media>
+                                        <div>
+                                            <Media className="mb-0 ml-1">{data.name}</Media>
+                                            <h6 className="text-muted ml-1 mt-0">{data.origin} </h6>
+                                        </div>
+                                    </div>
                                 </Col>
-                                <Col md="4">
-                                    {data.activity}
+                                <Col md="3" className=" d-flex align-items-center">
+                                    {data.message}
+                                </Col>
+                                <Col md="2" className='d-flex align-items-center'>
+                                    <div>
+                                        <Media className="mb-0">{data.device}</Media>
+                                        <h5 className="text-muted mt-0">IP : {data.ip} </h5>
+                                    </div>
+                                </Col>
+                                <Col md="1" className='d-flex align-items-center'>
+                                    <Media className="mb-0">{data.status === 200 ? 'Sukses' : 'Gagal'}</Media>
+                                </Col>
+                                <Col md="1" className='d-flex align-items-center'>
+                                    <Eye 
+                                        size    = {20}
+                                        onClick = {() => {handleDetail(data)}}
+                                        className   = {'cursor-pointer'}
+
+                                    />
                                 </Col>
                             </CustomTableBody>
                         </div>
