@@ -1,66 +1,98 @@
-import { Fragment, useState } from 'react'
-import { Link } from 'react-router-dom'
-import { ChevronLeft } from 'react-feather'
+import { Fragment, useState }   from 'react';
+import { Link }                 from 'react-router-dom';
+import { useForm }              from 'react-hook-form';
+import { ChevronLeft }          from 'react-feather';
+import { yupResolver }          from '@hookform/resolvers/yup';
+import * as yup                 from 'yup';
+
 import {
     Card,
-    CardBody,
-    CardText,
     Form,
-    FormGroup,
     Label,
     Input,
-    Button,
     Modal,
-    ModalHeader,
+    Button,
+    CardText,
+    CardBody,
+    FormGroup,
     ModalBody,
+    ModalHeader,
     ModalFooter,
     FormFeedback
-} from 'reactstrap'
+} from 'reactstrap';
 
-import Logo from '@src/assets/images/logo/logo_dark.svg'
-import ImageRounded from '@src/components/widgets/image-rounded'
-import { useForm } from 'react-hook-form'
-import { yupResolver } from '@hookform/resolvers/yup'
-import * as yup from 'yup'
-import ForgotPasswordService from '../../../services/pages/authentication/ForgotPasswordService'
-import CustomToast from '../../../components/widgets/custom-toast'
-import SubmitButton from '../../../components/widgets/submit-button'
-import '../../../components/scss/base/pages/page-auth.scss'
+//Css
+import '../../../components/scss/base/pages/page-auth.scss';
+
+//Assets
+import Logo                     from '@src/assets/images/logo/logo_dark.svg';
+
+//Service
+import authAPI                  from '../../../services/pages/authentication/auth';
+
+//Components
+import CustomToast              from '../../../components/widgets/custom-toast';
+import ImageRounded             from '@src/components/widgets/image-rounded';
+import SubmitButton             from '../../../components/widgets/submit-button';
+
 
 const ForgotPassword = () => {
-
-    const [centeredModal, setCenteredModal] = useState(false)
-    const [loading, setLoading] = useState(false)
+    //State
+    const [loading, setLoading]             = useState(false);
+    const [centeredModal, setCenteredModal] = useState(false);
 
     const schema = yup.object().shape({
-        email: yup.string().email().required(),
+        email: yup.string().email().required("Kolom email tidak boleh kosong."),
     }).required();
 
-    const { register, errors, handleSubmit } = useForm({ mode: "onChange", resolver: yupResolver(schema) })
+    //Schema for form validation
+    const { 
+        register, 
+        errors, 
+        handleSubmit 
+    } = useForm({ mode: "onChange", resolver: yupResolver(schema) });
 
-    const onSubmit = dataForm => {
-        setLoading(true)
-        ForgotPasswordService({
-            data: dataForm,
-            onSuccess: (res) => {
-                setLoading(false)
-                setCenteredModal(true);
-            }, onFail: (err) => {
-                CustomToast("danger", err.message)
-                setLoading(false)
+    const onSubmit = (formData) => {
+        setLoading(true);
+
+        authAPI.forgotPassword(formData).then(
+            res => {
+                if (!res.is_error) {
+                    setLoading(false);
+                    setCenteredModal(true);
+                } else {
+                    CustomToast("danger", err.code);
+                }
             }
-        })
+        ).catch(
+            err => {
+                setLoading(false);
+                CustomToast("danger", err.code);
+            }
+        )
     }
 
     return (
         <Fragment>
-            <Modal isOpen={centeredModal} toggle={() => setCenteredModal(!centeredModal)} className='modal-dialog-centered modal-sm'>
+            <Modal 
+                isOpen    = {centeredModal} 
+                toggle    = {() => setCenteredModal(!centeredModal)} 
+                className = 'modal-dialog-centered modal-sm'
+            >
                 <ModalHeader toggle={() => setCenteredModal(!centeredModal)}></ModalHeader>
                 <ModalBody>
-                    <h5> Silahkan Periksa Email dan ikuti instruksi untuk mengubah kata sandi Anda. </h5>
+                    <h5 className='text-center'>
+                        Silahkan Periksa Email dan ikuti instruksi untuk mengubah kata sandi Anda.
+                    </h5>
                 </ModalBody>
-                <ModalFooter>
-                    <Button color='primary col-5' center block onClick={() => setCenteredModal(!centeredModal)}>
+                <ModalFooter className='d-flex justify-content-center'>
+                    <Button 
+                        color   = 'primary' 
+                        style   = {{width: '100px'}}
+                        block 
+                        center 
+                        onClick = {() => setCenteredModal(!centeredModal)}
+                    >
                         OK
                     </Button>
                 </ModalFooter>
@@ -70,35 +102,58 @@ const ForgotPassword = () => {
                 <div className='auth-inner py-2'>
                     <Card className='mb-0'>
                         <CardBody>
-                            <Link className='brand-logo' to='/' onClick={e => e.preventDefault()}>
-                                <ImageRounded src={Logo} width={50} />
+                            <Link 
+                                to          = '/' 
+                                onClick     = {e => e.preventDefault()}
+                                className   = 'brand-logo' 
+                            >
+                                <ImageRounded 
+                                    src   = {Logo} 
+                                    width = {50}
+                                />
                                 <h1 className='brand-text text-primary ml-1 mt-1'>SIACC</h1>
                             </Link>
                             <CardText className='mb-2'>
                                 Kami akan mengirimkan email instruksi untuk mengubah kata sandi Anda
                             </CardText>
 
-                            <Form className='auth-forgot-password-form mt-2' onSubmit={handleSubmit(onSubmit)}>
+                            <Form 
+                                onSubmit  = {handleSubmit(onSubmit)}
+                                className = 'auth-forgot-password-form mt-2' 
+                            >
                                 <FormGroup>
-                                    <Label className='form-label' for='login-email'>
+                                    <Label 
+                                        for       = 'login-email'
+                                        className = 'form-label' 
+                                    >
                                         Email
                                     </Label>
-                                    <Input type='email'
-                                        name="email"
-                                        id='login-email' placeholder='Email'
-                                        innerRef={register()}
-                                        invalid={(errors.email) ? true : false}
-                                        autoFocus />
+                                    <Input 
+                                        id          = 'login-email' 
+                                        type        = 'email'
+                                        name        = "email"
+                                        invalid     = {(errors.email) ? true : false}
+                                        innerRef    = {register()}
+                                        autoFocus
+                                        placeholder = 'Email'
+                                    />
+
                                     {errors && errors.email && <FormFeedback>{errors.email.message}</FormFeedback>}
                                 </FormGroup>
-                                <SubmitButton size="sm" isLoading={loading} isBlock={true}>
+                                <SubmitButton 
+                                    size      = "sm" 
+                                    isBlock   = {true}
+                                    isLoading = {loading} 
+                                >
                                     Kirim Email
                                 </SubmitButton>
-
                             </Form>
                             <p className='text-center mt-2'>
                                 <Link to='/login'>
-                                    <ChevronLeft className='mr-25' size={14} />
+                                    <ChevronLeft 
+                                        size      = {14} 
+                                        className = 'mr-25' 
+                                    />
                                     <span className='align-middle'>Back to login</span>
                                 </Link>
                             </p>
@@ -110,4 +165,4 @@ const ForgotPassword = () => {
     )
 }
 
-export default ForgotPassword
+export default ForgotPassword;

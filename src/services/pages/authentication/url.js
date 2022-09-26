@@ -1,5 +1,10 @@
 export const authURL = {
     authPrefix       : "auth",
 
-    authLogin        : "login"
+    authUser         : "user",
+    authLogin        : "login",
+    authPassword     : "password",
+
+    authQrcode       : "qr",
+    authNew          : "new"
 }
