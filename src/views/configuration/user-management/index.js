@@ -1,5 +1,8 @@
-import { PerformanceProvider } from "../../../context/PerformanceContext";
+//Context
+import { PerformanceProvider }      from "../../../context/PerformanceContext";
 import { UserManagementProvider }   from "../../../context/UserManagementContext";
+
+//Components
 import UserManagement               from "./UserManagement";
 
 
