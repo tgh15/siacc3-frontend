@@ -28,21 +28,18 @@ import DetailUserActivity from './DetailUserActivity';
 
 const UserActivity = (props) => {
     //Props
-    const {setShowAction}               = props;
+    const {setShowAction}                                       = props;
 
-    const {fallbackImage_, useQuery}    = Helper;
-    let query                           = useQuery();
-
-    //Ref
-    const filter                        = useRef("all");
-    const searchTerm                    = useRef(null);
-    const pageActive                    = useRef(1);
+    const {fallbackImage_, useQuery}                            = Helper;
+    let query                                                   = useQuery();
 
     //State
     const [search, setSearch]                                   = useState(null);
     const [listData, setListData]                               = useState(null);
     const [pagination, setPagination]                           = useState(false);
+    const [filterType, setFilterType]                           = useState(null);
     const [filterModal, setFilterModal]                         = useState(false);
+    const [filterValue, setFilterValue]                         = useState(null);
     const [selectedDetail, setSelectedDetail]                   = useState(null);
     const [detailListData, setDetailListData]                   = useState(null);
     const [paginationDetail, setPaginationDetail]               = useState(false);
@@ -132,11 +129,10 @@ const UserActivity = (props) => {
                 setShow = {(par) => { setFilterModal(par) }}
             >
                 <TourFilter
-                    onReset         = {() => { getUserActivity(); setFilterModal(!filterModal);}}
-                    onFilter        = {() => { getUserActivity(); setFilterModal(!filterModal);}}
-                    setFilter       = {(par) => {filter.current = par}}
-                    setPageActive   = {(par) => {pageActive.current = par}}
-                    setSearchTerm   = {(par) => {searchTerm.current = par}}
+                    setFilterType  = {setFilterType}
+                    selectedDetail = {selectedDetail}
+                    setFilterValue = {setFilterValue}
+                    setFilterModal = {setFilterModal}
                 />
             </ModalBase>
 
@@ -157,16 +153,11 @@ const UserActivity = (props) => {
                     <ButtonFilter onClick={() => {setFilterModal(!filterModal)}}/>
                 </Col>
                 <Col 
-                    md = {{size : 4, offset : 5}}
-                    id = "search-data"
-                    className = "d-flex justify-content-end px-0"
+                    md          = {{size : 4, offset : 5}}
+                    id          = "search-data"
+                    className   = "d-flex justify-content-end px-0"
                 >
-                    <SearchTable onSearch= {(par) => {
-                            filter.current     = "all"; 
-                            pageActive.current = 1; 
-                            setSearch(par);
-                        }}
-                    />
+                    <SearchTable onSearch= {(par) => {setSearch(par)}}/>
                 </Col>
             </Row>
 

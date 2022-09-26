@@ -18,32 +18,19 @@ import '@styles/react/libs/flatpickr/flatpickr.scss';
 import CustomToast                          from "../../../components/widgets/custom-toast";
 import SelectOptionsService                 from '@src/services/pages/select-options';
 
+const ModalFilter = (props) => {
 
-const ModalFilter = ({ setPageActive, setFilter, onReset, setSearchTerm, onFilter }) => {
-    const [picker, setPicker]                   = useState(null);
-    const [workunit, setWorkunit]               = useState(false);
-    const [filterType, setFilterType]           = useState(null);
-    const [workunitOptions, setWorkunitOptions] = useState(null);
+    const { 
+        setFilterType,
+        selectedDetail,
+        setFilterValue,
+        setFilterModal,
+    }                                           = props;
     
-    const WorkunitOptions = () => {
-        SelectOptionsService.workunit({
-            onSuccess: (res) => {
-                setWorkunitOptions(res);
-            }, onFail: (err) => {
-                CustomToast("danger", err.message);
-            }
-        })
-    };
-
-    useEffect(() => {
-        WorkunitOptions();
-    }, []);
-
     const onClickReset = () => {
-        setPageActive(1);
-        setFilter("all");
-        setSearchTerm(null);
-        onReset();
+        setFilterType(null);
+        setFilterValue(null);
+        setFilterModal(false);
     };
 
     const onSubmit = () => {
@@ -71,8 +58,12 @@ const ModalFilter = ({ setPageActive, setFilter, onReset, setSearchTerm, onFilte
                         >
                             Pilih Filter
                         </option>
-                        <option value="time">Waktu</option>
-                        <option value="origin">Satuan Kerja</option>
+                        {
+                            selectedDetail == null ?
+                                <option value="origin">Satuan Kerja</option>
+                            :
+                                <option value="time">Waktu</option>
+                        }
                     </CustomInput>
                 </div>
             </FormGroup>
