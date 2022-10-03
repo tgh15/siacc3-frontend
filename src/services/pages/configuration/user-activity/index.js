@@ -1,10 +1,9 @@
-import { Get}  from "../../../core/request";
+import { Get } from "./Get"
 
-const getUserActivity = (param) => Get(`api-gw/activities`, param);
 
-const UserActivityAPI = {
+const UserActivityApi = {
+    get:Get,
 
-    getUserActivity
     
 }
-export default UserActivityAPI
+export default UserActivityApi
