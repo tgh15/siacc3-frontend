@@ -625,7 +625,7 @@ const Report = (props) => {
                     //Role
                     roleAdd     = {getRoleByMenuStatus('Laporan', 'add')}
                 >
-                    <div id="report-table">
+                    <div id="report-table" className="mb-3">
                         {
                             report && report.map((data, number) => (
                                 <CustomTableBody>

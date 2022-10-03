@@ -4,7 +4,6 @@ import FetchServices from "../../core/Axios"
 const WorkunitPoints = ({ page, formData, onSuccess, onFail }) => {
     const params ={
         is_paginate :true,
-        limit : 10,
         page : page
     }
 
