@@ -46,8 +46,8 @@ const ModalFilter = (props) => {
         }else{
             setFilterType('date');
             setFilterValue({
-                from : moment(data.from[0]).format('DD-MM-YYYY'),
-                to   : moment(data.to[0]).format('DD-MM-YYYY')
+                from : moment(data.from[0]).format('YYYY-MM-DD'),
+                to   : moment(data.to[0]).format('YYYY-MM-DD')
             })
         }
 
