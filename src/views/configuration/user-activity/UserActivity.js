@@ -72,6 +72,13 @@ const UserActivity = (props) => {
             param.keyword = search
         }
 
+        if(filterType === 'workunit'){
+            param.origin = filterValue;
+        }else if(filterType === 'date'){
+            param.start_date = filterValue.from,
+            param.end_date   = filterValue.to
+        }
+
         UserActivityAPI.getUserActivity(param).then(
             res => {
 
@@ -98,6 +105,7 @@ const UserActivity = (props) => {
                 }else{
                     CustomToast("danger", res.code);
                 }
+                
             },
             err => { 
                 CustomToast("danger", err.code);
@@ -107,7 +115,7 @@ const UserActivity = (props) => {
 
     useEffect(() => {
         getUserActivity();
-    }, [selectedDetail, search]);
+    }, [selectedDetail, search, filterValue]);
 
     useEffect(() => {
         if (query.get('action') === 'get'){
@@ -127,6 +135,7 @@ const UserActivity = (props) => {
                 show    = {filterModal}
                 title   = "Filter"
                 setShow = {(par) => { setFilterModal(par) }}
+                center  = {true}
             >
                 <TourFilter
                     setFilterType  = {setFilterType}
@@ -140,6 +149,10 @@ const UserActivity = (props) => {
             <DetailUserActivity
                 setSearch                   = {setSearch}
                 pagination                  = {paginationDetail}
+                filterModal                 = {filterModal}
+                setFilterType               = {setFilterType}
+                setFilterValue              = {setFilterValue}
+                setFilterModal              = {setFilterModal}
                 detailListData              = {detailListData}
                 selectedDetail              = {selectedDetail}
                 getUserActivity             = {getUserActivity}
