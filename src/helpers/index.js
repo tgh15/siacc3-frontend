@@ -283,6 +283,21 @@ function shortenLargeNumber(num, digits) {
     return num;
 }
 
+const formatDate = (stringDate) => {
+    var newDate = new Date(stringDate);
+
+    const monthNames = ["Januari", "Februari", "Maret", "April", "Mei", "Juni",
+        "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+
+    const minutes   = ('0'+newDate.getMinutes()).slice(-2);;
+    const hours     = ('0'+newDate.getHours()).slice(-2);;
+    const date      = newDate.getDate();
+    const year      = newDate.getFullYear();
+    const month     = monthNames[newDate.getMonth()];
+
+    return date + " " + month + " " + year + ", " + hours + ":" + minutes ;
+};
+
 const Helper = {
     dayIndo                 : dayIndo,
     dateIndo                : dateIndo,
@@ -304,7 +319,8 @@ const Helper = {
     getRoleByMenuStatus     : getRoleByMenuStatus,
     getParemeterFromString  : getParemeterFromString,
     useQuery                : useQuery,
-    shortenLargeNumber      : shortenLargeNumber
+    shortenLargeNumber      : shortenLargeNumber,
+    formatDate              : formatDate
 }
 
 export default Helper;

@@ -44,6 +44,10 @@ const DetailData = (props) => {
         isDetailResultsVisible,
         setIsDetailResultsVisible,
     }                                        = props;
+
+    const {
+        formatDate
+    }                                        = Helper;
     
     return (
         <Fragment>
