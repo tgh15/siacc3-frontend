@@ -5,23 +5,15 @@ export default [
         size: 2
     },
     {
-        title: "Pengguna",
-        size: 3
-    },
-    {
         title: "Aktivitas",
-        size: 3
+        size: 4
     },
     {
         title : "Info Perangkat",
-        size : 2
+        size : 4
     },
     {
         title : "Status",
-        size : 1
+        size : 2
     },
-    {
-        title : "Aksi",
-        size : 1
-    }
 ]

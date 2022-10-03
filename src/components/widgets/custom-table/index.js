@@ -18,7 +18,7 @@ const CustomTable = (props) => {
         getData,
         roleAdd,
         onNext,
-        onPrev
+        onPrev,
     } = props
 
     const placeholders = placeholder == undefined || placeholder == null ? "Cari..." : placeholder

@@ -23,3 +23,9 @@ code {
 .mapboxgl-ctrl-attrib-inner{
   display: none !important;
 }
+
+.hover:hover {
+  background-color: 'currentColor';
+  opacity: 0.6;
+  cursor: pointer;
+}

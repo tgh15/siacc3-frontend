@@ -101,3 +101,13 @@ export const focusToObject=(refToFocus,refToFocus2)=>{
   refToFocus.scrollIntoView()
   refToFocus2.scrollIntoView()
 }
+
+export const secondsToMs = (d) => {
+  d = Number(d);
+  var m = Math.floor(d % 3600 / 60);
+  var s = Math.floor(d % 3600 % 60);
+
+  var mDisplay = m > 0 ? m + (m == 1 ? " menit" : " menit") : "";
+  var sDisplay = s > 0 ? s + (s == 1 ? " detik" : " detik") : "";
+  return mDisplay + sDisplay;
+}

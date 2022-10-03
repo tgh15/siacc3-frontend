@@ -117,7 +117,7 @@ const TableBody = props => {
                             />
                         </Media>
                         <Media body>
-                            <Media className="mb-0 ml-1">{data.name}</Media>
+                            <Media className="mb-0 ml-1 text-capitalize">{data.name}</Media>
                             <h6 className="text-muted ml-1 mt-0">{data.workunit}</h6>
                         </Media>
                     </Media>

@@ -136,6 +136,14 @@ const StartTour = () => {
 };
 
 const TourFilter = (props) => {
+
+    const {
+        setFilterType,
+        selectedDetail,
+        setFilterValue,
+        setFilterModal,
+    }                       = props;
+
     return (
         <Fragment>
             <Row>
@@ -152,11 +160,10 @@ const TourFilter = (props) => {
                     sm = '12'
                 >
                     <ModalFilter
-                        onReset         = {props.onReset}
-                        onFilter        = {props.onFilter}
-                        setFilter       = {props.setFilter}
-                        setPageActive   = {props.setPageActive}
-                        setSearchTerm   = {props.setSearchTerm}
+                        setFilterType  = {setFilterType}
+                        selectedDetail = {selectedDetail}
+                        setFilterValue = {setFilterValue}
+                        setFilterModal = {setFilterModal}
                     />
                 </Col>
             </Row>

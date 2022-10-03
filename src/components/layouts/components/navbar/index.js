@@ -24,7 +24,7 @@ const ThemeNavbar = props => {
 	return (
 		<Fragment>
 			<div className='bookmark-wrapper d-flex align-items-center'>
-				<ul className='navbar-nav d-xl-none d-flex align-items-center'>
+				<ul className='navbar-nav align-items-center'>
 					<NavItem className='mobile-menu mr-auto'>
 						<NavLink 
 							onClick		= {() => setMenuVisibility(true)}
