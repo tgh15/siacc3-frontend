@@ -28,21 +28,18 @@ import DetailUserActivity from './DetailUserActivity';
 
 const UserActivity = (props) => {
     //Props
-    const {setShowAction}               = props;
+    const {setShowAction}                                       = props;
 
-    const {fallbackImage_, useQuery}    = Helper;
-    let query                           = useQuery();
-
-    //Ref
-    const filter                        = useRef("all");
-    const searchTerm                    = useRef(null);
-    const pageActive                    = useRef(1);
+    const {fallbackImage_, useQuery}                            = Helper;
+    let query                                                   = useQuery();
 
     //State
     const [search, setSearch]                                   = useState(null);
     const [listData, setListData]                               = useState(null);
     const [pagination, setPagination]                           = useState(false);
+    const [filterType, setFilterType]                           = useState(null);
     const [filterModal, setFilterModal]                         = useState(false);
+    const [filterValue, setFilterValue]                         = useState(null);
     const [selectedDetail, setSelectedDetail]                   = useState(null);
     const [detailListData, setDetailListData]                   = useState(null);
     const [paginationDetail, setPaginationDetail]               = useState(false);
@@ -75,6 +72,13 @@ const UserActivity = (props) => {
             param.keyword = search
         }
 
+        if(filterType === 'workunit'){
+            param.origin = filterValue;
+        }else if(filterType === 'date'){
+            param.start_date = filterValue.from,
+            param.end_date   = filterValue.to
+        }
+
         UserActivityAPI.getUserActivity(param).then(
             res => {
 
@@ -101,6 +105,7 @@ const UserActivity = (props) => {
                 }else{
                     CustomToast("danger", res.code);
                 }
+                
             },
             err => { 
                 CustomToast("danger", err.code);
@@ -110,7 +115,7 @@ const UserActivity = (props) => {
 
     useEffect(() => {
         getUserActivity();
-    }, [selectedDetail, search]);
+    }, [selectedDetail, search, filterValue]);
 
     useEffect(() => {
         if (query.get('action') === 'get'){
@@ -130,13 +135,13 @@ const UserActivity = (props) => {
                 show    = {filterModal}
                 title   = "Filter"
                 setShow = {(par) => { setFilterModal(par) }}
+                center  = {true}
             >
                 <TourFilter
-                    onReset         = {() => { getUserActivity(); setFilterModal(!filterModal);}}
-                    onFilter        = {() => { getUserActivity(); setFilterModal(!filterModal);}}
-                    setFilter       = {(par) => {filter.current = par}}
-                    setPageActive   = {(par) => {pageActive.current = par}}
-                    setSearchTerm   = {(par) => {searchTerm.current = par}}
+                    setFilterType  = {setFilterType}
+                    selectedDetail = {selectedDetail}
+                    setFilterValue = {setFilterValue}
+                    setFilterModal = {setFilterModal}
                 />
             </ModalBase>
 
@@ -144,6 +149,10 @@ const UserActivity = (props) => {
             <DetailUserActivity
                 setSearch                   = {setSearch}
                 pagination                  = {paginationDetail}
+                filterModal                 = {filterModal}
+                setFilterType               = {setFilterType}
+                setFilterValue              = {setFilterValue}
+                setFilterModal              = {setFilterModal}
                 detailListData              = {detailListData}
                 selectedDetail              = {selectedDetail}
                 getUserActivity             = {getUserActivity}
@@ -157,16 +166,11 @@ const UserActivity = (props) => {
                     <ButtonFilter onClick={() => {setFilterModal(!filterModal)}}/>
                 </Col>
                 <Col 
-                    md = {{size : 4, offset : 5}}
-                    id = "search-data"
-                    className = "d-flex justify-content-end px-0"
+                    md          = {{size : 4, offset : 5}}
+                    id          = "search-data"
+                    className   = "d-flex justify-content-end px-0"
                 >
-                    <SearchTable onSearch= {(par) => {
-                            filter.current     = "all"; 
-                            pageActive.current = 1; 
-                            setSearch(par);
-                        }}
-                    />
+                    <SearchTable onSearch= {(par) => {setSearch(par)}}/>
                 </Col>
             </Row>
 

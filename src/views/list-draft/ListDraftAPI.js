@@ -48,7 +48,6 @@ const ListDraftAPI = () => {
 
         feedsDraftAPI.getListDraft(params).then(
             res => {
-                console.log(res.data);
                 if (res.status === 200 && res.data != null) {
                     setLoading(false);
                     setListDraft(res.data.result);

@@ -58,7 +58,7 @@ const PerformanceProvider = ({ children }) => {
                         if(res.data.length > 0){
                             res.data.map((data) => (
                                 level_2.push({
-                                    label : data.name,
+                                    label : 'KEJAKSAAN TINGGI ' + data.name,
                                     value : data.id
                                 })
                             ))
@@ -66,7 +66,7 @@ const PerformanceProvider = ({ children }) => {
 
                         if(level_2.length > 0){
                             data.push({
-                                label : 'Kejaksaan Tinggi',
+                                label : 'KEJAKSAAN TINGGI',
                                 options : level_2
                             })
                         }
@@ -76,7 +76,7 @@ const PerformanceProvider = ({ children }) => {
                                 if(res.data.length > 0){
                                     res.data.map((data) => (
                                         level_3.push({
-                                            label : data.name,
+                                            label : 'KEJAKSAAN NEGERI' + data.name,
                                             value : data.id
                                         })
                                     ))
@@ -84,7 +84,7 @@ const PerformanceProvider = ({ children }) => {
 
                                 if(level_3.length > 0){
                                     data.push({
-                                        label : 'Kejaksaan Negeri',
+                                        label : 'KEJAKSAAN NEGERI',
                                         options : level_3
                                     })
                                 }
@@ -94,7 +94,7 @@ const PerformanceProvider = ({ children }) => {
                                         if(res.data.length > 0){
                                             res.data.map((data) => (
                                                 level_4.push({
-                                                    label : data.name,
+                                                    label : 'CABANG KEJAKSAAN NEGERI' + data.name,
                                                     value : data.id
                                                 })
                                             ))
@@ -102,7 +102,7 @@ const PerformanceProvider = ({ children }) => {
 
                                         if(level_4.length > 0){
                                             data.push({
-                                                label : 'Cabang Kejaksaan Negeri',
+                                                label : 'CABANG KEJAKSAAN NEGERI',
                                                 options : level_4
                                             })
                                         }

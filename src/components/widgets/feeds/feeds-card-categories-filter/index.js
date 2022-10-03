@@ -24,7 +24,6 @@ import { ModalBase as BaseModal }               from '../../modals-base'
 import { useForm, Controller }                  from "react-hook-form";
 
 import { PerformanceContext }                   from '../../../../context/PerformanceContext'
-import ModalSelectWorkunit from '../../../../views/configuration/user-management/ModalSelectWorkunit'
 
 export const FeedsCategoriesFilterModal = (props) => {
 
