@@ -135,8 +135,8 @@ const FormReport = (props) => {
     
         }else{
             if(data.content != null && data.content.filter(e => parseInt(e.value) === 1).length > 0){
-                if(data.content.filter(e => parseInt(e.value) >= 13 && parseInt(e.value) <= 16 ).length > 0){
-                    CustomToast('warning', 'Jika memilih Isi Berita, maka Pilihan Jumlah Berita Di Publikasi, Jumlah Berita di Arsip, Jumlah Berita Ke Pimpinan dan Jumlah Agen Tidak Dapat Digunakan');
+                if(data.content.filter(e => parseInt(e.value) >= 13 && parseInt(e.value) <= 19).length > 0){
+                    CustomToast('warning', 'Jika memilih Isi Berita, maka Pilihan Jumlah Berita Di Publikasi, Jumlah Berita di Arsip, Jumlah Berita Ke Pimpinan, Jumlah Agen, Bulan, Tanggal, dan Jumlah Tidak Dapat Digunakan.');
                 }else{
                     if(data.content != null){
                         data.content.map((data) => (
