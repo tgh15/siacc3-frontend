@@ -167,7 +167,7 @@ const FormReport = (props) => {
                         data.filter_agent.map((data) => (
                             _newFilter.push({
                                 report_filter_type_id: 3,
-                                keyword : data.value
+                                keyword : data.value.toString()
                             })
                         ));
                     };
