@@ -154,11 +154,11 @@ const FormReport = (props) => {
                         ));
                     }
                 
-                    if(data.filter_workunit != null){
+                    if(data.filter_workunit != null && !(data.filter_workunit.filter(e => parseInt(e.value) === 0).length > 0)){
                         data.filter_workunit.map((data) => (
                             _newFilter.push({
                                 report_filter_type_id: 2,
-                                keyword : data.value
+                                keyword : data.value.toString()
                             })
                         ));
                     };
@@ -212,7 +212,7 @@ const FormReport = (props) => {
                         ));
                     }
                 
-                    if(data.filter_workunit != null){
+                    if(data.filter_workunit != null && !(data.filter_workunit.filter(e => parseInt(e.value) === 0).length > 0)){
                         data.filter_workunit.map((data) => (
                             _newFilter.push({
                                 report_filter_type_id: 2,
@@ -271,7 +271,7 @@ const FormReport = (props) => {
                         ));
                     }
                 
-                    if(data.filter_workunit != null){
+                    if(data.filter_workunit != null && !(data.filter_workunit.filter(e => parseInt(e.value) === 0).length > 0)){
                         data.filter_workunit.map((data) => (
                             _newFilter.push({
                                 report_filter_type_id: 2,
