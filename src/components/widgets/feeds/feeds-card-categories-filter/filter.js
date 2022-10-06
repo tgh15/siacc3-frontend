@@ -66,7 +66,7 @@ export const FeedsFilterModal = (props) => {
             <BaseModal {...modalData} size="lg">
                 <Form onSubmit={handleSubmit(handleSubmit_)}>
 
-                    <FormGroup>
+                    {/* <FormGroup>
                         <Label>Urutkan Berdasarkan Jenis Persetujuan</Label>
                         <p>
                             <Button 
@@ -85,7 +85,7 @@ export const FeedsFilterModal = (props) => {
                                 Verifikator Pusat
                             </Button>
                         </p>
-                    </FormGroup>
+                    </FormGroup> */}
 
                     <FormGroup>
                         <Label>Urutkan Berdasarkan Tanggal Berita</Label>
