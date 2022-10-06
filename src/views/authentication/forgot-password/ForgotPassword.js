@@ -42,7 +42,7 @@ const ForgotPassword = () => {
     const [centeredModal, setCenteredModal] = useState(false);
 
     const schema = yup.object().shape({
-        email: yup.string().email().required("Kolom email tidak boleh kosong."),
+        email: yup.string().email('Silahkan menggunakan email kejaksaan.').required("Kolom email tidak boleh kosong."),
     }).required();
 
     //Schema for form validation
@@ -91,7 +91,10 @@ const ForgotPassword = () => {
                         style   = {{width: '100px'}}
                         block 
                         center 
-                        onClick = {() => setCenteredModal(!centeredModal)}
+                        onClick = {() => {
+                            setCenteredModal(!centeredModal); 
+                            window.location.href = '/';
+                        }}
                     >
                         OK
                     </Button>
@@ -154,7 +157,7 @@ const ForgotPassword = () => {
                                         size      = {14} 
                                         className = 'mr-25' 
                                     />
-                                    <span className='align-middle'>Back to login</span>
+                                    <span className='align-middle'>Kembali ke halaman login</span>
                                 </Link>
                             </p>
                         </CardBody>
