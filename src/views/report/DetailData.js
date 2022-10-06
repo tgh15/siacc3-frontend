@@ -251,7 +251,7 @@ const DetailData = (props) => {
                                                                                         data.dislikes
                                                                                     :
                                                                                         dataHeader.report_content.id == 8 ?
-                                                                                            data.viewer_count
+                                                                                            data.viewers
                                                                                         :
                                                                                             dataHeader.report_content.id == 9 ?
                                                                                                 data.categories
