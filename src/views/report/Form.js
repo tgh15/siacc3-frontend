@@ -16,6 +16,10 @@ import {
     FormGroup, 
     ModalFooter, 
     CustomInput,
+    UncontrolledPopover,
+    PopoverBody,
+    PopoverHeader,
+    Modal,
 }                               from "reactstrap";
 
 import "./Report.scss";
@@ -47,6 +51,8 @@ import {
     schemaNoFormatNoSchedule,
     schemaNoFormatWithSchedule
 }                               from "./validation";
+import { HelpCircle } from "react-feather";
+import { ModalBase } from "../../components/widgets/modals-base";
 
 const FormReport = (props) => {
     //Props
@@ -58,9 +64,10 @@ const FormReport = (props) => {
     const { employees }                         = useContext(EmployeeContext);
 
     //State
-    const [categoryFilter, setCategoryFilter]   = useState([]);
-    const [employeeFilter, setEmployeeFilter]   = useState([]);
-    const [inputCreateDate, setInputCreateDate] = useState(false);
+    const [categoryFilter, setCategoryFilter]         = useState([]);
+    const [employeeFilter, setEmployeeFilter]         = useState([]);
+    const [inputCreateDate, setInputCreateDate]       = useState(false);
+    const [isHelpModalVisible, setIsHelpModalVisible] = useState(false);
 
     const [isFormat, setIsFormat]               = useState(null);
 
@@ -571,7 +578,25 @@ const FormReport = (props) => {
                                                 outline
                                             >
                                                 <CardBody>
-                                                    <CardText>Isi Laporan</CardText>
+                                                    <CardText className="d-flex justify-content-between">
+                                                        Isi Laporan
+                                                        <HelpCircle 
+                                                            onClick     = {() => setIsHelpModalVisible(true)}
+                                                            className   = "cursor-pointer"
+                                                        />
+                                                    </CardText>
+                                                    <ModalBase
+                                                        show    = {isHelpModalVisible}
+                                                        size    = "lg"
+                                                        title   = "Isi Laporan Yang Dapat Digunakan"
+                                                        setShow = {(val) => setIsHelpModalVisible(val)}
+                                                    >
+                                                        - Jika memilih <strong>Isi Berita</strong>, maka Pilihan <strong> Jumlah Berita Di Publikasi, Jumlah Berita di Arsip, Jumlah Berita Ke Pimpinan, Jumlah Agen, Bulan, Tanggal, </strong> dan <strong> Jumlah </strong> Tidak Dapat Digunakan.
+                                                        <hr/>
+                                                        - Jika memilih <strong>Jumlah Agen</strong>, maka harus memilih <strong>Satuan Kerja</strong>.
+                                                        <hr/>
+                                                        - Jika memilih <strong>Jumlah Berita Di Publikasi, Jumlah Berita di Arsip, Jumlah Berita Ke Pimpinan, </strong> maka harus memilih <strong>Nama Agen</strong> atau <strong>Satuan Kerja</strong>.
+                                                    </ModalBase>
                                                     <FormGroup>
                                                         <div id="contents-report">
                                                             <Controller
