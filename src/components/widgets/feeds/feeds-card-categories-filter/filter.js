@@ -44,15 +44,13 @@ export const FeedsFilterModal = (props) => {
 
     const handleSubmit_ = (formData) => {
         formData.order_by           = orderBy;
+        formData.status_order       = statusOrder;
 
         if(formData.workunit_id != undefined) {
             formData.work_unit_id_list = [formData.workunit_id.value];
         }else{
             formData.work_unit_id_list = [];
         }
-
-
-
         onFilter({type: 'filter', value:formData});
         setShow();
     };
@@ -66,7 +64,7 @@ export const FeedsFilterModal = (props) => {
             <BaseModal {...modalData} size="lg">
                 <Form onSubmit={handleSubmit(handleSubmit_)}>
 
-                    {/* <FormGroup>
+                    <FormGroup>
                         <Label>Urutkan Berdasarkan Jenis Persetujuan</Label>
                         <p>
                             <Button 
@@ -85,7 +83,7 @@ export const FeedsFilterModal = (props) => {
                                 Verifikator Pusat
                             </Button>
                         </p>
-                    </FormGroup> */}
+                    </FormGroup>
 
                     <FormGroup>
                         <Label>Urutkan Berdasarkan Tanggal Berita</Label>
