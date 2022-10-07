@@ -70,7 +70,6 @@ const FormReport = (props) => {
         register, 
         setValue,
         watch,
-        getValues,
         handleSubmit, 
     }   
         = useForm({ mode: "onTouched", resolver: yupResolver(
@@ -85,14 +84,28 @@ const FormReport = (props) => {
 
     //Category filter select options
     const Category = () => {
-        let data_ = (category.slice(2)).map((data ) => (
+        let data_ = (category.slice(2)).map((data) => (
             {
                 label : data.name,
                 value : data.id
             }
         ))
 
-        setCategoryFilter(data_);
+        let category_ = [
+            {
+                label : 'Semua Kategori',
+                options : [{
+                    label : 'SEMUA KATEGORI',
+                    value : 0
+                }],
+            },
+            {
+                label   : 'Kategori',
+                options : data_
+            },
+        ]
+
+        setCategoryFilter(category_);
     };
 
     //Workunit filter select options
@@ -145,11 +158,18 @@ const FormReport = (props) => {
                     }
                 
                     //Get Category Filter
-                    if(data.filter_category != null){
+                    if(data.filter_category != null && !(data.filter_category.filter(e => parseInt(e.value) === 0).length > 0)){
                         data.filter_category.map((data) => (
                             _newFilter.push({
                                 report_filter_type_id: 1,
                                 keyword : data.label
+                            })
+                        ));
+                    }else{
+                        (category.slice(2)).map((data) => (
+                            _newFilter.push({
+                                report_filter_type_id: 1,
+                                keyword : data.name
                             })
                         ));
                     }
@@ -170,7 +190,7 @@ const FormReport = (props) => {
                                 keyword : data.value.toString()
                             })
                         ));
-                    };
+                    }
                     
                     formData = {
                         model : {
@@ -203,11 +223,18 @@ const FormReport = (props) => {
                     }
                 
                     //Get Category Filter
-                    if(data.filter_category != null){
+                    if(data.filter_category != null && !(data.filter_category.filter(e => parseInt(e.value) === 0).length > 0)){
                         data.filter_category.map((data) => (
                             _newFilter.push({
                                 report_filter_type_id: 1,
                                 keyword : data.label
+                            })
+                        ));
+                    }else{
+                        (category.slice(2)).map((data) => (
+                            _newFilter.push({
+                                report_filter_type_id: 1,
+                                keyword : data.name
                             })
                         ));
                     }
@@ -262,11 +289,18 @@ const FormReport = (props) => {
                     }
                 
                     //Get Category Filter
-                    if(data.filter_category != null){
+                    if(data.filter_category != null && !(data.filter_category.filter(e => parseInt(e.value) === 0).length > 0)){
                         data.filter_category.map((data) => (
                             _newFilter.push({
                                 report_filter_type_id: 1,
                                 keyword : data.label
+                            })
+                        ));
+                    }else{
+                        (category.slice(2)).map((data) => (
+                            _newFilter.push({
+                                report_filter_type_id: 1,
+                                keyword : data.name
                             })
                         ));
                     }
@@ -322,10 +356,6 @@ const FormReport = (props) => {
         Category();
         Employee();
     }, []);
-
-    useEffect(() => {
-
-    },);
 
     return (
         <Fragment>
@@ -431,7 +461,7 @@ const FormReport = (props) => {
                                                             {value: 'monthly', label : 'Data Satuan Kerja Bulanan'},
                                                         ]}
                                                         className       = 'react-select'
-                                                        placeholder     = "Pilih Kategori"
+                                                        placeholder     = "Pilih Jenis Laporan"
                                                         isClearable
                                                         isMulti
                                                         classNamePrefix = 'select'
@@ -439,13 +469,6 @@ const FormReport = (props) => {
                                                     />
                                                 }
                                             />
-                                            {/* <Select
-                                                options = {[
-                                                    {value: 'yearly', label : 'Data Satuan Kerja Tahunan'},
-                                                    {value: 'monthly', label : 'Data Satuan Kerja Bulanan'},
-                                                ]}
-                                                onChange = {(value) => setFormatType(value.value)}
-                                            /> */}
                                         </FormGroup>
                                     </Col>
                                 :
@@ -587,21 +610,20 @@ const FormReport = (props) => {
                                                         </Col>
                                                         <Col md="10">
                                                             <div id="select-category">
-
                                                                 <Controller
                                                                     name    = "filter_category"
                                                                     control = {control}
-                                                                    as      = {
+                                                                    as      = { 
                                                                         <Select
-                                                                            id              = "filter_category" 
-                                                                            theme           = {selectThemeColors}
-                                                                            options         = {categoryFilter}
-                                                                            className       = 'react-select'
-                                                                            placeholder     = "Pilih Kategori"
-                                                                            isClearable
+                                                                            id                  = "filter_category" 
+                                                                            theme               = {selectThemeColors}
+                                                                            options             = {watch('filter_category') ? watch('filter_category').filter(val => val.value === 0).length > 0 ? [] : categoryFilter : categoryFilter}
                                                                             isMulti
-                                                                            classNamePrefix = 'select'
-                                                                            closeMenuOnSelect={false}
+                                                                            className           = 'react-select'
+                                                                            placeholder         = "Pilih Kategori"
+                                                                            isClearable
+                                                                            classNamePrefix     = 'select'
+                                                                            closeMenuOnSelect   = {false}
                                                                         />
                                                                     }
                                                                 />
@@ -621,15 +643,15 @@ const FormReport = (props) => {
                                                                     control = {control}
                                                                     as      = {
                                                                         <Select
-                                                                            id              = "filter_workunit" 
-                                                                            theme           = {selectThemeColors}
-                                                                            options         = {workunitOptionsApproval}
-                                                                            className       = 'react-select'
-                                                                            placeholder     = "Pilih Satuan Kerja"
-                                                                            isClearable
+                                                                            id                  = "filter_workunit" 
+                                                                            theme               = {selectThemeColors}
                                                                             isMulti
-                                                                            classNamePrefix = 'select'
-                                                                            closeMenuOnSelect={false}
+                                                                            options             = {watch('filter_workunit') ? watch('filter_workunit').filter(val => val.value === 0).length > 0 ? [] : workunitOptionsApproval : workunitOptionsApproval}
+                                                                            className           = 'react-select'
+                                                                            placeholder         = "Pilih Satuan Kerja"
+                                                                            isClearable
+                                                                            classNamePrefix     = 'select'
+                                                                            closeMenuOnSelect   = {false}
                                                                         />
                                                                     }
                                                                 />
