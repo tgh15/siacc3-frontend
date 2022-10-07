@@ -100,7 +100,7 @@ const FormReport = (props) => {
         let data_ = employees.map((data ) => (
             {
                 label : data.name,
-                value : data.id
+                value : data.uuid
             }
         ))
 
@@ -215,7 +215,7 @@ const FormReport = (props) => {
                     if(data.filter_workunit != null && !(data.filter_workunit.filter(e => parseInt(e.value) === 0).length > 0)){
                         data.filter_workunit.map((data) => (
                             _newFilter.push({
-                                report_filter_type_id: 2,
+                                report_filter_type_id: 3,
                                 keyword : data.value
                             })
                         ));
@@ -224,7 +224,7 @@ const FormReport = (props) => {
                     if(data.filter_agent != null){
                         data.filter_agent.map((data) => (
                             _newFilter.push({
-                                report_filter_type_id: 3,
+                                report_filter_type_id: 2,
                                 keyword : data.value
                             })
                         ));
@@ -274,7 +274,7 @@ const FormReport = (props) => {
                     if(data.filter_workunit != null && !(data.filter_workunit.filter(e => parseInt(e.value) === 0).length > 0)){
                         data.filter_workunit.map((data) => (
                             _newFilter.push({
-                                report_filter_type_id: 2,
+                                report_filter_type_id: 3,
                                 keyword : data.value
                             })
                         ));
@@ -283,7 +283,7 @@ const FormReport = (props) => {
                     if(data.filter_agent != null){
                         data.filter_agent.map((data) => (
                             _newFilter.push({
-                                report_filter_type_id: 3,
+                                report_filter_type_id: 2,
                                 keyword : data.value
                             })
                         ));
