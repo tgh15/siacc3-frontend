@@ -3,7 +3,7 @@ import { Button, Modal, ModalBody, ModalFooter, ModalHeader } from 'reactstrap'
 
 
 
-export const ModalBase = ({ children, title, show, setShow, size, center, scrollable, footer, unmount, onclose,onOpened }) => {
+export const ModalBase = ({ children, title, show, setShow, size, center, scrollable, footer, unmount, onclose, onOpened, backdrop }) => {
     let isScroll
     if (scrollable) {
         isScroll = "modal-dialog-scrollable";
@@ -18,6 +18,8 @@ export const ModalBase = ({ children, title, show, setShow, size, center, scroll
             className       = {(center) ? `modal-dialog-centered ${isScroll}` : `modal-dialog ${isScroll}`}
             unmountOnClose  = {unmount == undefined ? true : unmount}
             onOpened        = {onOpened}
+            backdrop        = {backdrop == undefined ? true : backdrop}
+
         >
             <ModalHeader toggle={typeof onclose == 'function' ? () => {setShow(!show);onclose();} : () => {setShow(!show); } }>
                 {title}

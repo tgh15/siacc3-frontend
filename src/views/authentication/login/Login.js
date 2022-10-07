@@ -150,6 +150,7 @@ const Login = props => {
                             title   = {"Otentikasi Akun Data"}
                             center  = {true} 
                             setShow = {(par) => { setConfirmOtp(par)}} 
+                            backdrop= "static"
                         >
                             <div className="container-fluid">
                                 <ConfirmOtp 
