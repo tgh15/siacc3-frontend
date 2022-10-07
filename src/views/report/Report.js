@@ -218,7 +218,6 @@ const Report = (props) => {
             ))
             setBody([..._body]);
         }
-        console.log(_body, 'disini');
     }
 
     const addWatermark = (doc) => {
