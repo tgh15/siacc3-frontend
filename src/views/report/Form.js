@@ -165,14 +165,14 @@ const FormReport = (props) => {
                         data.filter_category.map((data) => (
                             _newFilter.push({
                                 report_filter_type_id: 1,
-                                keyword : data.label
+                                keyword : data.label.toString()
                             })
                         ));
                     }else{
                         (category.slice(2)).map((data) => (
                             _newFilter.push({
                                 report_filter_type_id: 1,
-                                keyword : data.name
+                                keyword : data.name.toString()
                             })
                         ));
                     }
@@ -230,14 +230,14 @@ const FormReport = (props) => {
                         data.filter_category.map((data) => (
                             _newFilter.push({
                                 report_filter_type_id: 1,
-                                keyword : data.label
+                                keyword : data.label.toString()
                             })
                         ));
                     }else{
                         (category.slice(2)).map((data) => (
                             _newFilter.push({
                                 report_filter_type_id: 1,
-                                keyword : data.name
+                                keyword : data.name.toString()
                             })
                         ));
                     }
@@ -296,14 +296,14 @@ const FormReport = (props) => {
                         data.filter_category.map((data) => (
                             _newFilter.push({
                                 report_filter_type_id: 1,
-                                keyword : data.label
+                                keyword : data.label.toString()
                             })
                         ));
                     }else{
                         (category.slice(2)).map((data) => (
                             _newFilter.push({
                                 report_filter_type_id: 1,
-                                keyword : data.name
+                                keyword : data.name.toString()
                             })
                         ));
                     }
