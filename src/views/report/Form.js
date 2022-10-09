@@ -47,6 +47,8 @@ import {
     schemaNoFormatNoSchedule,
     schemaNoFormatWithSchedule
 }                               from "./validation";
+import { HelpCircle } from "react-feather";
+import { ModalBase } from "../../components/widgets/modals-base";
 
 const FormReport = (props) => {
     //Props
@@ -58,9 +60,10 @@ const FormReport = (props) => {
     const { employees }                         = useContext(EmployeeContext);
 
     //State
-    const [categoryFilter, setCategoryFilter]   = useState([]);
-    const [employeeFilter, setEmployeeFilter]   = useState([]);
-    const [inputCreateDate, setInputCreateDate] = useState(false);
+    const [categoryFilter, setCategoryFilter]         = useState([]);
+    const [employeeFilter, setEmployeeFilter]         = useState([]);
+    const [inputCreateDate, setInputCreateDate]       = useState(false);
+    const [isHelpModalVisible, setIsHelpModalVisible] = useState(false);
 
     const [isFormat, setIsFormat]               = useState(null);
 
@@ -70,7 +73,6 @@ const FormReport = (props) => {
         register, 
         setValue,
         watch,
-        getValues,
         handleSubmit, 
     }   
         = useForm({ mode: "onTouched", resolver: yupResolver(
@@ -85,14 +87,28 @@ const FormReport = (props) => {
 
     //Category filter select options
     const Category = () => {
-        let data_ = (category.slice(2)).map((data ) => (
+        let data_ = (category.slice(2)).map((data) => (
             {
                 label : data.name,
                 value : data.id
             }
         ))
 
-        setCategoryFilter(data_);
+        let category_ = [
+            {
+                label : 'Semua Kategori',
+                options : [{
+                    label : 'SEMUA KATEGORI',
+                    value : 0
+                }],
+            },
+            {
+                label   : 'Kategori',
+                options : data_
+            },
+        ]
+
+        setCategoryFilter(category_);
     };
 
     //Workunit filter select options
@@ -100,7 +116,7 @@ const FormReport = (props) => {
         let data_ = employees.map((data ) => (
             {
                 label : data.name,
-                value : data.id
+                value : data.uuid
             }
         ))
 
@@ -145,11 +161,18 @@ const FormReport = (props) => {
                     }
                 
                     //Get Category Filter
-                    if(data.filter_category != null){
+                    if(data.filter_category != null && !(data.filter_category.filter(e => parseInt(e.value) === 0).length > 0)){
                         data.filter_category.map((data) => (
                             _newFilter.push({
                                 report_filter_type_id: 1,
-                                keyword : data.label
+                                keyword : data.label.toString()
+                            })
+                        ));
+                    }else{
+                        (category.slice(2)).map((data) => (
+                            _newFilter.push({
+                                report_filter_type_id: 1,
+                                keyword : data.name.toString()
                             })
                         ));
                     }
@@ -157,7 +180,7 @@ const FormReport = (props) => {
                     if(data.filter_workunit != null && !(data.filter_workunit.filter(e => parseInt(e.value) === 0).length > 0)){
                         data.filter_workunit.map((data) => (
                             _newFilter.push({
-                                report_filter_type_id: 2,
+                                report_filter_type_id: 3,
                                 keyword : data.value.toString()
                             })
                         ));
@@ -166,11 +189,11 @@ const FormReport = (props) => {
                     if(data.filter_agent != null){
                         data.filter_agent.map((data) => (
                             _newFilter.push({
-                                report_filter_type_id: 3,
+                                report_filter_type_id: 2,
                                 keyword : data.value.toString()
                             })
                         ));
-                    };
+                    }
                     
                     formData = {
                         model : {
@@ -203,11 +226,18 @@ const FormReport = (props) => {
                     }
                 
                     //Get Category Filter
-                    if(data.filter_category != null){
+                    if(data.filter_category != null && !(data.filter_category.filter(e => parseInt(e.value) === 0).length > 0)){
                         data.filter_category.map((data) => (
                             _newFilter.push({
                                 report_filter_type_id: 1,
-                                keyword : data.label
+                                keyword : data.label.toString()
+                            })
+                        ));
+                    }else{
+                        (category.slice(2)).map((data) => (
+                            _newFilter.push({
+                                report_filter_type_id: 1,
+                                keyword : data.name.toString()
                             })
                         ));
                     }
@@ -215,8 +245,8 @@ const FormReport = (props) => {
                     if(data.filter_workunit != null && !(data.filter_workunit.filter(e => parseInt(e.value) === 0).length > 0)){
                         data.filter_workunit.map((data) => (
                             _newFilter.push({
-                                report_filter_type_id: 2,
-                                keyword : data.value
+                                report_filter_type_id: 3,
+                                keyword : data.value.toString()
                             })
                         ));
                     };
@@ -224,8 +254,8 @@ const FormReport = (props) => {
                     if(data.filter_agent != null){
                         data.filter_agent.map((data) => (
                             _newFilter.push({
-                                report_filter_type_id: 3,
-                                keyword : data.value
+                                report_filter_type_id: 2,
+                                keyword : data.value.toString()
                             })
                         ));
                     };
@@ -262,11 +292,18 @@ const FormReport = (props) => {
                     }
                 
                     //Get Category Filter
-                    if(data.filter_category != null){
+                    if(data.filter_category != null && !(data.filter_category.filter(e => parseInt(e.value) === 0).length > 0)){
                         data.filter_category.map((data) => (
                             _newFilter.push({
                                 report_filter_type_id: 1,
-                                keyword : data.label
+                                keyword : data.label.toString()
+                            })
+                        ));
+                    }else{
+                        (category.slice(2)).map((data) => (
+                            _newFilter.push({
+                                report_filter_type_id: 1,
+                                keyword : data.name.toString()
                             })
                         ));
                     }
@@ -274,8 +311,8 @@ const FormReport = (props) => {
                     if(data.filter_workunit != null && !(data.filter_workunit.filter(e => parseInt(e.value) === 0).length > 0)){
                         data.filter_workunit.map((data) => (
                             _newFilter.push({
-                                report_filter_type_id: 2,
-                                keyword : data.value
+                                report_filter_type_id: 3,
+                                keyword : data.value.toString()
                             })
                         ));
                     };
@@ -283,8 +320,8 @@ const FormReport = (props) => {
                     if(data.filter_agent != null){
                         data.filter_agent.map((data) => (
                             _newFilter.push({
-                                report_filter_type_id: 3,
-                                keyword : data.value
+                                report_filter_type_id: 2,
+                                keyword : data.value.toString()
                             })
                         ));
                     };
@@ -323,12 +360,22 @@ const FormReport = (props) => {
         Employee();
     }, []);
 
-    useEffect(() => {
-
-    },);
-
     return (
         <Fragment>
+
+            <ModalBase
+                show    = {isHelpModalVisible}
+                size    = "lg"
+                title   = "Isi Laporan Yang Dapat Digunakan"
+                setShow = {(val) => setIsHelpModalVisible(val)}
+            >
+                - Jika memilih <strong>Isi Berita</strong>, maka Pilihan <strong> Jumlah Berita Di Publikasi, Jumlah Berita di Arsip, Jumlah Berita Ke Pimpinan, Jumlah Agen, Bulan, Tanggal, </strong> dan <strong> Jumlah </strong> Tidak Dapat Digunakan.
+                <hr/>
+                - Jika memilih <strong>Jumlah Agen</strong>, maka harus memilih <strong>Satuan Kerja</strong>.
+                <hr/>
+                - Jika memilih <strong>Jumlah Berita Di Publikasi, Jumlah Berita di Arsip, Jumlah Berita Ke Pimpinan, </strong> maka harus memilih <strong>Nama Agen</strong> atau <strong>Satuan Kerja</strong>.
+            </ModalBase>
+
             <Form onSubmit={handleSubmit(handleFinish)}>
                 <Row>
                     <Col md={6}>
@@ -431,20 +478,14 @@ const FormReport = (props) => {
                                                             {value: 'monthly', label : 'Data Satuan Kerja Bulanan'},
                                                         ]}
                                                         className       = 'react-select'
-                                                        placeholder     = "Pilih Kategori"
+                                                        placeholder     = "Pilih Jenis Laporan"
                                                         isClearable
                                                         isMulti
                                                         classNamePrefix = 'select'
+                                                        closeMenuOnSelect={false}
                                                     />
                                                 }
                                             />
-                                            {/* <Select
-                                                options = {[
-                                                    {value: 'yearly', label : 'Data Satuan Kerja Tahunan'},
-                                                    {value: 'monthly', label : 'Data Satuan Kerja Bulanan'},
-                                                ]}
-                                                onChange = {(value) => setFormatType(value.value)}
-                                            /> */}
                                         </FormGroup>
                                     </Col>
                                 :
@@ -547,7 +588,13 @@ const FormReport = (props) => {
                                                 outline
                                             >
                                                 <CardBody>
-                                                    <CardText>Isi Laporan</CardText>
+                                                    <CardText className="d-flex justify-content-between">
+                                                        Isi Laporan
+                                                        <HelpCircle 
+                                                            onClick     = {() => setIsHelpModalVisible(true)}
+                                                            className   = "cursor-pointer"
+                                                        />
+                                                    </CardText>
                                                     <FormGroup>
                                                         <div id="contents-report">
                                                             <Controller
@@ -563,6 +610,7 @@ const FormReport = (props) => {
                                                                         isClearable
                                                                         isMulti
                                                                         classNamePrefix = 'select'
+                                                                        closeMenuOnSelect={false}
                                                                     />
                                                                 }
                                                             />
@@ -585,20 +633,20 @@ const FormReport = (props) => {
                                                         </Col>
                                                         <Col md="10">
                                                             <div id="select-category">
-
                                                                 <Controller
                                                                     name    = "filter_category"
                                                                     control = {control}
-                                                                    as      = {
+                                                                    as      = { 
                                                                         <Select
-                                                                            id              = "filter_category" 
-                                                                            theme           = {selectThemeColors}
-                                                                            options         = {categoryFilter}
-                                                                            className       = 'react-select'
-                                                                            placeholder     = "Pilih Kategori"
-                                                                            isClearable
+                                                                            id                  = "filter_category" 
+                                                                            theme               = {selectThemeColors}
+                                                                            options             = {watch('filter_category') ? watch('filter_category').filter(val => val.value === 0).length > 0 ? [] : categoryFilter : categoryFilter}
                                                                             isMulti
-                                                                            classNamePrefix = 'select'
+                                                                            className           = 'react-select'
+                                                                            placeholder         = "Pilih Kategori"
+                                                                            isClearable
+                                                                            classNamePrefix     = 'select'
+                                                                            closeMenuOnSelect   = {false}
                                                                         />
                                                                     }
                                                                 />
@@ -618,14 +666,15 @@ const FormReport = (props) => {
                                                                     control = {control}
                                                                     as      = {
                                                                         <Select
-                                                                            id              = "filter_workunit" 
-                                                                            theme           = {selectThemeColors}
-                                                                            options         = {workunitOptionsApproval}
-                                                                            className       = 'react-select'
-                                                                            placeholder     = "Pilih Satuan Kerja"
-                                                                            isClearable
+                                                                            id                  = "filter_workunit" 
+                                                                            theme               = {selectThemeColors}
                                                                             isMulti
-                                                                            classNamePrefix = 'select'
+                                                                            options             = {watch('filter_workunit') ? watch('filter_workunit').filter(val => val.value === 0).length > 0 ? [] : workunitOptionsApproval : workunitOptionsApproval}
+                                                                            className           = 'react-select'
+                                                                            placeholder         = "Pilih Satuan Kerja"
+                                                                            isClearable
+                                                                            classNamePrefix     = 'select'
+                                                                            closeMenuOnSelect   = {false}
                                                                         />
                                                                     }
                                                                 />
@@ -652,6 +701,7 @@ const FormReport = (props) => {
                                                                             isClearable
                                                                             isMulti
                                                                             classNamePrefix = 'select'
+                                                                            closeMenuOnSelect={false}
                                                                         />
                                                                     }
                                                                 />

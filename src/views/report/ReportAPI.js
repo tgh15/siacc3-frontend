@@ -69,6 +69,9 @@ const ReportAPI = () => {
 
     //create report
     const onSubmit = (formData) => {
+
+        setLoading(true);
+
         feedsReportAPI.createReport(formData).then(
             res => {
                 if(res.status === 201){

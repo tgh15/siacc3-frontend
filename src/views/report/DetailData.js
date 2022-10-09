@@ -69,8 +69,8 @@ const DetailData = (props) => {
                                                         4
                                                     :
                                                         data.report_content.id == 2 ?
-                                                            // tangal publikasi
-                                                            3
+                                                            // tanggal publikasi
+                                                            2
                                                         :
                                                             data.report_content.id == 3 ?
                                                                 // jumlah suka pimpinan
