@@ -151,8 +151,8 @@ const FormReport = (props) => {
     
         }else{
             if(data.content != null && data.content.filter(e => parseInt(e.value) === 1).length > 0){
-                if(data.content.filter(e => parseInt(e.value) >= 13 && parseInt(e.value) <= 19).length > 0){
-                    CustomToast('warning', 'Jika memilih Isi Berita, maka Pilihan Jumlah Berita Di Publikasi, Jumlah Berita di Arsip, Jumlah Berita Ke Pimpinan, Jumlah Agen, Bulan, Tanggal, dan Jumlah Tidak Dapat Digunakan.');
+                if(data.content.filter(e => parseInt(e.value) >= 12 && parseInt(e.value) <= 19).length > 0){
+                    CustomToast('warning', 'Jika memilih Isi Berita, maka Pilihan Jabatan, Jumlah Berita Di Publikasi, Jumlah Berita di Arsip, Jumlah Berita Ke Pimpinan, Jumlah Agen, Bulan, Tanggal, dan Jumlah Tidak Dapat Digunakan.');
                 }else{
                     if(data.content != null){
                         data.content.map((data) => (
@@ -197,11 +197,11 @@ const FormReport = (props) => {
                     
                     formData = {
                         model : {
+                            end          : moment(data.end_date[0]).format('YYYY-MM-DDTH:mm:ssZ'),
                             title        : data.title,
                             start        : moment(data.start_date[0]).format('YYYY-MM-DDTH:mm:ssZ'),
-                            end          : moment(data.end_date[0]).format('YYYY-MM-DDTH:mm:ssZ'),
-                            contents_id  : _newOrder,
                             filters      : _newFilter,
+                            contents_id  : _newOrder,
                             is_formatted : false
                         }
                     }
@@ -283,7 +283,7 @@ const FormReport = (props) => {
                 }else{
                     CustomToast('warning', 'Jika memilih Jumlah Agen, maka harus memilih Satuan Kerja');
                 }
-            }else if(data.content.filter(e => parseInt(e.value) >= 13 && parseInt(e.value) <= 16 ).length > 0){
+            }else if(data.content.filter(e => parseInt(e.value) >= 12 && parseInt(e.value) <= 16 ).length > 0){
                 if(data.content.filter(e => parseInt(e.value) === 10 || parseInt(e.value) === 11 ).length > 0){
                     if(data.content != null){
                         data.content.map((data) => (
@@ -369,7 +369,7 @@ const FormReport = (props) => {
                 title   = "Isi Laporan Yang Dapat Digunakan"
                 setShow = {(val) => setIsHelpModalVisible(val)}
             >
-                - Jika memilih <strong>Isi Berita</strong>, maka Pilihan <strong> Jumlah Berita Di Publikasi, Jumlah Berita di Arsip, Jumlah Berita Ke Pimpinan, Jumlah Agen, Bulan, Tanggal, </strong> dan <strong> Jumlah </strong> Tidak Dapat Digunakan.
+                - Jika memilih <strong>Isi Berita</strong>, maka Pilihan <strong>Jabatan, Jumlah Berita Di Publikasi, Jumlah Berita di Arsip, Jumlah Berita Ke Pimpinan, Jumlah Agen, Bulan, Tanggal, </strong> dan <strong> Jumlah </strong> Tidak Dapat Digunakan.
                 <hr/>
                 - Jika memilih <strong>Jumlah Agen</strong>, maka harus memilih <strong>Satuan Kerja</strong>.
                 <hr/>
