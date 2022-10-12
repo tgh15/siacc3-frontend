@@ -3,19 +3,26 @@ import {
     Col, 
     Row, 
     Label, 
-    Button, 
+    Button,
     FormGroup, 
     ModalFooter, 
 } from "reactstrap";
 
+//Components
+import ButtonLoading            from "../../../components/widgets/loading-button";
 
-const FilterForm = ({workunitLevelSelected, onFilter}) => {
+
+const FilterForm = (props) => {
+    const  {
+        loading,
+        onFilter
+    } = props;
+
     //State
     const [order, setOrder] = useState("latest");
 
-    const handleFilter = () => {
-       onFilter(order)
-    };
+    //Handle Filter
+    const handleFilter      = () => {onFilter(order)};
     
     return (
         <Fragment>
@@ -68,12 +75,13 @@ const FilterForm = ({workunitLevelSelected, onFilter}) => {
             </FormGroup>
             <ModalFooter className="d-flex justify-content-center">
                 <div id="workunitlist-apply">
-                    <Button.Ripple 
-                        color   = 'primary' 
-                        onClick = {handleFilter}
+                    <ButtonLoading
+                        color     = 'primary' 
+                        action    = {handleFilter}
+                        isLoading = {loading}
                     >
                         Terapkan
-                    </Button.Ripple>
+                    </ButtonLoading>
                 </div>
             </ModalFooter>
         </Fragment>

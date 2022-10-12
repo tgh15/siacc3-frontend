@@ -1,16 +1,19 @@
-import { Fragment, useContext, useEffect, useRef } from 'react';
-import { Row, Col, UncontrolledTooltip }        from 'reactstrap';
-import { ShepherdTour, ShepherdTourContext }    from 'react-shepherd';
+import { Fragment, useContext, useEffect, useRef }  from 'react';
+import { Row, Col, UncontrolledTooltip }            from 'reactstrap';
+import { ShepherdTour, ShepherdTourContext }        from 'react-shepherd';
 
+//Css
 import 'shepherd.js/dist/css/shepherd.css';
 import '@styles/react/libs/shepherd-tour/shepherd-tour.scss';
 
-//icon
-import { HelpCircle }                           from 'react-feather';
+//Icon
+import { HelpCircle }                               from 'react-feather';
 
 //Views
-import FilterForm                               from './FilterForm';
-import Helper from '../../../helpers';
+import FilterForm                                   from './FilterForm';
+
+//Helper
+import Helper                                       from '../../../helpers';
 
 
 const backBtnClass  = 'btn btn-sm btn-outline-primary',
@@ -122,6 +125,7 @@ const TourFilter = (props) => {
                     sm = '12'
                 >
                     <FilterForm
+                        loading                 = {props.loading}
                         onClose                 = {props.onClose}
                         onFilter                = { (datas) => props.onFilter(datas)}
                         workunitLevelSelected   = {props.workunitLevelSelected}

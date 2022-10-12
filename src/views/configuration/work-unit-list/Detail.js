@@ -1,33 +1,46 @@
-import { Fragment, useEffect, useState } from "react"
-import { Button, Card, CardFooter, CardHeader, Col, Row } from "reactstrap"
-import CardBody from "reactstrap/lib/CardBody"
-import ImageRounded from "../../../components/widgets/image-rounded"
-import CardText from "reactstrap/lib/CardText"
-import CustomToast from "../../../components/widgets/custom-toast"
-import WorkUnitListApi from "../../../services/pages/configuration/unit-work-list"
-import Skeleton from "react-loading-skeleton"
-import MapWorkunit from "./MapWorkunit"
-import CustomTableBodyEmpty from "../../../components/widgets/custom-table/CustomTableBodyEmpty"
-import { Marker, Popup } from "react-map-gl"
-import imgMarker from "../../../assets/images/map_icons/point-map.png"
-import PerformanceApi from "../../../services/pages/performance"
-import { GetAgentByWorkunit } from "../../../services/pages/performance/GetAgentByWorkunit"
-import feedsAgentReportAPI from "../../../services/pages/feeds/agent-reports"
-import { processAgentReports } from "../../../components/widgets/feeds/news-card-widget/NewsConfig"
-import { NewsWidget } from "../../../components/widgets/feeds/news-card-widget"
-import CardPerformance from "./CardPerformance"
-import PerfectScrollbar from "react-perfect-scrollbar"
-import { useQuery } from "../../../components/utility/hooks/useQuery"
-import ImgDataEmpty from "../../../assets/images/pages/emptydata.png"
-import { useParams } from "react-router-dom"
-import ModalPerformance from "./ModalPerformance"
+import { Fragment, useEffect, useState } from "react";
+import { 
+    Col, 
+    Row, 
+    Card, 
+    Button, 
+    CardText, 
+    CardBody, 
+    CardHeader, 
+}   from "reactstrap";
+
+import Skeleton                          from "react-loading-skeleton";
+import { useParams }                     from "react-router-dom";
+import { Marker, Popup }                 from "react-map-gl";
+import PerfectScrollbar                  from "react-perfect-scrollbar";
+
+//Assets
+import imgMarker                         from "../../../assets/images/map_icons/point-map.png";
+import ImgDataEmpty                      from "../../../assets/images/pages/emptydata.png";
+
+//Services
+import PerformanceApi                    from "../../../services/pages/performance";
+import WorkUnitListApi                   from "../../../services/pages/configuration/unit-work-list";
+import workunitListAPI                   from "../../../services/pages/configuration/unit-work-list/WorkunitList";
+import feedsAgentReportAPI               from "../../../services/pages/feeds/agent-reports";
+import { GetAgentByWorkunit }            from "../../../services/pages/performance/GetAgentByWorkunit";
+
+//Components
+import CustomToast                       from "../../../components/widgets/custom-toast";
+import MapWorkunit                       from "./MapWorkunit";
+import ImageRounded                      from "../../../components/widgets/image-rounded";
+import { useQuery }                      from "../../../components/utility/hooks/useQuery";
+import { NewsWidget }                    from "../../../components/widgets/feeds/news-card-widget";
+import CardPerformance                   from "./CardPerformance";
+import ModalPerformance                  from "./ModalPerformance";
+import CustomTableBodyEmpty              from "../../../components/widgets/custom-table/CustomTableBodyEmpty";
+import { processAgentReports }           from "../../../components/widgets/feeds/news-card-widget/NewsConfig";
 
 
 const CardData = (props) => {
+    //Props
+    const {className} = props;
 
-    const {
-        className
-    } = props
     return (
         <Card className="w-100">
             <CardBody className={className}>
@@ -35,51 +48,108 @@ const CardData = (props) => {
             </CardBody>
         </Card>
     )
-}
+};
 
 const Detail = ({ match }) => {
-
+    //Params
     let {id} = useParams();
 
-    const [data, setData]                           = useState(false)
-    const [leftState, setLeftState]                 = useState([]);
-    const [dataDetail, setDataDetail]               = useState(null)
-    const [rightState, setRightState]               = useState([]);
-    const [defaultDataMap, setDefaultDataMap]       = useState({});
-    const [selectedMarker, setSelectedMarker]       = useState(null)
-    const [performanceAgent, setPerformanceAgent]   = useState({
-        loading: true,
-        data: []
+    //Query
+    let query = useQuery();
+
+    //State
+    const [data, setData]                               = useState(false);
+    const [leftState, setLeftState]                     = useState([]);
+    const [dataDetail, setDataDetail]                   = useState(null);
+    const [rightState, setRightState]                   = useState([]);
+    const [defaultDataMap, setDefaultDataMap]           = useState({});
+    const [selectedMarker, setSelectedMarker]           = useState(null);
+
+    const [performanceAgent, setPerformanceAgent]       = useState({
+        loading : true,
+        data    : []
     });
 
     const [performanceWorkunit, setPerformanceWorkunit] = useState({
-        loading: true,
-        data: []
+        loading : true,
+        data    : []
     });
 
-    const [modalPerformance, setModalPerformance] = useState({
-        show: false,
-        type: null
-    })
+    const [modalPerformance, setModalPerformance]       = useState({
+        show : false,
+        type : null
+    });
 
-    let query = useQuery();
-
+    //Get profile workunit
     const getData = () => {
+        const formData = {
+            id: parseInt(match.params.id)
+        }
 
-        WorkUnitListApi.getById({
-            id: match.params.id,
-            onSuccess: (res) => {
-                setData(res);
-                setDefaultDataMap({
-                    "latitude": res.latitude,
-                    "longitude": res.longitude,
-                    "zoom": 4
-                });
-            }, onFail: (err) => {
+        workunitListAPI.getWorkunitProfile(formData).then(
+            res => {
+                if (!res.is_error) {
+                    setData(res.data);
+                    setDefaultDataMap({
+                        "latitude"  : res.data.latitude,
+                        "longitude" : res.data.longitude,
+                        "zoom"      : 4
+                    });
+                } else {
+                    CustomToast("danger", res.code);
+                }
+            }
+        ).catch(
+            err => {
+                CustomToast("danger", err.code);
+            }
+        )
+    };
+
+    //Get performance workunit
+    const getWorkunitDetail = () => {
+        setDataDetail(null);
+
+        const formData = {
+            id: parseInt(match.params.id)
+        }
+
+        workunitListAPI.getWorkunitPerformance(formData).then (
+            res => {
+                if (res.status === 200) {
+                    setDataDetail(res.data);
+                }
+            }
+        ).catch(
+            err => {
                 CustomToast("danger", err.message);
             }
-        })
-    }
+        )
+    };
+
+    //Get rating workunit
+    const getRatingWorkunit = () => {
+        const formData = {
+            workunit_id         : parseInt(id),
+            condition_by        : "parent",
+            workunit_level_id   : parseInt(query.get("level"))
+        }
+        
+        workunitListAPI.getWorkunitRating(1, formData).then(
+            res => {
+                if (res.status === 200) {
+                    setPerformanceWorkunit({
+                        loading : false,
+                        data    : res.data.workunit_performance
+                    })
+                }
+            }
+        ).catch(
+            err => {
+                CustomToast("danger", err.message);
+            }
+        )
+    };
 
     const getPerformanceAgent = () => {
         PerformanceApi.agentByWorkunitAndChild({
@@ -95,42 +165,7 @@ const Detail = ({ match }) => {
         }, err => {
             console.log(err)
         })
-    }
-
-    const getPerformanceWorkunit = () => {
-        PerformanceApi.workunitByParent({
-            data: {
-                workunit_id         : parseInt(id),
-                condition_by        : 'parent',
-                workunit_level_id   : parseInt(query.get("level"))
-            },
-            page: 1
-        }).then(res => {
-            console.log(res.data)
-            setPerformanceWorkunit({
-                loading: false,
-                data: res.data.workunit_performance
-            })
-        }, err => {
-            console.log(err)
-        })
-    }
-
-    const getWorkunitDetail = () => {
-        setDataDetail(null)
-        let datas = {
-            id: parseInt(match.params.id)
-        }
-
-        PerformanceApi.getWorkunitDetail({
-            datas: datas,
-            onSuccess: (res) => {
-                setDataDetail(res)
-            }, onFail: (err) => {
-                console.log(err);
-            }
-        })
-    }
+    };
 
     const getAgentReportByWorkunit = async () => {
         const formData = {
@@ -141,7 +176,6 @@ const Detail = ({ match }) => {
             res => {
                 if (res.status === 200) {
                     if ("agent_report" in res.data && res.data.agent_report != null) {
-
                         let dataFeeds = processAgentReports(res.data.agent_report);
                         dataFeeds.then(
                             res => {
@@ -166,81 +200,104 @@ const Detail = ({ match }) => {
     };
 
     useEffect(() => {
-
         getData();
         getWorkunitDetail();
-        getAgentReportByWorkunit();
+        getRatingWorkunit();
         getPerformanceAgent();
-        getPerformanceWorkunit();
-
-
-    }, [])
+        getAgentReportByWorkunit();
+    }, []);
 
     return (
         <Fragment>
             <ModalPerformance
                 show                = {modalPerformance.show}
-                onClose             = {() => setModalPerformance({ show: false, type: null })}
                 type                = {modalPerformance.type}
+                onClose             = {() => setModalPerformance({ show: false, type: null })}
                 workunit_id         = {id}
                 workunit_level_id   = {query.get("level")}
             />
 
-            {data && <MapWorkunit >
+            {data && <MapWorkunit>
                 <Marker
-                    key={data.id}
-                    latitude={data.latitude}
-                    longitude={data.longitude}
+                    key       = {data.id}
+                    latitude  = {data.latitude}
+                    longitude = {data.longitude}
                 >
-                    <button style={{ border: "none", background: "none" }} onClick={(e) => { setSelectedMarker(data) }}>
-                        <ImageRounded src={imgMarker} style={{ width: "20px" }} />
+                    <button 
+                        style   = {{ border: "none", background: "none" }} 
+                        onClick = {(e) => { setSelectedMarker(data) }}
+                    >
+                        <ImageRounded 
+                            src   = {imgMarker} 
+                            style = {{ width: "20px" }}
+                        />
                     </button>
                 </Marker>
                 {selectedMarker ? (
                     <Popup
-                        latitude={selectedMarker.latitude}
-                        longitude={selectedMarker.longitude}
-                        onClose={() => { setSelectedMarker(null) }}>
+                        onClose   = {() => { setSelectedMarker(null) }}
+                        latitude  = {selectedMarker.latitude}
+                        longitude = {selectedMarker.longitude}
+                    >
                         <div className="d-flex flex-column align-items-center py-0">
                             <div >
-                                <ImageRounded src={selectedMarker.logo} width={40} />
+                                <ImageRounded 
+                                    src   = {selectedMarker.logo} 
+                                    width = {40}
+                                />
                             </div>
-                            <p className="font-weight-bolder mt-1" style={{ color: "black", fontSize: "12px" }}>
+                            <p 
+                                style     = {{ color: "black", fontSize: "12px" }}
+                                className = "font-weight-bolder mt-1" 
+                            >
                                 {selectedMarker.name}
                             </p>
-
                         </div>
                     </Popup>
                 ) : null}
             </MapWorkunit>}
 
-            {!data && <Skeleton style={{ height: "300px" }} />}
+            {!data && <Skeleton style={{ height: "300px" }}/>}
+
             <Row>
-                <Col md="4" className="d-flex flex-row">
+                <Col 
+                    md        = "4"
+                    className = "d-flex flex-row"
+                >
                     <CardData className="d-flex align-items-center flex-column">
                         <div>
-                            {data ? <ImageRounded src={data.logo} width={120} /> : <Skeleton style={{ width: "150px", height: "150px" }} />}
+                            {
+                                data ? <ImageRounded src={data.logo} width={120}/> : 
+                                <Skeleton style={{ width: "150px", height: "150px" }}/>
+                            }
                         </div>
                         <p className="text-muted mt-1">
-                            ID : {data.code ?? <Skeleton style={{ width: "100px" }} />}
+                            ID : {data.code ?? <Skeleton style={{ width: "100px" }}/>}
                         </p>
-                        <p>{data.name ?? <Skeleton style={{ width: "250px" }} />}</p>
+                        <p>{data.name ?? <Skeleton style={{ width: "250px" }}/>}</p>
                         <p className="text-center">
-                            {data.address ?? <Skeleton style={{ width: "250px", height: "50px" }} />}
+                            {data.address ?? <Skeleton style={{ width: "250px", height: "50px" }}/>}
                         </p>
                         <p className="text-center">
-                            {data.email ?? <Skeleton style={{ width: "250px", height: "50px" }} />}
+                            {data.email ?? <Skeleton style={{ width: "250px", height: "50px" }}/>}
                         </p>
                         <p>
-                            {data.phone_number ?? <Skeleton style={{ width: "150px" }} />}
+                            {data.phone_number ?? <Skeleton style={{ width: "150px" }}/>}
                         </p>
                     </CardData>
                 </Col>
 
-                <Col md="4" className="d-flex flex-row">
+                <Col 
+                    md        = "4" 
+                    className = "d-flex flex-row"
+                >
                     <CardData>
                         <CardText>Performa Satker</CardText>
-                        <Card color="secondary" outline className="mb-1">
+                        <Card 
+                            color     = "secondary" 
+                            outline 
+                            className = "mb-1"
+                        >
                             <CardBody className="d-flex justify-content-between">
                                 <span>
                                     Peringkat Nasional
@@ -250,8 +307,11 @@ const Detail = ({ match }) => {
                                 </span>
                             </CardBody>
                         </Card>
-
-                        <Card color="secondary" outline className="mb-1">
+                        <Card 
+                            color     = "secondary" 
+                            outline 
+                            className = "mb-1"
+                        >
                             <CardBody className="d-flex justify-content-between">
                                 <span>
                                     Total Poin Kejati
@@ -261,8 +321,11 @@ const Detail = ({ match }) => {
                                 </span>
                             </CardBody>
                         </Card>
-
-                        <Card color="secondary" outline className="mb-1">
+                        <Card 
+                            color     = "secondary" 
+                            outline 
+                            className = "mb-1"
+                        >
                             <CardBody className="d-flex justify-content-between">
                                 <span>
                                     Total Berita Dipublikasi
@@ -272,8 +335,11 @@ const Detail = ({ match }) => {
                                 </span>
                             </CardBody>
                         </Card>
-
-                        <Card color="secondary" outline className="mb-1">
+                        <Card 
+                            color     = "secondary" 
+                            outline 
+                            className = "mb-1"
+                        >
                             <CardBody className="d-flex justify-content-between">
                                 <span>
                                     Total Berita Diarsipkan
@@ -283,11 +349,14 @@ const Detail = ({ match }) => {
                                 </span>
                             </CardBody>
                         </Card>
-
-                        <Card color="secondary" outline className="mb-1">
+                        <Card 
+                            color     = "secondary" 
+                            outline 
+                            className = "mb-1"
+                        >
                             <CardBody className="d-flex justify-content-between">
                                 <span>
-                                   Total Point Kejari & Cabjari
+                                    Total Point Kejari & Cabjari
                                 </span>
                                 <span>
                                     {dataDetail != null ? dataDetail.performance.child_points_total : null}
@@ -297,10 +366,17 @@ const Detail = ({ match }) => {
                     </CardData>
                 </Col>
                 
-                <Col md="4" className="d-flex flex-row">
+                <Col 
+                    md        = "4" 
+                    className = "d-flex flex-row"
+                >
                     <CardData>
                         <CardText>Performa Agen</CardText>
-                        <Card color="secondary" outline className="mb-1">
+                        <Card 
+                            color     = "secondary" 
+                            outline 
+                            className = "mb-1"
+                        >
                             <CardBody className="d-flex justify-content-between">
                                 <span>
                                     Total Personal
@@ -310,7 +386,11 @@ const Detail = ({ match }) => {
                                 </span>
                             </CardBody>
                         </Card>
-                        <Card color="secondary" outline className="mb-1">
+                        <Card 
+                            color     = "secondary" 
+                            outline 
+                            className = "mb-1"
+                        >
                             <CardBody className="d-flex justify-content-between">
                                 <span>
                                     Personel 10 Besar
@@ -340,21 +420,28 @@ const Detail = ({ match }) => {
                         !performanceWorkunit.loading ?
                             performanceWorkunit.data != null ? 
                                 <Card>
-                                    <CardHeader className="font-weight-bolder">Daftar Kejari & Kejari Serta Peringkat</CardHeader>
+                                    <CardHeader className="font-weight-bolder">
+                                        Daftar Kejari & Kejari Serta Peringkat
+                                    </CardHeader>
                                     <CardBody>
-
                                         {performanceWorkunit.data.slice(0, 3).map((item, index) => (
-                                            <CardPerformance data={item} index={index} type="workunit" />
+                                            <CardPerformance 
+                                                data  = {item} 
+                                                type  = "workunit" 
+                                                index = {index} 
+                                            />
                                         ))}
-
                                         <div className="d-flex justify-content-end">
-                                            <Button className="mt-1" color="flat-primary font-weight-bolder"
-                                                onClick={() => {
+                                            <Button 
+                                                color     = "flat-primary font-weight-bolder"
+                                                onClick   = {() => {
                                                     setModalPerformance({
-                                                        show: true,
-                                                        type: "workunit"
+                                                        show : true,
+                                                        type : "workunit"
                                                     })
-                                                }}>
+                                                }}
+                                                className = "mt-1" 
+                                            >
                                                 Lihat Semua
                                             </Button>
                                         </div>
@@ -362,44 +449,58 @@ const Detail = ({ match }) => {
                                 </Card>
                             :
                                 <Card>
-                                    <CardHeader className="font-weight-bolder">Daftar Kejari & Kejari Serta Peringkat</CardHeader>
+                                    <CardHeader className="font-weight-bolder">
+                                        Daftar Kejari & Kejari Serta Peringkat
+                                    </CardHeader>
                                     <CustomTableBodyEmpty/>
                                 </Card>
-                        : 
-                            <Skeleton style={{ height: "350px" }} />
+                        : <Skeleton style={{ height: "350px" }}/>
                     }
                 </Col>
                 <Col>
                     {
                         !performanceAgent.loading ?
-                            performanceAgent.data != null ? <Card>
-                                <CardHeader className="font-weight-bolder">Daftar Agent dan Peringkat</CardHeader>
-                                <CardBody>
-
-                                    {performanceAgent.data.slice(0, 3).map((item, index) => (
-                                        <CardPerformance data={item} index={index} type="agent" />
-                                    ))}
-
-                                    <div className="d-flex justify-content-end">
-                                        <Button className="mt-1" color="flat-primary font-weight-bolder"
-                                            onClick={() => {
-                                                setModalPerformance({
-                                                    show: true,
-                                                    type: "agent"
-                                                })
-                                            }}>
-                                            Lihat Semua
-                                        </Button>
-                                    </div>
-                                </CardBody>
-
-                            </Card>
-                                :
+                            performanceAgent.data != null ? 
                                 <Card>
-                                    <CardHeader className="font-weight-bolder">Daftar Agent dan Peringkat</CardHeader>
+                                    <CardHeader className="font-weight-bolder">
+                                        Daftar Agent dan Peringkat
+                                    </CardHeader>
+                                    <CardBody>
+                                        {
+                                            performanceAgent.data.slice(0, 3).map((item, index) => (
+                                                <CardPerformance 
+                                                    data  = {item} 
+                                                    type  = "agent" 
+                                                    index = {index} 
+                                                />
+                                            ))
+                                        }
+
+                                        <div className="d-flex justify-content-end">
+                                            <Button 
+                                                
+                                                color     = "flat-primary font-weight-bolder"
+                                                onClick   = {() => {
+                                                    setModalPerformance({
+                                                        show : true,
+                                                        type : "agent"
+                                                    })
+                                                }}
+                                                className = "mt-1" 
+                                            >
+                                                Lihat Semua
+                                            </Button>
+                                        </div>
+                                    </CardBody>
+                                </Card>
+                            :
+                                <Card>
+                                    <CardHeader className="font-weight-bolder">
+                                        Daftar Agent dan Peringkat
+                                    </CardHeader>
                                     <CustomTableBodyEmpty/>
                                 </Card>
-                            : <Skeleton style={{ height: "350px" }} />
+                        : <Skeleton style={{ height: "350px" }}/>
                     }
                 </Col>
             </Row>
@@ -408,40 +509,49 @@ const Detail = ({ match }) => {
             <Row>
                 {
                     leftState.length < 1 &&
-                        rightState.length < 1 ?
-                        <Col md='12' sm='12'>
-                            <CustomTableBodyEmpty />
+                    rightState.length < 1 ?
+                        <Col 
+                            md = '12' 
+                            sm = '12'
+                        >
+                            <CustomTableBodyEmpty/>
                         </Col>
-                        :
+                    :
                         <Fragment>
-                            <Col md='6' sm='12'>
+                            <Col 
+                                md = '6' 
+                                sm = '12'
+                            >
                                 {
                                     leftState &&
                                     leftState.map((data) => (
                                         <NewsWidget
-                                            key={`detail-workunit-news-${data.id}`}
+                                            key         = {`detail-workunit-news-${data.id}`}
                                             // handleStore             = {(newss,data) => {handleStore(newss,data)}}
 
-                                            roleLike={true}
-                                            roleViewer={true}
-                                            roleDislike={true}
-                                            roleComment={true}
+                                            roleLike    = {true}
+                                            roleViewer  = {true}
+                                            roleDislike = {true}
+                                            roleComment = {true}
 
                                             {...data}
                                         />
                                     ))
                                 }
                             </Col>
-                            <Col md='6' sm='12'>
+                            <Col 
+                                md = '6' 
+                                sm = '12'
+                            >
                                 {
                                     rightState &&
                                     rightState.map((data) => (
                                         <NewsWidget
-                                            key={`detail-workunit-news-${data.id}`}
-                                            roleLike={true}
-                                            roleViewer={true}
-                                            roleDislike={true}
-                                            roleComment={true}
+                                            key         = {`detail-workunit-news-${data.id}`}
+                                            roleLike    = {true}
+                                            roleViewer  = {true}
+                                            roleDislike = {true}
+                                            roleComment = {true}
 
                                             {...data}
                                         />
@@ -453,8 +563,6 @@ const Detail = ({ match }) => {
             </Row>
         </Fragment>
     )
-}
+};
 
-
-
-export default Detail
+export default Detail;

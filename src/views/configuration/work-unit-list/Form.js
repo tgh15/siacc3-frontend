@@ -29,6 +29,7 @@ import SubmitButton                                     from "../../../component
 import { PerformanceContext }                           from "../../../context/PerformanceContext";
 
 //API
+import workunitListAPI                                  from "../../../services/pages/configuration/unit-work-list/WorkunitList";
 import WorkUnitListApi                                  from "../../../services/pages/configuration/unit-work-list";
 
 
@@ -36,6 +37,7 @@ const ModalForm = (props) => {
     //props
     const {
         data,
+        getData,
         onCancel,
         setListData,
         setModalForm,
@@ -68,56 +70,113 @@ const ModalForm = (props) => {
         })
     };
 
-    const { register, errors, handleSubmit, setValue, control } = useForm({ mode: "onChange", resolver: yupResolver(validation) });
+    const { 
+        errors, 
+        control, 
+        register, 
+        setValue, 
+        handleSubmit, 
+    } = useForm({ mode: "onChange", resolver: yupResolver(validation) });
 
-    const getData = () => {
-        WorkUnitListApi.get({
-            onSuccess: (res) => {
-                setListData(res.data.workunit);
-            }, onFail: (err) => {
-                CustomToast("danger", err.message);
+    const create = (dataForm) => {
+        let formData = {
+            ...dataForm,
+            sequence            : 1,
+            parent_id           : parseInt(dataForm.parent_id),
+            workunit_level_id   : parseInt(dataForm.workunit_level_id),
+            latitude            : parseFloat(dataForm.latitude),
+            longitude           : parseFloat(dataForm.longitude)
+        }
+
+        workunitListAPI.createWorkunitList(formData).then(
+            res => {
+                if (!res.is_error) {
+                    setLoading(false);
+                    setModalForm(false);
+                    CustomToast("success", "Data Berhasil Disimpan");
+                    setListData(false);
+                    getData();
+                } else {
+                    CustomToast("danger", err.code);
+                }
             }
-        })
-    };
-
-    const create = dataForm => {
-        WorkUnitListApi.create({
-            data: dataForm,
-
-            onSuccess: (res) => {
+        ).catch(
+            err => {
                 setLoading(false);
-                setModalForm(false);
-                CustomToast("success", "Data Berhasil Disimpan");
-                setListData(false);
-                getData();
-            },
-            onFail: (err) => {
-                setLoading(false);
-                CustomToast("danger", err.message);
+                CustomToast("danger", err.code);
             }
-        })
-    };
+        )
+    }
 
-    const update = dataForm => {
-        WorkUnitListApi.update({
-            id          : data.id,
-            data        : dataForm,
-            old_logo_id : data.logo_id,
-            logo        : data, logo,
-            logo_name   : data.logo_name,
+    // const create = dataForm => {
+    //     WorkUnitListApi.create({
+    //         data: dataForm,
 
-            onSuccess: (res) => {
-                setLoading(false);
-                setModalForm(false);
-                CustomToast("success", "Data Berhasil Diubah");
-                setListData(false);
-                getData();
-            },
-            onFail: (err) => {
-                CustomToast("danger", err.message);
+    //         onSuccess: (res) => {
+    //             setLoading(false);
+    //             setModalForm(false);
+    //             CustomToast("success", "Data Berhasil Disimpan");
+    //             setListData(false);
+    //             getData();
+    //         },
+    //         onFail: (err) => {
+    //             setLoading(false);
+    //             CustomToast("danger", err.message);
+    //         }
+    //     })
+    // };
+
+    const update = (dataForm) => {
+        let formData = {
+            ...dataForm,
+            id                  : data.id,
+            sequence            : 1,
+            parent_id           : parseInt(dataForm.parent_id),
+            workunit_level_id   : parseInt(dataForm.workunit_level_id),
+            latitude            : parseFloat(dataForm.latitude),
+            longitude           : parseFloat(dataForm.longitude)
+        }
+
+        workunitListAPI.updateWorkunitList(formData).then(
+            res => {
+                if (!res.is_error) {
+                    setLoading(false);
+                    setModalForm(false);
+                    CustomToast("success", "Data Berhasil Diubah");
+                    setListData(false);
+                    getData();
+                } else {
+                    CustomToast("danger", err.code);
+                }
             }
-        })
-    };
+        ).catch(
+            err => {
+                setLoading(false);
+                CustomToast("danger", err.code);
+            }
+        )
+    }
+
+    // const update = dataForm => {
+    //     WorkUnitListApi.update({
+    //         id          : data.id,
+    //         data        : dataForm,
+    //         old_logo_id : data.logo_id,
+    //         logo        : data, logo,
+    //         logo_name   : data.logo_name,
+
+    //         onSuccess: (res) => {
+    //             setLoading(false);
+    //             setModalForm(false);
+    //             CustomToast("success", "Data Berhasil Diubah");
+    //             setListData(false);
+    //             getData();
+    //         },
+    //         onFail: (err) => {
+    //             CustomToast("danger", err.message);
+    //         }
+    //     })
+    // };
 
     const onSubmit = dataForm => {
         console.log(dataForm);

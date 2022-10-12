@@ -697,6 +697,7 @@ const TourInput = (props) => {
                 >
                     <ModalForm
                         data            = {props.data}
+                        getData         = {props.getData}
                         onCancel        = {props.onCancel}
                         setListData     = {props.setListData}
                         setModalForm    = {props.setModalForm}
