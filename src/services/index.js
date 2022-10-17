@@ -1,6 +1,6 @@
 /*
     #######################
-    #SEPARTOR API EMPLOYEE#
+    ######API EMPLOYEE#####
     #######################
 */
 
@@ -38,7 +38,7 @@ export const employeeURL = {
 
 /*
 ####################
-#SEPARATOR CRAWLING#
+######CRAWLING######
 ####################
 */
 

@@ -1,4 +1,8 @@
-import { Get, Post, Put }     from "../../core/request";
+import { 
+        Get, 
+        Put,
+        Post, 
+    }               from "../../core/request";
 import { authURL }  from "./url";
 
 
@@ -6,19 +10,13 @@ import { authURL }  from "./url";
 const getQrcode      = () => Get(`${authURL.authPrefix}/${authURL.authLogin}/${authURL.authQrcode}/${authURL.authNew}`);
 const getUserByToken = (token) => Get(`${authURL.authPrefix}/${authURL.authUser}/${authURL.authPassword}?forget=${token}`);
 
-
 //Post
-const loginUser     = (data, otp) => otp == undefined ? 
-                    Post(`${authURL.authPrefix}/${authURL.authLogin}`, data) :
-                    Post(`${authURL.authPrefix}/${authURL.authLogin}?otp=${otp}`, data);
-
+const loginUser      = (data, params) => Post(`${authURL.authPrefix}/${authURL.authLogin}`, data, params)
 const loginByQrcode  = (data) => Post(`${authURL.authPrefix}/${authURL.authLogin}/${authURL.authQrcode}`, data);
 const forgotPassword = (data) => Post(`${authURL.authPrefix}/${authURL.authUser}/${authURL.authPassword}`, data);
 
-
 //Put
 const changePassword = (data) => Put(`${authURL.authPrefix}/${authURL.authUser}/${authURL.authPassword}`, data);
-
 
 const authAPI = {
     getQrcode,

@@ -160,9 +160,8 @@ const LoginQrcode = (props) => {
                     <CardBody className="qrcode">
                         <X onClick={() => {
                             history.push("/login")
-                            if (loginQrSocket != null) {
-                                loginQrSocket.close();
-                            }
+                            
+                            loginQrSocket != null && loginQrSocket.close();
                         }} />
                         <p>SCAN QR CODE UNTUK LOGIN</p>
                         {src && <img src={src} alt="QR Code"/>}

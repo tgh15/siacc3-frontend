@@ -33,8 +33,8 @@ import InputPasswordToggle              from '@src/components/widgets/input-pass
 import { secondsToMs }                  from '@utils';
 
 //Scss
-import '../../../components/scss/base/pages/page-auth.scss';
 import "./login.scss";
+import '../../../components/scss/base/pages/page-auth.scss';
 
 
 const Login = (props) => {
@@ -69,8 +69,8 @@ const Login = (props) => {
     });
 
     const { 
-        register, 
         errors, 
+        register, 
         handleSubmit 
     } = useForm({ mode: "onChange", resolver: yupResolver(schema) });
 
@@ -147,11 +147,11 @@ const Login = (props) => {
                 <Card className='mb-0'>
                     <CardBody>
                         <ModalBase 
-                            show    = {confirmOtp} 
-                            title   = {"Otentikasi Akun Data"}
-                            center  = {true} 
-                            setShow = {(par) => { setConfirmOtp(par)}} 
-                            backdrop= "static"
+                            show        = {confirmOtp} 
+                            title       = {"Otentikasi Akun Data"}
+                            center      = {true} 
+                            setShow     = {(par) => { setConfirmOtp(par)}} 
+                            backdrop    = "static"
                         >
                             <div className="container-fluid">
                                 <ConfirmOtp 

@@ -1,9 +1,9 @@
 import { Fragment, useRef, useState }           from "react";
 import { Col, Input, Row, Form, FormFeedback }  from "reactstrap";
 
+import * as yup                                 from 'yup';
 import { useForm }                              from 'react-hook-form';
 import { yupResolver }                          from '@hookform/resolvers/yup';
-import * as yup                                 from 'yup';
 
 //Service
 import authAPI                                  from "../../../services/pages/authentication/auth";
@@ -12,16 +12,7 @@ import authAPI                                  from "../../../services/pages/au
 import CustomToast                              from "../../../components/widgets/custom-toast";
 import SubmitButton                             from "../../../components/widgets/submit-button";
 
-
 const ConfirmOtp = ({ email, username, password, fcmToken }) => {
-    //Function to change email letter to * symbol
-    const showEmail = email.replace(/(.{2})(.*)(?=@)/,
-    function(gp1, gp2, gp3) { 
-        for(let i = 0; i < gp3.length; i++) { 
-            gp2+= "*"; 
-        } return gp2; 
-    });
-
     // State
     const [isLoading, setLoading]       = useState(false);
     const [timeLimit, setTimeLimit]     = useState(60);
@@ -29,17 +20,25 @@ const ConfirmOtp = ({ email, username, password, fcmToken }) => {
 
     //Schema for form validation
     const schema = yup.object().shape({
-        otp: yup.string().max(6).min(6).required("Kolom kode OTP tidak boleh kosong."),
+        otp: yup.string().max(6, 'OTP maksimal 6 karakter').min(6, 'OTP minimal 6 karakter.').required("Kolom kode OTP tidak boleh kosong."),
     }).required();
 
     const { 
-        register, 
         errors, 
+        register, 
         handleSubmit 
     } = useForm({ mode: "onChange", resolver: yupResolver(schema) });
 
+    //Function to change email letter to * symbol
+    const showEmail = email.replace(/(.{3})(.*)(?=@)/,
+        (gp1, gp2, gp3) => { 
+        for(let i = 0; i < gp3.length; i++) { 
+            gp2 += "*"; 
+        } return gp2; 
+    });
+
     const onSubmit = (data) => {
-        let formData;
+        let params, formData;
 
         if (fcmToken) {
             formData = {
@@ -54,9 +53,13 @@ const ConfirmOtp = ({ email, username, password, fcmToken }) => {
             }
         }
 
+        params = {
+            otp : data.otp
+        }
+
         setLoading(true);
 
-        authAPI.loginUser(formData, data.otp).then(
+        authAPI.loginUser(formData,params).then(
             res => {
                 setLoading(false);
 
@@ -128,7 +131,7 @@ const ConfirmOtp = ({ email, username, password, fcmToken }) => {
         return prev - 1
     });
 
-    function secondsToMs(d) {
+    const secondsToMs = (d) => {
         d = Number(d);
         var m = Math.floor(d % 3600 / 60);
         var s = Math.floor(d % 3600 % 60);
@@ -142,8 +145,8 @@ const ConfirmOtp = ({ email, username, password, fcmToken }) => {
         <Fragment>
             <Form onSubmit={handleSubmit(onSubmit)}>
                 <p className="text-center">
-                    Melindungi Data Anda adalah prioritas kami. Harap Konfirmasi
-                    Akun anda dengan memasukkan kode otorisasi yang dikirim ke <br/>
+                    Melindungi data anda adalah prioritas kami. Harap konfirmasi
+                    akun anda dengan memasukkan kode otorisasi yang dikirim ke <br/>
                     <span className="font-weight-bolder">{showEmail}</span>
                 </p>
                 <Input
@@ -159,14 +162,16 @@ const ConfirmOtp = ({ email, username, password, fcmToken }) => {
                 {errors && errors.otp && <FormFeedback className="text-center">{errors.otp.message}</FormFeedback>}
 
                 <Row className="mt-1">
-                    <Col md="8">
+                    <Col md="12">
                         <p>
-                            Mungkin butuh beberapa menit untuk menerima kode Anda.
+                            Mungkin butuh beberapa menit untuk menerima kode anda.
                         </p>
-                        <p>Belum Menerima Kode?
+                    </Col>
+                    <Col md="8">
+                        <p>Belum menerima kode?
                             {
                                 !isDisabled ?
-                                    <span 
+                                    <span
                                         onClick     = {repeatSendOtp}
                                         className   = "text-primary cursor-pointer" 
                                     >

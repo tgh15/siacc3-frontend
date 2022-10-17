@@ -42,13 +42,13 @@ const ForgotPassword = () => {
     const [centeredModal, setCenteredModal] = useState(false);
 
     const schema = yup.object().shape({
-        email: yup.string().email('Silahkan menggunakan email kejaksaan.').required("Kolom email tidak boleh kosong."),
+        email: yup.string().matches('^[A-Za-z0-9._%+-]+@kejaksaan\.go.id$', 'Silahkan menggunakan email kejaksaan.').required("Kolom email tidak boleh kosong."),
     }).required();
 
     //Schema for form validation
     const { 
-        register, 
         errors, 
+        register, 
         handleSubmit 
     } = useForm({ mode: "onChange", resolver: yupResolver(schema) });
 
