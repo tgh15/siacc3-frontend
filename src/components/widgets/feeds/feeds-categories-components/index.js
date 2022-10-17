@@ -50,7 +50,7 @@ const CategoriesButton = ({ categories, setActive, divref }) => {
     }
 }
 
-export const FeedCategoriesWidget = ({ modals,onChangeCategories,onFilter,activeFilter, isApproval }) => {
+export const FeedCategoriesWidget = ({ modals,onChangeCategories,onFilter,activeFilter, isApproval, getAgentReport }) => {
     
     const [activeFilterState,setActiveFilter]   = useState(activeFilter);
     const [filterModalState, setFiltModalState] = useState(false);
@@ -83,10 +83,11 @@ export const FeedCategoriesWidget = ({ modals,onChangeCategories,onFilter,active
                         (modals == null || modals == undefined) ? 
 
                             <FeedsCategoriesFilterModal
-                                showing     = {filterModalState} 
-                                setShow     = {setFiltModalState} 
-                                onFilter    = {(e)=>{onFilter(e)}}
-                                title       = "Filter"
+                                title           = "Filter"
+                                showing         = {filterModalState} 
+                                setShow         = {setFiltModalState} 
+                                onFilter        = {(e)=>{onFilter(e)}}
+                                getAgentReport  = {getAgentReport}
                             />
                         : 
                             modals
