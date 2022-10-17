@@ -173,8 +173,8 @@ const Beranda = (props) => {
             if(!filter && loadDataFeeds && !loadingFeeds) {
                 getAgentReportData();
             }else if(filter && loadDataFeeds && !loadingFeeds) {
-                setLoadDataFeeds(false);
                 setLoadingFeeds(true);
+                setLoadDataFeeds(false);
                 filterAgentReport(page,filteredState).then(res => {
                     setLoadingFeeds(false);
 
@@ -213,7 +213,7 @@ const Beranda = (props) => {
                 >
                     <InfiniteScroll
                         next        = {() => {setPage(prev => prev+1)}}
-                        style       = {{ overflowX: 'hidden'}}
+                        style       = {{ overflowX: 'hidden' }}
                         loader      = {<h4 className='text-center'>Loading...</h4>}
                         hasMore     = {hasNext}
                         dataLength  = {feed == null ? 0 : feed.length}
@@ -238,6 +238,7 @@ const Beranda = (props) => {
                                                 setFeed(null);
                                                 setLoadDataFeeds(true);
                                             }}
+                                            getAgentReport     = {getAgentReportData}
                                         />
                                     ) : null
                                 :

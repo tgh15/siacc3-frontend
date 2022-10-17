@@ -17,8 +17,8 @@ import Flatpickr                                from 'react-flatpickr'
 import '@styles/react/libs/flatpickr/flatpickr.scss'
 
 //Widget
+import { ModalBase }                            from '../../modals-base'
 import { selectThemeColors }                    from '@utils'
-import { ModalBase as BaseModal }               from '../../modals-base'
 
 //Form
 import { useForm, Controller }                  from "react-hook-form";
@@ -27,7 +27,13 @@ import { PerformanceContext }                   from '../../../../context/Perfor
 
 export const FeedsCategoriesFilterModal = (props) => {
 
-    const {title, showing, setShow, onFilter} = props;
+    const {
+        title, 
+        showing, 
+        setShow, 
+        onFilter,
+        getAgentReport
+    } = props;
 
     const { 
         control,
@@ -72,9 +78,8 @@ export const FeedsCategoriesFilterModal = (props) => {
 
     const handleReset   = () => {
         const formData = {
-            kind        : kind,
             workunit    : [],
-            order_by    : orderBy,
+            order_by    : 'latest',
             filter_type : "home",
         };
 
@@ -85,11 +90,12 @@ export const FeedsCategoriesFilterModal = (props) => {
     return(
         <>
 
-            <BaseModal 
+            <ModalBase 
                 size        = "lg"
                 show        = {showing}
                 title       = {title}
                 setShow     = {setShow}
+                unmount     = {false}
             >
                 <Form onSubmit={handleSubmit(handleSubmit_)}>
                     <FormGroup>
@@ -228,7 +234,7 @@ export const FeedsCategoriesFilterModal = (props) => {
                     </FormGroup>
                 </Form>
 
-            </BaseModal>
+            </ModalBase>
         </>
     )
 }

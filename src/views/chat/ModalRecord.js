@@ -80,16 +80,20 @@ const ModalRecord = props => {
 
 
     return (
-        <ModalBase show={show} setShow={() => { setShow(!show) }} title={"Kirim Pesan Suara"} size={"sm"} >
+        <ModalBase 
+            show    = {show} 
+            title   = {"Kirim Pesan Suara"} size={"sm"} 
+            setShow = {() => { setShow(!show) }} 
+        >
             <Recorder
-                record={true}
-                audioURL={audioDetails.url}
+                record               = {true}
+                audioURL             = {audioDetails.url}
                 showUIAudio
-                handleAudioStop={data => handleAudioStop(data)}
-                handleOnChange={(value) => handleOnChange(value, 'firstname')}
-                handleAudioUpload={data => handleAudioUpload(data)}
-                handleReset={() => handleReset()}
-                uploadButtonDisabled={loading}
+                handleReset          = {() => handleReset()}
+                handleOnChange       = {(value) => handleOnChange(value, 'firstname')}
+                handleAudioStop      = {data => handleAudioStop(data)}
+                handleAudioUpload    = {data => handleAudioUpload(data)}
+                uploadButtonDisabled = {loading}
             />
         </ModalBase>
     )
