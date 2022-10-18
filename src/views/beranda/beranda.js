@@ -238,7 +238,6 @@ const Beranda = (props) => {
                                                 setFeed(null);
                                                 setLoadDataFeeds(true);
                                             }}
-                                            getAgentReport     = {getAgentReportData}
                                         />
                                     ) : null
                                 :

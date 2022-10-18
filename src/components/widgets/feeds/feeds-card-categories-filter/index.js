@@ -32,7 +32,6 @@ export const FeedsCategoriesFilterModal = (props) => {
         showing, 
         setShow, 
         onFilter,
-        getAgentReport
     } = props;
 
     const { 
