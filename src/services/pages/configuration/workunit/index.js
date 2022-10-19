@@ -15,6 +15,7 @@ const getWorkunitList       = () => Get(`${employeeURL.employeePrefix}/${employe
 
 //POST
 const createWorkunit        = (data) => Post(`${employeeURL.employeePrefix}/${employeeURL.workunit}/${employeeURL.create}`, data);
+const getWorkunitChild      = (data) => Post(`${employeeURL.employeePrefix}/${employeeURL.workunit}/child-id`, data);
 const getWorkunitFilter     = (page,data) => page == undefined ? Post(`${employeeURL.employeePrefix}/${employeeURL.workunit}/${employeeURL.filter}`,data) : Post(`${employeeURL.employeePrefix}/${employeeURL.workunit}/${employeeURL.filter}?page=${page}`, data)
 const getWorkunitDetail     = (data) => Post(`${employeeURL.employeePrefix}/${employeeURL.workunit}/${employeeURL.detail}`, data);
 const createPhotoWorkunit   = (data) => Post(`${employeeURL.employeePrefix}/${employeeURL.workunit}/${employeeURL.uploadLogo}`, data);
@@ -34,6 +35,7 @@ export const workunitAPI = {
     
     //POST
     createWorkunit,
+    getWorkunitChild,
     getWorkunitDetail, 
     getWorkunitFilter,
     createPhotoWorkunit,

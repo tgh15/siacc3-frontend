@@ -25,35 +25,26 @@ import jsPDF                    from 'jspdf';
 import 'jspdf-autotable';
 
 import logoLight                from "../../assets/images/logo/logo_light.png";
+import moment                   from "moment";
 
 //Export Excel
 import ReactExport              from "react-export-excel";
-import moment                   from "moment";
 import DetailDataFormatted      from "./DetailDataFormatted";
 import DriveApi                 from "../../services/pages/drive";
+import AddReport                from "./modal/addReport";
 
 const Report = (props) => {
 
     const {
         report,
-        loading,
-        showForm,
-        setShowForm,
         detailReport,
         detailResults,
-        setIdSelected,
-        reportCategory,
-        showDeleteForm,
-        selectedReport,
         setSelectedReport,
-        setShowDeleteForm,
         isDetailReportVisible,
         isDetailResultsVisible,
         setIsDetailReportVisible,
         setIsDetailResultsVisible,
 
-        onDelete,
-        onSubmit,
         handleDetail,
         handleDetailResults
     }                                           = props
@@ -86,9 +77,9 @@ const Report = (props) => {
 
     const getHeader = () => {
 
-        let _header = [];
-        let _body   = [];
-        let _bodyData = [];
+        let _body       = [];
+        let _header     = [];
+        let _bodyData   = [];
 
         if(detailResults != null && "headers" in detailResults && detailResults.headers.length > 0){
             _header.push('No.');
@@ -522,6 +513,10 @@ const Report = (props) => {
     return (
         getRoleByMenuStatus('Laporan', 'report_list') ?
             <Fragment>
+
+                {/* modal add report */}
+                <AddReport/>
+
                 {/* modal delete */}
                 <FormDelete
                     show        = {props.showDeleteForm}

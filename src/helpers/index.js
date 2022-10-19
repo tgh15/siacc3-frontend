@@ -2,7 +2,6 @@ import moment               from "moment";
 import { useHistory }       from "react-router";
 import { useLocation }      from "react-router-dom";
 
-
 import fallback from '../assets/images/portrait/small/150x150.png';
 
 const CustomTableNumber = ({ key, pagination }) => {
@@ -13,7 +12,7 @@ const CustomTableNumber = ({ key, pagination }) => {
     }
 }
 
-const dateIndo = (paramsDate) => {
+const dateIndo  = (paramsDate) => {
     var date = new Date(paramsDate);
 
     return date.getDate() + " " + monthIndo(date.getMonth()) + " " + date.getFullYear() + ", " + date.getHours() + ":" + date.getMinutes()
@@ -298,6 +297,21 @@ const formatDate = (stringDate) => {
     return date + " " + month + " " + year + ", " + hours + ":" + minutes ;
 };
 
+const getYearsBefore = (howManyYears) => {
+    const year = new Date().getFullYear();
+    return Array.from({length : howManyYears}, (v, i) => ({ label : year - howManyYears + i + 1, value : year - howManyYears + i + 1})).reverse();
+}
+
+const getMonthName = () => {
+    const monthName = moment.months();
+    return monthName.map((data) => (
+        {
+            label : data,
+            value : data
+        }
+    ))
+};
+
 const Helper = {
     dayIndo                 : dayIndo,
     dateIndo                : dateIndo,
@@ -320,7 +334,9 @@ const Helper = {
     getParemeterFromString  : getParemeterFromString,
     useQuery                : useQuery,
     shortenLargeNumber      : shortenLargeNumber,
-    formatDate              : formatDate
+    formatDate              : formatDate,
+    getYearsBefore          : getYearsBefore,
+    getMonthName            : getMonthName
 }
 
 export default Helper;
