@@ -16,7 +16,7 @@ const getWorkunitList       = () => Get(`${employeeURL.employeePrefix}/${employe
 //POST
 const createWorkunit        = (data) => Post(`${employeeURL.employeePrefix}/${employeeURL.workunit}/${employeeURL.create}`, data);
 const getWorkunitChild      = (data) => Post(`${employeeURL.employeePrefix}/${employeeURL.workunit}/child-id`, data);
-const getWorkunitFilter     = (page,data) => page == undefined ? Post(`${employeeURL.employeePrefix}/${employeeURL.workunit}/${employeeURL.filter}`,data) : Post(`${employeeURL.employeePrefix}/${employeeURL.workunit}/${employeeURL.filter}?page=${page}`, data)
+const getWorkunitFilter     = (data, param) => Post(`${employeeURL.employeePrefix}/${employeeURL.workunit}/${employeeURL.filter}`, data, param);
 const getWorkunitDetail     = (data) => Post(`${employeeURL.employeePrefix}/${employeeURL.workunit}/${employeeURL.detail}`, data);
 const createPhotoWorkunit   = (data) => Post(`${employeeURL.employeePrefix}/${employeeURL.workunit}/${employeeURL.uploadLogo}`, data);
 const updatePhotoWorkunit   = (data) => Post(`${employeeURL.employeePrefix}/${employeeURL.workunit}/${employeeURL.updateLogo}`, data);

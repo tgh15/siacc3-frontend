@@ -304,13 +304,19 @@ const getYearsBefore = (howManyYears) => {
 
 const getMonthName = () => {
     const monthName = moment.months();
-    return monthName.map((data) => (
+    return monthName.map((data, index) => (
         {
             label : data,
-            value : data
+            value : index+1
         }
     ))
 };
+
+const getLastDateOfCurrentMonth = (month) => {
+    let date = moment().startOf(month).format('DD');
+
+    return date;
+}
 
 const Helper = {
     dayIndo                 : dayIndo,
@@ -336,7 +342,8 @@ const Helper = {
     shortenLargeNumber      : shortenLargeNumber,
     formatDate              : formatDate,
     getYearsBefore          : getYearsBefore,
-    getMonthName            : getMonthName
+    getMonthName            : getMonthName,
+    getLastDateOfCurrentMonth : getLastDateOfCurrentMonth
 }
 
 export default Helper;

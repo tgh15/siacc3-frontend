@@ -29,9 +29,11 @@ import moment                   from "moment";
 
 //Export Excel
 import ReactExport              from "react-export-excel";
-import DetailDataFormatted      from "./DetailDataFormatted";
+
+
 import DriveApi                 from "../../services/pages/drive";
 import AddReport                from "./modal/addReport";
+import DetailDataFormatted      from "./DetailDataFormatted";
 
 const Report = (props) => {
 
@@ -52,13 +54,14 @@ const Report = (props) => {
     //Helper
     const {getRoleByMenuStatus}                 = Helper;
 
-    const [body, setBody]           = useState([]);
-    const [header, setHeader]       = useState([]);
+    const [body, setBody]                           = useState([]);
+    const [header, setHeader]                       = useState([]);
+    const [isAddFormVisible, setIsAddFormVisible]   = useState(false);
 
     //Export Excel
-    const ExcelFile                 = ReactExport.ExcelFile;
-    const ExcelSheet                = ReactExport.ExcelFile.ExcelSheet;
-    const ExcelColumn               = ReactExport.ExcelFile.ExcelColumn;
+    const ExcelFile                             = ReactExport.ExcelFile;
+    const ExcelSheet                            = ReactExport.ExcelFile.ExcelSheet;
+    const ExcelColumn                           = ReactExport.ExcelFile.ExcelColumn;
 
     const monthName = [
         "Januari",
@@ -515,7 +518,12 @@ const Report = (props) => {
             <Fragment>
 
                 {/* modal add report */}
-                <AddReport/>
+                <AddReport
+                    reportCategory      = {props.reportCategory}
+                    isAddFormVisible    = {isAddFormVisible}
+                    setIsAddFormVisible = {setIsAddFormVisible}
+
+                />
 
                 {/* modal delete */}
                 <FormDelete
@@ -528,7 +536,7 @@ const Report = (props) => {
                 />
 
                 {/* modal form */}
-                <ModalBase 
+                {/* <ModalBase 
                     size    = "lg" 
                     show    = {props.showForm} 
                     title   = "Tambah Laporan" 
@@ -540,7 +548,7 @@ const Report = (props) => {
                         onSubmit        = {props.onSubmit}
                         reportCategory  = {props.reportCategory}
                     />
-                </ModalBase>
+                </ModalBase> */}
 
                 {/* modal detail report */}
                 <ModalBase 
@@ -614,7 +622,7 @@ const Report = (props) => {
                     page        = "1" 
                     header      = {headerTable} 
                     totalData   = "50"
-                    onClickForm = {() => { props.setShowForm(!props.showForm) }} 
+                    onClickForm = {() => { setIsAddFormVisible(true) }} 
                     
                     //Role
                     roleAdd     = {getRoleByMenuStatus('Laporan', 'add')}

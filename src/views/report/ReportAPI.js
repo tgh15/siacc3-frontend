@@ -23,7 +23,7 @@ const ReportAPI = () => {
     const [isDetailResultsVisible, setIsDetailResultsVisible]   = useState(false);
 
 
-    const [showForm, setShowForm]               = useState(false);
+    const [showForm, setShowForm]                               = useState(false);
 
     useEffect(() => {
         getReport();
