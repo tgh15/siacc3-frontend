@@ -110,12 +110,12 @@ const UnitWork = (props) => {
                     setListData(res.data.sector);
                     setPagination(res.data.pagination);
                 } else {
-                    CustomToast("danger", res.code);
+                    CustomToast("danger", res.message);
                 }
             }
         ).catch(
             err => {
-                CustomToast("danger", err.code);
+                CustomToast("danger", err.message);
             }
         )
         
@@ -152,12 +152,12 @@ const UnitWork = (props) => {
                     setShowDeleteForm(!showDeleteForm);
                     CustomToast("success", "Data Berhasil di hapus");
                 } else {
-                    CustomToast("danger", res.code);
+                    CustomToast("danger", res.message);
                 }
             }
         ).catch(
             err => {
-                CustomToast("danger", err.code);
+                CustomToast("danger", err.message);
             }
         )
         

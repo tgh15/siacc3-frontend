@@ -2,6 +2,7 @@ import { Fragment, useContext, useEffect, useRef }  from 'react';
 import { Row, Col, UncontrolledTooltip }            from 'reactstrap';
 import { ShepherdTour, ShepherdTourContext }        from 'react-shepherd';
 
+//Css
 import 'shepherd.js/dist/css/shepherd.css';
 import '@styles/react/libs/shepherd-tour/shepherd-tour.scss';
 

@@ -14,7 +14,9 @@ import Position                                 from './Position';
 
 //Helper
 import Helper                                   from '../../../helpers';
-import selfLearningURL from '../../../services/pages/helpdesk/self-learning';
+
+//Services
+import selfLearningURL                          from '../../../services/pages/helpdesk/self-learning';
 
 
 const backBtnClass  = 'btn btn-sm btn-outline-primary',

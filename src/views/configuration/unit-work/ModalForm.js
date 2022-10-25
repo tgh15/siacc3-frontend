@@ -9,7 +9,6 @@ import {
     FormGroup,
     ModalFooter,
     CustomInput,
-    FormFeedback,
 } from "reactstrap";
 
 import Select                               from 'react-select';
@@ -54,9 +53,9 @@ const ModalForm = (props) => {
 
     //Schema
     const schema = yup.object().shape({
-        name        : yup.string().min(3).required(),
-        description : yup.string().required(),
-        sequence    : yup.number().required(),
+        name        : yup.string().min(3, 'Kolom nama belum terisi').required(),
+        description : yup.string().required('Kolom deskripsi belum terisi'),
+        sequence    : yup.number().typeError('Hanya bisa memasukkan angka').integer().required('Kolom urutan belum terisi'),
     }).required();
 
     const { 
@@ -71,7 +70,9 @@ const ModalForm = (props) => {
         getOptions();
 
         if(data){
-            setValue('parent_id', {value: data.parent_id, label:data.parent})
+            data.parent_id ? 
+                setValue('parent_id', {value: data.parent_id, label: data.parent}) 
+            : undefined
         }
     }, []);
 
@@ -102,7 +103,7 @@ const ModalForm = (props) => {
             }
         ).catch(
             err => {
-                CustomToast("danger", err.code);
+                CustomToast("danger", err.message);
             }
         )
     };
@@ -114,7 +115,7 @@ const ModalForm = (props) => {
             description       : dataForm.description,
             sequence          : parseInt(dataForm.sequence),
             is_assisten       : isAssisten ? 1 : 0,
-            parent_id         : parseInt(dataForm.parent_id)
+            parent_id         : parseInt(dataForm.parent_id.value)
         };
 
         sectorAPI.createSector(formData, params).then(
@@ -131,12 +132,12 @@ const ModalForm = (props) => {
                         getData();
                     }
                 }else {
-                    CustomToast("denger", res.code);
+                    CustomToast("denger", res.message);
                 }
             }
         ).catch(
             err => {
-                CustomToast("danger", err.code);
+                CustomToast("danger", err.message);
             }
         )
         
@@ -156,7 +157,7 @@ const ModalForm = (props) => {
             description       : dataForm.description,
             sequence          : parseInt(dataForm.sequence),
             is_assisten       : isAssisten ? 1 : 0,
-            parent_id         : parseInt(dataForm.parent_id)
+            parent_id         : parseInt(dataForm.parent_id.value)
         };
 
         sectorAPI.updateSector(formData, params).then(
@@ -176,7 +177,7 @@ const ModalForm = (props) => {
             }
         ).catch(
             err => {
-                CustomToast("danger", err.code);
+                CustomToast("danger", err.message);
             }
         )
         
@@ -189,10 +190,6 @@ const ModalForm = (props) => {
     }
 
     const onSubmit = (dataForm) => {
-        if(dataForm.parent_id != undefined){
-            dataForm.parent_id = dataForm.parent_id.value;
-        }
-
         setLoading(true);
 
         if (!data) {
@@ -266,9 +263,13 @@ const ModalForm = (props) => {
                                 defaultValue = {(data) ? data.name : ""}
                             />
                         </div>
-                        {errors && errors.name && <FormFeedback>{errors.name.message}</FormFeedback>}
+                        {
+                            errors && errors.name && 
+                            <Label style={{ color: 'red' }}>
+                                {errors.name.message}
+                            </Label>
+                        }
                     </Col>
-
                     <Col 
                         md = "6" 
                         sm = "12"
@@ -311,7 +312,12 @@ const ModalForm = (props) => {
                                 defaultValue = {data ? data.sequence : ""}
                             />
                         </div>
-                        {errors && errors.sequence && <FormFeedback>{errors.sequence.message}</FormFeedback>}
+                        {
+                            errors && errors.sequence && 
+                            <Label style={{ color: 'red' }}>
+                                {errors.sequence.message}
+                            </Label>
+                        }
                     </Col>
                     <Col 
                         md = "6" 
@@ -328,7 +334,12 @@ const ModalForm = (props) => {
                                 defaultValue = {(data) ? data.description : ""}
                             />
                         </div>
-                        {errors && errors.description && <FormFeedback>{errors.description.message}</FormFeedback>}
+                        {
+                            errors && errors.description && 
+                            <Label style={{ color: 'red' }}>
+                                {errors.description.message}
+                            </Label>
+                        }
                     </Col>
                 </Row>
 

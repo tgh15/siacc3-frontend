@@ -483,10 +483,14 @@ const TourInput = (props) => {
                     sm = '12'
                 >
                     <ModalForm
-                        data            = {props.data}
-                        onCancel        = {props.onCancel}
-                        setListData     = {props.setListData}
-                        setModalForm    = {props.setModalForm}
+                        data                 = {props.data}
+                        getData              = {props.getData}
+                        onCancel             = {props.onCancel}
+                        setListData          = {props.setListData}
+                        setModalForm         = {props.setModalForm}
+                        sectorOptions        = {props.sectorOptions}
+                        postionOptions       = {props.postionOptions}
+                        workUnitLevelOptions = {props.workUnitLevelOptions}
                     />
                 </Col>
             </Row>

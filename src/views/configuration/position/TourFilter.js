@@ -11,7 +11,9 @@ import { HelpCircle }                           from 'react-feather';
 
 //Views
 import ModalFilter                              from './ModalFilter';
-import Helper from '../../../helpers';
+
+//Helper
+import Helper                                   from '../../../helpers';
 
 
 const backBtnClass  = 'btn btn-sm btn-outline-primary',
@@ -228,8 +230,10 @@ const TourFilter = (props) => {
                     sm = '12'
                 >
                     <ModalFilter
-                        onReset     = {props.onReset}
-                        setListData = {props.setListData}
+                        onReset              = {props.onReset}
+                        setListData          = {props.setListData}
+                        sectorOptions        = {props.sectorOptions}
+                        workUnitLevelOptions = {props.workUnitLevelOptions}
                     />
                 </Col>
             </Row>
