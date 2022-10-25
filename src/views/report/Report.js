@@ -181,10 +181,30 @@ const Report = (props) => {
         let _header   = [];
         let _bodyData = [];
         
-        if(detailResults != null && detailResults.result[0].data.length > 12){
-            _header.push('No.', "Satuan Kerja", "Bulan", "Jumlah");
-        }else{
-            _header.push('No.', "Satuan Kerja", "Tanggal", "Jumlah");
+        if(detailResults != null){
+            if(detailResults.report_type === 'yearly'){
+                _header.push('No.', "Satuan Kerja", "Bulan", "Jumlah");
+            }else if(detailResults.report_type === 'monthly'){
+                _header.push('No.', "Satuan Kerja", "Tanggal", "Jumlah");
+            }else if(detailResults.report_type === 'quarterly'){
+
+                let triwulan    = [1,2];
+                let triwulan_   = [];
+
+                if(triwulan.includes(1)){
+                    triwulan_.push("Triwulan I");
+                }else if(triwulan.includes(2)){
+                    triwulan_.push("Triwulan II");
+                }else if(triwulan.includes(3)){
+                    triwulan_.push("Triwulan III");
+                }else if(triwulan.includes(4)){
+                    triwulan_.push("Triwulan IV");
+                }
+
+                _header.push('No.', "Satuan Kerja", triwulan_.toString() , "Jumlah");
+            }else if (detailResults.report_type === 'periodically'){
+                _header.push('No.', "Satuan Kerja", "Data Berita");
+            }
         }
 
         setHeader([..._header]);
@@ -192,20 +212,40 @@ const Report = (props) => {
         if(detailResults != null && detailResults.result != null){
             detailResults.result.map((data,index) => (
                 <>
+
                     {_sum      = 0}
                     {_bodyData = []}
                     {_bodyData.push((index+1).toString())}
-                    {_bodyData.push(data.work_unit)}
-
+                    {_bodyData.push(data.name)}
                     {
-                        data.data.map((data_) => (
-                            <>
-                                {_bodyData.push(data_.data != null ? data_.data.length : 0)}
-                                {data_.data != null ? _sum += data_.data.length : _sum += 0}
-                            </>
+                        data.data.map((data2) => (
+                            data2.result.map((data_) => (
+                                <>
+                                    {
+                                        detailResults?.contents.map((data2_) => (
+                                            data2_.report_content_id === 11 ?
+                                                <>
+                                                    {_bodyData.push(data_.publication)}
+                                                    {_sum += data_.publication}
+                                                </>
+                                            :
+                                                data2_.report_content_id === 12 ?
+                                                    <>
+                                                        {_bodyData.push(data_.archive)}
+                                                        {_sum += data_.archive}
+                                                    </>
+                                                :
+                                                    <>
+                                                        {_bodyData.push(data_.forward)}
+                                                        {_sum += data_.forward}
+                                                    </>
+                                        ))
+                                    }
+                                </>
+                            ))
                         ))
                     }
-
+                    {console.log(_bodyData)}
                     {_bodyData.push(_sum)}
                     {_body.push(_bodyData)}
                 </>
@@ -402,9 +442,10 @@ const Report = (props) => {
         doc.setFontSize(12);
         doc.text('Tanggal: '+Helper.dateIndo1(props.selectedReport.created_at), 145, 22, null, null, "center");
 
-        if(body[0].length != 15){
+        if(detailResults?.report_type === 'monthly'){
 
             let date_ = [];
+            console.log(body, 'body')
             let dateLength_ = body[0].length > 0 ? body[0].length - 3 : 0;
 
             Array.from(Array(dateLength_).keys()).map((data,index) => (
@@ -430,7 +471,7 @@ const Report = (props) => {
                 },
                 margin:         { top: 10, bottom: 25 }
             });
-        }else{
+        }else if(detailResults?.report_type === 'yearly'){
             doc.autoTable({
                 startY          : 30,
                 head            : [
@@ -454,6 +495,102 @@ const Report = (props) => {
                         {content: 'November', styles: { halign: 'center'}},
                         {content: 'Desember', styles: { halign: 'center'}},
                     ]
+                ],
+                body            : [body][0],
+                styles          : { cellWidth: 'auto'},
+                columnStyles    : { 0: { cellWidth: 10 } },
+                headStyles      : {
+                    fillColor: [23, 97, 56],
+                },
+                margin:         { top: 10, bottom: 25 }
+            });
+        }else if(detailResults?.report_type === 'quarterly'){
+
+            let triwulan    = [1];
+            let header_     = [
+                {content: 'No.', rowSpan: 2, styles: { halign: 'center', valign: 'middle'}},
+                {content: 'Satuan Kerja', rowSpan: 2, styles: { halign: 'center'}},
+            ];
+            let subHeader_  = [];
+
+            if(triwulan.includes(1)){
+                header_.push({content: 'Triwulan I', colSpan:3 ,styles: { halign: 'center'}});
+                subHeader_.push(
+                    {content: 'Januari', styles: { halign: 'center'}},
+                    {content: 'Februari', styles: { halign: 'center'}},
+                    {content: 'Maret', styles: { halign: 'center'}},
+                )
+            }
+            if(triwulan.includes(2)){
+                header_.push({content: 'Triwulan II', colSpan:3 ,styles: { halign: 'center'}});
+                subHeader_.push(
+                    {content: 'April', styles: { halign: 'center'}},
+                    {content: 'Mei', styles: { halign: 'center'}},
+                    {content: 'Juni', styles: { halign: 'center'}},
+                )
+            }
+            if(triwulan.includes(3)){
+                header_.push({content: 'Triwulan III', colSpan:3 ,styles: { halign: 'center'}});
+                subHeader_.push(
+                    {content: 'Juli', styles: { halign: 'center'}},
+                    {content: 'Agustus', styles: { halign: 'center'}},
+                    {content: 'September', styles: { halign: 'center'}},
+                )
+            }
+            if(triwulan.includes(4)){
+                header_.push({content: 'Triwulan IV', colSpan:3 ,styles: { halign: 'center'}});
+                subHeader_.push(
+                    {content: 'Oktober', styles: { halign: 'center'}},
+                    {content: 'November', styles: { halign: 'center'}},
+                    {content: 'Desember', styles: { halign: 'center'}},
+                )
+            }
+            
+            doc.autoTable({
+                startY          : 30,
+                head            : [
+                    header_,
+                    subHeader_
+                ],
+                body            : [body][0],
+                styles          : { cellWidth: 'auto'},
+                columnStyles    : { 0: { cellWidth: 10 } },
+                headStyles      : {
+                    fillColor: [23, 97, 56],
+                },
+                margin:         { top: 10, bottom: 25 }
+            });
+        }else if(detailResults?.report_type === 'periodically'){
+
+            let subHeader_ = [];
+
+            detailResults?.contents?.map((data_) => (
+                data_.report_content_id === 11 ?
+                    subHeader_.push(
+                        {content: 'Jumlah Berita di Publikasi', styles: { halign: 'center'}},
+                    )
+                :
+                    data_.report_content_id === 12 ?
+                        subHeader_.push(
+                            {content: 'Jumlah Berita di Arsip', styles: { halign: 'center'}},
+                        )
+                    :
+                        subHeader_.push(
+                            {content: 'Jumlah Berita ke Pimpinan', styles: { halign: 'center'}},
+                        )
+            ))
+
+
+            doc.autoTable({
+                startY          : 30,
+                head            : [
+                    [
+                        {content: 'No.', rowSpan : 2, styles: { halign: 'center', valign: 'middle'}},
+                        {content: 'Satuan Kerja', rowSpan: 2, styles: { halign: 'center'}},
+                        {content: 'Data Berita', colSpan : 3,styles: { halign: 'center'}},
+                        {content: 'Jumlah', rowSpan:2,styles: { halign: 'center'}},
+                    ],
+                    subHeader_
                 ],
                 body            : [body][0],
                 styles          : { cellWidth: 'auto'},
@@ -519,10 +656,10 @@ const Report = (props) => {
 
                 {/* modal add report */}
                 <AddReport
+                    onSubmit            = {props.onSubmit}
                     reportCategory      = {props.reportCategory}
                     isAddFormVisible    = {isAddFormVisible}
                     setIsAddFormVisible = {setIsAddFormVisible}
-
                 />
 
                 {/* modal delete */}
@@ -572,26 +709,38 @@ const Report = (props) => {
                     show        = {isDetailResultsVisible}
                     title       = "Detail Laporan"
                     footer      = {[
-                            <Button.Ripple color="primary" onClick={() => { setDetailData(!detailData) }} outline>
+                            <Button.Ripple 
+                                color   = "primary" 
+                                outline
+                                onClick = {() => { setDetailData(!detailData) }} 
+                            >
                                 Batal
                             </Button.Ripple>,
                             <div>
-                                <Button.Ripple color="primary" className="mr-1" onClick={() => {
-                                    if(detailResults != null && "is_formatted" in detailResults && detailResults.is_formatted === true){
-                                        printFormatPDF()
-                                    }else{
-                                        printPDF()
-                                    }
-                                }}>
+                                <Button 
+                                    color       = "primary" 
+                                    onClick     = {() => {
+                                        if(detailResults != null && "is_formatted" in detailResults && detailResults.is_formatted === true){
+                                            printFormatPDF()
+                                        }else{
+                                            printPDF()
+                                        }
+                                    }}
+                                    className   = "mr-1" 
+                                >
                                     Print PDF
-                                </Button.Ripple>
-                                <Button.Ripple color="primary" className="mr-1" onClick={() => {
-                                    if(detailResults != null && "is_formatted" in detailResults && detailResults.is_formatted === true){
-                                        createFormatPDF();
-                                    }else{
-                                        createPDF();
-                                    }
-                                }}>
+                                </Button>
+                                <Button.Ripple 
+                                    color       = "primary" 
+                                    onClick     = {() => {
+                                        if(detailResults != null && "is_formatted" in detailResults && detailResults.is_formatted === true){
+                                            createFormatPDF();
+                                        }else{
+                                            createPDF();
+                                        }
+                                    }}
+                                    className   = "mr-1" 
+                                >
                                     Export PDF
                                 </Button.Ripple>
                                 {createExcel()}

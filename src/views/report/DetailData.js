@@ -1,10 +1,11 @@
-import { Fragment, useEffect, useState } from "react"
-import { Card, CardBody, CardText, Col,  Row } from "reactstrap"
-import CustomTable from "../../components/widgets/custom-table"
-import CustomTableBody from "../../components/widgets/custom-table/CustomTableBody"
-import Helper from "../../helpers"
-import dataDetails from "./data-details"
-import DoughnutChart from "./doughnut-chart"
+import { Fragment, useEffect, useState }        from "react"
+import { Card, CardBody, CardText, Col,  Row }  from "reactstrap"
+import CustomTable                              from "../../components/widgets/custom-table"
+import CustomTableBody                          from "../../components/widgets/custom-table/CustomTableBody"
+import CustomTableBodyEmpty                     from "../../components/widgets/custom-table/CustomTableBodyEmpty"
+import Helper                                   from "../../helpers"
+import dataDetails                              from "./data-details"
+import DoughnutChart                            from "./doughnut-chart"
 
 
 
@@ -282,7 +283,8 @@ const DetailData = (props) => {
                                                         }
                                                     </Col>
                                                 ))
-                                            : <EmptyCard/>
+                                            : 
+                                                <CustomTableBodyEmpty/>
                                         }
                                     </Row>
                                 </CardBody>

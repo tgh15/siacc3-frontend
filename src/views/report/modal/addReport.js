@@ -55,6 +55,7 @@ import { workunitAPI }                                  from "../../../services/
 const FormReport = (props) => {
     //Props
     const {
+        onSubmit,
         reportCategory,
         isAddFormVisible,
         setIsAddFormVisible,
@@ -145,7 +146,7 @@ const FormReport = (props) => {
     }
 
     const handleFinish = (data) => {
-        console.log(data, 'formdata');
+        console.log(data, 'data');
 
         let formData;
 
@@ -156,20 +157,23 @@ const FormReport = (props) => {
             // monthly, quarterly, yearly, periodic
 
             formData = {
+                title          : `Laporan dengan format ${reportKind}`,   
                 is_formatted   : true,
+                by_work_unit   : true,
                 is_aggregation : true,
             }
 
-            if(reportKind == 'monthly'){
-
-                formData.content    = [data.report_body.value];
-                formData.start      = `${data.year.value}-${data.month.value}-01T00:00:01Z`;
-                formData.end        = `${data.year.value}-${data.month.value}-${getLastDateOfCurrentMonth(data.month.value)}T23:59:59Z`;
+            if(reportKind === 'monthly'){
+                formData.year           = data.year.value;
+                formData.month          = data.month.value;
+                formData.contents_id    = [data.report_body.value];
+                formData.report_type    = 'monthly'
 
             }else if(reportKind === 'quarterly'){
 
-                formData.content        = [data.report_body.value];
-                formData.quarterly_year = data.year.value;
+                formData.year           = data.year.value;
+                formData.contents_id    = [data.report_body.value];
+                formData.report_type    = 'quarterly'
 
                 if(data.quarter_type.filter(data => data.value === 0 ).length > 0){
                     formData.quarterly = [
@@ -185,16 +189,36 @@ const FormReport = (props) => {
                 }
 
             }else if(reportKind === 'yearly'){
-                formData.content    = [data.report_body.value];
-                formData.start      = `${data.year.value}-01-01T00:00:01Z`;
-                formData.end        = `${data.year.value}-12-31T23:59:59Z`;
+
+                formData.year           = data.year.value;
+                formData.report_type    = 'yearly'
+                formData.contents_id    = [data.report_body.value];
+
             }else if(reportKind === 'periodic'){
+
+                formData.end            = moment(data.end_date[0]).format('YYYY-MM-DDT23:59:59Z');
+                formData.start          = moment(data.start_date[0]).format('YYYY-MM-DDT00:00:01Z');
+                formData.report_type    = 'periodically';
+                formData.contents_id    = data.report_body.map((data) => data.value);
             }
+
+            if(workunitKind === 2){
+                formData.is_kejati              = true,
+                formData.work_unit_id           = data.workunit_level_2.map((data) => data.value).toString();
+            }else if (workunitKind === 3){
+                formData.is_kejari              = true;
+                formData.work_unit_id           = data.workunit_level_3.map((data) => data.value).toString();
+                formData.work_unit_parent_id    = data.workunit_level_2.value;
+            }else if (workunitKind === 4 ){
+                formData.is_cabjari             = true,
+                formData.work_unit_id           = data.workunit_level_4.map((data) => data.value).toString();
+                formData.work_unit_parent_id    = data.workunit_level_3.value;
+            }
+
+            console.log(formData, 'formData');
         }
 
-        console.log(formData, 'result formData');
-
-
+        onSubmit({model : formData});
     };
 
     const getChildWorkunit = (workunit_id, level) => {
@@ -244,7 +268,7 @@ const FormReport = (props) => {
 
     return (
         <Fragment>
-            
+
             <ModalBase
                 show    = {isHelpModalVisible}
                 size    = "lg"
@@ -399,7 +423,7 @@ const FormReport = (props) => {
                                                         as      = {
                                                             <Flatpickr 
                                                                 id          = 'end_date' 
-                                                                options     = {{ dateFormat: "d-m-Y H:i", enableTime: true, time_24hr: true }}
+                                                                options     = {{ dateFormat: "d-m-Y"}}
                                                                 className   = 'form-control' 
                                                                 placeholder = {moment().format('DD-M-YYYY')}
                                                             />
@@ -483,6 +507,8 @@ const FormReport = (props) => {
                                                         className           = 'react-select'
                                                         placeholder         = "Pilih Satuan Kerja"
                                                         classNamePrefix     = 'select'
+                                                        isMulti             = {workunitKind === 2 ? true : false}
+                                                        isClearable         = {workunitKind === 2 ? true : false}
                                                     />
                                                 }
                                             />
@@ -508,6 +534,8 @@ const FormReport = (props) => {
                                                     isDisabled          = {!workunitLevel3}
                                                     placeholder         = {workunitLevel3 ? "Pilih Kejaksaan Negeri" : "Pilih Kejati Terlebih Dahulu"}
                                                     classNamePrefix     = 'select'
+                                                    isMulti             = {workunitKind === 3 ? true : false}
+                                                    isClearable         = {workunitKind === 3 ? true : false}
                                                 />
                                             }
                                         />
@@ -564,6 +592,8 @@ const FormReport = (props) => {
                                                     className           = 'react-select'
                                                     placeholder         = "Pilih Satuan Kerja"
                                                     classNamePrefix     = 'select'
+                                                    isMulti             = {reportKind === 'periodic' ? true : false}
+                                                    isClearable         = {reportKind === 'periodic' ? true : false}
                                                 />
                                             }
                                         />
