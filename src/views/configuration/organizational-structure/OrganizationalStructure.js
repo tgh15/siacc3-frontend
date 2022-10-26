@@ -1,4 +1,5 @@
 import { Fragment, useEffect, useState }    from "react";
+import Skeleton from "react-loading-skeleton";
 import { Card, CardBody, CardText }         from "reactstrap";
 
 //Components
@@ -6,82 +7,132 @@ import CustomToast                          from '../../../components/widgets/cu
 import OrganizationChart                    from '../../../components/widgets/org-chart';
 
 //API
-import OrganizationalStructureApi           from '../../../services/pages/configuration/organizational-structure';
+import OrganizationalStructureAPI           from '../../../services/pages/configuration/organizational-structure';
 
-
-const CardChart = (props) => {
-    const {
-        data,
-        satker
-    } = props;
-
-    return (
-        <Card>
-            <CardBody>
-                <CardText className="font-weight-bolder">
-                    Struktur Organisasi {satker}
-                </CardText>
-                <OrganizationChart
-                    draggable   = {true} 
-                    datasource  = {data} 
-                    zoominLimit = {5}
-                />
-            </CardBody>
-        </Card>
-    );
-};
 
 const OrganizationalStructure = () => {
     //State
-    const [dataKejati,setDataKejati]        = useState([]);
-    const [dataKejari,setDataKejari]        = useState([]);
-    const [dataCabjari,setDataCabjari]      = useState([]);
-    const [dataKejagung,setDataKejagung]    = useState([]);
+    const [loading, setloading]           = useState(false);
+    const [dataKejati, setDataKejati]     = useState(null);
+    const [dataKejari, setDataKejari]     = useState(null);
+    const [dataCabjari, setDataCabjari]   = useState(null);
+    const [dataKejagung, setDataKejagung] = useState(null);
 
-    const getData = ({workunit_level_id,onSuccessData}) => {
-        OrganizationalStructureApi.get({
-            onSuccess : (res) => {
-                onSuccessData(res);
-            }, onFail : (err) => {
-                CustomToast("danger",err.message);
-            },
-            data : {
-                is_structure        : true,
-                workunit_level_id   : workunit_level_id
+    useEffect(() => {
+        getData(1);
+        getData(2);
+        getData(3);
+        getData(4);
+    }, []);
+
+    const getData = (level) => {
+        setloading(true);
+
+        const formData = {
+            is_structure      : true,
+            workunit_level_id : level
+        };
+
+        OrganizationalStructureAPI.getStructure(formData).then(
+            res => {
+                if (!res.is_error) {
+                    setloading(false);
+
+                    if (level === 1) {
+                        setDataKejagung(res.data);
+                    }else if (level === 2) {
+                        setDataKejati(res.data);
+                    }else if (level === 3) {
+                        setDataKejari(res.data);
+                    }else {
+                        setDataCabjari(res.data);
+                    }
+                }else {
+                    CustomToast("danger", res.message);
+                }
             }
-        })
+        ).catch(
+            err => {
+                CustomToast("danger", err.message);
+            }
+        )
     };
-
-    useEffect(() => {
-        getData({ workunit_level_id :1, onSuccessData : (res) => {setDataKejagung(res)} })
-    }, []);
-
-    useEffect(() => {
-        getData({ workunit_level_id :2, onSuccessData : (res) => {setDataKejati(res)} })
-    }, []);
-
-    useEffect(() => {
-        getData({ workunit_level_id :3, onSuccessData : (res) => {setDataKejari(res)} })
-    }, []);
-
-    useEffect(() => {
-        getData({ workunit_level_id :4, onSuccessData : (res) => {setDataCabjari(res)} })
-    }, []);
 
     return (
         <Fragment>
-            <div id="structure-kejagung">
-                <CardChart data={dataKejagung} satker="Kejaksaan Agung"/>
-            </div>
-            <div id="structure-kejati">
-                <CardChart data={dataKejati} satker="Kejaksaan Tinggi"/>
-            </div>
-            <div id="structure-kejari">
-                <CardChart data={dataKejari} satker="Kejaksaan Negeri"/>
-            </div>
-            <div id="structure-capjari">
-                <CardChart data={dataCabjari} satker="Kejaksaan Cabang Kejaksaan Negeri"/>
-            </div>
+            {
+                !loading ?
+                    <div>
+                        {
+                            dataKejagung != null ?
+                                <Card id="structure-kejagung">
+                                    <CardBody>
+                                        <CardText className="font-weight-bolder">
+                                            Struktur Organisasi Kejaksaan Agung
+                                        </CardText>
+                                        <OrganizationChart
+                                            draggable   = {true} 
+                                            datasource  = {dataKejagung} 
+                                            zoominLimit = {5}
+                                        />
+                                    </CardBody>
+                                </Card>
+                            : null
+                        }
+
+                        {
+                            dataKejati != null ?
+                                <Card id="structure-kejati">
+                                    <CardBody>
+                                        <CardText className="font-weight-bolder">
+                                            Struktur Organisasi Kejaksaan Tinggi
+                                        </CardText>
+                                        <OrganizationChart
+                                            draggable   = {true} 
+                                            datasource  = {dataKejati} 
+                                            zoominLimit = {5}
+                                        />
+                                    </CardBody>
+                                </Card>
+                            : null
+                        }
+
+                        {
+                            dataKejari != null ?
+                                <Card id="structure-kejari">
+                                    <CardBody>
+                                        <CardText className="font-weight-bolder">
+                                            Struktur Organisasi Kejaksaan Negeri
+                                        </CardText>
+                                        <OrganizationChart
+                                            draggable   = {true} 
+                                            datasource  = {dataKejari} 
+                                            zoominLimit = {5}
+                                        />
+                                    </CardBody>
+                                </Card>
+                            : null
+                        }
+
+                        {
+                            dataCabjari != null ?
+                                <Card id="structure-capjari">
+                                    <CardBody>
+                                        <CardText className="font-weight-bolder">
+                                            Struktur Organisasi Cabang Kejaksaan Negeri
+                                        </CardText>
+                                        <OrganizationChart
+                                            draggable   = {true} 
+                                            datasource  = {dataCabjari} 
+                                            zoominLimit = {5}
+                                        />
+                                    </CardBody>
+                                </Card>
+                            : null
+                        }
+                    </div>
+                : <Skeleton height={60} count={3} style={{ marginBottom: "10px" }}/> 
+            }
         </Fragment>
     );
 };
