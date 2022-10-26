@@ -146,18 +146,14 @@ const FormReport = (props) => {
     }
 
     const handleFinish = (data) => {
-        console.log(data, 'data');
 
         let formData;
 
         //check is report formatted or note 
-
         if(isFormat){
             // if formatted then check what format type
             // monthly, quarterly, yearly, periodic
-
             formData = {
-                title          : `Laporan dengan format ${reportKind}`,   
                 is_formatted   : true,
                 by_work_unit   : true,
                 is_aggregation : true,
@@ -166,12 +162,14 @@ const FormReport = (props) => {
             if(reportKind === 'monthly'){
                 formData.year           = data.year.value;
                 formData.month          = data.month.value;
+                formData.title          = `Data Berita ${workunitKind === 1 ? 'Kejagung' : workunitKind === 2 ? 'Kejati' : workunitKind === 3 ? 'Kejari' : 'Cabjari'} ${`Bulan ${data.month.label} Tahun ${data.year.value}`}
+                `
                 formData.contents_id    = [data.report_body.value];
                 formData.report_type    = 'monthly'
 
             }else if(reportKind === 'quarterly'){
-
                 formData.year           = data.year.value;
+                formData.title          = `${`Data Berita ${workunitKind === 1 ? 'Kejagung' : workunitKind === 2 ? 'Kejati' : workunitKind === 3 ? 'Kejari' : 'Cabjari'} ${data.quarter_type.length > 3 || data.quarter_type.filter((data) => data.value === 0).length > 0 ?'Triwulan I (Januari - Maret) - Triwulan IV (Oktober - Desember)':data.quarter_type.length > 1 ?`${(data.quarter_type.filter((data_) => data_.value === (Math.min.apply(Math, data.quarter_type.map((data) => (data.value))))))[0].label} ${data.quarter_type.length > 2 ? '-' : '&'} ${(data.quarter_type.filter((data_) => data_.value === (Math.max.apply(Math, data.quarter_type.map((data) => (data.value))))))[0].label }` : data.quarter_type[0].label} Tahun ${data.year.value}`}`
                 formData.contents_id    = [data.report_body.value];
                 formData.report_type    = 'quarterly'
 
@@ -189,15 +187,14 @@ const FormReport = (props) => {
                 }
 
             }else if(reportKind === 'yearly'){
-
                 formData.year           = data.year.value;
+                formData.title          = `Data Berita ${workunitKind === 1 ? 'Kejagung' : workunitKind === 2 ? 'Kejati' : workunitKind === 3 ? 'Kejari' : 'Cabjari'} Tahun ${data.year.value}`;
                 formData.report_type    = 'yearly'
                 formData.contents_id    = [data.report_body.value];
-
             }else if(reportKind === 'periodic'){
-
                 formData.end            = moment(data.end_date[0]).format('YYYY-MM-DDT23:59:59Z');
                 formData.start          = moment(data.start_date[0]).format('YYYY-MM-DDT00:00:01Z');
+                formData.title          = `Data Berita ${workunitKind === 1 ? 'Kejagung' : workunitKind === 2 ? 'Kejati' : workunitKind === 3 ? 'Kejari' : 'Cabjari'} Periode ${moment(data.start_date[0]).format('DD-MM-YYYY')} - ${moment(data.end_date[0]).format('DD-MM-YYYY')}`;
                 formData.report_type    = 'periodically';
                 formData.contents_id    = data.report_body.map((data) => data.value);
             }
@@ -215,9 +212,208 @@ const FormReport = (props) => {
                 formData.work_unit_parent_id    = data.workunit_level_3.value;
             }
 
-            console.log(formData, 'formData');
+        }else{
+            if(data.content != null && data.content.filter(e => parseInt(e.value) === 1).length > 0){
+                if(data.content.filter(e => parseInt(e.value) >= 12 && parseInt(e.value) <= 19).length > 0){
+                    CustomToast('warning', 'Jika memilih Isi Berita, maka Pilihan Jabatan, Jumlah Berita Di Publikasi, Jumlah Berita di Arsip, Jumlah Berita Ke Pimpinan, Jumlah Agen, Bulan, Tanggal, dan Jumlah Tidak Dapat Digunakan.');
+                }else{
+                    if(data.content != null){
+                        data.content.map((data) => (
+                            _newOrder.push(parseInt(data.value))
+                        ));
+                    }
+                
+                    //Get Category Filter
+                    if(data.filter_category != null && !(data.filter_category.filter(e => parseInt(e.value) === 0).length > 0)){
+                        data.filter_category.map((data) => (
+                            _newFilter.push({
+                                report_filter_type_id: 1,
+                                keyword : data.label.toString()
+                            })
+                        ));
+                    }else{
+                        (category.slice(2)).map((data) => (
+                            _newFilter.push({
+                                report_filter_type_id: 1,
+                                keyword : data.name.toString()
+                            })
+                        ));
+                    }
+                
+                    if(data.filter_workunit != null && !(data.filter_workunit.filter(e => parseInt(e.value) === 0).length > 0)){
+                        data.filter_workunit.map((data) => (
+                            _newFilter.push({
+                                report_filter_type_id: 3,
+                                keyword : data.value.toString()
+                            })
+                        ));
+                    };
+                
+                    if(data.filter_agent != null){
+                        data.filter_agent.map((data) => (
+                            _newFilter.push({
+                                report_filter_type_id: 2,
+                                keyword : data.value.toString()
+                            })
+                        ));
+                    }
+                    
+                    formData = {
+                        model : {
+                            end          : moment(data.end_date[0]).format('YYYY-MM-DDTH:mm:ssZ'),
+                            title        : data.title,
+                            start        : moment(data.start_date[0]).format('YYYY-MM-DDTH:mm:ssZ'),
+                            filters      : _newFilter,
+                            contents_id  : _newOrder,
+                            is_formatted : false
+                        }
+                    }
+    
+                    if(data.time != null){
+                        formData.time = moment(data.time).format('YYYY-MM-DDTH:mm:ssZ');
+                    }
+                
+                    if(data.repeat != null){
+                        formData.repeat = data.repeat;
+                    }
+                
+                }
+            }else if(data.content.filter(e => parseInt(e.value) === 16).length > 0){
+    
+                if(data.content.filter(e => parseInt(e.value) === 11).length > 0){
+                    if(data.content != null){
+                        data.content.map((data) => (
+                            _newOrder.push(parseInt(data.value))
+                        ));
+                    }
+                
+                    //Get Category Filter
+                    if(data.filter_category != null && !(data.filter_category.filter(e => parseInt(e.value) === 0).length > 0)){
+                        data.filter_category.map((data) => (
+                            _newFilter.push({
+                                report_filter_type_id: 1,
+                                keyword : data.label.toString()
+                            })
+                        ));
+                    }else{
+                        (category.slice(2)).map((data) => (
+                            _newFilter.push({
+                                report_filter_type_id: 1,
+                                keyword : data.name.toString()
+                            })
+                        ));
+                    }
+                
+                    if(data.filter_workunit != null && !(data.filter_workunit.filter(e => parseInt(e.value) === 0).length > 0)){
+                        data.filter_workunit.map((data) => (
+                            _newFilter.push({
+                                report_filter_type_id: 3,
+                                keyword : data.value.toString()
+                            })
+                        ));
+                    };
+                
+                    if(data.filter_agent != null){
+                        data.filter_agent.map((data) => (
+                            _newFilter.push({
+                                report_filter_type_id: 2,
+                                keyword : data.value.toString()
+                            })
+                        ));
+                    };
+                
+                    if(data.time != null){
+                        formData.time = moment(data.time).format('YYYY-MM-DDTH:mm:ssZ');
+                    }
+                
+                    if(data.repeat != null){
+                        formData.repeat = data.repeat;
+                    }
+                    
+                    formData = {
+                        model : {
+                            title        : data.title,
+                            start        : moment(data.start_date[0]).format('YYYY-MM-DDTH:mm:ssZ'),
+                            end          : moment(data.end_date[0]).format('YYYY-MM-DDTH:mm:ssZ'),
+                            contents_id  : _newOrder,
+                            filters      : _newFilter,
+                            is_formatted : false
+                        }
+                    }
+                
+                }else{
+                    CustomToast('warning', 'Jika memilih Jumlah Agen, maka harus memilih Satuan Kerja');
+                }
+            }else if(data.content.filter(e => parseInt(e.value) >= 12 && parseInt(e.value) <= 16 ).length > 0){
+                if(data.content.filter(e => parseInt(e.value) === 10 || parseInt(e.value) === 11 ).length > 0){
+                    if(data.content != null){
+                        data.content.map((data) => (
+                            _newOrder.push(parseInt(data.value))
+                        ));
+                    }
+                
+                    //Get Category Filter
+                    if(data.filter_category != null && !(data.filter_category.filter(e => parseInt(e.value) === 0).length > 0)){
+                        data.filter_category.map((data) => (
+                            _newFilter.push({
+                                report_filter_type_id: 1,
+                                keyword : data.label.toString()
+                            })
+                        ));
+                    }else{
+                        (category.slice(2)).map((data) => (
+                            _newFilter.push({
+                                report_filter_type_id: 1,
+                                keyword : data.name.toString()
+                            })
+                        ));
+                    }
+                
+                    if(data.filter_workunit != null && !(data.filter_workunit.filter(e => parseInt(e.value) === 0).length > 0)){
+                        data.filter_workunit.map((data) => (
+                            _newFilter.push({
+                                report_filter_type_id: 3,
+                                keyword : data.value.toString()
+                            })
+                        ));
+                    };
+                
+                    if(data.filter_agent != null){
+                        data.filter_agent.map((data) => (
+                            _newFilter.push({
+                                report_filter_type_id: 2,
+                                keyword : data.value.toString()
+                            })
+                        ));
+                    };
+                
+                    if(data.time != null){
+                        formData.time = moment(data.time).format('YYYY-MM-DDTH:mm:ssZ');
+                    }
+                
+                    if(data.repeat != null){
+                        formData.repeat = data.repeat;
+                    }
+                    
+                    formData = {
+                        model : {
+                            title        : data.title,
+                            start        : moment(data.start_date[0]).format('YYYY-MM-DDTH:mm:ssZ'),
+                            end          : moment(data.end_date[0]).format('YYYY-MM-DDTH:mm:ssZ'),
+                            contents_id  : _newOrder,
+                            filters      : _newFilter,
+                            is_formatted : false
+                        }
+                    }
+                
+                }else{
+                    CustomToast('warning', 'Jika memilih Jumlah Berita Di Publikasi, Jumlah Berita di Arsip, Jumlah Berita Ke Pimpinan, maka harus memilih Nama Agen atau Satuan Kerja');
+                }
+            }else{
+                CustomToast('warning', 'Isi laporan harus menggunakan Satuan Kerja atau Nama Agen.');
+            }
         }
-
+        
         onSubmit({model : formData});
     };
 

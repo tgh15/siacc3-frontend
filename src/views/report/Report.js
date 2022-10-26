@@ -461,7 +461,21 @@ const Report = (props) => {
                     ],
                     date_
                 ],
-                body            : [body][0],
+                body            : [body.map((data) => 
+                    (
+                        data.map((data2, index) => (
+                            index > 1 ?
+                                {
+                                    content : data2,
+                                    styles  : {halign: 'center'}
+                                }
+                            :
+                                {
+                                    content : data2,
+                                    styles  : {halign: 'left'}
+                                }
+                        ))
+                    ))],
                 margin          : { top: 10, bottom: 25 },
                 styles          : { cellWidth: 'auto'},
                 headStyles      : {
@@ -494,7 +508,21 @@ const Report = (props) => {
                         {content: 'Desember', styles: { halign: 'center'}},
                     ]
                 ],
-                body            : [body][0],
+                body            : [body.map((data) => 
+                    (
+                        data.map((data2, index) => (
+                            index > 1 ?
+                                {
+                                    content : data2,
+                                    styles  : {halign: 'center'}
+                                }
+                            :
+                                {
+                                    content : data2,
+                                    styles  : {halign: 'left'}
+                                }
+                        ))
+                    ))],
                 styles          : { cellWidth: 'auto'},
                 columnStyles    : { 0: { cellWidth: 10 } },
                 headStyles      : {
@@ -550,7 +578,22 @@ const Report = (props) => {
                     header_,
                     subHeader_
                 ],
-                body            : [body][0],
+                body            : [body.map((data) => 
+                    (
+                        data.map((data2, index) => (
+                            index > 1 ?
+                                {
+                                    content : data2,
+                                    styles  : {halign: 'center'}
+                                }
+                            :
+                                {
+                                    content : data2,
+                                    styles  : {halign: 'left'}
+                                }
+                        ))
+                    ))
+                ],
                 styles          : { cellWidth: 'auto'},
                 columnStyles    : { 0: { cellWidth: 10 } },
                 headStyles      : {
@@ -576,28 +619,7 @@ const Report = (props) => {
                         subHeader_.push(
                             {content: 'Jumlah Berita ke Pimpinan', styles: { halign: 'center'}},
                         )
-            ))
-            
-            {
-                console.log(
-                    [body.map((data) => 
-                        (
-                            data.map((data2, index) => (
-                                index > 1 ?
-                                    {
-                                        content : data2,
-                                        styles  : {halign: 'center'}
-                                    }
-                                :
-                                    {
-                                        content : data2,
-                                        styles  : {halign: 'left'}
-                                    }
-                            ))
-                        )
-                    )][0]
-                , 'body log')
-            }
+            ));
 
             doc.autoTable({
                 startY          : 30,
