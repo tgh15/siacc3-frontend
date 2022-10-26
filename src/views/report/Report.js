@@ -245,8 +245,7 @@ const Report = (props) => {
                             ))
                         ))
                     }
-                    {console.log(_bodyData)}
-                    {_bodyData.push(_sum)}
+                    {detailResults?.report_type !== 'periocally' && _bodyData.push(_sum)}
                     {_body.push(_bodyData)}
                 </>
             ))
@@ -444,8 +443,7 @@ const Report = (props) => {
 
         if(detailResults?.report_type === 'monthly'){
 
-            let date_ = [];
-            console.log(body, 'body')
+            let date_       = [];
             let dateLength_ = body[0].length > 0 ? body[0].length - 3 : 0;
 
             Array.from(Array(dateLength_).keys()).map((data,index) => (
@@ -464,12 +462,12 @@ const Report = (props) => {
                     date_
                 ],
                 body            : [body][0],
+                margin          : { top: 10, bottom: 25 },
                 styles          : { cellWidth: 'auto'},
-                columnStyles    : { 0: { cellWidth: 10 } },
                 headStyles      : {
-                    fillColor: [23, 97, 56],
+                    fillColor   : [23, 97, 56],
                 },
-                margin:         { top: 10, bottom: 25 }
+                columnStyles    : { 0: { cellWidth: 10 } },
             });
         }else if(detailResults?.report_type === 'yearly'){
             doc.autoTable({
@@ -506,14 +504,14 @@ const Report = (props) => {
             });
         }else if(detailResults?.report_type === 'quarterly'){
 
-            let triwulan    = [1];
+            let quarter    = detailResults?.quarterly?.map((data) => (data.name));
             let header_     = [
                 {content: 'No.', rowSpan: 2, styles: { halign: 'center', valign: 'middle'}},
                 {content: 'Satuan Kerja', rowSpan: 2, styles: { halign: 'center'}},
             ];
             let subHeader_  = [];
 
-            if(triwulan.includes(1)){
+            if(quarter.includes("Triwulan I")){
                 header_.push({content: 'Triwulan I', colSpan:3 ,styles: { halign: 'center'}});
                 subHeader_.push(
                     {content: 'Januari', styles: { halign: 'center'}},
@@ -521,7 +519,7 @@ const Report = (props) => {
                     {content: 'Maret', styles: { halign: 'center'}},
                 )
             }
-            if(triwulan.includes(2)){
+            if(quarter.includes("Triwulan II")){
                 header_.push({content: 'Triwulan II', colSpan:3 ,styles: { halign: 'center'}});
                 subHeader_.push(
                     {content: 'April', styles: { halign: 'center'}},
@@ -529,7 +527,7 @@ const Report = (props) => {
                     {content: 'Juni', styles: { halign: 'center'}},
                 )
             }
-            if(triwulan.includes(3)){
+            if(quarter.includes("Triwulan III")){
                 header_.push({content: 'Triwulan III', colSpan:3 ,styles: { halign: 'center'}});
                 subHeader_.push(
                     {content: 'Juli', styles: { halign: 'center'}},
@@ -537,7 +535,7 @@ const Report = (props) => {
                     {content: 'September', styles: { halign: 'center'}},
                 )
             }
-            if(triwulan.includes(4)){
+            if(quarter.includes("Triwulan IV")){
                 header_.push({content: 'Triwulan IV', colSpan:3 ,styles: { halign: 'center'}});
                 subHeader_.push(
                     {content: 'Oktober', styles: { halign: 'center'}},
@@ -579,7 +577,27 @@ const Report = (props) => {
                             {content: 'Jumlah Berita ke Pimpinan', styles: { halign: 'center'}},
                         )
             ))
-
+            
+            {
+                console.log(
+                    [body.map((data) => 
+                        (
+                            data.map((data2, index) => (
+                                index > 1 ?
+                                    {
+                                        content : data2,
+                                        styles  : {halign: 'center'}
+                                    }
+                                :
+                                    {
+                                        content : data2,
+                                        styles  : {halign: 'left'}
+                                    }
+                            ))
+                        )
+                    )][0]
+                , 'body log')
+            }
 
             doc.autoTable({
                 startY          : 30,
@@ -588,11 +606,25 @@ const Report = (props) => {
                         {content: 'No.', rowSpan : 2, styles: { halign: 'center', valign: 'middle'}},
                         {content: 'Satuan Kerja', rowSpan: 2, styles: { halign: 'center'}},
                         {content: 'Data Berita', colSpan : 3,styles: { halign: 'center'}},
-                        {content: 'Jumlah', rowSpan:2,styles: { halign: 'center'}},
                     ],
                     subHeader_
                 ],
-                body            : [body][0],
+                body            : [body.map((data) => 
+                    (
+                        data.map((data2, index) => (
+                            index > 1 ?
+                                {
+                                    content : data2,
+                                    styles  : {halign: 'center'}
+                                }
+                            :
+                                {
+                                    content : data2,
+                                    styles  : {halign: 'left'}
+                                }
+                        ))
+                    )
+                )][0],
                 styles          : { cellWidth: 'auto'},
                 columnStyles    : { 0: { cellWidth: 10 } },
                 headStyles      : {
