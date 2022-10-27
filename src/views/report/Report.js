@@ -42,6 +42,8 @@ const Report = (props) => {
         detailReport,
         detailResults,
         setSelectedReport,
+        isAddFormVisible,
+        setIsAddFormVisible,
         isDetailReportVisible,
         isDetailResultsVisible,
         setIsDetailReportVisible,
@@ -56,7 +58,6 @@ const Report = (props) => {
 
     const [body, setBody]                           = useState([]);
     const [header, setHeader]                       = useState([]);
-    const [isAddFormVisible, setIsAddFormVisible]   = useState(false);
 
     //Export Excel
     const ExcelFile                             = ReactExport.ExcelFile;

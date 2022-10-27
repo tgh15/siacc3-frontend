@@ -54,7 +54,7 @@ const DetailDataFormatted = (props) => {
                 </Card>
 
                 {
-                    detailReport != null && detailReport.result.map((data,index) => (
+                    detailReport != null &&  detailReport.result != null &&detailReport.result.map((data,index) => (
                         <Card className="bg-header" bodyStyle={{ padding: '0px' }}>
                             <CardBody>
                                 <Row>

@@ -44,9 +44,27 @@ import { PerformanceContext }                           from "../../../context/P
 
 import Helper                                           from "../../../helpers/index";
 import {
-    schemaWithFormat,
     schemaNoFormatNoSchedule,
-    schemaNoFormatWithSchedule
+    schemaNoFormatWithSchedule,
+    schemaFormatMonthlyLevel1,
+    schemaFormatMonthlyLevel2,
+    schemaFormatMonthlyLevel3,
+    schema,
+    schema2,
+    schema3,
+    schemaFormatMonthlyLevel4,
+    schemaFormatQuarterlyLevel1,
+    schemaFormatQuarterlyLevel2,
+    schemaFormatQuarterlyLevel3,
+    schemaFormatQuarterlyLevel4,
+    schemaFormatYearlylyLevel1,
+    schemaFormatYearlylyLevel2,
+    schemaFormatYearlylyLevel3,
+    schemaFormatYearlylyLevel4,
+    schemaFormatPeriodicallyLevel1,
+    schemaFormatPeriodicallyLevel2,
+    schemaFormatPeriodicallyLevel3,
+    schemaFormatPeriodicallyLevel4
 }                                                       from "../validation";
 import { HelpCircle }                                   from "react-feather";
 import { ModalBase }                                    from "../../../components/widgets/modals-base";
@@ -95,7 +113,80 @@ const FormReport = (props) => {
         watch,
         handleSubmit, 
     }   
-        = useForm({ mode: "onTouched"});
+        = useForm({ mode: "onTouched", 
+        resolver: yupResolver(
+            isFormat === null ?
+                schema
+            :
+                isFormat ? 
+                    reportKind === null ?
+                        schema2
+                    :
+                        reportKind === 'monthly' ?
+                            workunitKind === 1 ?
+                                schemaFormatMonthlyLevel1
+                            :
+                                workunitKind === 2 ?
+                                    schemaFormatMonthlyLevel2
+                                :
+                                    workunitKind === 3 ?
+                                        schemaFormatMonthlyLevel3
+                                    :
+                                        workunitKind === 4 ?
+                                            schemaFormatMonthlyLevel4
+                                        :
+                                            schema3
+                        :
+                            reportKind === "quarterly" ?
+                                workunitKind === 1 ?
+                                    schemaFormatQuarterlyLevel1
+                                :
+                                    workunitKind === 2 ?
+                                        schemaFormatQuarterlyLevel2
+                                    :
+                                        workunitKind === 3 ?
+                                            schemaFormatQuarterlyLevel3
+                                        :
+                                            workunitKind === 4 ?
+                                                schemaFormatQuarterlyLevel4
+                                            :
+                                                schema3
+                            :
+                                reportKind === "yearly" ?
+                                    workunitKind === 1 ?
+                                        schemaFormatYearlylyLevel1
+                                    :
+                                        workunitKind === 2 ?
+                                            schemaFormatYearlylyLevel2
+                                        :
+                                            workunitKind === 3 ?
+                                                schemaFormatYearlylyLevel3
+                                            :
+                                                workunitKind === 4 ?
+                                                    schemaFormatYearlylyLevel4
+                                                :
+                                                    schema3
+                                :
+                                    workunitKind === 1 ?
+                                        schemaFormatPeriodicallyLevel1
+                                    :
+                                        workunitKind === 2 ?
+                                            schemaFormatPeriodicallyLevel2
+                                        :
+                                            workunitKind === 3 ?
+                                                schemaFormatPeriodicallyLevel3
+                                            :
+                                                workunitKind === 4 ?
+                                                    schemaFormatPeriodicallyLevel4
+                                                :
+                                                    schema3
+                :
+                    inputCreateDate ? 
+                        schemaNoFormatWithSchedule
+                    :
+                        schemaNoFormatNoSchedule 
+        )
+    });
 
     //Category filter select options
     const Category = () => {
@@ -146,12 +237,12 @@ const FormReport = (props) => {
     }
 
     const handleFinish = (data) => {
-        console.log(data, 'data');
+
         let formData;
         let _newOrder   = [];
         let _newFilter  = [];
-
-        //check is report formatted or note 
+    
+        //check is report formatted or note
         if(isFormat){
             // if formatted then check what format type
             // monthly, quarterly, yearly, periodic
@@ -160,21 +251,21 @@ const FormReport = (props) => {
                 by_work_unit   : true,
                 is_aggregation : true,
             }
-
+    
             if(reportKind === 'monthly'){
                 formData.year           = data.year.value;
                 formData.month          = data.month.value;
                 formData.title          = `Data Berita ${workunitKind === 1 ? 'Kejagung' : workunitKind === 2 ? 'Kejati' : workunitKind === 3 ? 'Kejari' : 'Cabjari'} ${`Bulan ${data.month.label} Tahun ${data.year.value}`}
                 `
-                formData.contents_id    = [data.report_body.value];
+                formData.contents_id    = [parseInt(data.report_body.value)];
                 formData.report_type    = 'monthly'
-
+    
             }else if(reportKind === 'quarterly'){
                 formData.year           = data.year.value;
-                formData.title          = `${`Data Berita ${workunitKind === 1 ? 'Kejagung' : workunitKind === 2 ? 'Kejati' : workunitKind === 3 ? 'Kejari' : 'Cabjari'} ${data.quarter_type.length > 3 || data.quarter_type.filter((data) => data.value === 0).length > 0 ?'Triwulan I (Januari - Maret) - Triwulan IV (Oktober - Desember)':data.quarter_type.length > 1 ?`${(data.quarter_type.filter((data_) => data_.value === (Math.min.apply(Math, data.quarter_type.map((data) => (data.value))))))[0].label} ${data.quarter_type.length > 2 ? '-' : '&'} ${(data.quarter_type.filter((data_) => data_.value === (Math.max.apply(Math, data.quarter_type.map((data) => (data.value))))))[0].label }` : data.quarter_type[0].label} Tahun ${data.year.value}`}`
-                formData.contents_id    = [data.report_body.value];
+                formData.title          = `${`Data Berita ${workunitKind === 1 ? 'Kejagung' : workunitKind === 2 ? 'Kejati' : workunitKind === 3 ? 'Kejari' : 'Cabjari'} ${data.quarter_type.length > 3 || data.quarter_type.filter((data) => parseInt(data.value) === 0).length > 0 ?'Triwulan I (Januari - Maret) - Triwulan IV (Oktober - Desember)':data.quarter_type.length > 1 ?`${(data.quarter_type.filter((data_) => parseInt(data_.value) === (Math.min.apply(Math, data.quarter_type.map((data) => (parseInt(data.value)))))))[0].label} ${data.quarter_type.length > 2 ? '-' : '&'} ${(data.quarter_type.filter((data_) => parseInt(data_.value) === (Math.max.apply(Math, data.quarter_type.map((data) => (parseInt(data.value)))))))[0].label }` : data.quarter_type[0].label} Tahun ${data.year.value}`}`
+                formData.contents_id    = [parseInt(data.report_body.value)];
                 formData.report_type    = 'quarterly'
-
+    
                 if(data.quarter_type.filter(data => data.value === 0 ).length > 0){
                     formData.quarterly = [
                         { id : 1 },
@@ -187,20 +278,20 @@ const FormReport = (props) => {
                         { id : data.value }
                     ))
                 }
-
+    
             }else if(reportKind === 'yearly'){
                 formData.year           = data.year.value;
                 formData.title          = `Data Berita ${workunitKind === 1 ? 'Kejagung' : workunitKind === 2 ? 'Kejati' : workunitKind === 3 ? 'Kejari' : 'Cabjari'} Tahun ${data.year.value}`;
                 formData.report_type    = 'yearly'
-                formData.contents_id    = [data.report_body.value];
+                formData.contents_id    = [parseInt(data.report_body.value)];
             }else if(reportKind === 'periodic'){
                 formData.end            = moment(data.end_date[0]).format('YYYY-MM-DDT23:59:59Z');
                 formData.start          = moment(data.start_date[0]).format('YYYY-MM-DDT00:00:01Z');
                 formData.title          = `Data Berita ${workunitKind === 1 ? 'Kejagung' : workunitKind === 2 ? 'Kejati' : workunitKind === 3 ? 'Kejari' : 'Cabjari'} Periode ${moment(data.start_date[0]).format('DD-MM-YYYY')} - ${moment(data.end_date[0]).format('DD-MM-YYYY')}`;
                 formData.report_type    = 'periodically';
-                formData.contents_id    = data.report_body.map((data) => data.value);
+                formData.contents_id    = data.report_body.map((data) => parseInt(data.value));
             }
-
+    
             if(workunitKind === 2){
                 formData.is_kejati              = true,
                 formData.work_unit_id           = data.workunit_level_2.map((data) => data.value).toString();
@@ -213,9 +304,11 @@ const FormReport = (props) => {
                 formData.work_unit_id           = data.workunit_level_4.map((data) => data.value).toString();
                 formData.work_unit_parent_id    = data.workunit_level_3.value;
             }
-
+    
             onSubmit({model : formData});
-
+            setIsFormat(null)
+            setReportKind(null)
+            setWorkunitKind(null)
         }else{
             if(data.content != null && data.content.filter(e => parseInt(e.value) === 1).length > 0){
                 if(data.content.filter(e => parseInt(e.value) >= 10 && parseInt(e.value) <= 17).length > 0){
@@ -272,7 +365,7 @@ const FormReport = (props) => {
                             is_formatted : false
                         }
                     }
-
+    
                     if(data.time != null){
                         formData.time = moment(data.time).format('YYYY-MM-DDTH:mm:ssZ');
                     }
@@ -284,7 +377,7 @@ const FormReport = (props) => {
                     props.onSubmit(formData);
                 }
             }else if(data.content.filter(e => parseInt(e.value) === 14).length > 0){
-
+    
                 if(data.content.filter(e => parseInt(e.value) === 9).length > 0){
                     if(data.content != null){
                         data.content.map((data) => (
@@ -419,7 +512,11 @@ const FormReport = (props) => {
             }else{
                 CustomToast('warning', 'Isi laporan harus menggunakan Satuan Kerja atau Nama Agen.');
             }
+            setIsFormat(null)
+            setReportKind(null)
+            setWorkunitKind(null)
         }
+
     };
 
     const getChildWorkunit = (workunit_id, level) => {
@@ -503,6 +600,7 @@ const FormReport = (props) => {
                                     placeholder     = "Pilih Jenis Laporan"
 
                                 />
+                                {errors && errors.report_type && <Label className="text-danger">{errors.report_type.message}</Label>}
                             </FormGroup>
                         </Col>
                     </Row>
@@ -514,20 +612,21 @@ const FormReport = (props) => {
                                 <Col md={6}>
                                     <FormGroup>
                                         <Label for='judul'>Periode Laporan</Label>
-                                            <Select
-                                                id              = "format_type" 
-                                                theme           = {selectThemeColors}
-                                                options         = {[
-                                                    {value: 'monthly'   , label : 'Bulanan'},
-                                                    {value: 'quarterly' , label : 'Triwulan'},
-                                                    {value: 'yearly'    , label : 'Tahunan'},
-                                                    {value: 'periodic'  , label : 'Periodik'},
-                                                ]}
-                                                className       = 'react-select'
-                                                placeholder     = "Pilih Periode Laporan"
-                                                classNamePrefix = 'select'
-                                                onChange        = {(value) => {setReportKind(value.value)}}
-                                            />
+                                        <Select
+                                            id              = "report_period" 
+                                            theme           = {selectThemeColors}
+                                            options         = {[
+                                                {value: 'monthly'   , label : 'Bulanan'},
+                                                {value: 'quarterly' , label : 'Triwulan'},
+                                                {value: 'yearly'    , label : 'Tahunan'},
+                                                {value: 'periodic'  , label : 'Periodik'},
+                                            ]}
+                                            className       = 'react-select'
+                                            placeholder     = "Pilih Periode Laporan"
+                                            classNamePrefix = 'select'
+                                            onChange        = {(value) => {setReportKind(value.value)}}
+                                        />
+                                        {errors && errors.report_kind && <Label className="text-danger">{errors.report_kind.message}</Label>}
                                     </FormGroup>
                                 </Col>
                             </Row>
@@ -553,6 +652,7 @@ const FormReport = (props) => {
                                                             />
                                                         }
                                                     />
+                                                    {errors && errors.month && <Label className="text-danger">{errors?.month?.label?.message}</Label>}
                                                 </FormGroup>
                                             </Col>
                                     }
@@ -586,6 +686,7 @@ const FormReport = (props) => {
                                                             />
                                                         }
                                                     />
+                                                    {errors && errors.quarter_type && <Label className="text-danger">{errors?.quarter_type?.message}</Label>}
                                                 </FormGroup>
                                             </Col>
                                     }
@@ -659,6 +760,7 @@ const FormReport = (props) => {
                                                         />
                                                     }
                                                 />
+                                                {errors && errors.year && <Label className="text-danger">{errors?.year?.label?.message}</Label>}
                                             </FormGroup>
                                         </Col>
                                     }
@@ -684,6 +786,7 @@ const FormReport = (props) => {
                                                     placeholder     = "Pilih Satuan Kerja"
                                                     classNamePrefix = 'select'
                                                 />
+                                                {errors && errors.workunit_kind && <Label className="text-danger">{errors?.workunit_kind?.label?.message}</Label>}
                                             </FormGroup>
                                         </Col>
                                     </Row>
@@ -710,9 +813,14 @@ const FormReport = (props) => {
                                                         classNamePrefix     = 'select'
                                                         isMulti             = {workunitKind === 2 ? true : false}
                                                         isClearable         = {workunitKind === 2 ? true : false}
+                                                        closeMenuOnSelect   = {workunitKind === 2 ? false : true}
                                                     />
                                                 }
                                             />
+
+                                            {/* {errors && errors.workunit_level_2 && <Label className="text-danger">{errors?.workunit_level_2?.message}</Label> } */}
+                                            {workunitKind === 2 ? errors && errors.workunit_level_2 && <Label className="text-danger">{errors?.workunit_level_2?.message}</Label> : errors && errors.workunit_level_2 && <Label className="text-danger">{errors?.workunit_level_2?.label?.message}</Label>  }
+
                                         </FormGroup>
 
                                     </Col>
@@ -737,9 +845,12 @@ const FormReport = (props) => {
                                                     classNamePrefix     = 'select'
                                                     isMulti             = {workunitKind === 3 ? true : false}
                                                     isClearable         = {workunitKind === 3 ? true : false}
+                                                    closeMenuOnSelect   = {workunitKind === 3 ? false : true}
+
                                                 />
                                             }
                                         />
+                                        {workunitKind === 3 ? errors && errors.workunit_level_3 && <Label className="text-danger">{errors?.workunit_level_3?.message}</Label> : errors && errors.workunit_level_3 && <Label className="text-danger">{errors?.workunit_level_3?.label?.message}</Label>  }
                                     </Col>
                                 }
                                 </Row>
@@ -765,9 +876,13 @@ const FormReport = (props) => {
                                                         isDisabled          = {!workunitLevel4}
                                                         placeholder         = {workunitLevel4 ? "Pilih Cabang Kejaksaan Negeri" : "Pilih Kejari Terlebih Dahulu"}
                                                         classNamePrefix     = 'select'
+                                                        isMulti             = {workunitKind === 4 ? true : false}
+                                                        isClearable         = {workunitKind === 4 ? true : false}
+                                                        closeMenuOnSelect   = {workunitKind === 4 ? false : true}
                                                     />
                                                 }
                                             />
+                                            {errors && errors.workunit_level_4 && <Label className="text-danger">{errors?.workunit_level_4?.message}</Label> }
                                         </FormGroup>
                                     </Col>
                                 }
@@ -795,9 +910,13 @@ const FormReport = (props) => {
                                                     classNamePrefix     = 'select'
                                                     isMulti             = {reportKind === 'periodic' ? true : false}
                                                     isClearable         = {reportKind === 'periodic' ? true : false}
+                                                    closeMenuOnSelect   = {reportKind === 'periodic' ? false : true}
+
                                                 />
                                             }
                                         />
+
+                                        { errors && errors.report_body && reportKind === 'periodic' ? <Label className="text-danger">{errors?.report_body?.message}</Label> : <Label className="text-danger">{errors?.report_body?.label?.message}</Label>}
                                     </Col>
                                 }
                                     <Col md={6}>
@@ -878,151 +997,215 @@ const FormReport = (props) => {
                                 </Col>
 
                                 {
-                                    isFormat ? 
-                                        <Col md={12}>
+                                    <>
+                                        <Col 
+                                            md = "6" 
+                                            sm = "12"
+                                        >
                                             <FormGroup>
-                                                <Label for='judul'>Format Laporan</Label>
-                                                <Controller
-                                                    name    = "format_type"
-                                                    control = {control}
-                                                    as      = {
-                                                        <Select
-                                                            id              = "format_type" 
-                                                            theme           = {selectThemeColors}
-                                                            options         = {[
-                                                                {value: 'yearly', label : 'Data Satuan Kerja Tahunan'},
-                                                                {value: 'monthly', label : 'Data Satuan Kerja Bulanan'},
-                                                            ]}
-                                                            className       = 'react-select'
-                                                            placeholder     = "Pilih Jenis Laporan"
-                                                            isClearable
-                                                            isMulti
-                                                            classNamePrefix = 'select'
-                                                            closeMenuOnSelect={false}
-                                                        />
-                                                    }
-                                                />
+                                                <Label for='id'>Jadwalkan Laporan?</Label><br/>
+                                                <div id="schedule-report">
+                                                    <CustomInput 
+                                                        id          = 'icon-primary' 
+                                                        name        = 'icon-primary' 
+                                                        type        = 'switch' 
+                                                        label       = {<IconSwitch/>} 
+                                                        inline 
+                                                        onChange    = {() => setInputCreateDate(!inputCreateDate)} 
+                                                    />
+                                                </div>
                                             </FormGroup>
+
+                                            {
+                                                (inputCreateDate) ?
+                                                    <div>
+                                                        <FormGroup>
+                                                            <Label for='tgl_laporan'>Tanggal Laporan Dibuat</Label>
+
+                                                            <Controller
+                                                                as      = {
+                                                                    <Flatpickr 
+                                                                        id          = 'time' 
+                                                                        options     = {{ dateFormat: "d-m-Y H:i", enableTime: true, time_24hr: true }}
+                                                                        className   = 'form-control' 
+                                                                        placeholder = {moment().format('DD-M-YYYY')}
+                                                                    />
+                                                                }
+                                                                name    = "time"
+                                                                rules   = {{required: true}}
+                                                                control = {control}
+                                                            />
+
+                                                            {errors && errors.time && <Label className="text-danger">{errors.time.message}</Label>}
+                                                        </FormGroup>
+
+                                                        <FormGroup>
+                                                            <Label for='id'>Pengulangan Laporan</Label>
+                                                            <div className='demo-inline-spacing'>
+                                                                <CustomInput 
+                                                                    id              = 'exampleCustomRadio' 
+                                                                    type            = 'radio' 
+                                                                    name            = 'repeat' 
+                                                                    label           = 'Satu Kali'
+                                                                    value           = 'single'
+                                                                    inline 
+                                                                    invalid         = {(errors.repeat) ? true : false}
+                                                                    innerRef        = {register()}
+                                                                    defaultChecked
+                                                                />
+                                                                <CustomInput 
+                                                                    type        = 'radio' 
+                                                                    id          = 'exampleCustomRadio2' 
+                                                                    name        = 'repeat' 
+                                                                    label       = 'Harian'
+                                                                    value       = 'daily'
+                                                                    inline 
+                                                                    innerRef    = {register()}
+
+                                                                />
+                                                                <CustomInput 
+                                                                    id          = 'exampleCustomRadio3' 
+                                                                    type        = 'radio' 
+                                                                    name        = 'repeat' 
+                                                                    label       = 'Mingguan'
+                                                                    value       = 'weekly'
+                                                                    inline 
+                                                                    innerRef    = {register()}
+
+                                                                />
+                                                                <CustomInput 
+                                                                    type        = 'radio' 
+                                                                    id          = 'exampleCustomRadio4' 
+                                                                    name        = 'repeat' 
+                                                                    label       = 'Bulanan' 
+                                                                    value       = 'monthly'
+                                                                    inline 
+                                                                    innerRef    = {register()}
+                                                                />
+                                                            </div>
+
+                                                            {errors && errors.repeat && <Label className="text-danger">{errors.repeat.message}</Label>}
+                                                        </FormGroup>
+                                                    </div> 
+                                                : null
+                                            }
                                         </Col>
-                                    :
-                                        <>
-                                            <Col 
-                                                md = "6" 
-                                                sm = "12"
+                                        <Col className="col-md-12 mt-1">
+                                            <Card 
+                                                color   = "secondary" 
+                                                outline
                                             >
-                                                <FormGroup>
-                                                    <Label for='id'>Jadwalkan Laporan?</Label><br/>
-                                                    <div id="schedule-report">
-                                                        <CustomInput 
-                                                            id          = 'icon-primary' 
-                                                            name        = 'icon-primary' 
-                                                            type        = 'switch' 
-                                                            label       = {<IconSwitch/>} 
-                                                            inline 
-                                                            onChange    = {() => setInputCreateDate(!inputCreateDate)} 
+                                                <CardBody>
+                                                    <CardText className="d-flex justify-content-between">
+                                                        Isi Laporan
+                                                        <HelpCircle 
+                                                            onClick     = {() => setIsHelpModalVisible(true)}
+                                                            className   = "cursor-pointer"
                                                         />
-                                                    </div>
-                                                </FormGroup>
+                                                    </CardText>
+                                                    <FormGroup>
+                                                        <div id="contents-report">
+                                                            <Controller
+                                                                name    = "content"
+                                                                control = {control}
+                                                                as      = {
+                                                                    <Select
+                                                                        id              = "content" 
+                                                                        theme           = {selectThemeColors}
+                                                                        options         = {props.reportCategory}
+                                                                        className       = 'react-select'
+                                                                        placeholder     = "Pilih isi Laporan"
+                                                                        isClearable
+                                                                        isMulti
+                                                                        classNamePrefix = 'select'
+                                                                        closeMenuOnSelect={false}
+                                                                    />
+                                                                }
+                                                            />
 
-                                                {
-                                                    (inputCreateDate) ?
-                                                        <div>
-                                                            <FormGroup>
-                                                                <Label for='tgl_laporan'>Tanggal Laporan Dibuat</Label>
+                                                        </div>
+                                                        {errors && errors.content && <Label className="text-danger">{errors.content.message}</Label>}
+                                                    </FormGroup>
+                                                </CardBody>
+                                            </Card>
 
+                                            <Card 
+                                                color   = "secondary" 
+                                                outline
+                                            >
+                                                <CardBody>
+                                                    <CardText>Filter Laporan</CardText>
+                                                    <Row>
+                                                        <Col md="2">
+                                                            <Label for="filter_category">Kategori</Label>
+                                                        </Col>
+                                                        <Col md="10">
+                                                            <div id="select-category">
                                                                 <Controller
-                                                                    as      = {
-                                                                        <Flatpickr 
-                                                                            id          = 'time' 
-                                                                            options     = {{ dateFormat: "d-m-Y H:i", enableTime: true, time_24hr: true }}
-                                                                            className   = 'form-control' 
-                                                                            placeholder = {moment().format('DD-M-YYYY')}
+                                                                    name    = "filter_category"
+                                                                    control = {control}
+                                                                    as      = { 
+                                                                        <Select
+                                                                            id                  = "filter_category" 
+                                                                            theme               = {selectThemeColors}
+                                                                            options             = {watch('filter_category') ? watch('filter_category').filter(val => val.value === 0).length > 0 ? [] : categoryFilter : categoryFilter}
+                                                                            isMulti
+                                                                            className           = 'react-select'
+                                                                            placeholder         = "Pilih Kategori"
+                                                                            isClearable
+                                                                            classNamePrefix     = 'select'
+                                                                            closeMenuOnSelect   = {false}
                                                                         />
                                                                     }
-                                                                    name    = "time"
-                                                                    rules   = {{required: true}}
-                                                                    control = {control}
                                                                 />
+                                                            </div>
+                                                            {errors && errors.filter_category && <Label className="text-danger">{errors.filter_category.message}</Label>}
+                                                        </Col>
+                                                    </Row>
 
-                                                                {errors && errors.time && <Label className="text-danger">{errors.time.message}</Label>}
-                                                            </FormGroup>
-
-                                                            <FormGroup>
-                                                                <Label for='id'>Pengulangan Laporan</Label>
-                                                                <div className='demo-inline-spacing'>
-                                                                    <CustomInput 
-                                                                        id              = 'exampleCustomRadio' 
-                                                                        type            = 'radio' 
-                                                                        name            = 'repeat' 
-                                                                        label           = 'Satu Kali'
-                                                                        value           = 'single'
-                                                                        inline 
-                                                                        invalid         = {(errors.repeat) ? true : false}
-                                                                        innerRef        = {register()}
-                                                                        defaultChecked
-                                                                    />
-                                                                    <CustomInput 
-                                                                        type        = 'radio' 
-                                                                        id          = 'exampleCustomRadio2' 
-                                                                        name        = 'repeat' 
-                                                                        label       = 'Harian'
-                                                                        value       = 'daily'
-                                                                        inline 
-                                                                        innerRef    = {register()}
-
-                                                                    />
-                                                                    <CustomInput 
-                                                                        id          = 'exampleCustomRadio3' 
-                                                                        type        = 'radio' 
-                                                                        name        = 'repeat' 
-                                                                        label       = 'Mingguan'
-                                                                        value       = 'weekly'
-                                                                        inline 
-                                                                        innerRef    = {register()}
-
-                                                                    />
-                                                                    <CustomInput 
-                                                                        type        = 'radio' 
-                                                                        id          = 'exampleCustomRadio4' 
-                                                                        name        = 'repeat' 
-                                                                        label       = 'Bulanan' 
-                                                                        value       = 'monthly'
-                                                                        inline 
-                                                                        innerRef    = {register()}
-                                                                    />
-                                                                </div>
-
-                                                                {errors && errors.repeat && <Label className="text-danger">{errors.repeat.message}</Label>}
-                                                            </FormGroup>
-                                                        </div> 
-                                                    : null
-                                                }
-                                            </Col>
-                                            <Col className="col-md-12 mt-1">
-                                                <Card 
-                                                    color   = "secondary" 
-                                                    outline
-                                                >
-                                                    <CardBody>
-                                                        <CardText className="d-flex justify-content-between">
-                                                            Isi Laporan
-                                                            <HelpCircle 
-                                                                onClick     = {() => setIsHelpModalVisible(true)}
-                                                                className   = "cursor-pointer"
-                                                            />
-                                                        </CardText>
-                                                        <FormGroup>
-                                                            <div id="contents-report">
+                                                    <Row className="mt-1">
+                                                        <Col md="2">
+                                                            <p>Satuan Kerja</p>
+                                                        </Col>
+                                                        <Col md="10">
+                                                            <div id="select-workunit">
                                                                 <Controller
-                                                                    name    = "content"
+                                                                    name    = "filter_workunit"
                                                                     control = {control}
                                                                     as      = {
                                                                         <Select
-                                                                            id              = "content" 
+                                                                            id                  = "filter_workunit" 
+                                                                            theme               = {selectThemeColors}
+                                                                            isMulti
+                                                                            options             = {watch('filter_workunit') ? watch('filter_workunit').filter(val => val.value === 0).length > 0 ? [] : workunitOptionsApproval : workunitOptionsApproval}
+                                                                            className           = 'react-select'
+                                                                            placeholder         = "Pilih Satuan Kerja"
+                                                                            isClearable
+                                                                            classNamePrefix     = 'select'
+                                                                            closeMenuOnSelect   = {false}
+                                                                        />
+                                                                    }
+                                                                />
+                                                            </div>
+                                                        </Col>
+                                                    </Row>
+
+                                                    <Row className="mt-1">
+                                                        <Col md="2">
+                                                            <p>Agen</p>
+                                                        </Col>
+                                                        <Col md="10">
+                                                            <div id="select-agent">
+                                                                <Controller
+                                                                    name    = "filter_agent"
+                                                                    control = {control}
+                                                                    as      = {
+                                                                        <Select
+                                                                            id              = "filter_agent" 
                                                                             theme           = {selectThemeColors}
-                                                                            options         = {props.reportCategory}
+                                                                            options         = {employeeFilter}
                                                                             className       = 'react-select'
-                                                                            placeholder     = "Pilih isi Laporan"
+                                                                            placeholder     = "Pilih Agen"
                                                                             isClearable
                                                                             isMulti
                                                                             classNamePrefix = 'select'
@@ -1030,138 +1213,47 @@ const FormReport = (props) => {
                                                                         />
                                                                     }
                                                                 />
-
                                                             </div>
-                                                            {errors && errors.content && <Label className="text-danger">{errors.content.message}</Label>}
-                                                        </FormGroup>
-                                                    </CardBody>
-                                                </Card>
-
-                                                <Card 
-                                                    color   = "secondary" 
-                                                    outline
-                                                >
-                                                    <CardBody>
-                                                        <CardText>Filter Laporan</CardText>
-                                                        <Row>
-                                                            <Col md="2">
-                                                                <Label for="filter_category">Kategori</Label>
-                                                            </Col>
-                                                            <Col md="10">
-                                                                <div id="select-category">
-                                                                    <Controller
-                                                                        name    = "filter_category"
-                                                                        control = {control}
-                                                                        as      = { 
-                                                                            <Select
-                                                                                id                  = "filter_category" 
-                                                                                theme               = {selectThemeColors}
-                                                                                options             = {watch('filter_category') ? watch('filter_category').filter(val => val.value === 0).length > 0 ? [] : categoryFilter : categoryFilter}
-                                                                                isMulti
-                                                                                className           = 'react-select'
-                                                                                placeholder         = "Pilih Kategori"
-                                                                                isClearable
-                                                                                classNamePrefix     = 'select'
-                                                                                closeMenuOnSelect   = {false}
-                                                                            />
-                                                                        }
-                                                                    />
-                                                                </div>
-                                                                {errors && errors.filter_category && <Label className="text-danger">{errors.filter_category.message}</Label>}
-                                                            </Col>
-                                                        </Row>
-
-                                                        <Row className="mt-1">
-                                                            <Col md="2">
-                                                                <p>Satuan Kerja</p>
-                                                            </Col>
-                                                            <Col md="10">
-                                                                <div id="select-workunit">
-                                                                    <Controller
-                                                                        name    = "filter_workunit"
-                                                                        control = {control}
-                                                                        as      = {
-                                                                            <Select
-                                                                                id                  = "filter_workunit" 
-                                                                                theme               = {selectThemeColors}
-                                                                                isMulti
-                                                                                options             = {watch('filter_workunit') ? watch('filter_workunit').filter(val => val.value === 0).length > 0 ? [] : workunitOptionsApproval : workunitOptionsApproval}
-                                                                                className           = 'react-select'
-                                                                                placeholder         = "Pilih Satuan Kerja"
-                                                                                isClearable
-                                                                                classNamePrefix     = 'select'
-                                                                                closeMenuOnSelect   = {false}
-                                                                            />
-                                                                        }
-                                                                    />
-                                                                </div>
-                                                            </Col>
-                                                        </Row>
-
-                                                        <Row className="mt-1">
-                                                            <Col md="2">
-                                                                <p>Agen</p>
-                                                            </Col>
-                                                            <Col md="10">
-                                                                <div id="select-agent">
-                                                                    <Controller
-                                                                        name    = "filter_agent"
-                                                                        control = {control}
-                                                                        as      = {
-                                                                            <Select
-                                                                                id              = "filter_agent" 
-                                                                                theme           = {selectThemeColors}
-                                                                                options         = {employeeFilter}
-                                                                                className       = 'react-select'
-                                                                                placeholder     = "Pilih Agen"
-                                                                                isClearable
-                                                                                isMulti
-                                                                                classNamePrefix = 'select'
-                                                                                closeMenuOnSelect={false}
-                                                                            />
-                                                                        }
-                                                                    />
-                                                                </div>
-                                                            </Col>
-                                                        </Row>
-                                                    </CardBody>
-                                                </Card>
-                                            </Col>
-                                            <Col className="col-md-12 mt-1">
-                                                <Card 
-                                                    id      = "list-report"
-                                                    color   = "secondary" 
-                                                    outline
-                                                >
-                                                    <CardBody className="py-1">
-                                                        <ReactSortable
-                                                            list        = {watch('content') ? watch('content') : []}
-                                                            group       = {{ name: 'shared-badge-group', pull: 'clone' }}
-                                                            className   = 'demo-inline-spacing sortable mb-1'
-                                                            setList     = {(value) => {
-                                                                setValue('content', value);
-                                                            }}
-                                                        >
-                                                            {
-                                                                watch('content') ? 
-                                                                    watch('content').map((item) => {
-                                                                        return (
-                                                                            <Badge 
-                                                                                key         = {"reorder_header_report_"+item.value} 
-                                                                                color       = "primary"
-                                                                                className   = 'draggable cursor-pointer mt-1' 
-                                                                            >
-                                                                                {item.label}
-                                                                            </Badge>
-                                                                        )
-                                                                    })
-                                                                : null
-                                                            }
-                                                        </ReactSortable> 
-                                                    </CardBody>
-                                                </Card>
-                                            </Col>
-                                        </>
+                                                        </Col>
+                                                    </Row>
+                                                </CardBody>
+                                            </Card>
+                                        </Col>
+                                        <Col className="col-md-12 mt-1">
+                                            <Card 
+                                                id      = "list-report"
+                                                color   = "secondary" 
+                                                outline
+                                            >
+                                                <CardBody className="py-1">
+                                                    <ReactSortable
+                                                        list        = {watch('content') ? watch('content') : []}
+                                                        group       = {{ name: 'shared-badge-group', pull: 'clone' }}
+                                                        className   = 'demo-inline-spacing sortable mb-1'
+                                                        setList     = {(value) => {
+                                                            setValue('content', value);
+                                                        }}
+                                                    >
+                                                        {
+                                                            watch('content') ? 
+                                                                watch('content').map((item) => {
+                                                                    return (
+                                                                        <Badge 
+                                                                            key         = {"reorder_header_report_"+item.value} 
+                                                                            color       = "primary"
+                                                                            className   = 'draggable cursor-pointer mt-1' 
+                                                                        >
+                                                                            {item.label}
+                                                                        </Badge>
+                                                                    )
+                                                                })
+                                                            : null
+                                                        }
+                                                    </ReactSortable> 
+                                                </CardBody>
+                                            </Card>
+                                        </Col>
+                                    </>
                                 }                                
                             </Row>
                         </div>
