@@ -146,8 +146,10 @@ const FormReport = (props) => {
     }
 
     const handleFinish = (data) => {
-
+        console.log(data, 'data');
         let formData;
+        let _newOrder   = [];
+        let _newFilter  = [];
 
         //check is report formatted or note 
         if(isFormat){
@@ -212,9 +214,11 @@ const FormReport = (props) => {
                 formData.work_unit_parent_id    = data.workunit_level_3.value;
             }
 
+            onSubmit({model : formData});
+
         }else{
             if(data.content != null && data.content.filter(e => parseInt(e.value) === 1).length > 0){
-                if(data.content.filter(e => parseInt(e.value) >= 12 && parseInt(e.value) <= 19).length > 0){
+                if(data.content.filter(e => parseInt(e.value) >= 10 && parseInt(e.value) <= 17).length > 0){
                     CustomToast('warning', 'Jika memilih Isi Berita, maka Pilihan Jabatan, Jumlah Berita Di Publikasi, Jumlah Berita di Arsip, Jumlah Berita Ke Pimpinan, Jumlah Agen, Bulan, Tanggal, dan Jumlah Tidak Dapat Digunakan.');
                 }else{
                     if(data.content != null){
@@ -268,7 +272,7 @@ const FormReport = (props) => {
                             is_formatted : false
                         }
                     }
-    
+
                     if(data.time != null){
                         formData.time = moment(data.time).format('YYYY-MM-DDTH:mm:ssZ');
                     }
@@ -277,10 +281,11 @@ const FormReport = (props) => {
                         formData.repeat = data.repeat;
                     }
                 
+                    props.onSubmit(formData);
                 }
-            }else if(data.content.filter(e => parseInt(e.value) === 16).length > 0){
-    
-                if(data.content.filter(e => parseInt(e.value) === 11).length > 0){
+            }else if(data.content.filter(e => parseInt(e.value) === 14).length > 0){
+
+                if(data.content.filter(e => parseInt(e.value) === 9).length > 0){
                     if(data.content != null){
                         data.content.map((data) => (
                             _newOrder.push(parseInt(data.value))
@@ -341,11 +346,12 @@ const FormReport = (props) => {
                         }
                     }
                 
+                    props.onSubmit(formData);
                 }else{
                     CustomToast('warning', 'Jika memilih Jumlah Agen, maka harus memilih Satuan Kerja');
                 }
-            }else if(data.content.filter(e => parseInt(e.value) >= 12 && parseInt(e.value) <= 16 ).length > 0){
-                if(data.content.filter(e => parseInt(e.value) === 10 || parseInt(e.value) === 11 ).length > 0){
+            }else if(data.content.filter(e => parseInt(e.value) >= 11 && parseInt(e.value) <= 13 ).length > 0){
+                if(data.content.filter(e => parseInt(e.value) === 8 || parseInt(e.value) === 9 ).length > 0){
                     if(data.content != null){
                         data.content.map((data) => (
                             _newOrder.push(parseInt(data.value))
@@ -406,6 +412,7 @@ const FormReport = (props) => {
                         }
                     }
                 
+                    props.onSubmit(formData);
                 }else{
                     CustomToast('warning', 'Jika memilih Jumlah Berita Di Publikasi, Jumlah Berita di Arsip, Jumlah Berita Ke Pimpinan, maka harus memilih Nama Agen atau Satuan Kerja');
                 }
@@ -413,8 +420,6 @@ const FormReport = (props) => {
                 CustomToast('warning', 'Isi laporan harus menggunakan Satuan Kerja atau Nama Agen.');
             }
         }
-        
-        onSubmit({model : formData});
     };
 
     const getChildWorkunit = (workunit_id, level) => {

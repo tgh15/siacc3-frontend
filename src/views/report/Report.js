@@ -103,67 +103,58 @@ const Report = (props) => {
                 {
                     detailResults != null && detailResults.headers.length > 0 ?
                         detailResults.headers.map((dataHeader) => (
-
-                            dataHeader.report_content.id == 1 ?
+                            dataHeader.report_content.id === 1 ?
                                 _bodyData.push( data.when_+' '+'bertempat di '+ (data.where != undefined ? data.where.replace(/[.]+$/g,"") : data.where)  +". "+data.who+' '+ (data.what != undefined ? data.what.replace(/[.]+$/g,"") : data.what )+'. '+data.why+'. '+ (data.how != undefined ? data.how.replace(/[.]+$/g,"")+ '.' : data.how))
                             :
-                                dataHeader.report_content.id == 2 ?
+                                dataHeader.report_content.id === 2 ?
                                     _bodyData.push(Helper.dateIndo1(data.publication_date.toString()))
                                 :
-                                    dataHeader.report_content.id == 3 ?
-                                        _bodyData.push(data.leader_likes != undefined ? data.leader_likes.toString() : data.leader_likes)
+                                    dataHeader.report_content.id === 3 ?
+                                        _bodyData.push(data.rating != undefined ? data.rating.toString() : data.rating)
                                     :
-                                        dataHeader.report_content.id == 4 ?
-                                            _bodyData.push(data.agent_likes != undefined ? data.agent_likes.toString() : data.agent_likes)
-                                        :
-                                            dataHeader.report_content.id == 5 ?
+                                            dataHeader.report_content.id === 4 ?
                                                 _bodyData.push(data.leader_comments != undefined ? data.leader_comments.toString() : data.leader_comments)
                                             :
-                                                dataHeader.report_content.id == 6 ?
+                                                dataHeader.report_content.id === 5 ?
                                                     _bodyData.push(data.agent_comments != undefined ? data.agent_comments.toString() : data.agent_comments)
                                                 :
-                                                    dataHeader.report_content.id == 7 ?
-                                                        _bodyData.push(data.dislikes != undefined ? data.dislikes.toString() : data.dislikes)
-                                                    :
-                                                        dataHeader.report_content.id == 8 ?
+                                                        dataHeader.report_content.id === 6 ?
                                                             _bodyData.push(data.viewer_count != undefined ? data.viewer_count.toString() : data.viewer_count)
                                                         :
-                                                            dataHeader.report_content.id == 9 ?
+                                                            dataHeader.report_content.id === 7 ?
                                                                 _bodyData.push(data.categories != undefined ? data.categories.toString() : data.categories)
                                                             :
-                                                                dataHeader.report_content.id == 10 ?
+                                                                dataHeader.report_content.id === 8 ?
                                                                     _bodyData.push(data.employee != undefined ? data.employee.toString() : data.employee)
                                                                 :
-                                                                    dataHeader.report_content.id == 11 ?
+                                                                    dataHeader.report_content.id === 9 ?
                                                                         _bodyData.push(data.workunit != undefined ? data.workunit.toString() : data.workunit)
                                                                     :
-                                                                        dataHeader.report_content.id == 12 ?
+                                                                        dataHeader.report_content.id === 10 ?
                                                                             _bodyData.push(data.position != undefined ? data.position.toString() : data.position)
                                                                         :
-                                                                            dataHeader.report_content.id == 13 ?
+                                                                            dataHeader.report_content.id === 11 ?
                                                                                 _bodyData.push(data.publication_count != undefined ? data.publication_count.toString() : data.publication_count)
                                                                             :
-                                                                                dataHeader.report_content.id == 14 ?
+                                                                                dataHeader.report_content.id === 12 ?
                                                                                     _bodyData.push(data.archive_count != undefined ? data.archive_count.toString() : data.archive_count)
                                                                                 :
-                                                                                    dataHeader.report_content.id == 15 ?
+                                                                                    dataHeader.report_content.id === 13 ?
                                                                                         _bodyData.push(data.forward_count != undefined ? data.forward_count.toString() : data.forward_count)
                                                                                     :
-                                                                                        dataHeader.report_content.id == 16 ?
+                                                                                        dataHeader.report_content.id === 14 ?
                                                                                             _bodyData.push(data.agent_count != undefined ? data.agent_count.toString() : data.agent_count) 
                                                                                         :
-                                                                                            dataHeader.report_content.id == 17 ?
+                                                                                            dataHeader.report_content.id === 15 ?
                                                                                                 _bodyData.push(monthName) 
                                                                                             :
-                                                                                                dataHeader.report_content.id == 18 ?
+                                                                                                dataHeader.report_content.id === 16 ?
                                                                                                     _bodyData.push(moment().daysInMonth)
                                                                                                 :
-                                                                                                    dataHeader.report_content.id == 19 ?
+                                                                                                    dataHeader.report_content.id === 17 ?
                                                                                                         _bodyData.push(data.publication_count != undefined ? data.publication_count.toString() : data.publication_count)
                                                                                                     :
                                                                                                         null
-
-                                                                                        
                         ))
                     :
                         null
