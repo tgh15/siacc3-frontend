@@ -43,7 +43,6 @@ import { PerformanceContext }   from "../../context/PerformanceContext";
 import CustomToast              from "../../components/widgets/custom-toast";
 
 import {
-    schemaWithFormat,
     schemaNoFormatNoSchedule,
     schemaNoFormatWithSchedule
 }                               from "./validation";
@@ -75,9 +74,11 @@ const FormReport = (props) => {
         watch,
         handleSubmit, 
     }   
-        = useForm({ mode: "onTouched", resolver: yupResolver(
+        = useForm({ mode: "onTouched", 
+            resolver: yupResolver(
             isFormat ? 
-                schemaWithFormat
+                // schemaWithFormat
+                null
             :
                 inputCreateDate ? 
                     schemaNoFormatWithSchedule
