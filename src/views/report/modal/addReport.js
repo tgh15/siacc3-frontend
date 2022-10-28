@@ -275,7 +275,7 @@ const FormReport = (props) => {
                     ]
                 }else{
                     formData.quarterly = data.quarter_type.map((data) => (
-                        { id : data.value }
+                        { id : parseInt(data.value) }
                     ))
                 }
     
@@ -1112,7 +1112,7 @@ const FormReport = (props) => {
                                                                     <Select
                                                                         id              = "content" 
                                                                         theme           = {selectThemeColors}
-                                                                        options         = {props.reportCategory}
+                                                                        options         = {props.reportCategory.filter((data) => data.value >= 1 && data.value <= 14 )}
                                                                         className       = 'react-select'
                                                                         placeholder     = "Pilih isi Laporan"
                                                                         isClearable
