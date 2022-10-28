@@ -1,28 +1,28 @@
-import {useEffect, useState, Fragment}        from 'react';
-import { useLocation }              from "react-router-dom";
-import parse                        from 'html-react-parser';
+import {useEffect, useState, Fragment}      from 'react';
+import { useLocation }                      from "react-router-dom";
+import parse                                from 'html-react-parser';
 
 
 import {
         Col,
         Row,
         Card,
-    }                               from 'reactstrap';
+    }                                       from 'reactstrap';
 
 import {
         FileText
-    }                               from 'react-feather';
+    }                                       from 'react-feather';
 
 //API
-import elasticSearchAPI             from '../../services/pages/advanced-search';
-import { StoreNews }                from '../beranda/beranda_api';
-import { processAgentReports }      from '../../components/widgets/feeds/news-card-widget/NewsConfig';
+import { StoreNews }                        from '../beranda/beranda_api';
+import elasticSearchAPI                     from '../../services/pages/advanced-search';
+import { processAgentReports }              from '../../components/widgets/feeds/news-card-widget/NewsConfig';
 
 //Component
-import { NewsWidget }               from '../../components/widgets/feeds/news-card-widget';
-import CustomTableBodyEmpty         from '../../components/widgets/custom-table/CustomTableBodyEmpty';
-import { ModalBase }                from '../../components/widgets/modals-base';
-import CardWorkunit                 from './CardWorkunit';
+import CardWorkunit                         from './CardWorkunit';
+import { ModalBase }                        from '../../components/widgets/modals-base';
+import { NewsWidget }                       from '../../components/widgets/feeds/news-card-widget';
+import CustomTableBodyEmpty                 from '../../components/widgets/custom-table/CustomTableBodyEmpty';
 
 const useQuery = () => {
     return new URLSearchParams(useLocation().search);
@@ -62,7 +62,6 @@ const AdvancedSearch = () => {
 
                     //get agent performance data
                     if(res.data.result.employee.data != null){
-
                         setAgentPerformance(res.data.result.employee.data);
                     }else{
                         setAgentPerformance([]);
