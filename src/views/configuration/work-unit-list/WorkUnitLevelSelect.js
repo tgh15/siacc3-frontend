@@ -1,93 +1,90 @@
-import { Fragment, useEffect, useState, useRef }    from 'react';
+import { useEffect, useState }  from 'react';
+import { Swiper, SwiperSlide }  from 'swiper/react';
+import { Card, CardBody }       from 'reactstrap';
 
 //Css
 import "./WorkUnitLevelSelect.scss";
 
+//Services
+import workunitListAPI          from '../../../services/pages/configuration/unit-work-list/WorkunitList';
+
 //Components
-import CustomToast                          from '../../../components/widgets/custom-toast';
-import { ChevLeft }                         from '../../../components/widgets/feeds/feeds-categories-components/chevLeft';
-import { ChevRight }                        from '../../../components/widgets/feeds/feeds-categories-components/chevRight';
-import workunitListAPI                      from '../../../services/pages/configuration/unit-work-list/WorkunitList';
+import CustomToast              from '../../../components/widgets/custom-toast';
 
 
-const WorkUnitLevelSelect = ({ isRtl, onSelect, getAllData, setListData, setStatusGetData }) => {
+const WorkUnitLevelSelect = ({ isRtl, onSelect, getAllData, setListData }) => {
     //State
-    const [level, setLevel] = useState(false);
+    const [level, setLevel] = useState(false)
 
-    const workunitLevel = () => { 
+    const params = {
+        className           : 'swiper-centered-slides',
+        slidesPerView       : 'auto',
+        spaceBetween        : 20,
+        centeredSlides      : true,
+        navigation          : true,
+        slideToClickedSlide : true,
+    };
+
+    useEffect(() => {
+        getData();
+    }, []);
+
+    const getData = () => { 
         setListData(false);
 
         workunitListAPI.getWorkunitLevel().then(
             res => {
                 if (!res.is_error) {
-                    let data_;
-
-                    if(localStorage.getItem('role') === 'Verifikator Daerah' || localStorage.getItem('role') === 'Admin Daerah'){
-                        data_ = res.data.workunit_level.filter((data) => (
-                            data.name !== 'KEJAKSAAN AGUNG'
-                        ))
-                    }else{
-                        data_ = res.data.workunit_level
-                    }
-
-                    setLevel(data_);
+                    setLevel(res.data.workunit_level);
                 } else {
-                    CustomToast("danger", res.code);
+                    CustomToast("danger", res.message);
                 }
             }
         ).catch(
             err => {
-                CustomToast("danger", err.code);
+                CustomToast("danger", err.message);
             }
         )
     };
-
-    useEffect(() => {
-        workunitLevel();
-    }, []);
 
     const refreshTable = (workunit_level_id) => {
         onSelect(workunit_level_id);
     };
 
     return (
-        <Fragment>
-            <div className='d-flex justify-content-between'>
-                <ChevLeft/>
-
-                <Fragment>
-                    <ul
-                        className="cat-menu-component nav nav-tabs mb-0"
+        <Card
+            id        = "filter-satker"
+            className = 'bg-transparent shadow-none'
+        >
+            <CardBody className="p-0">
+                <Swiper
+                    {...params}
+                    dir = {isRtl ? 'rtl' : 'ltr'} 
+                >
+                    <SwiperSlide
+                        onClick   = {() => { getAllData() }}
+                        className = 'rounded swiper-slide-all'
                     >
-                        <li className="nav-item">
-                            <a 
-                                onClick   = {() => {getAllData(); setStatusGetData()}}
-                                className = "nav-link active"
-                            >
-                                SEMUA SATUAN KERJA
-                            </a>
-                        </li>
+                        <p className='swiper-text mb-0'>
+                            SEMUA SATUAN KERJA
+                        </p>
+                    </SwiperSlide>
 
-                        {
-                            level && level.map((data, index) => (
-                                <div key={index}>
-                                    <li className="nav-item">
-                                        <a 
-                                            key       = {`cat-feeds-components-${data.id}`}
-                                            onClick   = {() => { refreshTable(parseInt(data.id)) }}
-                                            className = "nav-link active"
-                                        >
-                                            {data.name}
-                                        </a>
-                                    </li>
-                                </div>
-                            )) 
-                        }
-                    </ul>
-                </Fragment>
-            </div>
-        </Fragment>
-    )
-}
+                    {level && level.map((data, i) => (
+                        <SwiperSlide
+                            key       = {data.id}
+                            onClick   = {() => { refreshTable(parseInt(data.id)) }}
+                            className = 'rounded  swiper-slide-all'
+                        >
+                            <p className='swiper-text mb-0'>
+                                {data.name}
+                            </p>
+                        </SwiperSlide>
+                    ))}
+                </Swiper>
+            </CardBody>
+        </Card>
+    );
+};
 
 export default WorkUnitLevelSelect;

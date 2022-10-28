@@ -6,8 +6,8 @@ import { Col, Row, Button }                      from "reactstrap";
 import { Edit2, Eye, Filter, Plus, Trash2 }      from "react-feather";
 
 //Css
-import '@styles/react/libs/swiper/swiper.scss';
 import 'mapbox-gl/dist/mapbox-gl.css';
+import '@styles/react/libs/swiper/swiper.scss';
 
 //API
 import workunitListAPI                           from "../../../services/pages/configuration/unit-work-list/WorkunitList";
@@ -40,7 +40,7 @@ import SwiperCore, {
     Lazy,
     Navigation,
     Pagination,
-} from 'swiper'
+} from 'swiper';
 
 
 SwiperCore.use([Navigation, Pagination, Lazy]);
@@ -60,7 +60,6 @@ const WorkUnitList = (props) => {
     const [showDeleteForm, setShowDeleteForm]               = useState(false);
     const [selectedMarker, setSelectedMarker]               = useState(null);
     const [statusGetData, setStatusGetData]                 = useState(null);
-    const [workunitLevelSelected, setWorkunitLevelSelected] = useState(0);
 
     // refs 
     const params = useRef({
@@ -110,12 +109,12 @@ const WorkUnitList = (props) => {
                     setListData(res.data.workunit);
                     setPagination(res.data.pagination);
                 } else {
-                    CustomToast("danger", res.code);
+                    CustomToast("danger", res.message);
                 }
             }
         ).catch(
             err => {
-                CustomToast("danger", err.code);
+                CustomToast("danger", err.message);
             }
         )
     };
@@ -137,12 +136,12 @@ const WorkUnitList = (props) => {
                     setShowDeleteForm(!showDeleteForm);
                     CustomToast("success", "Data Berhasil di hapus");
                 } else {
-                    CustomToast("danger", res.code);
+                    CustomToast("danger", res.message);
                 }
             }
         ).catch(
             err => {
-                CustomToast("danger", err.code);
+                CustomToast("danger", err.message);
             }
         )
     };
@@ -168,11 +167,15 @@ const WorkUnitList = (props) => {
                     setDataMap(res.data.workunit);
                     setFilterForm(false);
                 } else {
-                    CustomToast("danger", res.code);
+                    CustomToast("danger", res.message);
                 }
             }
+        ).catch(
+            err => {
+                CustomToast("danger", err.message);
+            }
         )
-    }
+    };
 
     //Filter workunit
     const FilterWorkunitByLevel = () => {
@@ -189,15 +192,15 @@ const WorkUnitList = (props) => {
                     setDataMap(res.data.workunit);
                     setPagination(res.data.pagination);
                 } else {
-                    CustomToast("danger", res.code);
+                    CustomToast("danger", res.message);
                 }
             }
         ).catch(
             err => {
-                CustomToast("danger", err.code);
+                CustomToast("danger", err.message);
             }
         )
-    }
+    };
 
     return (
         <Fragment>
@@ -232,7 +235,6 @@ const WorkUnitList = (props) => {
                     }}
                     loading               = {loading}
                     onClose               = {() => (setFilterForm(!filterForm))}
-                    workunitLevelSelected = {workunitLevelSelected}
                 />
             </ModalBase>
 

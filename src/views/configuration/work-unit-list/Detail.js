@@ -96,12 +96,12 @@ const Detail = ({ match }) => {
                         "zoom"      : 4
                     });
                 } else {
-                    CustomToast("danger", res.code);
+                    CustomToast("danger", res.message);
                 }
             }
         ).catch(
             err => {
-                CustomToast("danger", err.code);
+                CustomToast("danger", err.message);
             }
         )
     };

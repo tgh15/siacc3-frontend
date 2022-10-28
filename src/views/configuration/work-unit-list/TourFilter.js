@@ -128,7 +128,6 @@ const TourFilter = (props) => {
                         loading                 = {props.loading}
                         onClose                 = {props.onClose}
                         onFilter                = { (datas) => props.onFilter(datas)}
-                        workunitLevelSelected   = {props.workunitLevelSelected}
                     />
                 </Col>
             </Row>

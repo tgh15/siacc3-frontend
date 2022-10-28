@@ -9,15 +9,12 @@ import {
     Label, 
     Button, 
     FormGroup, 
-    ModalFooter, 
-    CustomInput, 
-    FormFeedback, 
+    ModalFooter
 } from "reactstrap";
 
 import Select                                           from "react-select";
 import { yupResolver }                                  from '@hookform/resolvers/yup';
 import { selectThemeColors }                            from '@utils';
-import SelectOptionsService                             from '@src/services/pages/select-options';
 
 //Image
 import defaultLogo                                      from '@src/assets/images/portrait/small/150x150.png';
@@ -29,8 +26,8 @@ import SubmitButton                                     from "../../../component
 import { PerformanceContext }                           from "../../../context/PerformanceContext";
 
 //API
+import positionAPI                                      from "../../../services/pages/configuration/position";
 import workunitListAPI                                  from "../../../services/pages/configuration/unit-work-list/WorkunitList";
-import WorkUnitListApi                                  from "../../../services/pages/configuration/unit-work-list";
 
 
 const ModalForm = (props) => {
@@ -51,6 +48,14 @@ const ModalForm = (props) => {
     const [loading, setLoading]                             = useState(false);
     const [workUnitLevelOptions, setWorkUnitLevelOptions]   = useState(false);
 
+    const { 
+        errors, 
+        control, 
+        register, 
+        setValue, 
+        handleSubmit, 
+    } = useForm({ mode: "onChange", resolver: yupResolver(validation) });
+
     const selectLogo = e => {
         const reader = new FileReader(),
             files = e.target.files
@@ -60,33 +65,43 @@ const ModalForm = (props) => {
         reader.readAsDataURL(files[0]);
     };
 
+    // Workunit level
     const WorkUnitLevelOptions = () => {
-        SelectOptionsService.workUnitLevel({
-            onSuccess: (res) => {
-                setWorkUnitLevelOptions(res);
-            }, onFail: (err) => {
+        positionAPI.getWorkunitLevel().then(
+            res => {
+                if (!res.is_error) {
+                    let newData = [];
+
+                    res.data.workunit_level.map((data, i) => (
+                        newData.push({
+                            key   : i,
+                            value : data.id,
+                            label : data.name
+                        })
+                    ))
+
+                    setWorkUnitLevelOptions(newData);
+                }else {
+                    CustomToast("danger", res.message);
+                }
+            }
+        ).catch(
+            err => {
                 CustomToast("danger", err.message);
             }
-        })
+        )
     };
 
-    const { 
-        errors, 
-        control, 
-        register, 
-        setValue, 
-        handleSubmit, 
-    } = useForm({ mode: "onChange", resolver: yupResolver(validation) });
-
+    //Create
     const create = (dataForm) => {
         let formData = {
             ...dataForm,
             sequence            : 1,
-            parent_id           : parseInt(dataForm.parent_id),
-            workunit_level_id   : parseInt(dataForm.workunit_level_id),
             latitude            : parseFloat(dataForm.latitude),
-            longitude           : parseFloat(dataForm.longitude)
-        }
+            parent_id           : parseInt(dataForm.parent_id.value),
+            longitude           : parseFloat(dataForm.longitude),
+            workunit_level_id   : parseInt(dataForm.workunit_level_id.value),
+        };
 
         workunitListAPI.createWorkunitList(formData).then(
             res => {
@@ -97,44 +112,27 @@ const ModalForm = (props) => {
                     setListData(false);
                     getData();
                 } else {
-                    CustomToast("danger", err.code);
+                    CustomToast("danger", res.message);
                 }
             }
         ).catch(
             err => {
                 setLoading(false);
-                CustomToast("danger", err.code);
+                CustomToast("danger", err.message);
             }
         )
     }
 
-    // const create = dataForm => {
-    //     WorkUnitListApi.create({
-    //         data: dataForm,
-
-    //         onSuccess: (res) => {
-    //             setLoading(false);
-    //             setModalForm(false);
-    //             CustomToast("success", "Data Berhasil Disimpan");
-    //             setListData(false);
-    //             getData();
-    //         },
-    //         onFail: (err) => {
-    //             setLoading(false);
-    //             CustomToast("danger", err.message);
-    //         }
-    //     })
-    // };
-
+    //Update
     const update = (dataForm) => {
         let formData = {
             ...dataForm,
             id                  : data.id,
             sequence            : 1,
-            parent_id           : parseInt(dataForm.parent_id),
-            workunit_level_id   : parseInt(dataForm.workunit_level_id),
             latitude            : parseFloat(dataForm.latitude),
-            longitude           : parseFloat(dataForm.longitude)
+            parent_id           : parseInt(dataForm.parent_id.value),
+            longitude           : parseFloat(dataForm.longitude),
+            workunit_level_id   : parseInt(dataForm.workunit_level_id.value),
         }
 
         workunitListAPI.updateWorkunitList(formData).then(
@@ -146,57 +144,33 @@ const ModalForm = (props) => {
                     setListData(false);
                     getData();
                 } else {
-                    CustomToast("danger", err.code);
+                    CustomToast("danger", err.message);
                 }
             }
         ).catch(
             err => {
                 setLoading(false);
-                CustomToast("danger", err.code);
+                CustomToast("danger", err.message);
             }
         )
     }
 
-    // const update = dataForm => {
-    //     WorkUnitListApi.update({
-    //         id          : data.id,
-    //         data        : dataForm,
-    //         old_logo_id : data.logo_id,
-    //         logo        : data, logo,
-    //         logo_name   : data.logo_name,
-
-    //         onSuccess: (res) => {
-    //             setLoading(false);
-    //             setModalForm(false);
-    //             CustomToast("success", "Data Berhasil Diubah");
-    //             setListData(false);
-    //             getData();
-    //         },
-    //         onFail: (err) => {
-    //             CustomToast("danger", err.message);
-    //         }
-    //     })
-    // };
-
-    const onSubmit = dataForm => {
-        console.log(dataForm);
-        if(dataForm.parent_id != undefined){
-            dataForm.parent_id = dataForm.parent_id.value;
-        }
-
+    const onSubmit = (dataForm) => {
         setLoading(true);
+
         if (!data) {
-            create(dataForm)
+            create(dataForm);
         } else {
-            update(dataForm)
+            update(dataForm);
         }
     };
 
     useEffect(() => {
-        WorkUnitLevelOptions()
+        WorkUnitLevelOptions();
 
         if(data){
-            setValue('parent_id', {value: data.parent_id, label:data.parent})
+            setValue('parent_id',         data.parent_id ? {value: data.parent_id, label:data.parent} : undefined);
+            setValue('workunit_level_id', data.workunit_level_id ? {value: data.workunit_level_id, label:data.workunit_level} : undefined);
         }
     }, []);
 
@@ -248,10 +222,8 @@ const ModalForm = (props) => {
                                     </Button.Ripple>
                                 </Media>
                             </Media>
-                            {errors && errors.photo && <FormFeedback>{errors.photo.message}</FormFeedback>}
                         </FormGroup>
                     </Col>
-
                     <Col 
                         md = "6" 
                         sm = "12"
@@ -269,7 +241,12 @@ const ModalForm = (props) => {
                                     defaultValue ={(data) ? data.address : null} 
                                 />
                             </div>
-                            {errors && errors.address && <FormFeedback>{errors.address.message}</FormFeedback>}
+                            {
+                                errors && errors.address && 
+                                <Label style={{ color: 'red' }}>
+                                    {errors.address.message}
+                                </Label>
+                            }
                         </FormGroup>
                     </Col>
                 </Row>
@@ -300,7 +277,6 @@ const ModalForm = (props) => {
                             </div>
                         </FormGroup>
                     </Col>
-
                     <Col 
                         md = "6" 
                         sm = "12"
@@ -315,7 +291,12 @@ const ModalForm = (props) => {
                                     defaultValue = {(data) ? data.latitude : null}
                                 />
                             </div>
-                            {errors && errors.latitude && <FormFeedback>{errors.latitude.message}</FormFeedback>}
+                            {
+                                errors && errors.latitude && 
+                                <Label style={{ color: 'red' }}>
+                                    {errors.latitude.message}
+                                </Label>
+                            }
                         </FormGroup>
                     </Col>
                 </Row>
@@ -336,10 +317,14 @@ const ModalForm = (props) => {
                                     defaultValue = {(data) ? data.code : null}
                                 />
                             </div>
-                            {errors && errors.code && <FormFeedback>{errors.code.message}</FormFeedback>}
+                            {
+                                errors && errors.code && 
+                                <Label style={{ color: 'red' }}>
+                                    {errors.code.message}
+                                </Label>
+                            }
                         </FormGroup>
                     </Col>
-
                     <Col
                         md = "6" 
                         sm = "12"
@@ -355,7 +340,12 @@ const ModalForm = (props) => {
                                     defaultValue = {(data) ? data.longitude : null}
                                 />
                             </div>
-                            {errors && errors.longitude && <FormFeedback>{errors.longitude.message}</FormFeedback>}
+                            {
+                                errors && errors.longitude && 
+                                <Label style={{ color: 'red' }}>
+                                    {errors.longitude.message}
+                                </Label>
+                            }
                         </FormGroup>
                     </Col>
                 </Row>
@@ -376,22 +366,26 @@ const ModalForm = (props) => {
                                     defaultValue = {(data) ? data.name : null}
                                 />
                             </div>
-                            {errors && errors.name && <FormFeedback>{errors.name.message}</FormFeedback>}
+                            {
+                                errors && errors.name && 
+                                <Label style={{ color: 'red' }}>
+                                    {errors.name.message}
+                                </Label>
+                            }
                         </FormGroup>
                         <FormGroup className="mt-1">
                             <Label for='nameAgen'>No. Telepon</Label>
                             <div id="workunit-list-telpon">
                                 <Input 
-                                    type     = 'text' 
-                                    name     = "phone_number" 
+                                    type         = 'text' 
+                                    name         = "phone_number" 
                                     invalid      = {(errors.phone_number) ? true : false}
-                                    innerRef = {register()}
+                                    innerRef     = {register()}
                                     defaultValue = {(data) ? data.phone_number : null}
                                 />
                             </div>
                         </FormGroup>
                     </Col>
-
                     <Col 
                         md = "6" 
                         sm = "12"
@@ -408,7 +402,12 @@ const ModalForm = (props) => {
                                     defaultValue = {(data) ? data.description : null}
                                 />
                             </div>
-                            {errors && errors.description && <FormFeedback>{errors.description.message}</FormFeedback>}
+                            {
+                                errors && errors.description && 
+                                <Label style={{ color: 'red' }}>
+                                    {errors.description.message}
+                                </Label>
+                            }
                         </FormGroup>
                     </Col>
                 </Row>
@@ -421,35 +420,28 @@ const ModalForm = (props) => {
                         <FormGroup>
                             <Label for='name'>Tingkat</Label>
                             <div id="workunit-list-level">
-                                <CustomInput 
-                                    id       = 'select-custom' 
-                                    type     = 'select' 
-                                    name     = 'workunit_level_id' 
-                                    value    = {data.workunit_level_id} 
-                                    invalid  ={(errors.workunit_level_id) ? true : false}
-                                    innerRef ={register()} 
-                                >
-                                    <option 
-                                        value    = ""
-                                        disabled 
-                                        selected 
-                                    >
-                                        Pilih Tingkat
-                                    </option>
-                                    {
-                                        workUnitLevelOptions && 
-                                        workUnitLevelOptions.map((data, i) => (
-                                            <option 
-                                                key   = {data.key} 
-                                                value = {data.value}
-                                            >
-                                                {data.label}
-                                            </option>
-                                        ))
+                                <Controller
+                                    name    = "workunit_level_id"
+                                    control = {control}
+                                    as      = {
+                                        <Select
+                                            id              = "workunit_level_id"
+                                            theme           = {selectThemeColors}
+                                            options         = {workUnitLevelOptions}
+                                            className       = 'react-select'
+                                            placeholder     = "Pilih Tingkat"
+                                            isClearable
+                                            classNamePrefix = 'select'
+                                        />
                                     }
-                                </CustomInput>
+                                />
                             </div>
-                            {errors && errors.workunit_level_id && <FormFeedback>{errors.workunit_level_id.message}</FormFeedback>}
+                            {
+                                errors && errors.workunit_level_id && 
+                                <Label style={{ color: 'red' }}>
+                                    {errors?.workunit_level_id?.label?.message}
+                                </Label>
+                            }
                         </FormGroup>
                     </Col>
                     <Col 
@@ -465,7 +457,12 @@ const ModalForm = (props) => {
                                 innerRef     = {register()}
                                 defaultValue = {(data) ? data.email : null}
                             />
-                            {errors && errors.email && <FormFeedback>{errors.email.message}</FormFeedback>}
+                            {
+                                errors && errors.email && 
+                                <Label style={{ color: 'red' }}>
+                                    {errors.email.message}
+                                </Label>
+                            }
                         </FormGroup>
                     </Col>
                 </Row>
