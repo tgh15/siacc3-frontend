@@ -280,7 +280,6 @@ const Beranda = (props) => {
                             <FeedsTrendWidget 
                                 handleStore    = {handleStore}
                                 reportTrending = {trendingReport} 
-                                // getAgentReportData  = {getAgentReportData}
                             />
                         :
                             null
