@@ -15,6 +15,7 @@ import CustomTableNotAuthorized         from '../../components/widgets/custom-ta
 import Helper                           from '../../helpers';
 import { selectThemeColors }            from '@utils'
 import { PerformanceContext }           from '../../context/PerformanceContext';
+import FeedSkeleton from '../../components/widgets/feed-skeleton/FeedSkeleton';
 
 
 const PopularTopics = (props) => {
@@ -65,29 +66,37 @@ const PopularTopics = (props) => {
 
                 <Row>
                     <Col md='12' sm='12'>
+                        {console.log(props.reportAgent, 'report_agen')}
                         {
-                            props.reportAgent &&
-                            props.reportAgent.map((data) => (
-                                <NewsWidget
-                                    id                      = {data.id}
-                                    data                    = {data}
-                                    handleStore             = {props.handleStore}
+                            props.loading ?
+                                <FeedSkeleton/>
+                            :
+                                props.reportAgent &&
+                                props.reportAgent?.length === 0 ?
+                                    <CustomTableBodyEmpty/>
+                                :
+                                    props.reportAgent?.map((data) => (
+                                        <NewsWidget
+                                            id                      = {data.id}
+                                            data                    = {data}
+                                            handleStore             = {props.handleStore}
 
-                                    //Role
-                                    roleLike                = {getRoleByMenuStatus('Topik Populer', 'like')}
-                                    roleViewer              = {getRoleByMenuStatus('Topik Populer', 'viewer')}   
-                                    roleDislike             = {getRoleByMenuStatus('Topik Populer', 'dislike')}
-                                    roleComment             = {getRoleByMenuStatus('Topik Populer', 'comment')}
-                                    {...data}
-                                />
-                            ))
+                                            //Role
+                                            roleLike                = {getRoleByMenuStatus('Topik Populer', 'like')}
+                                            roleViewer              = {getRoleByMenuStatus('Topik Populer', 'viewer')}   
+                                            roleDislike             = {getRoleByMenuStatus('Topik Populer', 'dislike')}
+                                            roleComment             = {getRoleByMenuStatus('Topik Populer', 'comment')}
+                                            {...data}
+                                        />
+                                    ))
+                            
                         }
                         
-                        {
+                        {/* {
                             props.reportAgent && 
                             props.reportAgent.length === 0 &&
                             <CustomTableBodyEmpty/>
-                        }
+                        } */}
                     </Col>
                 </Row>
             </Fragment>

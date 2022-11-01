@@ -30,8 +30,6 @@ export function getAgentReport(page = 1,category){
     return getAgentReportLists(pages,cats);
 }
 
-
-
 export function getApprovedBerandaFeeds(){
     if(localStorage.getItem('role') && localStorage.getItem('role').toLowerCase() === 'verifikator pusat'){
         return newsByStatus(1);
