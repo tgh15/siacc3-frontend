@@ -210,7 +210,7 @@ const Report = (props) => {
                     {_bodyData.push((index+1).toString())}
                     {_bodyData.push(data.name)}
                     {
-                        data.data.map((data2) => (
+                        data.data != null && data.data.map((data2) => (
                             data2.result.map((data_) => (
                                 <>
                                     {
@@ -241,6 +241,7 @@ const Report = (props) => {
                     {_body.push(_bodyData)}
                 </>
             ))
+
             setBody([..._body]);
         }
     }
@@ -442,6 +443,7 @@ const Report = (props) => {
                 date_.push({content: index+1, styles: { halign: 'center'}})
             ))
 
+
             doc.autoTable({
                 startY          : 30,
                 head            : [
@@ -467,7 +469,7 @@ const Report = (props) => {
                                     styles  : {halign: 'left'}
                                 }
                         ))
-                    ))],
+                    ))][0],
                 margin          : { top: 10, bottom: 25 },
                 styles          : { cellWidth: 'auto'},
                 headStyles      : {
@@ -514,7 +516,7 @@ const Report = (props) => {
                                     styles  : {halign: 'left'}
                                 }
                         ))
-                    ))],
+                    ))][0],
                 styles          : { cellWidth: 'auto'},
                 columnStyles    : { 0: { cellWidth: 10 } },
                 headStyles      : {
@@ -585,7 +587,7 @@ const Report = (props) => {
                                 }
                         ))
                     ))
-                ],
+                ][0],
                 styles          : { cellWidth: 'auto'},
                 columnStyles    : { 0: { cellWidth: 10 } },
                 headStyles      : {
