@@ -1,4 +1,4 @@
-import { Fragment, useState }   from 'react';
+import { Fragment, useContext, useState }   from 'react';
 import { useForm, Controller }  from "react-hook-form";
 import moment                   from 'moment';
 
@@ -38,8 +38,7 @@ import { validation }           from './validation';
 //API
 import SettingPerformanceApi    from '../../../services/pages/configuration/setting-performance';
 import '@styles/react/libs/flatpickr/flatpickr.scss'
-
-
+import { PerformanceContext } from '../../../context/PerformanceContext';
 
 const relationOptions = [
     { value: 'lebih_dari', label: 'Lebih dari' },
@@ -55,9 +54,11 @@ const FormSettingPerformance = (props) => {
         onCancel,
         staticBadge,
         refreshData,
-        workunitOption,
         kindAchievementOption
     } = props;
+
+    const { workunitOptions }                   = useContext(PerformanceContext);
+
 
     //State
     const [picker, setPicker]                   = useState(false);
@@ -359,14 +360,14 @@ const FormSettingPerformance = (props) => {
                             <Col md="5">
                                 <FormGroup>
                                     <Label>
-                                        Satker
+                                        Satuan Kerja
                                     </Label>
                                     <Controller
                                         as              = {Select}
                                         name            = "workunit_id"
                                         theme           = {selectThemeColors}
                                         control         = {control}
-                                        options         = {workunitOption}
+                                        options         = {workunitOptions}
                                         isMulti
                                         className       = 'react-select'
                                         isClearable     = {false}

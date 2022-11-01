@@ -35,6 +35,7 @@ export const FeedsCategoriesFilterModal = (props) => {
     } = props;
 
     const { 
+        reset,
         control,
         handleSubmit,
     }                                   = useForm();
@@ -82,13 +83,15 @@ export const FeedsCategoriesFilterModal = (props) => {
             filter_type : "home",
         };
 
-        onFilter(formData);
+        reset({workunit: []});        
+        setKind(2);
         setShow(false);
+        onFilter(formData);
+        setOrderBy('latest');
     }
 
     return(
         <>
-
             <ModalBase 
                 size        = "lg"
                 show        = {showing}

@@ -36,126 +36,198 @@ const PerformanceProvider = ({ children }) => {
         let level_3     = [];
         let level_4     = [];
 
-        workunitAPI.getWorkunitLevelList({workunit_level_id : 1}).then(
-            res => {
-                if(res.data.length > 0){
-                    res.data.map((data) => (
-                        level_1.push({
-                            label : data.name,
-                            value : data.id
-                        })
-                    )) 
-                    setWorkunitLevel1(level_1);
-                }
-                
-                if(localStorage.getItem('role') === 'Verifikator Pusat' || localStorage.getItem('role') === 'Admin'){
-                    if(level_1.length > 0){
-                        data.push({
-                            label : 'Kejaksaan Agung',
-                            options : level_1 
-                        })
-                    }
-                }
+        if(localStorage.getItem('role') === "Agen" || localStorage.getItem('role') === "Verifikator Daerah" || localStorage.getItem('role') === "Admin Daerah"){
+            const formData = {
+                condition_by : localStorage.getItem('role') === "Agen" ? "parent_list" : "child_list",
+                parent_id    : parseInt(localStorage.getItem('workunit_id'))
+            }
 
-                workunitAPI.getWorkunitLevelList({workunit_level_id : 2}).then(
-                    res => {
-                        if(res.data.length > 0){
-                            res.data.map((data) => (
-                                
-                                localStorage.getItem('role') === 'Verifikator Daerah' || localStorage.getItem('role') === 'Admin Daerah' ?
-                                    parseInt(localStorage.getItem('workunit_id')) === data.id &&
-                                    level_2.push({
-                                        label : 'KEJAKSAAN TINGGI ' + data.name,
+            workunitAPI.getWorkunitFilter(formData).then(
+                res => {
+
+                    console.log(res.data, 'result workunit');
+
+                    if(res.data.length > 0){
+                        res.data.map((data) => (
+                            data.workunit_level === "KEJAKSAAN TINGGI" ?
+                                level_2.push({
+                                    label : data.name,
+                                    value : data.id
+                                })
+                            :
+                                data.workunit_level === "KEJAKSAAN NEGERI" ?
+                                    level_3.push({
+                                        label : data.name,
                                         value : data.id
                                     })
                                 :
-                                    level_2.push({
-                                        label : 'KEJAKSAAN TINGGI ' + data.name,
-                                        value : data.id
-                                    })   
-                            ))
-                            setWorkunitLevel2(level_2);
-                        }
+                                    data.workunit_level === "CABANG KEJAKSAAN NEGERI" ?
+                                        level_4.push({
+                                            label : data.name,
+                                            value : data.id
+                                        })
+                                    :
+                                        null
+                        ))
 
                         if(level_2.length > 0){
                             data.push({
                                 label : 'KEJAKSAAN TINGGI',
                                 options : level_2
                             })
+
+                            setWorkunitLevel2(level_2);
                         }
 
-                        workunitAPI.getWorkunitLevelList({workunit_level_id : 3}).then(
-                            res => {
-                                if(res.data.length > 0){
-                                    res.data.map((data) => (
+                        if(level_3.length > 0){
+                            data.push({
+                                label : 'KEJAKSAAN NEGERI',
+                                options : level_3
+                            })
 
-                                        localStorage.getItem('role') === 'Verifikator Daerah' || localStorage.getItem('role') === 'Admin Daerah' ?
-                                            parseInt(localStorage.getItem('workunit_id')) === data.parent_id &&
-                                            level_3.push({
-                                                label : 'KEJAKSAAN NEGERI ' + data.name,
-                                                value : data.id
-                                            })
-                                        :
-                                            level_3.push({
-                                                label : 'KEJAKSAAN NEGERI ' + data.name,
-                                                value : data.id
-                                            })   
-                                    ))
+                            setWorkunitLevel3(level_3);
+                        }
 
-                                    setWorkunitLevel3(level_3);
-                                }
+                        if(level_4.length > 0){
+                            data.push({
+                                label : 'CABANG KEJAKSAAN NEGERI',
+                                options : level_4
+                            })
 
-                                if(level_3.length > 0){
-                                    data.push({
-                                        label : 'KEJAKSAAN NEGERI',
-                                        options : level_3
-                                    })
-                                }
+                            setWorkunitLevel4(level_4);
+                        }
 
-                                workunitAPI.getWorkunitLevelList({workunit_level_id : 4}).then(
-                                    res => {
-                                        if(res.data.length > 0){
-                                            res.data.map((data) => (
-                                                level_4.push({
-                                                    label : 'CABANG KEJAKSAAN NEGERI ' + data.name,
+                    }
+
+                    setWorkunitOptions(data);
+                },
+                err => {
+                    console.log(err, 'err');
+                }
+            )
+        }else{
+            workunitAPI.getWorkunitLevelList({workunit_level_id : 1}).then(
+                res => {
+                    if(res.data.length > 0){
+                        res.data.map((data) => (
+                            level_1.push({
+                                label : data.name,
+                                value : data.id
+                            })
+                        )) 
+                        setWorkunitLevel1(level_1);
+                    }
+                    
+                    if(localStorage.getItem('role') === 'Verifikator Pusat' || localStorage.getItem('role') === 'Admin'){
+                        if(level_1.length > 0){
+                            data.push({
+                                label : 'Kejaksaan Agung',
+                                options : level_1 
+                            })
+                        }
+                    }
+    
+                    workunitAPI.getWorkunitLevelList({workunit_level_id : 2}).then(
+                        res => {
+                            if(res.data.length > 0){
+                                res.data.map((data) => (
+                                    
+                                    localStorage.getItem('role') === 'Verifikator Daerah' || localStorage.getItem('role') === 'Admin Daerah' ?
+                                        parseInt(localStorage.getItem('workunit_id')) === data.id &&
+                                        level_2.push({
+                                            label : 'KEJAKSAAN TINGGI ' + data.name,
+                                            value : data.id
+                                        })
+                                    :
+                                        level_2.push({
+                                            label : 'KEJAKSAAN TINGGI ' + data.name,
+                                            value : data.id
+                                        })   
+                                ))
+                                setWorkunitLevel2(level_2);
+                            }
+    
+                            if(level_2.length > 0){
+                                data.push({
+                                    label : 'KEJAKSAAN TINGGI',
+                                    options : level_2
+                                })
+                            }
+    
+                            workunitAPI.getWorkunitLevelList({workunit_level_id : 3}).then(
+                                res => {
+                                    if(res.data.length > 0){
+                                        res.data.map((data) => (
+    
+                                            localStorage.getItem('role') === 'Verifikator Daerah' || localStorage.getItem('role') === 'Admin Daerah' ?
+                                                parseInt(localStorage.getItem('workunit_id')) === data.parent_id &&
+                                                level_3.push({
+                                                    label : 'KEJAKSAAN NEGERI ' + data.name,
                                                     value : data.id
                                                 })
-                                            ))
-
-                                            setWorkunitLevel4(level_4);
-                                        }
-
-                                        if(level_4.length > 0){
-                                            data.push({
-                                                label : 'CABANG KEJAKSAAN NEGERI',
-                                                options : level_4
-                                            })
-                                        }
-
-                                        setWorkunitOptionsApproval(first.concat(data));
-
-                                    },
-                                    err => {
-                                        console.log(err, 'disini');
+                                            :
+                                                level_3.push({
+                                                    label : 'KEJAKSAAN NEGERI ' + data.name,
+                                                    value : data.id
+                                                })   
+                                        ))
+    
+                                        setWorkunitLevel3(level_3);
                                     }
-                                )
-                            },
-                            err => {
-                                console.log(err, 'disini');
-                            }
-                        )
-                    },
-                    err => {
-                        console.log(err, 'disini');
-                    }
-                )
+    
+                                    if(level_3.length > 0){
+                                        data.push({
+                                            label : 'KEJAKSAAN NEGERI',
+                                            options : level_3
+                                        })
+                                    }
+    
+                                    workunitAPI.getWorkunitLevelList({workunit_level_id : 4}).then(
+                                        res => {
+                                            if(res.data.length > 0){
+                                                res.data.map((data) => (
+                                                    level_4.push({
+                                                        label : 'CABANG KEJAKSAAN NEGERI ' + data.name,
+                                                        value : data.id
+                                                    })
+                                                ))
+    
+                                                setWorkunitLevel4(level_4);
+                                            }
+    
+                                            if(level_4.length > 0){
+                                                data.push({
+                                                    label : 'CABANG KEJAKSAAN NEGERI',
+                                                    options : level_4
+                                                })
+                                            }
+    
+                                            setWorkunitOptionsApproval(first.concat(data));
+    
+                                        },
+                                        err => {
+                                            console.log(err, 'disini');
+                                        }
+                                    )
+                                },
+                                err => {
+                                    console.log(err, 'disini');
+                                }
+                            )
+                        },
+                        err => {
+                            console.log(err, 'disini');
+                        }
+                    )
+    
+                },
+                err => {
+                    console.log(err, 'disini');
+                }
+            )
 
-            },
-            err => {
-                console.log(err, 'disini');
-            }
-        )
-        setWorkunitOptions(data);
+            setWorkunitOptions(data);
+        }
     }
 
     // get Data Agent
