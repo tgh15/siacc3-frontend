@@ -11,6 +11,16 @@ const VoiceVideoCallRoutes = [
             menuHidden: true
         }
     },
+    {
+        path: '/video-streaming',
+        exact: true,
+        component: lazy(() => import('../../views/video-streaming/index')),
+    },
+    {
+        path: '/video-streaming/detail',
+        exact: true,
+        component: lazy(() => import('../../views/video-streaming/detail')),
+    },
 ];
 
 export default VoiceVideoCallRoutes;
