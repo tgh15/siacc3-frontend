@@ -2,10 +2,11 @@ import { Fragment, useContext }                 from 'react';
 import { Row, Col, UncontrolledTooltip }        from 'reactstrap';
 import { ShepherdTour, ShepherdTourContext }    from 'react-shepherd';
 
+//Css
 import 'shepherd.js/dist/css/shepherd.css';
 import '@styles/react/libs/shepherd-tour/shepherd-tour.scss';
 
-//icon
+//Icon
 import { HelpCircle }                           from 'react-feather';
 
 //Views
@@ -278,7 +279,6 @@ const StartTour = () => {
             <div style={{cursor: 'pointer', float: 'right'}}>
                 <p 
                     id      = 'positionRight' 
-                    style   = {{zIndex: '3', position: 'absolute', marginTop: '50px', marginLeft: '-170px'}}
                     onClick = {tour.start} 
                     outline 
                 >
@@ -299,9 +299,12 @@ const TourComponent = () => {
     return (
         <Fragment>
             <Row>
-                <Col md='12' sm='12'>
+                <Col 
+                    md = '12' 
+                    sm = '12'
+                >
                     <ShepherdTour
-                        steps = {steps}
+                        steps       = {steps}
                         tourOptions = {{
                             useModalOverlay: true
                         }}
@@ -309,7 +312,10 @@ const TourComponent = () => {
                         <StartTour/>
                     </ShepherdTour>
                 </Col>
-                <Col md='12' sm='12'>
+                <Col 
+                    md = '12' 
+                    sm = '12'
+                >
                     <UserManagementContainer/>
                 </Col>
             </Row>

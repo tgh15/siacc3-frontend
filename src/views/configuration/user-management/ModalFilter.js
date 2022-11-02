@@ -15,11 +15,8 @@ import { selectThemeColors }                from '@utils';
 //Context
 import { UserManagementContext }            from "../../../context/UserManagementContext";
 
-//API
-import UserManagementApi                    from "../../../services/pages/configuration/user-management";
 
-
-const ModalFilter = ({ setModalFilter,onFilter }) => {
+const ModalFilter = ({ setModalFilter, onFilter }) => {
     //Context
     const { getData, setListData, workunitOptions } = useContext(UserManagementContext);
 
@@ -46,10 +43,46 @@ const ModalFilter = ({ setModalFilter,onFilter }) => {
                 <Label>Urutkan</Label>
                 <Row id="user-manajement-order">
                     <Col>
-                        {(newsType === "latest") ? <Button.Ripple block color="primary">Terbaru</Button.Ripple> : <Button.Ripple outline block color="primary" onClick={() => setNewsType("latest")}>Terbaru</Button.Ripple>}
+                        {
+                            (newsType === "latest") ? 
+                                <Button.Ripple 
+                                    block 
+                                    color = "primary"
+                                >
+                                    Terbaru
+                                </Button.Ripple> 
+                            :
+                                <Button.Ripple
+                                    block 
+                                    color   = "primary" 
+                                    outline 
+                                    onClick = {() => setNewsType("latest")}
+                                >
+                                    Terbaru
+                                </Button.Ripple>
+                        }
                     </Col>
                     <Col className="mr-1">
-                        {(newsType === "longest") ? <Button.Ripple block className="ml-1" color="primary">Terlama</Button.Ripple> : <Button.Ripple outline block className="ml-1" color="primary" onClick={() => setNewsType("longest")}>Terlama</Button.Ripple>}
+                        {
+                            (newsType === "longest") ? 
+                                <Button.Ripple 
+                                    block 
+                                    color     = "primary"
+                                    className = "ml-1"
+                                >
+                                    Terlama
+                                </Button.Ripple> 
+                            :
+                                <Button.Ripple 
+                                    block 
+                                    color     = "primary" 
+                                    outline 
+                                    onClick   = {() => setNewsType("longest")}
+                                    className = "ml-1" 
+                                >
+                                    Terlama
+                                </Button.Ripple>
+                        }
                     </Col>
                 </Row>
             </FormGroup>
@@ -108,7 +141,7 @@ const ModalFilter = ({ setModalFilter,onFilter }) => {
                         outline 
                         onClick = {() => { 
                             getData({
-                                page : 1,
+                                page   : 1,
                                 params : {}
                             }); 
                         setModalFilter(false) }}

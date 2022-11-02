@@ -7,7 +7,7 @@ import Skeleton                                     from 'react-loading-skeleton
 import Helper                                       from '../../../helpers';
 
 //Services
-import UserManagementApi                            from '../../../services/pages/configuration/user-management';
+import userManagementAPI                            from '../../../services/pages/configuration/user-management/UserManagement';
 
 // ** Components
 import Detail                                       from './Detail';
@@ -17,6 +17,7 @@ import TourFilter                                   from './TourFilter';
 import CustomTable                                  from '../../../components/widgets/custom-table';
 import HeaderTable                                  from './HeaderTable';
 import ModalStatus                                  from './ModalStatus';
+import CustomToast                                  from '../../../components/widgets/custom-toast';
 import ModalDeviced                                 from './ModalDeviced';
 import ModalUnDevice                                from './ModalUndevice';
 import { ModalBase }                                from '../../../components/widgets/modals-base';
@@ -57,23 +58,27 @@ const UserManagement = () => {
     // refs
     const keyword = useRef({ keyword : "" });
 
+    //Filter
     const getDataFilter = (datas, page) => {
         setFilter(true);
         setListData(false);
         setModalFilter(false);
-        
-        UserManagementApi.filter({
-            data: datas,
-            page : page,
-            onSuccess: (res) => {
-                setListData(res.employee);
-                setPagination(res.pagination);
-            },
-            onFail: (err) => {
-                console.log(err);
+
+        userManagementAPI.getFilter(datas, page).then(
+            res => {
+                if (!res.is_error) {
+                    setListData(res.data.employee);
+                    setPagination(res.data.pagination);
+                }else {
+                    CustomToast("danger", res.message);
+                }
             }
-        })
-    }
+        ).catch(
+            err => {
+                CustomToast("danger", err.message);
+            }
+        )
+    };
 
     return (
         <Fragment>
@@ -92,8 +97,8 @@ const UserManagement = () => {
 
                 <ModalFooter>
                     <Button.Ripple
-                        color="primary"
-                        onClick={() => setModalDetail(false)}
+                        color   = "primary"
+                        onClick = {() => setModalDetail(false)}
                     >
                         Tutup
                     </Button.Ripple>
@@ -155,7 +160,7 @@ const UserManagement = () => {
                     setModalFilter = {(par) => { setModalFilter(par) }}
                     onFilter       = {(value) => {
                         setDataFilter(value);
-                        getDataFilter(value,1);
+                        getDataFilter(value, 1);
                     }}
                 />
             </ModalBase>
@@ -194,7 +199,7 @@ const UserManagement = () => {
                                     params : keyword.current
                                 });
                             }else{
-                                getDataFilter(dataFilter,pagination.current_page + 1);
+                                getDataFilter(dataFilter, pagination.current_page + 1);
                             }
                         }}
                         onPrev  = {() => {
@@ -204,7 +209,7 @@ const UserManagement = () => {
                                     params : keyword.current
                                 });
                             }else{
-                                getDataFilter(dataFilter,pagination.current_page - 1);
+                                getDataFilter(dataFilter, pagination.current_page - 1);
                             }
                         }}
 
@@ -232,7 +237,7 @@ const UserManagement = () => {
                         {!listData && listData !== null && <Skeleton height={60} count={3} style={{ marginBottom: "10px" }}/>}
                         {!listData && listData === null && <CustomTableBodyEmpty/>}
                     </CustomTable>
-                    : <CustomTableNotAuthorized/>
+                : <CustomTableNotAuthorized/>
             }
         </Fragment>
     );
