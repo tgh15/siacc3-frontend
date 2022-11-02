@@ -204,9 +204,9 @@ const UnitWork = (props) => {
                         onSearch    = {(keyword) => { 
                             setListData(false); 
                             if(query.get("mode") === "tour" && query.get("action") === 'search'){
-                                getData({ keyword: keyword, tutorial: true})
+                                getData({keyword: keyword, tutorial: true});
                             }else{
-                                getData({ keyword: keyword})
+                                getData({keyword: keyword});
                             }
                         }}
                         pagination  = {pagination}

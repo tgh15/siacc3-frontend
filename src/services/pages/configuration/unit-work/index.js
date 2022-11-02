@@ -1,4 +1,4 @@
-import { employeeURL }              from "../index";
+import { employeeURL }              from "../../../index";
 import { Delete, Get, Post, Put }   from "../../../core/request";
 
 
