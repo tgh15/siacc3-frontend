@@ -19,11 +19,13 @@ const ReportAPI = () => {
     const [detailReport, setDetailReport]                       = useState([]);
     const [detailResults, setdetailResults]                     = useState(null);
     const [selectedReport, setSelectedReport]                   = useState([]);
+    const [isAddFormVisible, setIsAddFormVisible]               = useState(false);
     const [isDetailReportVisible, setIsDetailReportVisible]     = useState(false);
     const [isDetailResultsVisible, setIsDetailResultsVisible]   = useState(false);
 
 
-    const [showForm, setShowForm]               = useState(false);
+
+    const [showForm, setShowForm]                               = useState(false);
 
     useEffect(() => {
         getReport();
@@ -69,11 +71,14 @@ const ReportAPI = () => {
 
     //create report
     const onSubmit = (formData) => {
+
+        setLoading(true);
+
         feedsReportAPI.createReport(formData).then(
             res => {
                 if(res.status === 201){
                     setLoading(false);
-                    setShowForm(false);
+                    setIsAddFormVisible(false);
 
                     CustomToast('success', 'Data report berhasil ditambahkan');
                     getReport();
@@ -188,8 +193,10 @@ const ReportAPI = () => {
                 reportCategory              = {reportCategory}
                 selectedReport              = {selectedReport}
                 showDeleteForm              = {showDeleteForm}
+                isAddFormVisible            = {isAddFormVisible}
                 setShowDeleteForm           = {setShowDeleteForm}
                 setSelectedReport           = {setSelectedReport}
+                setIsAddFormVisible         = {setIsAddFormVisible}
                 isDetailReportVisible       = {isDetailReportVisible}
                 isDetailResultsVisible      = {isDetailResultsVisible}
                 setIsDetailReportVisible    = {setIsDetailReportVisible}

@@ -1,6 +1,5 @@
 import { Fragment, useState } from "react"
 import { Headphones } from "react-feather"
-import { useLocation } from "react-router-dom"
 import { Button, Input, ModalBody } from "reactstrap"
 import CustomToast from "../../../components/widgets/custom-toast"
 import { ModalBase } from "../../../components/widgets/modals-base"

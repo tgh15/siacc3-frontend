@@ -2,7 +2,6 @@ import moment               from "moment";
 import { useHistory }       from "react-router";
 import { useLocation }      from "react-router-dom";
 
-
 import fallback from '../assets/images/portrait/small/150x150.png';
 
 const CustomTableNumber = ({ key, pagination }) => {
@@ -13,7 +12,7 @@ const CustomTableNumber = ({ key, pagination }) => {
     }
 }
 
-const dateIndo = (paramsDate) => {
+const dateIndo  = (paramsDate) => {
     var date = new Date(paramsDate);
 
     return date.getDate() + " " + monthIndo(date.getMonth()) + " " + date.getFullYear() + ", " + date.getHours() + ":" + date.getMinutes()
@@ -283,6 +282,42 @@ function shortenLargeNumber(num, digits) {
     return num;
 }
 
+const formatDate = (stringDate) => {
+    var newDate = new Date(stringDate);
+
+    const monthNames = ["Januari", "Februari", "Maret", "April", "Mei", "Juni",
+        "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+
+    const minutes   = ('0'+newDate.getMinutes()).slice(-2);;
+    const hours     = ('0'+newDate.getHours()).slice(-2);;
+    const date      = newDate.getDate();
+    const year      = newDate.getFullYear();
+    const month     = monthNames[newDate.getMonth()];
+
+    return date + " " + month + " " + year + ", " + hours + ":" + minutes ;
+};
+
+const getYearsBefore = (howManyYears) => {
+    const year = new Date().getFullYear();
+    return Array.from({length : howManyYears}, (v, i) => ({ label : year - howManyYears + i + 1, value : year - howManyYears + i + 1})).reverse();
+}
+
+const getMonthName = () => {
+    const monthName = moment.months();
+    return monthName.map((data, index) => (
+        {
+            label : data,
+            value : index+1
+        }
+    ))
+};
+
+const getLastDateOfCurrentMonth = (month) => {
+    let date = moment().startOf(month).format('DD');
+
+    return date;
+}
+
 const Helper = {
     dayIndo                 : dayIndo,
     dateIndo                : dateIndo,
@@ -304,7 +339,11 @@ const Helper = {
     getRoleByMenuStatus     : getRoleByMenuStatus,
     getParemeterFromString  : getParemeterFromString,
     useQuery                : useQuery,
-    shortenLargeNumber      : shortenLargeNumber
+    shortenLargeNumber      : shortenLargeNumber,
+    formatDate              : formatDate,
+    getYearsBefore          : getYearsBefore,
+    getMonthName            : getMonthName,
+    getLastDateOfCurrentMonth : getLastDateOfCurrentMonth
 }
 
 export default Helper;

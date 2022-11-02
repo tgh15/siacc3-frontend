@@ -17,20 +17,25 @@ import Flatpickr                                from 'react-flatpickr'
 import '@styles/react/libs/flatpickr/flatpickr.scss'
 
 //Widget
+import { ModalBase }                            from '../../modals-base'
 import { selectThemeColors }                    from '@utils'
-import { ModalBase as BaseModal }               from '../../modals-base'
 
 //Form
 import { useForm, Controller }                  from "react-hook-form";
 
 import { PerformanceContext }                   from '../../../../context/PerformanceContext'
-import ModalSelectWorkunit from '../../../../views/configuration/user-management/ModalSelectWorkunit'
 
 export const FeedsCategoriesFilterModal = (props) => {
 
-    const {title, showing, setShow, onFilter} = props;
+    const {
+        title, 
+        showing, 
+        setShow, 
+        onFilter,
+    } = props;
 
     const { 
+        reset,
         control,
         handleSubmit,
     }                                   = useForm();
@@ -73,24 +78,26 @@ export const FeedsCategoriesFilterModal = (props) => {
 
     const handleReset   = () => {
         const formData = {
-            kind        : kind,
             workunit    : [],
-            order_by    : orderBy,
+            order_by    : 'latest',
             filter_type : "home",
         };
 
-        onFilter(formData);
+        reset({workunit: []});        
+        setKind(2);
         setShow(false);
+        onFilter(formData);
+        setOrderBy('latest');
     }
 
     return(
         <>
-
-            <BaseModal 
+            <ModalBase 
                 size        = "lg"
                 show        = {showing}
                 title       = {title}
                 setShow     = {setShow}
+                unmount     = {false}
             >
                 <Form onSubmit={handleSubmit(handleSubmit_)}>
                     <FormGroup>
@@ -229,7 +236,7 @@ export const FeedsCategoriesFilterModal = (props) => {
                     </FormGroup>
                 </Form>
 
-            </BaseModal>
+            </ModalBase>
         </>
     )
 }

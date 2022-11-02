@@ -25,35 +25,30 @@ import jsPDF                    from 'jspdf';
 import 'jspdf-autotable';
 
 import logoLight                from "../../assets/images/logo/logo_light.png";
+import moment                   from "moment";
 
 //Export Excel
 import ReactExport              from "react-export-excel";
-import moment                   from "moment";
-import DetailDataFormatted      from "./DetailDataFormatted";
+
+
 import DriveApi                 from "../../services/pages/drive";
+import AddReport                from "./modal/addReport";
+import DetailDataFormatted      from "./DetailDataFormatted";
 
 const Report = (props) => {
 
     const {
         report,
-        loading,
-        showForm,
-        setShowForm,
         detailReport,
         detailResults,
-        setIdSelected,
-        reportCategory,
-        showDeleteForm,
-        selectedReport,
         setSelectedReport,
-        setShowDeleteForm,
+        isAddFormVisible,
+        setIsAddFormVisible,
         isDetailReportVisible,
         isDetailResultsVisible,
         setIsDetailReportVisible,
         setIsDetailResultsVisible,
 
-        onDelete,
-        onSubmit,
         handleDetail,
         handleDetailResults
     }                                           = props
@@ -61,13 +56,13 @@ const Report = (props) => {
     //Helper
     const {getRoleByMenuStatus}                 = Helper;
 
-    const [body, setBody]           = useState([]);
-    const [header, setHeader]       = useState([]);
+    const [body, setBody]                           = useState([]);
+    const [header, setHeader]                       = useState([]);
 
     //Export Excel
-    const ExcelFile                 = ReactExport.ExcelFile;
-    const ExcelSheet                = ReactExport.ExcelFile.ExcelSheet;
-    const ExcelColumn               = ReactExport.ExcelFile.ExcelColumn;
+    const ExcelFile                             = ReactExport.ExcelFile;
+    const ExcelSheet                            = ReactExport.ExcelFile.ExcelSheet;
+    const ExcelColumn                           = ReactExport.ExcelFile.ExcelColumn;
 
     const monthName = [
         "Januari",
@@ -86,9 +81,9 @@ const Report = (props) => {
 
     const getHeader = () => {
 
-        let _header = [];
-        let _body   = [];
-        let _bodyData = [];
+        let _body       = [];
+        let _header     = [];
+        let _bodyData   = [];
 
         if(detailResults != null && "headers" in detailResults && detailResults.headers.length > 0){
             _header.push('No.');
@@ -109,67 +104,58 @@ const Report = (props) => {
                 {
                     detailResults != null && detailResults.headers.length > 0 ?
                         detailResults.headers.map((dataHeader) => (
-
-                            dataHeader.report_content.id == 1 ?
+                            dataHeader.report_content.id === 1 ?
                                 _bodyData.push( data.when_+' '+'bertempat di '+ (data.where != undefined ? data.where.replace(/[.]+$/g,"") : data.where)  +". "+data.who+' '+ (data.what != undefined ? data.what.replace(/[.]+$/g,"") : data.what )+'. '+data.why+'. '+ (data.how != undefined ? data.how.replace(/[.]+$/g,"")+ '.' : data.how))
                             :
-                                dataHeader.report_content.id == 2 ?
+                                dataHeader.report_content.id === 2 ?
                                     _bodyData.push(Helper.dateIndo1(data.publication_date.toString()))
                                 :
-                                    dataHeader.report_content.id == 3 ?
-                                        _bodyData.push(data.leader_likes != undefined ? data.leader_likes.toString() : data.leader_likes)
+                                    dataHeader.report_content.id === 3 ?
+                                        _bodyData.push(data.rating != undefined ? data.rating.toString() : data.rating)
                                     :
-                                        dataHeader.report_content.id == 4 ?
-                                            _bodyData.push(data.agent_likes != undefined ? data.agent_likes.toString() : data.agent_likes)
-                                        :
-                                            dataHeader.report_content.id == 5 ?
+                                            dataHeader.report_content.id === 4 ?
                                                 _bodyData.push(data.leader_comments != undefined ? data.leader_comments.toString() : data.leader_comments)
                                             :
-                                                dataHeader.report_content.id == 6 ?
+                                                dataHeader.report_content.id === 5 ?
                                                     _bodyData.push(data.agent_comments != undefined ? data.agent_comments.toString() : data.agent_comments)
                                                 :
-                                                    dataHeader.report_content.id == 7 ?
-                                                        _bodyData.push(data.dislikes != undefined ? data.dislikes.toString() : data.dislikes)
-                                                    :
-                                                        dataHeader.report_content.id == 8 ?
+                                                        dataHeader.report_content.id === 6 ?
                                                             _bodyData.push(data.viewer_count != undefined ? data.viewer_count.toString() : data.viewer_count)
                                                         :
-                                                            dataHeader.report_content.id == 9 ?
+                                                            dataHeader.report_content.id === 7 ?
                                                                 _bodyData.push(data.categories != undefined ? data.categories.toString() : data.categories)
                                                             :
-                                                                dataHeader.report_content.id == 10 ?
+                                                                dataHeader.report_content.id === 8 ?
                                                                     _bodyData.push(data.employee != undefined ? data.employee.toString() : data.employee)
                                                                 :
-                                                                    dataHeader.report_content.id == 11 ?
+                                                                    dataHeader.report_content.id === 9 ?
                                                                         _bodyData.push(data.workunit != undefined ? data.workunit.toString() : data.workunit)
                                                                     :
-                                                                        dataHeader.report_content.id == 12 ?
+                                                                        dataHeader.report_content.id === 10 ?
                                                                             _bodyData.push(data.position != undefined ? data.position.toString() : data.position)
                                                                         :
-                                                                            dataHeader.report_content.id == 13 ?
+                                                                            dataHeader.report_content.id === 11 ?
                                                                                 _bodyData.push(data.publication_count != undefined ? data.publication_count.toString() : data.publication_count)
                                                                             :
-                                                                                dataHeader.report_content.id == 14 ?
+                                                                                dataHeader.report_content.id === 12 ?
                                                                                     _bodyData.push(data.archive_count != undefined ? data.archive_count.toString() : data.archive_count)
                                                                                 :
-                                                                                    dataHeader.report_content.id == 15 ?
+                                                                                    dataHeader.report_content.id === 13 ?
                                                                                         _bodyData.push(data.forward_count != undefined ? data.forward_count.toString() : data.forward_count)
                                                                                     :
-                                                                                        dataHeader.report_content.id == 16 ?
+                                                                                        dataHeader.report_content.id === 14 ?
                                                                                             _bodyData.push(data.agent_count != undefined ? data.agent_count.toString() : data.agent_count) 
                                                                                         :
-                                                                                            dataHeader.report_content.id == 17 ?
+                                                                                            dataHeader.report_content.id === 15 ?
                                                                                                 _bodyData.push(monthName) 
                                                                                             :
-                                                                                                dataHeader.report_content.id == 18 ?
+                                                                                                dataHeader.report_content.id === 16 ?
                                                                                                     _bodyData.push(moment().daysInMonth)
                                                                                                 :
-                                                                                                    dataHeader.report_content.id == 19 ?
+                                                                                                    dataHeader.report_content.id === 17 ?
                                                                                                         _bodyData.push(data.publication_count != undefined ? data.publication_count.toString() : data.publication_count)
                                                                                                     :
                                                                                                         null
-
-                                                                                        
                         ))
                     :
                         null
@@ -187,10 +173,30 @@ const Report = (props) => {
         let _header   = [];
         let _bodyData = [];
         
-        if(detailResults != null && detailResults.result[0].data.length > 12){
-            _header.push('No.', "Satuan Kerja", "Bulan", "Jumlah");
-        }else{
-            _header.push('No.', "Satuan Kerja", "Tanggal", "Jumlah");
+        if(detailResults != null){
+            if(detailResults.report_type === 'yearly'){
+                _header.push('No.', "Satuan Kerja", "Bulan", "Jumlah");
+            }else if(detailResults.report_type === 'monthly'){
+                _header.push('No.', "Satuan Kerja", "Tanggal", "Jumlah");
+            }else if(detailResults.report_type === 'quarterly'){
+
+                let triwulan    = [1,2];
+                let triwulan_   = [];
+
+                if(triwulan.includes(1)){
+                    triwulan_.push("Triwulan I");
+                }else if(triwulan.includes(2)){
+                    triwulan_.push("Triwulan II");
+                }else if(triwulan.includes(3)){
+                    triwulan_.push("Triwulan III");
+                }else if(triwulan.includes(4)){
+                    triwulan_.push("Triwulan IV");
+                }
+
+                _header.push('No.', "Satuan Kerja", triwulan_.toString() , "Jumlah");
+            }else if (detailResults.report_type === 'periodically'){
+                _header.push('No.', "Satuan Kerja", "Data Berita");
+            }
         }
 
         setHeader([..._header]);
@@ -198,27 +204,46 @@ const Report = (props) => {
         if(detailResults != null && detailResults.result != null){
             detailResults.result.map((data,index) => (
                 <>
+
                     {_sum      = 0}
                     {_bodyData = []}
                     {_bodyData.push((index+1).toString())}
-                    {_bodyData.push(data.work_unit)}
-
+                    {_bodyData.push(data.name)}
                     {
-                        data.data.map((data_) => (
-                            <>
-                                {_bodyData.push(data_.data != null ? data_.data.length : 0)}
-                                {data_.data != null ? _sum += data_.data.length : _sum += 0}
-                            </>
+                        data.data != null && data.data.map((data2) => (
+                            data2.result.map((data_) => (
+                                <>
+                                    {
+                                        detailResults?.contents.map((data2_) => (
+                                            data2_.report_content_id === 11 ?
+                                                <>
+                                                    {_bodyData.push(data_.publication)}
+                                                    {_sum += data_.publication}
+                                                </>
+                                            :
+                                                data2_.report_content_id === 12 ?
+                                                    <>
+                                                        {_bodyData.push(data_.archive)}
+                                                        {_sum += data_.archive}
+                                                    </>
+                                                :
+                                                    <>
+                                                        {_bodyData.push(data_.forward)}
+                                                        {_sum += data_.forward}
+                                                    </>
+                                        ))
+                                    }
+                                </>
+                            ))
                         ))
                     }
-
-                    {_bodyData.push(_sum)}
+                    {detailResults?.report_type !== 'periocally' && _bodyData.push(_sum)}
                     {_body.push(_bodyData)}
                 </>
             ))
+
             setBody([..._body]);
         }
-        console.log(_body, 'disini');
     }
 
     const addWatermark = (doc) => {
@@ -409,14 +434,15 @@ const Report = (props) => {
         doc.setFontSize(12);
         doc.text('Tanggal: '+Helper.dateIndo1(props.selectedReport.created_at), 145, 22, null, null, "center");
 
-        if(body[0].length != 15){
+        if(detailResults?.report_type === 'monthly'){
 
-            let date_ = [];
+            let date_       = [];
             let dateLength_ = body[0].length > 0 ? body[0].length - 3 : 0;
 
             Array.from(Array(dateLength_).keys()).map((data,index) => (
                 date_.push({content: index+1, styles: { halign: 'center'}})
             ))
+
 
             doc.autoTable({
                 startY          : 30,
@@ -429,15 +455,29 @@ const Report = (props) => {
                     ],
                     date_
                 ],
-                body            : [body][0],
+                body            : [body.map((data) => 
+                    (
+                        data.map((data2, index) => (
+                            index > 1 ?
+                                {
+                                    content : data2,
+                                    styles  : {halign: 'center'}
+                                }
+                            :
+                                {
+                                    content : data2,
+                                    styles  : {halign: 'left'}
+                                }
+                        ))
+                    ))][0],
+                margin          : { top: 10, bottom: 25 },
                 styles          : { cellWidth: 'auto'},
-                columnStyles    : { 0: { cellWidth: 10 } },
                 headStyles      : {
-                    fillColor: [23, 97, 56],
+                    fillColor   : [23, 97, 56],
                 },
-                margin:         { top: 10, bottom: 25 }
+                columnStyles    : { 0: { cellWidth: 10 } },
             });
-        }else{
+        }else if(detailResults?.report_type === 'yearly'){
             doc.autoTable({
                 startY          : 30,
                 head            : [
@@ -462,7 +502,145 @@ const Report = (props) => {
                         {content: 'Desember', styles: { halign: 'center'}},
                     ]
                 ],
-                body            : [body][0],
+                body            : [body.map((data) => 
+                    (
+                        data.map((data2, index) => (
+                            index > 1 ?
+                                {
+                                    content : data2,
+                                    styles  : {halign: 'center'}
+                                }
+                            :
+                                {
+                                    content : data2,
+                                    styles  : {halign: 'left'}
+                                }
+                        ))
+                    ))][0],
+                styles          : { cellWidth: 'auto'},
+                columnStyles    : { 0: { cellWidth: 10 } },
+                headStyles      : {
+                    fillColor: [23, 97, 56],
+                },
+                margin:         { top: 10, bottom: 25 }
+            });
+        }else if(detailResults?.report_type === 'quarterly'){
+
+            let quarter    = detailResults?.quarterly?.map((data) => (data.name));
+            let header_     = [
+                {content: 'No.', rowSpan: 2, styles: { halign: 'center', valign: 'middle'}},
+                {content: 'Satuan Kerja', rowSpan: 2, styles: { halign: 'center'}},
+            ];
+            let subHeader_  = [];
+
+            if(quarter.includes("Triwulan I")){
+                header_.push({content: 'Triwulan I', colSpan:3 ,styles: { halign: 'center'}});
+                subHeader_.push(
+                    {content: 'Januari', styles: { halign: 'center'}},
+                    {content: 'Februari', styles: { halign: 'center'}},
+                    {content: 'Maret', styles: { halign: 'center'}},
+                )
+            }
+            if(quarter.includes("Triwulan II")){
+                header_.push({content: 'Triwulan II', colSpan:3 ,styles: { halign: 'center'}});
+                subHeader_.push(
+                    {content: 'April', styles: { halign: 'center'}},
+                    {content: 'Mei', styles: { halign: 'center'}},
+                    {content: 'Juni', styles: { halign: 'center'}},
+                )
+            }
+            if(quarter.includes("Triwulan III")){
+                header_.push({content: 'Triwulan III', colSpan:3 ,styles: { halign: 'center'}});
+                subHeader_.push(
+                    {content: 'Juli', styles: { halign: 'center'}},
+                    {content: 'Agustus', styles: { halign: 'center'}},
+                    {content: 'September', styles: { halign: 'center'}},
+                )
+            }
+            if(quarter.includes("Triwulan IV")){
+                header_.push({content: 'Triwulan IV', colSpan:3 ,styles: { halign: 'center'}});
+                subHeader_.push(
+                    {content: 'Oktober', styles: { halign: 'center'}},
+                    {content: 'November', styles: { halign: 'center'}},
+                    {content: 'Desember', styles: { halign: 'center'}},
+                )
+            }
+            
+            doc.autoTable({
+                startY          : 30,
+                head            : [
+                    header_,
+                    subHeader_
+                ],
+                body            : [body.map((data) => 
+                    (
+                        data.map((data2, index) => (
+                            index > 1 ?
+                                {
+                                    content : data2,
+                                    styles  : {halign: 'center'}
+                                }
+                            :
+                                {
+                                    content : data2,
+                                    styles  : {halign: 'left'}
+                                }
+                        ))
+                    ))
+                ][0],
+                styles          : { cellWidth: 'auto'},
+                columnStyles    : { 0: { cellWidth: 10 } },
+                headStyles      : {
+                    fillColor: [23, 97, 56],
+                },
+                margin:         { top: 10, bottom: 25 }
+            });
+        }else if(detailResults?.report_type === 'periodically'){
+
+            let subHeader_ = [];
+
+            detailResults?.contents?.map((data_) => (
+                data_.report_content_id === 11 ?
+                    subHeader_.push(
+                        {content: 'Jumlah Berita di Publikasi', styles: { halign: 'center'}},
+                    )
+                :
+                    data_.report_content_id === 12 ?
+                        subHeader_.push(
+                            {content: 'Jumlah Berita di Arsip', styles: { halign: 'center'}},
+                        )
+                    :
+                        subHeader_.push(
+                            {content: 'Jumlah Berita ke Pimpinan', styles: { halign: 'center'}},
+                        )
+            ));
+
+            doc.autoTable({
+                startY          : 30,
+                head            : [
+                    [
+                        {content: 'No.', rowSpan : 2, styles: { halign: 'center', valign: 'middle'}},
+                        {content: 'Satuan Kerja', rowSpan: 2, styles: { halign: 'center'}},
+                        {content: 'Data Berita', colSpan : 3,styles: { halign: 'center'}},
+                    ],
+                    subHeader_
+                ],
+                body            : [body.map((data) => 
+                    (
+                        data.map((data2, index) => (
+                            index > 1 ?
+                                {
+                                    content : data2,
+                                    styles  : {halign: 'center'}
+                                }
+                            :
+                                {
+                                    content : data2,
+                                    styles  : {halign: 'left'}
+                                }
+                        ))
+                    )
+                )][0],
                 styles          : { cellWidth: 'auto'},
                 columnStyles    : { 0: { cellWidth: 10 } },
                 headStyles      : {
@@ -523,6 +701,15 @@ const Report = (props) => {
     return (
         getRoleByMenuStatus('Laporan', 'report_list') ?
             <Fragment>
+
+                {/* modal add report */}
+                <AddReport
+                    onSubmit            = {props.onSubmit}
+                    reportCategory      = {props.reportCategory}
+                    isAddFormVisible    = {isAddFormVisible}
+                    setIsAddFormVisible = {setIsAddFormVisible}
+                />
+
                 {/* modal delete */}
                 <FormDelete
                     show        = {props.showDeleteForm}
@@ -534,7 +721,7 @@ const Report = (props) => {
                 />
 
                 {/* modal form */}
-                <ModalBase 
+                {/* <ModalBase 
                     size    = "lg" 
                     show    = {props.showForm} 
                     title   = "Tambah Laporan" 
@@ -546,7 +733,7 @@ const Report = (props) => {
                         onSubmit        = {props.onSubmit}
                         reportCategory  = {props.reportCategory}
                     />
-                </ModalBase>
+                </ModalBase> */}
 
                 {/* modal detail report */}
                 <ModalBase 
@@ -570,26 +757,38 @@ const Report = (props) => {
                     show        = {isDetailResultsVisible}
                     title       = "Detail Laporan"
                     footer      = {[
-                            <Button.Ripple color="primary" onClick={() => { setDetailData(!detailData) }} outline>
+                            <Button.Ripple 
+                                color   = "primary" 
+                                outline
+                                onClick = {() => { setDetailData(!detailData) }} 
+                            >
                                 Batal
                             </Button.Ripple>,
                             <div>
-                                <Button.Ripple color="primary" className="mr-1" onClick={() => {
-                                    if(detailResults != null && "is_formatted" in detailResults && detailResults.is_formatted === true){
-                                        printFormatPDF()
-                                    }else{
-                                        printPDF()
-                                    }
-                                }}>
+                                <Button 
+                                    color       = "primary" 
+                                    onClick     = {() => {
+                                        if(detailResults != null && "is_formatted" in detailResults && detailResults.is_formatted === true){
+                                            printFormatPDF()
+                                        }else{
+                                            printPDF()
+                                        }
+                                    }}
+                                    className   = "mr-1" 
+                                >
                                     Print PDF
-                                </Button.Ripple>
-                                <Button.Ripple color="primary" className="mr-1" onClick={() => {
-                                    if(detailResults != null && "is_formatted" in detailResults && detailResults.is_formatted === true){
-                                        createFormatPDF();
-                                    }else{
-                                        createPDF();
-                                    }
-                                }}>
+                                </Button>
+                                <Button.Ripple 
+                                    color       = "primary" 
+                                    onClick     = {() => {
+                                        if(detailResults != null && "is_formatted" in detailResults && detailResults.is_formatted === true){
+                                            createFormatPDF();
+                                        }else{
+                                            createPDF();
+                                        }
+                                    }}
+                                    className   = "mr-1" 
+                                >
                                     Export PDF
                                 </Button.Ripple>
                                 {createExcel()}
@@ -620,12 +819,12 @@ const Report = (props) => {
                     page        = "1" 
                     header      = {headerTable} 
                     totalData   = "50"
-                    onClickForm = {() => { props.setShowForm(!props.showForm) }} 
+                    onClickForm = {() => { setIsAddFormVisible(true) }} 
                     
                     //Role
                     roleAdd     = {getRoleByMenuStatus('Laporan', 'add')}
                 >
-                    <div id="report-table">
+                    <div id="report-table" className="mb-3">
                         {
                             report && report.map((data, number) => (
                                 <CustomTableBody>
@@ -675,7 +874,7 @@ const Report = (props) => {
                                                 <div id="detail-report">
                                                     <Eye
                                                         size        = {20} 
-                                                        onClick     = {() => { data.results.length > 0 ? hendleDetail(data) : handleDetailResults(data)}}
+                                                        onClick     = {() => { data.results.length > 0 ? handleDetail(data) : handleDetailResults(data)}}
                                                         className   = "mr-1 cursor-pointer" 
                                                     />
                                                 </div>

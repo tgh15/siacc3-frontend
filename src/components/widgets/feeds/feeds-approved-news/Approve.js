@@ -217,7 +217,7 @@ export const ApprovedNewsWidget = (props) => {
                                     </DropdownMenu>
                                 </UncontrolledButtonDropdown>
                             :
-                                'Menunggu Persutujuan Verifikator Daerah'
+                                'Menunggu Persetujuan Verifikator Daerah'
                         :
                             null
                     }
@@ -264,17 +264,7 @@ export const ApprovedNewsWidget = (props) => {
                                     </DropdownMenu>
                                 </UncontrolledButtonDropdown>
                             :
-                                'Menunggu Persutujuan Verifikator Daerah'
-                        :
-                            null
-                    }
-
-{ 
-                        localStorage.getItem('role') == 'Admin' || localStorage.getItem('role') == 'Super Admin' ?
-                            agent_report.status == 0 ? 
-                                'Menunggu Persutujuan Verifikator Daerah'
-                            :
-                                'Menunggu Persutujuan Verifikator Pusat'
+                                'Menunggu Persetujuan Verifikator Daerah'
                         :
                             null
                     }

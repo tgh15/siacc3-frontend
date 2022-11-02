@@ -20,7 +20,8 @@ import feedsBerandaAgentReport  from '../../services/pages/feeds/beranda/url';
 
 const PopularTopicAPI = () => {
     //State
-    const [reportAgent, setReportAgent]             = useState(false);
+    const [loading, setLoading]                     = useState(true);
+    const [reportAgent, setReportAgent]             = useState([]);
     const [trendingType, setTrendingType]           = useState('national');
     const [trendingFilter, setTrendingFilter]       = useState('daily');
     const [selectedWorkunit, setSelectedWorkunit]   = useState(0);
@@ -35,6 +36,9 @@ const PopularTopicAPI = () => {
     };
 
     const getReportAgentsAPI = () => {
+
+        setLoading(true);
+
         let formData;
 
         if (trendingType == "national") {
@@ -88,6 +92,7 @@ const PopularTopicAPI = () => {
         feedsBerandaAgentReport.getTrendingByType(formData).then(
             res => {
                 const {data} = res;
+                setLoading(false);
 
                 if (data.agent_report === null) {
                     setReportAgent([]);
@@ -98,6 +103,7 @@ const PopularTopicAPI = () => {
                         }
                     )
                 }
+                
             },
             err => {
                 CustomToast('danger', err.message);
@@ -109,6 +115,7 @@ const PopularTopicAPI = () => {
         <Fragment>
             <PopularTopics
                 //state
+                loading                 = {loading}
                 reportAgent             = {reportAgent}
                 trendingType            = {trendingType}
                 trendingFilter          = {trendingFilter}

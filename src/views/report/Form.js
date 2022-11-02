@@ -3,10 +3,12 @@ import {
     useState, 
     useEffect, 
     useContext,
-} from "react";
+}                               from "react";
+
 import { 
     Col, 
     Row, 
+    Form,
     Badge, 
     Input, 
     Label,
@@ -14,8 +16,7 @@ import {
     FormGroup, 
     ModalFooter, 
     CustomInput,
-    Form
-} from "reactstrap";
+}                               from "reactstrap";
 
 import "./Report.scss";
 import '@styles/react/libs/flatpickr/flatpickr.scss';
@@ -26,9 +27,10 @@ import Select                   from "react-select";
 import CardBody                 from "reactstrap/lib/CardBody";
 import CardText                 from "reactstrap/lib/CardText";
 import Flatpickr                from 'react-flatpickr';
-import { useForm }              from "react-hook-form";
-import { selectThemeColors }    from '@utils';
+import { useForm, Controller }  from "react-hook-form";
+import { yupResolver }          from '@hookform/resolvers/yup';
 import { ReactSortable }        from 'react-sortablejs';
+import { selectThemeColors }    from '@utils';
 
 //Component
 import IconSwitch               from '../../components/widgets/icon-switch/IconSwitch';
@@ -37,10 +39,15 @@ import SubmitButton             from '../../components/widgets/submit-button';
 //Context
 import { EmployeeContext }      from "../../context/EmployeeContext";
 import { CategoryContext }      from "../../context/CategoryContext";
-import { WorkunitContext }      from "../../context/WorkunitContext";
 import { PerformanceContext }   from "../../context/PerformanceContext";
-import CustomToast from "../../components/widgets/custom-toast";
+import CustomToast              from "../../components/widgets/custom-toast";
 
+import {
+    schemaNoFormatNoSchedule,
+    schemaNoFormatWithSchedule
+}                               from "./validation";
+import { HelpCircle } from "react-feather";
+import { ModalBase } from "../../components/widgets/modals-base";
 
 const FormReport = (props) => {
     //Props
@@ -48,52 +55,61 @@ const FormReport = (props) => {
 
     //Context
     const { category }                          = useContext(CategoryContext);
-    const { workunit }                          = useContext(WorkunitContext);
     const { workunitOptionsApproval }           = useContext(PerformanceContext);
     const { employees }                         = useContext(EmployeeContext);
 
     //State
-    const [categoryFilter, setCategoryFilter]   = useState([]);
-    const [employeeFilter, setEmployeeFilter]   = useState([]);
-    const [inputCreateDate, setInputCreateDate] = useState(false);
+    const [categoryFilter, setCategoryFilter]         = useState([]);
+    const [employeeFilter, setEmployeeFilter]         = useState([]);
+    const [inputCreateDate, setInputCreateDate]       = useState(false);
+    const [isHelpModalVisible, setIsHelpModalVisible] = useState(false);
 
-    const [endDate, setEndDate]                 = useState(null);
     const [isFormat, setIsFormat]               = useState(null);
-    const [startDate, setStartDate]             = useState(null);
-    const [formatType, setFormatType]           = useState(null);
 
-    const [request,setRequest]                  = useState({
-        end             : null,
-        time            : null,
-        start           : null,
-        title           : null,
-        repeat          : null,
-        content         : null,
-        filter_agent    : null,
-        filter_workunit : null,
-        filter_category : null,
-    });
-
-    const [inputErr,setInputErr]                = useState({
-        end             : false,
-        start           : false,
-        title           : false,
-        content         : false,
-        filter_category : false,
-    });
-
-    const { register, errors, handleSubmit }    = useForm({ mode: "onChange" });
+    const { 
+        errors, 
+        control, 
+        register, 
+        setValue,
+        watch,
+        handleSubmit, 
+    }   
+        = useForm({ mode: "onTouched", 
+            resolver: yupResolver(
+            isFormat ? 
+                // schemaWithFormat
+                null
+            :
+                inputCreateDate ? 
+                    schemaNoFormatWithSchedule
+                :
+                    schemaNoFormatNoSchedule 
+        )});
 
     //Category filter select options
     const Category = () => {
-        let data_ = category.map((data ) => (
+        let data_ = (category.slice(2)).map((data) => (
             {
                 label : data.name,
                 value : data.id
             }
         ))
 
-        setCategoryFilter(data_);
+        let category_ = [
+            {
+                label : 'Semua Kategori',
+                options : [{
+                    label : 'SEMUA KATEGORI',
+                    value : 0
+                }],
+            },
+            {
+                label   : 'Kategori',
+                options : data_
+            },
+        ]
+
+        setCategoryFilter(category_);
     };
 
     //Workunit filter select options
@@ -101,135 +117,241 @@ const FormReport = (props) => {
         let data_ = employees.map((data ) => (
             {
                 label : data.name,
-                value : data.id
+                value : data.uuid
             }
         ))
 
         setEmployeeFilter(data_);
     };
 
-    const handleFinish = () => {
-        let err_ = {...inputErr};
+    const handleFinish = (data) => {
+
         let formData;
-
-        if(request.title === null){
-            err_.title = true;
-        }else{
-            err_.title = false;
-        }
-
-        if(request.start === null ){
-            err_.start = true;
-        }else{
-            err_.start = false;
-        }
-
-        if(request.end === null ){
-            err_.end = true;
-        }else{
-            err_.end = false;
-        }
-
-        if(request.content === null ){
-            err_.content = true;
-        }else{
-            err_.content = false;
-        }
-
-        if(request.filter_category === null ){
-            err_.filter_category = true;
-        }else{
-            err_.filter_category = false;
-        }
-
-        setInputErr(err_);
-
-        if(!(err_.title && err_.content && err_.filter_category && startDate != null && endDate != null)){
-            //Get Items ID
-            let _newOrder   = [];
-            let _newFilter  = [];
-
-            if(isFormat == true) {
-
-                if(formatType === 'yearly'){
-                    _newOrder.push(11,17,19);
-                }else{
-                    _newOrder.push(11,18,19);
-                }
-
-                formData = {
-                    model : {
-                        title        : request.title,
-                        start        : moment(startDate).format('YYYY-MM-DDTH:mm:ssZ'),
-                        end          : moment(endDate).format('YYYY-MM-DDTH:mm:ssZ'),
-                        contents_id  : _newOrder,
-                        is_formatted : true
-                    }
-                }
-
-                props.onSubmit(formData);
-
+        let _newOrder   = [];
+        let _newFilter  = [];
+    
+        if(isFormat == true) {
+            //report with format yearly or monthly
+            if(data.format_type === 'yearly'){
+                _newOrder.push(11,17,19);
             }else{
-
-                if(request.content != null && request.content.filter(e => e.value == 10 || e.value == 11).length > 0){
-                    if(request.content != null){
-                        request.content.map((data) => (
-                            _newOrder.push(data.value)
+                _newOrder.push(11,18,19);
+            }
+    
+            formData = {
+                model : {
+                    title        : data.title,
+                    start        : moment(data.start_date[0]).format('YYYY-MM-DDTH:mm:ssZ'),
+                    end          : moment(data.end_date[0]).format('YYYY-MM-DDTH:mm:ssZ'),
+                    contents_id  : _newOrder,
+                    is_formatted : true
+                }
+            }
+    
+            props.onSubmit(formData);
+    
+        }else{
+            if(data.content != null && data.content.filter(e => parseInt(e.value) === 1).length > 0){
+                if(data.content.filter(e => parseInt(e.value) >= 12 && parseInt(e.value) <= 19).length > 0){
+                    CustomToast('warning', 'Jika memilih Isi Berita, maka Pilihan Jabatan, Jumlah Berita Di Publikasi, Jumlah Berita di Arsip, Jumlah Berita Ke Pimpinan, Jumlah Agen, Bulan, Tanggal, dan Jumlah Tidak Dapat Digunakan.');
+                }else{
+                    if(data.content != null){
+                        data.content.map((data) => (
+                            _newOrder.push(parseInt(data.value))
                         ));
                     }
-        
+                
                     //Get Category Filter
-                    if(request.filter_category != null){
-                        request.filter_category.map((data) => (
+                    if(data.filter_category != null && !(data.filter_category.filter(e => parseInt(e.value) === 0).length > 0)){
+                        data.filter_category.map((data) => (
                             _newFilter.push({
                                 report_filter_type_id: 1,
-                                keyword : data.label
+                                keyword : data.label.toString()
+                            })
+                        ));
+                    }else{
+                        (category.slice(2)).map((data) => (
+                            _newFilter.push({
+                                report_filter_type_id: 1,
+                                keyword : data.name.toString()
                             })
                         ));
                     }
-        
-                    if(request.filter_workunit != null){
-                        request.filter_workunit.map((data) => (
-                            _newFilter.push({
-                                report_filter_type_id: 2,
-                                keyword : data.value
-                            })
-                        ));
-                    };
-        
-                    if(request.filter_agent != null){
-                        request.filter_agent.map((data) => (
+                
+                    if(data.filter_workunit != null && !(data.filter_workunit.filter(e => parseInt(e.value) === 0).length > 0)){
+                        data.filter_workunit.map((data) => (
                             _newFilter.push({
                                 report_filter_type_id: 3,
-                                keyword : data.value
+                                keyword : data.value.toString()
                             })
                         ));
                     };
-    
-                    if(request.time != null){
-                        formData.time = moment(request.time).format('YYYY-MM-DDTH:mm:ssZ');
-                    }
-        
-                    if(request.repeat != null){
-                        formData.repeat = request.repeat;
+                
+                    if(data.filter_agent != null){
+                        data.filter_agent.map((data) => (
+                            _newFilter.push({
+                                report_filter_type_id: 2,
+                                keyword : data.value.toString()
+                            })
+                        ));
                     }
                     
                     formData = {
                         model : {
-                            title        : request.title,
-                            start        : moment(startDate).format('YYYY-MM-DDTH:mm:ssZ'),
-                            end          : moment(endDate).format('YYYY-MM-DDTH:mm:ssZ'),
+                            end          : moment(data.end_date[0]).format('YYYY-MM-DDTH:mm:ssZ'),
+                            title        : data.title,
+                            start        : moment(data.start_date[0]).format('YYYY-MM-DDTH:mm:ssZ'),
+                            filters      : _newFilter,
+                            contents_id  : _newOrder,
+                            is_formatted : false
+                        }
+                    }
+    
+                    if(data.time != null){
+                        formData.time = moment(data.time).format('YYYY-MM-DDTH:mm:ssZ');
+                    }
+                
+                    if(data.repeat != null){
+                        formData.repeat = data.repeat;
+                    }
+                
+                    props.onSubmit(formData);
+                }
+            }else if(data.content.filter(e => parseInt(e.value) === 16).length > 0){
+    
+                if(data.content.filter(e => parseInt(e.value) === 11).length > 0){
+                    if(data.content != null){
+                        data.content.map((data) => (
+                            _newOrder.push(parseInt(data.value))
+                        ));
+                    }
+                
+                    //Get Category Filter
+                    if(data.filter_category != null && !(data.filter_category.filter(e => parseInt(e.value) === 0).length > 0)){
+                        data.filter_category.map((data) => (
+                            _newFilter.push({
+                                report_filter_type_id: 1,
+                                keyword : data.label.toString()
+                            })
+                        ));
+                    }else{
+                        (category.slice(2)).map((data) => (
+                            _newFilter.push({
+                                report_filter_type_id: 1,
+                                keyword : data.name.toString()
+                            })
+                        ));
+                    }
+                
+                    if(data.filter_workunit != null && !(data.filter_workunit.filter(e => parseInt(e.value) === 0).length > 0)){
+                        data.filter_workunit.map((data) => (
+                            _newFilter.push({
+                                report_filter_type_id: 3,
+                                keyword : data.value.toString()
+                            })
+                        ));
+                    };
+                
+                    if(data.filter_agent != null){
+                        data.filter_agent.map((data) => (
+                            _newFilter.push({
+                                report_filter_type_id: 2,
+                                keyword : data.value.toString()
+                            })
+                        ));
+                    };
+                
+                    if(data.time != null){
+                        formData.time = moment(data.time).format('YYYY-MM-DDTH:mm:ssZ');
+                    }
+                
+                    if(data.repeat != null){
+                        formData.repeat = data.repeat;
+                    }
+                    
+                    formData = {
+                        model : {
+                            title        : data.title,
+                            start        : moment(data.start_date[0]).format('YYYY-MM-DDTH:mm:ssZ'),
+                            end          : moment(data.end_date[0]).format('YYYY-MM-DDTH:mm:ssZ'),
                             contents_id  : _newOrder,
                             filters      : _newFilter,
                             is_formatted : false
                         }
                     }
-
+                
                     props.onSubmit(formData);
-
                 }else{
-                    CustomToast('warning', 'Isi laporan harus menggunakan Satuan Kerja atau Nama Agen.');
+                    CustomToast('warning', 'Jika memilih Jumlah Agen, maka harus memilih Satuan Kerja');
                 }
+            }else if(data.content.filter(e => parseInt(e.value) >= 12 && parseInt(e.value) <= 16 ).length > 0){
+                if(data.content.filter(e => parseInt(e.value) === 10 || parseInt(e.value) === 11 ).length > 0){
+                    if(data.content != null){
+                        data.content.map((data) => (
+                            _newOrder.push(parseInt(data.value))
+                        ));
+                    }
+                
+                    //Get Category Filter
+                    if(data.filter_category != null && !(data.filter_category.filter(e => parseInt(e.value) === 0).length > 0)){
+                        data.filter_category.map((data) => (
+                            _newFilter.push({
+                                report_filter_type_id: 1,
+                                keyword : data.label.toString()
+                            })
+                        ));
+                    }else{
+                        (category.slice(2)).map((data) => (
+                            _newFilter.push({
+                                report_filter_type_id: 1,
+                                keyword : data.name.toString()
+                            })
+                        ));
+                    }
+                
+                    if(data.filter_workunit != null && !(data.filter_workunit.filter(e => parseInt(e.value) === 0).length > 0)){
+                        data.filter_workunit.map((data) => (
+                            _newFilter.push({
+                                report_filter_type_id: 3,
+                                keyword : data.value.toString()
+                            })
+                        ));
+                    };
+                
+                    if(data.filter_agent != null){
+                        data.filter_agent.map((data) => (
+                            _newFilter.push({
+                                report_filter_type_id: 2,
+                                keyword : data.value.toString()
+                            })
+                        ));
+                    };
+                
+                    if(data.time != null){
+                        formData.time = moment(data.time).format('YYYY-MM-DDTH:mm:ssZ');
+                    }
+                
+                    if(data.repeat != null){
+                        formData.repeat = data.repeat;
+                    }
+                    
+                    formData = {
+                        model : {
+                            title        : data.title,
+                            start        : moment(data.start_date[0]).format('YYYY-MM-DDTH:mm:ssZ'),
+                            end          : moment(data.end_date[0]).format('YYYY-MM-DDTH:mm:ssZ'),
+                            contents_id  : _newOrder,
+                            filters      : _newFilter,
+                            is_formatted : false
+                        }
+                    }
+                
+                    props.onSubmit(formData);
+                }else{
+                    CustomToast('warning', 'Jika memilih Jumlah Berita Di Publikasi, Jumlah Berita di Arsip, Jumlah Berita Ke Pimpinan, maka harus memilih Nama Agen atau Satuan Kerja');
+                }
+            }else{
+                CustomToast('warning', 'Isi laporan harus menggunakan Satuan Kerja atau Nama Agen.');
             }
         }
     };
@@ -241,6 +363,20 @@ const FormReport = (props) => {
 
     return (
         <Fragment>
+
+            <ModalBase
+                show    = {isHelpModalVisible}
+                size    = "lg"
+                title   = "Isi Laporan Yang Dapat Digunakan"
+                setShow = {(val) => setIsHelpModalVisible(val)}
+            >
+                - Jika memilih <strong>Isi Berita</strong>, maka Pilihan <strong>Jabatan, Jumlah Berita Di Publikasi, Jumlah Berita di Arsip, Jumlah Berita Ke Pimpinan, Jumlah Agen, Bulan, Tanggal, </strong> dan <strong> Jumlah </strong> Tidak Dapat Digunakan.
+                <hr/>
+                - Jika memilih <strong>Jumlah Agen</strong>, maka harus memilih <strong>Satuan Kerja</strong>.
+                <hr/>
+                - Jika memilih <strong>Jumlah Berita Di Publikasi, Jumlah Berita di Arsip, Jumlah Berita Ke Pimpinan, </strong> maka harus memilih <strong>Nama Agen</strong> atau <strong>Satuan Kerja</strong>.
+            </ModalBase>
+
             <Form onSubmit={handleSubmit(handleFinish)}>
                 <Row>
                     <Col md={6}>
@@ -265,79 +401,61 @@ const FormReport = (props) => {
                                 sm = "12"
                             >
                                 <FormGroup>
-                                    <Label for='judul'>Judul Laporan</Label>
+                                    <Label for='title'>Judul Laporan</Label>
                                     <div id="report-title">
                                         <Input 
-                                            id          = 'judul' 
+                                            id          = 'title' 
                                             name        = 'title'
-                                            type        = 'text' 
-                                            onChange    = {(e) => {
-                                                let value   = e.target.value;
-                                                let data    = {...request};
-                                                let err     = {...inputErr};
-
-                                                if(value.length > 0){
-                                                    data.title = value;
-                                                    err.title  = false;
-                                                }else{
-                                                    data.title = null;
-                                                }
-
-                                                setRequest(data);
-                                                setInputErr(err);
-                                            }}
-                                            className   = {`form-control ${ !inputErr.title ?"":"is-invalid"}`}
+                                            type        = 'text'
+                                            innerRef    = {register()}
+                                            className   = 'form-control'
                                         />
                                     </div>
-                                    {
-                                        inputErr.title ?
-                                            <Label className="text-danger">Judul Laporan Belum Terisi!</Label>
-                                        : null
-                                    }
+                                    {errors && errors.title && <Label className="text-danger">{errors.title.message}</Label>}
                                 </FormGroup>
                             </Col>
                             <Col md ={12}>
                                 <Row>
                                     <Col md={6}>
                                         <FormGroup>
-                                            <Label for='tgl_awal'>Tanggal Awal</Label>
+                                            <Label for='start_date'>Tanggal Awal</Label>
                                             <div id="start-date">
-                                                <Flatpickr 
-                                                    id          = 'tgl_awal'
-                                                    name        = "start"
-                                                    className   = {`form-control `}
-                                                    options     = {{ dateFormat: "d-m-Y H:i", enableTime: true, time_24hr: true }}
-                                                    onChange    = {(value) => {
-                                                        setStartDate(value[0]);
-                                                    }}
+                                                <Controller
+                                                    as      = {
+                                                        <Flatpickr 
+                                                            id          = 'start_date' 
+                                                            options     = {{ dateFormat: "d-m-Y H:i", enableTime: true, time_24hr: true }}
+                                                            className   = 'form-control' 
+                                                            placeholder = {moment().format('DD-M-YYYY')}
+                                                        />
+                                                    }
+                                                    name    = "start_date"
+                                                    rules   = {{required: true}}
+                                                    control = {control}
                                                 />
                                             </div>
-                                            {
-                                                startDate == null ?
-                                                    <Label className="text-danger">Tanggal Awal Belum Terisi!</Label>
-                                                : null
-                                            }
+                                            {errors && errors.start_date && <Label className="text-danger">{errors.start_date.message}</Label>}
                                         </FormGroup>
                                     </Col>
                                     <Col md={6}>
                                         <FormGroup>
                                             <Label for='tgl_akhir'>Tanggal Akhir</Label>
                                             <div id="end-date">
-                                                <Flatpickr 
-                                                    id          = 'tgl_akhir' 
-                                                    name        = "end"
-                                                    className   = {`form-control`}
-                                                    options     = {{ dateFormat: "d-m-Y H:i", enableTime: true, time_24hr: true }}
-                                                    onChange    = {(value) => {
-                                                        setEndDate(value[0]);
-                                                    }}
+                                                <Controller
+                                                    as      = {
+                                                        <Flatpickr 
+                                                            id          = 'end_date' 
+                                                            options     = {{ dateFormat: "d-m-Y H:i", enableTime: true, time_24hr: true }}
+                                                            className   = 'form-control' 
+                                                            placeholder = {moment().format('DD-M-YYYY')}
+                                                        />
+                                                    }
+                                                    name    = "end_date"
+                                                    rules   = {{required: true}}
+                                                    control = {control}
                                                 />
                                             </div>
-                                            {
-                                                endDate == null ?
-                                                    <Label className="text-danger">Tanggal Akhir Belum Terisi!</Label>
-                                                : null
-                                            }
+                                            {errors && errors.end_date && <Label className="text-danger">{errors.end_date.message}</Label>}
                                         </FormGroup>
                                     </Col>
                                 </Row>
@@ -349,12 +467,25 @@ const FormReport = (props) => {
                                     <Col md={12}>
                                         <FormGroup>
                                             <Label for='judul'>Format Laporan</Label>
-                                            <Select
-                                                options = {[
-                                                    {value: 'yearly', label : 'Data Satuan Kerja Tahunan'},
-                                                    {value: 'monthly', label : 'Data Satuan Kerja Bulanan'},
-                                                ]}
-                                                onChange = {(value) => setFormatType(value.value)}
+                                            <Controller
+                                                name    = "format_type"
+                                                control = {control}
+                                                as      = {
+                                                    <Select
+                                                        id              = "format_type" 
+                                                        theme           = {selectThemeColors}
+                                                        options         = {[
+                                                            {value: 'yearly', label : 'Data Satuan Kerja Tahunan'},
+                                                            {value: 'monthly', label : 'Data Satuan Kerja Bulanan'},
+                                                        ]}
+                                                        className       = 'react-select'
+                                                        placeholder     = "Pilih Jenis Laporan"
+                                                        isClearable
+                                                        isMulti
+                                                        classNamePrefix = 'select'
+                                                        closeMenuOnSelect={false}
+                                                    />
+                                                }
                                             />
                                         </FormGroup>
                                     </Col>
@@ -383,23 +514,22 @@ const FormReport = (props) => {
                                                     <div>
                                                         <FormGroup>
                                                             <Label for='tgl_laporan'>Tanggal Laporan Dibuat</Label>
-                                                            <Flatpickr 
-                                                                id          = 'tgl_laporan'
-                                                                name        = 'time'
-                                                                className   = {`form-control ${ !inputErr.start ?"":"is-invalid"}`}
-                                                                options     = {{ dateFormat: "d-m-Y H:i", enableTime: true, time_24hr: true }}
-                                                                onChange    = {(value) => {
-                                                                    let data  = {...request};
 
-                                                                    if(value.length > 0){
-                                                                        data.time = value[0];
-                                                                    }else{
-                                                                        data.time = null;
-                                                                    }
-
-                                                                    setRequest(data);
-                                                                }}
+                                                            <Controller
+                                                                as      = {
+                                                                    <Flatpickr 
+                                                                        id          = 'time' 
+                                                                        options     = {{ dateFormat: "d-m-Y H:i", enableTime: true, time_24hr: true }}
+                                                                        className   = 'form-control' 
+                                                                        placeholder = {moment().format('DD-M-YYYY')}
+                                                                    />
+                                                                }
+                                                                name    = "time"
+                                                                rules   = {{required: true}}
+                                                                control = {control}
                                                             />
+
+                                                            {errors && errors.time && <Label className="text-danger">{errors.time.message}</Label>}
                                                         </FormGroup>
 
                                                         <FormGroup>
@@ -423,18 +553,8 @@ const FormReport = (props) => {
                                                                     label       = 'Harian'
                                                                     value       = 'daily'
                                                                     inline 
-                                                                    onChange    = {(e) => {
-                                                                        let value = e.target.value;
-                                                                        let data  = {...request};
+                                                                    innerRef    = {register()}
 
-                                                                        if(value.length > 0){
-                                                                            data.repeat = value;
-                                                                        }else{
-                                                                            data.repeat = null;
-                                                                        }
-
-                                                                        setRequest(data);
-                                                                    }}
                                                                 />
                                                                 <CustomInput 
                                                                     id          = 'exampleCustomRadio3' 
@@ -443,18 +563,8 @@ const FormReport = (props) => {
                                                                     label       = 'Mingguan'
                                                                     value       = 'weekly'
                                                                     inline 
-                                                                    onChange    = {(e) => {
-                                                                        let value = e.target.value;
-                                                                        let data  = {...request};
+                                                                    innerRef    = {register()}
 
-                                                                        if(value.length > 0){
-                                                                            data.repeat = value;
-                                                                        }else{
-                                                                            data.repeat = null;
-                                                                        }
-
-                                                                        setRequest(data);
-                                                                    }}
                                                                 />
                                                                 <CustomInput 
                                                                     type        = 'radio' 
@@ -463,20 +573,11 @@ const FormReport = (props) => {
                                                                     label       = 'Bulanan' 
                                                                     value       = 'monthly'
                                                                     inline 
-                                                                    onChange    = {(e) => {
-                                                                        let value = e.target.value;
-                                                                        let data  = {...request};
-
-                                                                        if(value.length > 0){
-                                                                            data.repeat = value;
-                                                                        }else{
-                                                                            data.repeat = null;
-                                                                        }
-
-                                                                        setRequest(data);
-                                                                    }}
+                                                                    innerRef    = {register()}
                                                                 />
                                                             </div>
+
+                                                            {errors && errors.repeat && <Label className="text-danger">{errors.repeat.message}</Label>}
                                                         </FormGroup>
                                                     </div> 
                                                 : null
@@ -488,39 +589,35 @@ const FormReport = (props) => {
                                                 outline
                                             >
                                                 <CardBody>
-                                                    <CardText>Isi Laporan</CardText>
+                                                    <CardText className="d-flex justify-content-between">
+                                                        Isi Laporan
+                                                        <HelpCircle 
+                                                            onClick     = {() => setIsHelpModalVisible(true)}
+                                                            className   = "cursor-pointer"
+                                                        />
+                                                    </CardText>
                                                     <FormGroup>
                                                         <div id="contents-report">
-                                                            <Select
-                                                                name                = 'content'
-                                                                theme               = {selectThemeColors}
-                                                                isMulti
-                                                                className           = 'react-select'
-                                                                placeholder         = "Pilih laporan"
-                                                                isClearable
-                                                                classNamePrefix     = 'select'
-                                                                options             = {request.content != null && request.content.length > 4 ? request.content : props.reportCategory}
-                                                                onChange            = {(value) => {
-                                                                    let data    = {...request};
-                                                                    let err     = {...inputErr};
-
-                                                                    if(value.length > 0){
-                                                                        data.content = value;
-                                                                        err.content  = false;
-                                                                    }else{
-                                                                        data.content = null;
-                                                                    }
-
-                                                                    setRequest(data);
-                                                                    setInputErr(err);
-                                                                }}
+                                                            <Controller
+                                                                name    = "content"
+                                                                control = {control}
+                                                                as      = {
+                                                                    <Select
+                                                                        id              = "content" 
+                                                                        theme           = {selectThemeColors}
+                                                                        options         = {props.reportCategory}
+                                                                        className       = 'react-select'
+                                                                        placeholder     = "Pilih isi Laporan"
+                                                                        isClearable
+                                                                        isMulti
+                                                                        classNamePrefix = 'select'
+                                                                        closeMenuOnSelect={false}
+                                                                    />
+                                                                }
                                                             />
+
                                                         </div>
-                                                        {
-                                                            inputErr.content ?
-                                                                <Label className="text-danger">Isi Laporan Belum Terisi!</Label>
-                                                            : null
-                                                        }
+                                                        {errors && errors.content && <Label className="text-danger">{errors.content.message}</Label>}
                                                     </FormGroup>
                                                 </CardBody>
                                             </Card>
@@ -537,95 +634,77 @@ const FormReport = (props) => {
                                                         </Col>
                                                         <Col md="10">
                                                             <div id="select-category">
-                                                                <Select
-                                                                    id                  = "filter_category"
-                                                                    name                = "filter_category"
-                                                                    theme               = {selectThemeColors}
-                                                                    isMulti
-                                                                    options             = {categoryFilter}
-                                                                    className           = 'react-select'
-                                                                    placeholder         = "Pilih Kategori"
-                                                                    isClearable
-                                                                    classNamePrefix     = 'select'
-                                                                    onChange            = {(value) => {
-                                                                        let data    = {...request};
-                                                                        let err     = {...inputErr};
-
-                                                                        if(value.length > 0){
-                                                                            data.filter_category = value;
-                                                                            err.filter_category  = false;
-                                                                        }else{
-                                                                            data.filter_category = null;
-                                                                        }
-
-                                                                        setRequest(data);
-                                                                        setInputErr(err);
-                                                                    }}
+                                                                <Controller
+                                                                    name    = "filter_category"
+                                                                    control = {control}
+                                                                    as      = { 
+                                                                        <Select
+                                                                            id                  = "filter_category" 
+                                                                            theme               = {selectThemeColors}
+                                                                            options             = {watch('filter_category') ? watch('filter_category').filter(val => val.value === 0).length > 0 ? [] : categoryFilter : categoryFilter}
+                                                                            isMulti
+                                                                            className           = 'react-select'
+                                                                            placeholder         = "Pilih Kategori"
+                                                                            isClearable
+                                                                            classNamePrefix     = 'select'
+                                                                            closeMenuOnSelect   = {false}
+                                                                        />
+                                                                    }
                                                                 />
                                                             </div>
-                                                            {
-                                                                inputErr.filter_category ?
-                                                                    <Label className="text-danger">Filter Kategori Belum Terisi!</Label>
-                                                                : null
-                                                            }
+                                                            {errors && errors.filter_category && <Label className="text-danger">{errors.filter_category.message}</Label>}
                                                         </Col>
                                                     </Row>
+
                                                     <Row className="mt-1">
                                                         <Col md="2">
                                                             <p>Satuan Kerja</p>
                                                         </Col>
                                                         <Col md="10">
                                                             <div id="select-workunit">
-                                                                <Select
-                                                                    name                = 'filter_workunit'
-                                                                    theme               = {selectThemeColors}
-                                                                    isMulti
-                                                                    options             = {workunitOptionsApproval}
-                                                                    className           = 'react-select'
-                                                                    placeholder         = "Pilih Satuan Kerja"
-                                                                    isClearable
-                                                                    classNamePrefix     = 'select'
-                                                                    onChange            = {(value) => {
-                                                                        let data    = {...request};
-
-                                                                        if(value.length > 0){
-                                                                            data.filter_workunit = value;
-                                                                        }else{
-                                                                            data.filter_workunit = null;
-                                                                        }
-
-                                                                        setRequest(data);
-                                                                    }}
+                                                                <Controller
+                                                                    name    = "filter_workunit"
+                                                                    control = {control}
+                                                                    as      = {
+                                                                        <Select
+                                                                            id                  = "filter_workunit" 
+                                                                            theme               = {selectThemeColors}
+                                                                            isMulti
+                                                                            options             = {watch('filter_workunit') ? watch('filter_workunit').filter(val => val.value === 0).length > 0 ? [] : workunitOptionsApproval : workunitOptionsApproval}
+                                                                            className           = 'react-select'
+                                                                            placeholder         = "Pilih Satuan Kerja"
+                                                                            isClearable
+                                                                            classNamePrefix     = 'select'
+                                                                            closeMenuOnSelect   = {false}
+                                                                        />
+                                                                    }
                                                                 />
                                                             </div>
                                                         </Col>
                                                     </Row>
+
                                                     <Row className="mt-1">
                                                         <Col md="2">
                                                             <p>Agen</p>
                                                         </Col>
                                                         <Col md="10">
                                                             <div id="select-agent">
-                                                                <Select
-                                                                    name                = 'filter_agent'
-                                                                    theme               = {selectThemeColors}
-                                                                    isMulti
-                                                                    options             = {employeeFilter}
-                                                                    className           = 'react-select'
-                                                                    placeholder         = "Pilih Agen"
-                                                                    isClearable
-                                                                    classNamePrefix     = 'select'
-                                                                    onChange            = {(value) => {
-                                                                        let data    = {...request};
-
-                                                                        if(value.length > 0){
-                                                                            data.filter_agent = value;
-                                                                        }else{
-                                                                            data.filter_agent = null;
-                                                                        }
-
-                                                                        setRequest(data);
-                                                                    }}
+                                                                <Controller
+                                                                    name    = "filter_agent"
+                                                                    control = {control}
+                                                                    as      = {
+                                                                        <Select
+                                                                            id              = "filter_agent" 
+                                                                            theme           = {selectThemeColors}
+                                                                            options         = {employeeFilter}
+                                                                            className       = 'react-select'
+                                                                            placeholder     = "Pilih Agen"
+                                                                            isClearable
+                                                                            isMulti
+                                                                            classNamePrefix = 'select'
+                                                                            closeMenuOnSelect={false}
+                                                                        />
+                                                                    }
                                                                 />
                                                             </div>
                                                         </Col>
@@ -641,27 +720,16 @@ const FormReport = (props) => {
                                             >
                                                 <CardBody className="py-1">
                                                     <ReactSortable
-                                                        list        = {request.content != null ? request.content : []}
+                                                        list        = {watch('content') ? watch('content') : []}
                                                         group       = {{ name: 'shared-badge-group', pull: 'clone' }}
                                                         className   = 'demo-inline-spacing sortable mb-1'
                                                         setList     = {(value) => {
-                                                            let data    = {...request};
-                                                            let err     = {...inputErr};
-
-                                                            if(value.length > 0){
-                                                                data.content = value;
-                                                                err.content  = false;
-                                                            }else{
-                                                                data.content = null;
-                                                            }
-
-                                                            setRequest(data);
-                                                            setInputErr(err);
+                                                            setValue('content', value);
                                                         }}
                                                     >
                                                         {
-                                                            request.content != null ? 
-                                                                request.content.map((item) => {
+                                                            watch('content') ? 
+                                                                watch('content').map((item) => {
                                                                     return (
                                                                         <Badge 
                                                                             key         = {"reorder_header_report_"+item.value} 

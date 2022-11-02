@@ -59,7 +59,7 @@ const WorkUnitLevelSelect = ({ isRtl, onSelect, getAllData,setListData }) => {
             <CardBody className="p-0">
                 <Swiper
                     dir={isRtl ? 'rtl' : 'ltr'} {...params}
-                    onSlideChange={(e) => { onSwiper(e.activeIndex) }}
+                    // onSlideChange={(e) => { onSwiper(e.activeIndex) }}
                 >
                     <SwiperSlide
                         onClick={() => { getAllData() }}

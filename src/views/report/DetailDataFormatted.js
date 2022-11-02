@@ -1,5 +1,6 @@
 import { Fragment} from "react"
 import { Card, CardBody, CardText, Col,  Row } from "reactstrap"
+import { date } from "yup"
 import Helper from "../../helpers"
 import DoughnutChart from "./doughnut-chart"
 
@@ -7,10 +8,6 @@ const DetailDataFormatted = (props) => {
 
     const {
         detailReport,
-        selectedReport,
-        selectForwardChat,
-        isDetailResultsVisible,
-        setIsDetailResultsVisible,
     }                                        = props;
     
     return (
@@ -20,217 +17,111 @@ const DetailDataFormatted = (props) => {
                 <Card className="bg-header" bodyStyle={{ padding: '0px' }}>
                     <CardBody>
                         <Row>
-                            <Col md={2} sm={32}>
+                            <Col md={2}>
                                 No.
                             </Col>
-                            <Col md={7} sm={32}>
-                                Satuan Kerja
-                            </Col>
-                            <Col md={3} sm={32}>
-                                Jumlah
-                            </Col>
+                            {
+                                detailReport?.report_type === 'periodically' ? 
+                                    <>
+                                        <Col md={4}>
+                                            Satuan Kerja
+                                        </Col>
+
+                                        {
+                                            detailReport.contents.map((data) => (
+                                                <Col md={2}> 
+                                                    {data.report_content.name}
+                                                </Col>
+                                            ))
+                                        }
+
+                                    </>
+                                :
+                                    <>
+                                        <Col md={7}>
+                                            Satuan Kerja
+                                        </Col>
+                                        <Col md={3}>
+                                            {
+                                                detailReport?.contents[0]?.report_content?.name
+                                            }
+                                        </Col>
+                                    </>
+
+                            }
                         </Row>
                     </CardBody>
                 </Card>
 
                 {
-                    detailReport != null && detailReport.result.map((data,index) => (
+                    detailReport != null &&  detailReport.result != null &&detailReport.result.map((data,index) => (
                         <Card className="bg-header" bodyStyle={{ padding: '0px' }}>
                             <CardBody>
                                 <Row>
-                                    <Col md={2} sm={32}>
+                                    <Col md={2}>
                                         {index+1}
                                     </Col>
-                                    <Col md={7} sm={32}>
-                                        {data.work_unit}
-                                    </Col>
-                                    <Col md={3} sm={32}>
-                                        {data.jumlah}
-                                    </Col>
+
+                                    {
+                                        detailReport?.report_type === 'periodically' ? 
+                                            <>
+                                                <Col md={4}>
+                                                    {data.name}
+                                                </Col>
+                                                {
+                                                    detailReport.contents.map((data_) => (
+                                                        
+                                                        data_.report_content_id === 11 ?
+                                                            <Col md={2}> 
+                                                                {data.data[0].result.map((count) => count.publication).reduce((total, num) => total+num)}
+                                                            </Col>
+                                                        :
+                                                            data_.report_content_id === 12 ?
+                                                                <Col md={2}> 
+                                                                    {data.data[0].result.map((count) => count.archive).reduce((total, num) => total+num)}
+                                                                </Col>
+                                                            :
+                                                                <Col md={2}> 
+                                                                    {data.data[0].result.map((count) => count.forward).reduce((total, num) => total+num)}
+                                                                </Col>
+                                                    ))
+                                                }
+
+                                            </>
+                                        :
+                                            <>
+                                                <Col md={7}>
+                                                    {data.name}
+                                                </Col>
+                                                <Col md={3}>
+                                                    {
+                                                        detailReport.contents.length > 0 &&
+                                                            detailReport.contents.filter((data) => data.report_content_id === 11).length > 0 &&
+                                                                data.data[0].result.map((count) => count.publication).reduce((total, num) => total+num )
+                                                    }
+
+                                                    {
+                                                        detailReport.contents.length > 0 &&
+                                                            detailReport.contents.filter((data) => data.report_content_id === 12).length > 0 &&
+                                                                data.data[0].result.map((count) => count.archive).reduce((total, num) => total+num )
+                                                    }
+
+                                                    {
+                                                        detailReport.contents.length > 0 &&
+                                                            detailReport.contents.filter((data) => data.report_content_id === 13).length > 0 &&
+                                                                data.data[0].result.map((count) => count.forward).reduce((total, num) => total+num )
+                                                    }
+                                                </Col>
+                                            </>
+                                    }
+
+                                    
                                 </Row>
                             </CardBody>
                         </Card>
                     ))
                 }
-
-
-                {/* {
-                    props.detailReport != null && props.detailReport.agent_reports != null ?
-                        props.detailReport.agent_reports.map((data, index) => (
-                            <Card className="bg-content pb-2">
-                                <CardBody>
-                                    <Row gutter={10}>
-                                        <Col md={1}>
-                                            {index + 1}
-                                        </Col>
-                                        {
-                                            props.detailReport != null && props.detailReport.headers.length > 0 ?
-                                                props.detailReport.headers.map((dataHeader) => (
-                                                    <Col
-                                                        md={
-                                                            dataHeader.report_content.id == 1 ?
-                                                                // isi berita
-                                                                4
-                                                            :
-                                                                dataHeader.report_content.id == 2 ?
-                                                                    // tangal publikasi
-                                                                    2
-                                                                :
-                                                                    dataHeader.report_content.id == 3 ?
-                                                                        // jumlah suka pimpinan
-                                                                        2
-                                                                    :
-                                                                        dataHeader.report_content.id == 4 ?
-                                                                            // jumlah suka agen
-                                                                            2
-                                                                        :
-                                                                            dataHeader.report_content.id == 5 ?
-                                                                                // jumlah komentar pimpinan
-                                                                                2
-                                                                            :
-                                                                                dataHeader.report_content.id == 6 ?
-                                                                                    // jumlah komentar agen
-                                                                                    2
-                                                                                :
-                                                                                    dataHeader.report_content.id == 7 ?
-                                                                                        // jumlah tidak suka
-                                                                                        2
-                                                                                    :
-                                                                                        dataHeader.report_content.id == 8 ?
-                                                                                            // jumlah penonton
-                                                                                            2
-                                                                                        :
-                                                                                            dataHeader.report_content.id == 9 ?
-                                                                                                // kategori
-                                                                                                2
-                                                                                            :
-                                                                                                dataHeader.report_content.id == 10 ?
-                                                                                                    // nama agen 
-                                                                                                    3
-                                                                                                :
-                                                                                                    dataHeader.report_content.id == 11 ?
-                                                                                                        //satuan kerja
-                                                                                                        2
-                                                                                                    :
-                                                                                                        dataHeader.report_content.id == 12 ?
-                                                                                                            // jabatan
-                                                                                                            3
-                                                                                                        :
-                                                                                                            dataHeader.report_content.id == 13 ?
-                                                                                                                // jumlah berita di publikasi
-                                                                                                                2
-                                                                                                            :   
-                                                                                                                dataHeader.report_content.id == 14 ?
-                                                                                                                    //jumlah berita di arsip
-                                                                                                                    2
-                                                                                                                :
-                                                                                                                    dataHeader.report_content.id == 15 ?
-                                                                                                                        //jumlah berita ke pimpinan
-                                                                                                                        2
-                                                                                                                    :
-                                                                                                                        dataHeader.report_content.id == 16 ?
-                                                                                                                            //jumlah agen
-                                                                                                                            2
-                                                                                                                        :
-                                                                                                                            0
-                                                        }
-                                                    >
-                                                        {
-                                                            dataHeader.report_content.id == 1 ?
-
-                                                                data.when_+' '+'bertempat di '+ (data.where != undefined ? data.where.replace(/[.]+$/g,"") : data.where)  +". "+data.who+' '+ (data.what != undefined ? data.what.replace(/[.]+$/g,"") : data.what )+'. '+data.why+'. '+ (data.how != undefined ? data.how.replace(/[.]+$/g,"")+ '.' : data.how)
-                                                            :
-                                                                dataHeader.report_content.id == 2 ?
-                                                                    formatDate(data.publication_date)
-                                                                :
-                                                                    dataHeader.report_content.id == 3 ?
-                                                                        data.leader_likes
-                                                                    :
-                                                                        dataHeader.report_content.id == 4 ?
-                                                                            data.agent_likes
-                                                                        :
-                                                                            dataHeader.report_content.id == 5 ?
-                                                                                data.leader_comments
-                                                                            :
-                                                                                dataHeader.report_content.id == 6 ?
-                                                                                    data.agent_comments
-                                                                                :
-                                                                                    dataHeader.report_content.id == 7 ?
-                                                                                        data.dislikes
-                                                                                    :
-                                                                                        dataHeader.report_content.id == 8 ?
-                                                                                            data.viewer_count
-                                                                                        :
-                                                                                            dataHeader.report_content.id == 9 ?
-                                                                                                data.categories
-                                                                                            :
-                                                                                                dataHeader.report_content.id == 10 ?
-                                                                                                    data.employee
-                                                                                                :
-                                                                                                    dataHeader.report_content.id == 11 ?
-                                                                                                        data.workunit
-                                                                                                    :
-                                                                                                        dataHeader.report_content.id == 12 ?
-                                                                                                            data.position
-                                                                                                        :
-                                                                                                            dataHeader.report_content.id == 13 ?
-                                                                                                                data.publication_count
-                                                                                                            :
-                                                                                                                dataHeader.report_content.id == 14 ?
-                                                                                                                    data.archive_count
-                                                                                                                :
-                                                                                                                    dataHeader.report_content.id == 15 ?
-                                                                                                                        data.forward_count
-                                                                                                                    :
-                                                                                                                        dataHeader.report_content.id == 16 ?
-                                                                                                                            data.agent_count
-                                                                                                                        :
-                                                                                                                            null
-                                                                                                                
-                                                        }
-                                                    </Col>
-                                                ))
-                                            : <EmptyCard/>
-                                        }
-                                    </Row>
-                                </CardBody>
-                            </Card>
-                        ))
-                    : null
-                } */}
             </div>
-            
-            {/* <Row>
-                {
-                    detailReport != null && detailReport.chart != null ?
-                        detailReport.chart.map((data) => (
-                            <Col className="gutter-row mt-1" md={4}>
-                                <Card className="text-center" style={{ border: '1px solid #d9dbe9', borderRadius: '7px' }}>
-                                    <CardText className="mt-1">{data.label}</CardText>
-                                    <div>
-                                        <DoughnutChart 
-                                            chartData = {data.data}
-                                        />
-                                    </div>
-                                </Card>
-                            </Col>
-                        ))
-                    : null
-                }
-            </Row> */}
-
-            {/* {
-                detailReport != null && detailReport.agent_reports.length > 0  ?
-                    <div className="my-2">
-                        <b>Kesimpulan :</b>
-                        <p className="m-0">Dari data diatas menunjukan rata-rata perbedaan jumlah berita disetiap satuan kerja adalah {Math.round(props.detailReport.conclusion.average_difference.percentage)} %</p>
-                        <p className="m-0">Satuan kerja terbaik dengan jumlah rata-rata adalah { props.detailReport.conclusion.best_work_unit != null ? props.detailReport.conclusion.best_work_unit.name : null } </p>
-                        <p className="m-0">Kategori dengan berita terbanyak adalah {props.detailReport.conclusion.most_report_categories != null ? props.detailReport.conclusion.most_report_categories.name : null} </p>
-                        <p className="m-0">Jumlah berita dari tanggal {props.detailReport.conclusion.total_report != null ? Helper.dateIndo1(props.detailReport.conclusion.total_report.from_date) : null} s/d { props.detailReport.conclusion.total_report != null ? Helper.dateIndo1(props.detailReport.conclusion.total_report.till_date) : null} adalah { props.detailReport.conclusion.total_report != null ? props.detailReport.conclusion.total_report.total : null}</p>
-                    </div>
-                : null
-            } */}
-
         </Fragment>
     )
 }

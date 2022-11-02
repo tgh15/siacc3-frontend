@@ -54,7 +54,17 @@ const CategoriesButton = ({ categories, setActive }) => {
     }
 }
 
-export const CategoryFilter = ({ modals, onChangeCategories, onFilter, activeFilter, isApproval,workunitOptions }) => {
+export const CategoryFilter = (props) => {
+
+    const { 
+        modals, 
+        onFilter, 
+        isApproval,
+        activeFilter, 
+        workunitOptions,
+        onChangeCategories, 
+    }                                           = props;
+
     const [activeFilterState,setActiveFilter]   = useState(activeFilter);
     const [filterModalState, setFiltModalState] = useState(false);
 

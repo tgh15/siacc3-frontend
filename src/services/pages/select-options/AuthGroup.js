@@ -19,7 +19,7 @@ const AuthGroupList = ({  onSuccess, onFail }) => {
         var datas = [];
         res.data.data.result.map((data, i) => {
             if(localStorage.getItem('role') === 'Verifikator Daerah' || localStorage.getItem('role') === 'Admin Daerah'){
-                if(data.title === 'admin-daerah' || data.title === 'verifikator-daerah' || data.title === 'pimpinan-daerah' || data.title === 'agen'){
+                if(data.name === 'Agen' || data.name === 'Pimpinan Daerah'){
                     datas.push({ "key": i, "label": data.name, "value": data.id });
                 }
             }else{

@@ -71,12 +71,14 @@ const LoginQrcode = props => {
 
         // get QR Code
         LoginQrCodeApi.loginByQr(data).then(res => {
+
+            let userData = {
+                "name"  : res.data.biodata.name,
+                "photo" : res.data.biodata.photo,
+            }
+
             if (res.status === 200) {
-                
-                let userData = {
-                    "name": res.data.biodata.name,
-                    "photo": res.data.biodata.photo,
-                }
+
                 localStorage.setItem("userData", JSON.stringify(userData));
                 localStorage.setItem("uuid", res.data.biodata.uuid);
                 localStorage.setItem("uuid_user", res.data.biodata.uuid_user);

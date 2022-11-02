@@ -5,7 +5,6 @@ import CustomToast from "../../../components/widgets/custom-toast";
 import { ModalBase } from "../../../components/widgets/modals-base";
 import { workunitAPI } from "../../../services/pages/configuration/workunit";
 
-
 const ModalSelectWorkunit = (props) => {
 
     const {

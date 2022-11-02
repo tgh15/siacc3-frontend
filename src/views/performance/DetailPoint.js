@@ -136,7 +136,7 @@ const DetailPoint = () => {
                 <div>
                     <CustomTablePaginate
                         size            = {12}
-                        length          = {20}
+                        length          = {10}
                         getData         = {(val) => handleFilterHistory(selectedFilter, val.page)}
                         pagination      = {historyPoints != null ? historyPoints.pagination : null} 
                         offsetSearch    = {0} 

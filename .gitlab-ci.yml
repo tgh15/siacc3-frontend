@@ -24,11 +24,20 @@ deliver:
     - when: never
   variables:
     DEV_SERVER: "siacc-dev"
+<<<<<<< HEAD
     BETA_SERVER: "cp-siacc-beta"
     DEV_TARGET_NAME: "siaccred_ui"
     ORCESTRATORS_DEV: "docker-compose"
     BETA_TARGET_NAME: "frontend_siacc"
     ORCESTRATORS_BETA: "docker-compose"
+=======
+    DEV_TARGET_NAME: "siaccred_ui"
+    DEV_ORCESTRATORS: "docker-compose"
+    BETA_SERVER: "cp-siacc-beta"
+    BETA_TARGET_NAME: "frontend_siacc"
+    BETA_ORCESTRATORS: "docker-compose"
+  when: on_success
+>>>>>>> fikri
 
 push-to-prod:
   rules:
@@ -37,11 +46,21 @@ push-to-prod:
     - when: never
   variables:
     WORKDIR: "SIACC"
+<<<<<<< HEAD
     DEVELOPMENT_REPO: "git@gitlab.com:microservice-repos/siacc/frontend-siacc"
     PRODUCTION_REPO: "git@gitlab.com-prod:a3infiniti-microservices/5a1d82cc6821588af2f0fa110bf71946"
+=======
+    DEVELOPMENT_URL: "git@gitlab.com:microservice-repos/siacc/"
+    DEVELOPMENT_REPO: "frontend-siacc"
+    PRODUCTION_URL: "git@gitlab.com-prod:a3infiniti-microservices/"
+    PRODUCTION_REPO: "5a1d82cc6821588af2f0fa110bf71946"
+>>>>>>> fikri
     BRANCH: "prod"
     TARGET_BRANCH: "main"
   before_script:
     - git config --global user.name "a3 infiniti"
     - git config --global user.email "dev.a3infiniti@outlook.com"
+<<<<<<< HEAD
  
+=======
+>>>>>>> fikri

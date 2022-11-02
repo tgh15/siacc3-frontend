@@ -1,28 +1,28 @@
-import {useEffect, useState, Fragment}        from 'react';
-import { useLocation }              from "react-router-dom";
-import parse                        from 'html-react-parser';
+import {useEffect, useState, Fragment}      from 'react';
+import { useLocation }                      from "react-router-dom";
+import parse                                from 'html-react-parser';
 
 
 import {
         Col,
         Row,
         Card,
-    }                               from 'reactstrap';
+    }                                       from 'reactstrap';
 
 import {
         FileText
-    }                               from 'react-feather';
+    }                                       from 'react-feather';
 
 //API
-import elasticSearchAPI             from '../../services/pages/advanced-search';
-import { StoreNews }                from '../beranda/beranda_api';
-import { processAgentReports }      from '../../components/widgets/feeds/news-card-widget/NewsConfig';
+import { StoreNews }                        from '../beranda/beranda_api';
+import elasticSearchAPI                     from '../../services/pages/advanced-search';
+import { processAgentReports }              from '../../components/widgets/feeds/news-card-widget/NewsConfig';
 
 //Component
-import { NewsWidget }               from '../../components/widgets/feeds/news-card-widget';
-import CustomTableBodyEmpty         from '../../components/widgets/custom-table/CustomTableBodyEmpty';
-import { ModalBase }                from '../../components/widgets/modals-base';
-import CardWorkunit                 from './CardWorkunit';
+import CardWorkunit                         from './CardWorkunit';
+import { ModalBase }                        from '../../components/widgets/modals-base';
+import { NewsWidget }                       from '../../components/widgets/feeds/news-card-widget';
+import CustomTableBodyEmpty                 from '../../components/widgets/custom-table/CustomTableBodyEmpty';
 
 const useQuery = () => {
     return new URLSearchParams(useLocation().search);
@@ -33,6 +33,7 @@ const AdvancedSearch = () => {
     let query                                               = useQuery();
 
     //state
+    const [page, setPage]                                   = useState(1);
     const [report, setReport]                               = useState([]);
     const [agentReport, setAgentReport]                     = useState([]);
     const [agentPerformance, setAgentPerformance]           = useState([]);
@@ -40,12 +41,19 @@ const AdvancedSearch = () => {
     const [showDetailAgentReport, setShowDetailAgentReport] = useState(false);
 
     const getElasticSearchAPI = () => {
-        elasticSearchAPI.getElasticSearch(localStorage.getItem('role'), localStorage.getItem('workunit_id'), localStorage.getItem('position_id'), query.get("keyword")).then(
+
+        const params = {
+            q    : query.get("keyword"),
+            page : page
+        }
+
+        elasticSearchAPI.getElasticSearch(params).then(
             res => {
-                if(res.status === 200 && res.data != null){
+                if(res.is_error === false){
                     //get agent report data
-                    if(res.data.agent_report.data != null){
-                        let dataFeeds = processAgentReports(res.data.agent_report.data.map((data) => (data._source)));
+
+                    if(res.data.result.agent_report.data != null){
+                        let dataFeeds = processAgentReports(res.data.result.agent_report.data.map((data) => (data._source)));
 
                         dataFeeds.then( res => { setAgentReport(res)})
                     }else{
@@ -53,23 +61,22 @@ const AdvancedSearch = () => {
                     }
 
                     //get agent performance data
-                    if(res.data.employee.data != null){
-
-                        setAgentPerformance(res.data.employee.data);
+                    if(res.data.result.employee.data != null){
+                        setAgentPerformance(res.data.result.employee.data);
                     }else{
                         setAgentPerformance([]);
                     }
 
                     //get workunit performance data
-                    if(res.data.workunit.data != null){
-                        setWorkunitPerformance(res.data.workunit.data);
+                    if(res.data.result.workunit.data != null){
+                        setWorkunitPerformance(res.data.result.workunit.data);
                     }else{
                         setWorkunitPerformance([]);
                     }
 
                     //get report data
-                    if(res.data.report.data != null){
-                        setReport(res.data.report.data);
+                    if(res.data.result.report.data != null){
+                        setReport(res.data.result.report.data);
                     }else{
                         setReport([]);
                     }

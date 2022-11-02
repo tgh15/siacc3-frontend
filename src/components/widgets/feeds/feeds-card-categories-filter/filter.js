@@ -16,14 +16,19 @@ import { selectThemeColors }                    from '@utils'
 //Widget
 import { ModalBase as BaseModal }               from '../../modals-base'
 import { useForm, Controller }                  from "react-hook-form";
-import { MapPin } from 'react-feather'
-import ModalSelectWorkunit from '../../../../views/configuration/user-management/ModalSelectWorkunit'
+
 
 export const FeedsFilterModal = (props) => {
 
-    const {title, showing, setShow, onFilter, workunitOptions} = props;
-    const [orderBy, setOrderBy] = useState('asc');
-
+    const {
+        title, 
+        showing, 
+        setShow, 
+        onFilter, 
+        workunitOptions
+    }                                   = props;
+    const [orderBy, setOrderBy]         = useState('latest');
+    const [statusOrder, setStatusOrder] = useState(localStorage.getItem('role') === 'Verifikator Pusat' ? 'desc' : 'asc');
 
     const { 
         reset,
@@ -39,15 +44,13 @@ export const FeedsFilterModal = (props) => {
 
     const handleSubmit_ = (formData) => {
         formData.order_by           = orderBy;
+        formData.status_order       = statusOrder;
 
         if(formData.workunit_id != undefined) {
             formData.work_unit_id_list = [formData.workunit_id.value];
         }else{
             formData.work_unit_id_list = [];
         }
-
-
-
         onFilter({type: 'filter', value:formData});
         setShow();
     };
@@ -60,20 +63,42 @@ export const FeedsFilterModal = (props) => {
 
             <BaseModal {...modalData} size="lg">
                 <Form onSubmit={handleSubmit(handleSubmit_)}>
+
                     <FormGroup>
-                        <Label>Urutkan</Label>
+                        <Label>Urutkan Berdasarkan Jenis Persetujuan</Label>
                         <p>
                             <Button 
-                                outline = { orderBy == "asc" ? false : true} 
-                                onClick = {() => setOrderBy('asc')}
+                                outline = { statusOrder == "asc" ? false : true} 
+                                onClick = {() => setStatusOrder('asc')}
+                                color   = "primary"
+                            >
+                                Verifikator Daerah
+                            </Button>
+                            &nbsp;
+                            <Button 
+                                outline = { statusOrder == "desc" ? false : true}
+                                onClick = {() => setStatusOrder('desc')}
+                                color   = "primary"
+                            >
+                                Verifikator Pusat
+                            </Button>
+                        </p>
+                    </FormGroup>
+
+                    <FormGroup>
+                        <Label>Urutkan Berdasarkan Tanggal Berita</Label>
+                        <p>
+                            <Button 
+                                outline = { orderBy == "latest" ? false : true} 
+                                onClick = {() => setOrderBy('latest')}
                                 color   = "primary"
                             >
                                 Terbaru
                             </Button>
                             &nbsp;
                             <Button 
-                                outline = { orderBy == "desc" ? false : true}
-                                onClick = {() => setOrderBy('desc')}
+                                outline = { orderBy == "longest" ? false : true}
+                                onClick = {() => setOrderBy('longest')}
                                 color   = "primary"
                             >
                                 Terlama

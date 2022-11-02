@@ -18,7 +18,7 @@ const CustomTable = (props) => {
         getData,
         roleAdd,
         onNext,
-        onPrev
+        onPrev,
     } = props
 
     const placeholders = placeholder == undefined || placeholder == null ? "Cari..." : placeholder
@@ -59,11 +59,11 @@ const CustomTable = (props) => {
                     }
                 </Col>
                 <CustomTablePaginate 
+                    onNext          = {onNext}
+                    onPrev          = {onPrev} 
                     getData         = {getData}
                     pagination      = {pagination} 
                     offsetSearch    = {offsetSearch}
-                    onNext          = {onNext}
-                    onPrev          = {onPrev} 
                 />
             </Row>
             <Card 

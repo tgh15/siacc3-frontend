@@ -1,6 +1,6 @@
-import { authURL } from "."
-import FetchServices from "../../core/Axios"
-import { Post, Put } from "../../core/request"
+import { authURL }      from "."
+import FetchServices    from "../../core/Axios"
+import { Post, Put }    from "../../core/request"
 
 // proccess login 
 const post = ({ data, onSuccess, onFail }) => {
@@ -17,6 +17,8 @@ const post = ({ data, onSuccess, onFail }) => {
             }
         })
 }
+
+// const loginProcess = (formData) => Post("auth/login")
 
 // input Otp from email
 const confirmOtp = ({ data, otp, onSuccess, onFail }) => {
@@ -44,7 +46,6 @@ const logout = ({ token, onSuccess, onFail }) => {
             }).catch((err) => {
                 onFail(err.data.message)
             })
-        
     }
 }
 
