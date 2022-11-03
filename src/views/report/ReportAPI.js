@@ -125,7 +125,6 @@ const ReportAPI = () => {
 
         setSelectedReport(formData);   
         
-        console.log(formData, 'disini');
         CustomToast('success', 'Mohon menunggu proses sedang berlangsung');
 
         feedsReportAPI.detailReport(formData).then(

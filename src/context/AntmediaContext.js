@@ -64,13 +64,26 @@ const AntmediaProvider = ({children}) =>{
                 bandwidth               :  "unlimited", 
                 debug                   : true,
                 callback                : (info, obj) => {
-                    setCallback({obj:obj,info:info})
+                    setCallback(
+                        {
+                            obj     : obj,
+                            info    : info
+                        }
+                    )
                 },
                 callbackError           : (error, message) => {
-                    setErrorCallback({error:error,message:message})
-                }, 
+                    setErrorCallback(
+                        {
+                            error   : error,
+                            message : message
+                        }
+                    )
+                },
             })
-            setWebRtcAdaptorPeer(adaptor) 
+
+
+            setWebRtcAdaptorPeer(adaptor);
+
         }else{
             let adaptor = new WebRTCAdaptor({
                 websocket_url           : url_antmedia_server,
@@ -102,7 +115,7 @@ const AntmediaProvider = ({children}) =>{
     },[callback])
 
     return <AntmediaContext.Provider 
-            value={{
+            value = {{
                 callback,
                 setWebRtc,
                 errorCallback,

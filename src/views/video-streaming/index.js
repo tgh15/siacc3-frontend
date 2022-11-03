@@ -65,7 +65,7 @@ const VideoStreaming = () => {
                     <VideoPlayer/>
                 </Col>
             </Row>
-
+            <hr/>
             <Row>
                 <Col md={12}>
                     <h3>Siaran Disimpan</h3>
@@ -80,7 +80,7 @@ const VideoStreaming = () => {
                     <VideoPlayer/>
                 </Col>
             </Row>
-
+            <hr/>
             <Row>
                 <Col md={12}>
                     <h3>Riwayat</h3>
