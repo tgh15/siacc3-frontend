@@ -289,7 +289,7 @@ const AdvancedSearch = () => {
                     {
                         workunitPerformance.length > 0 ?
                             workunitPerformance.map((data, index) => (
-                                index < 2 ? 
+                                index < 3 ? 
                                     <Col md={6} className="d-flex flex-row">
                                         <Link to={"/configuration/work-unit-list/"+data.id+"?level="+data.workunit_level_id}>
                                             <CardWorkunit
@@ -337,7 +337,7 @@ const AdvancedSearch = () => {
                             agentPerformance.map((data, index) => (
                                 index < 2 ? 
                                     <Col md={6} className="d-flex flex-row">
-                                        <Link to={"/performance?keyword="+query.get(keyword)}>
+                                        <Link to={`/performance?id_agent=${data.id}`}>
                                             <CardWorkunit
                                                 id      = {data._source.uuid} 
                                                 key     = {`advanced-search-agent-${index}`} 
