@@ -11,8 +11,8 @@ const VideoPlayer = () => {
                     // id              = {`ptt_name_${activeChannel.roomName}_id_`+data}
                     autoPlay 
                     controls 
-                    className       = 'img-fluid img-video'
-                    style           = {{borderRadius: '10px', width: '95%', height:'90%'}}
+                    // className       = 'img-fluid img-video'
+                    style           = {{borderRadius: '10px'}}
                     poster          = "https://media.giphy.com/media/PjIKNsWUOhwL6/giphy.gif"
                 />
             </div>
@@ -24,9 +24,7 @@ const VideoPlayer = () => {
                             <Media left href='#'>
                                 <Avatar 
                                     img         = {`https://ui-avatars.com/api/?name=UN&background=4e73df&color=fff&bold=true`} 
-                                    status      = 'online'
                                     onError     = {fallbackImage_} 
-                                    
                                     imgWidth    = '40' 
                                     imgHeight   = '40' 
                                 />
