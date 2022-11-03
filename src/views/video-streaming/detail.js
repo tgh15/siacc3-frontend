@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { File, Image, Mic, Send } from "react-feather";
 import { Button, Card, CardBody, CardFooter, CardHeader, Col, Form, Input, InputGroup, InputGroupAddon, InputGroupText, Label, Row } from "reactstrap";
+import { array } from "yup";
 import Avatar from "../../components/widgets/avatar";
 import ChatItem from "./chat-item";
 import VideoPlayer from "./video";
@@ -20,9 +21,8 @@ const VideoStreamingDetail = () => {
                     <div>
                         <Card style={{ height: '85vh' }}>
                             <CardBody>
-                                <VideoPlayer />
-
-                                <hr className="my-1" />
+                                <VideoPlayer detail={true}/>
+                                <hr/>
                                 <Row className="mt-2">
                                     <Col md={4} className="text-center">
                                         <h4>Penayangan</h4>
@@ -72,13 +72,22 @@ const VideoStreamingDetail = () => {
                         <CardBody>
                             {/* chat textbox */}
                             <div>
-                                <Card style={{}}>
-                                    <CardBody>
-                                        <Row>
-                                            <ChatItem/>
-                                        </Row>
+                                <Card className="p-0">
+                                    <CardBody className="p-0">
+                                        <ChatItem
+                                            pinned = {true}
+                                        />
                                     </CardBody>
                                 </Card>
+                            </div>
+                            <div style={{height: '52vh', overflow: 'auto', border: '1px solid black', borderRadius: '10px', padding: '5px'}}>
+                                {Array(10).fill(10).map((data) => (
+                                    <Card className="p-0 mb-1">
+                                        <CardBody className="p-0">
+                                            <ChatItem/>
+                                        </CardBody>
+                                    </Card>
+                                ))}
                             </div>
                         </CardBody>
                         <CardFooter>

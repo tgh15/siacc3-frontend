@@ -17,7 +17,7 @@ const VoiceVideoCallRoutes = [
         component: lazy(() => import('../../views/video-streaming/index')),
     },
     {
-        path: '/video-streaming/detail',
+        path: '/video-streaming/:id',
         exact: true,
         component: lazy(() => import('../../views/video-streaming/detail')),
     },

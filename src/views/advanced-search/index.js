@@ -295,8 +295,6 @@ const AdvancedSearch = () => {
                     }
                 </Row>
             </div>
-
-
         </Fragment>
     )
 };
