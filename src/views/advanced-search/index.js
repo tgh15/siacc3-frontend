@@ -1,7 +1,6 @@
 import {useEffect, useState, Fragment}      from 'react';
-import { Link, useLocation }                      from "react-router-dom";
+import { Link, useLocation }                from "react-router-dom";
 import parse                                from 'html-react-parser';
-
 
 import {
         Col,
@@ -28,6 +27,7 @@ import CustomTableBodyEmpty                 from '../../components/widgets/custo
 const useQuery = () => {
     return new URLSearchParams(useLocation().search);
 }
+
 
 const AdvancedSearch = () => {
     let query                                               = useQuery();
@@ -116,11 +116,14 @@ const AdvancedSearch = () => {
                         {
                             agentReport.length > 0 ?
                                 agentReport.map((data, index) => (
-                                    <Col md={4} className="d-flex flex-row">
+                                    <Col 
+                                        md        = {4} 
+                                        className = "d-flex flex-row"
+                                    >
                                         <Link to={"/beranda/detail/"+data.id}>
                                             <NewsWidget
                                                 key                     = {`advanced-search-news-${index}`}
-                                                handleStore             = {(newss,data) => {handleStore(newss,data)}}
+                                                handleStore             = {(newss, data) => {handleStore(newss, data)}}
 
                                                 roleLike                = {true}
                                                 roleViewer              = {true}   
@@ -152,13 +155,18 @@ const AdvancedSearch = () => {
                         {
                             workunitPerformance.length > 0 ?
                                 workunitPerformance.map((data, index) => (
-                                    <Col md={6} className="d-flex flex-row">
-                                        <CardWorkunit
-                                            id      = {data._source.id} 
-                                            key     = {`advanced-search-workunit-${index}`} 
-                                            index   = {index}
-                                            type    = "workunit"
-                                        />
+                                    <Col 
+                                        md        = {6} 
+                                        className = "d-flex flex-row"
+                                    >
+                                        <Link to={"/configuration/work-unit-list/"+data._source.id+"?level="+data._source.workunit_level_id}>
+                                            <CardWorkunit
+                                                id      = {data._source.id} 
+                                                key     = {`advanced-search-workunit-${index}`} 
+                                                index   = {index}
+                                                type    = "workunit"
+                                            />
+                                        </Link>
                                     </Col>
                                 ))
                             :
@@ -181,13 +189,18 @@ const AdvancedSearch = () => {
                         {
                             agentPerformance.length > 0 ?
                                 agentPerformance.map((data, index) => (
-                                    <Col md={6} className="d-flex flex-row">
-                                        <CardWorkunit
-                                            id      = {data._source.uuid} 
-                                            key     = {`advanced-search-agent-${index}`} 
-                                            index   = {index}
-                                            type    = "agent"
-                                        />
+                                    <Col 
+                                        md        = {6} 
+                                        className = "d-flex flex-row"
+                                    >
+                                        <Link to={`/performance?agent=${data._source.name.replace(/<[^>]*>?/gm, '')}`}>
+                                            <CardWorkunit
+                                                id      = {data._source.uuid} 
+                                                key     = {`advanced-search-agent-${index}`} 
+                                                index   = {index}
+                                                type    = "agent"
+                                            />
+                                        </Link>
                                     </Col>
                                 ))
                             :
@@ -210,17 +223,30 @@ const AdvancedSearch = () => {
                         {
                             report.length > 0 ?
                                 report.map((data) => (
-                                    <Col md={4} className="d-flex flex-row">
+                                    <Col 
+                                        md        = {4} 
+                                        className = "d-flex flex-row"
+                                    >
                                         <Card className="w-100 p-2">
-                                            <Row>
-                                                <Col md={3} className="text-center">
-                                                    <FileText/>
-                                                </Col>
+                                            <Link to={`/report?title=${data._source.title.replace(/<[^>]*>?/gm, '')}`}>
+                                                <Row>
+                                                    <Col
+                                                        md        = {3} 
+                                                        className = "text-center"
+                                                    >
+                                                        <FileText/>
+                                                    </Col>
 
-                                                <Col md={9} className="d-flex align-items-center">
-                                                    <h5 className="mb-0">{parse(data._source.title)}</h5>
-                                                </Col>
-                                            </Row>
+                                                    <Col 
+                                                        md        = {9} 
+                                                        className = "d-flex align-items-center"
+                                                    >
+                                                        <h5 className="mb-0">
+                                                            {parse(data._source.title)}
+                                                        </h5>
+                                                    </Col>
+                                                </Row>
+                                            </Link>
                                         </Card>
                                     </Col>
                                 ))
@@ -240,7 +266,10 @@ const AdvancedSearch = () => {
                         agentReport.length > 0 ?
                             agentReport.map((data, index) => (
                                 index < 3 ? 
-                                    <Col md={4} className="d-flex flex-row">
+                                    <Col 
+                                        md        = {4} 
+                                        className = "d-flex flex-row"
+                                    >
                                         <Link to={"/beranda/detail/"+data.id}>
                                             <NewsWidget
                                                 key                     = {`advanced-search-news-${index}`}
@@ -268,11 +297,8 @@ const AdvancedSearch = () => {
                                 md          = {12} 
                                 className   = "d-flex justify-content-end"
                             >
-                                {/* <a onClick={() => setShowDetailAgentReport(true)}>
-                                    <h4>Tampilkan Lebih Banyak</h4>
-                                </a> */}
-
                                 <Button 
+                                    style   = {{fontSize: '17px'}}
                                     color   = 'flat-dark' 
                                     onClick = {() => setShowDetailAgentReport(true)}
                                 >
@@ -290,8 +316,11 @@ const AdvancedSearch = () => {
                         workunitPerformance.length > 0 ?
                             workunitPerformance.map((data, index) => (
                                 index < 2 ? 
-                                    <Col md={6} className="d-flex flex-row">
-                                        <Link to={"/configuration/work-unit-list/"+data.id+"?level="+data.workunit_level_id}>
+                                    <Col 
+                                        md        = {6} 
+                                        className = "d-flex flex-row"
+                                    >
+                                        <Link to={"/configuration/work-unit-list/"+data._source.id+"?level="+data._source.workunit_level_id}>
                                             <CardWorkunit
                                                 id      = {data._source.id} 
                                                 key     = {`advanced-search-workunit-${index}`} 
@@ -300,8 +329,7 @@ const AdvancedSearch = () => {
                                             />
                                         </Link>
                                     </Col>
-                                :
-                                    null
+                                : null
                             ))
                         :
                             <Col md={12}>
@@ -314,11 +342,8 @@ const AdvancedSearch = () => {
                                 md          = {12} 
                                 className   = "d-flex justify-content-end"
                             >
-                                {/* <a href="/performance">
-                                    <h4>Tampilkan Lebih Banyak</h4>
-                                </a> */}
-
                                 <Button 
+                                    style   = {{fontSize: '17px'}}
                                     color   = 'flat-dark' 
                                     onClick = {() => setShowDetailWorkunit(true)}
                                 >
@@ -336,8 +361,11 @@ const AdvancedSearch = () => {
                         agentPerformance.length > 0 ?
                             agentPerformance.map((data, index) => (
                                 index < 2 ? 
-                                    <Col md={6} className="d-flex flex-row">
-                                        <Link to={"/performance?keyword="+query.get(keyword)}>
+                                    <Col 
+                                        md        = {6} 
+                                        className = "d-flex flex-row"
+                                    >
+                                        <Link to={`/performance?agent=${data._source.name.replace(/<[^>]*>?/gm, '')}`}>
                                             <CardWorkunit
                                                 id      = {data._source.uuid} 
                                                 key     = {`advanced-search-agent-${index}`} 
@@ -359,11 +387,8 @@ const AdvancedSearch = () => {
                                 md          = {12} 
                                 className   = "d-flex justify-content-end"
                             >
-                                {/* <a href="/performance">
-                                    <h4>Tampilkan Lebih Banyak</h4>
-                                </a> */}
-
                                 <Button 
+                                    style   = {{fontSize: '17px'}}
                                     color   = 'flat-dark' 
                                     onClick = {() => setShowDetailAgent(true)}
                                 >
@@ -381,21 +406,33 @@ const AdvancedSearch = () => {
                         report.length > 0 ?
                             report.map((data, index) => (
                                 index < 3 ? 
-                                    <Col md={4} className="d-flex flex-row">
+                                    <Col 
+                                        md        = {4} 
+                                        className = "d-flex flex-row"
+                                    >
                                         <Card className="w-100 p-2">
-                                            <Row>
-                                                <Col md={3} className="text-center">
-                                                    <FileText/>
-                                                </Col>
+                                            <Link to={`/report?title=${data._source.title.replace(/<[^>]*>?/gm, '')}`}>
+                                                <Row>
+                                                    <Col 
+                                                        md        = {3} 
+                                                        className = "text-center"
+                                                    >
+                                                        <FileText/>
+                                                    </Col>
 
-                                                <Col md={9} className="d-flex align-items-center">
-                                                    <h5 className="mb-0">{parse(data._source.title)}</h5>
-                                                </Col>
-                                            </Row>
+                                                    <Col 
+                                                        md        = {9} 
+                                                        className = "d-flex align-items-center"
+                                                    >
+                                                        <h5 className="mb-0">
+                                                            {parse(data._source.title)}
+                                                        </h5>
+                                                    </Col>
+                                                </Row>
+                                            </Link>
                                         </Card>
                                     </Col>
-                                :
-                                    null
+                                : null
                             ))
                         :
                             <Col md={12}>
@@ -408,11 +445,8 @@ const AdvancedSearch = () => {
                                 md          = {12} 
                                 className   = "d-flex justify-content-end"
                             >
-                                {/* <a href="/report">
-                                    <h4>Tampilkan Lebih Banyak</h4>
-                                </a> */}
-
                                 <Button 
+                                    style   = {{fontSize: '17px'}}
                                     color   = 'flat-dark' 
                                     onClick = {() => setShowDetailReport(true)}
                                 >

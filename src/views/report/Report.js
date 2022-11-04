@@ -1,48 +1,59 @@
-import { Fragment, useEffect, useState }   from "react";
-import { Button, Col }          from "reactstrap";
-import { Eye, Trash2 }          from "react-feather";
-
-//Component
-import Skeleton                 from "react-loading-skeleton";
-import TourInput                from "./InputTour";
-import DetailTime               from "./DetailTime";
-import headerTable              from "./headerTable";
-import CustomTable              from "../../components/widgets/custom-table";
-import { ModalBase }            from "../../components/widgets/modals-base"
-import CustomTableBody          from "../../components/widgets/custom-table/CustomTableBody";
-import CustomTableBodyEmpty     from "../../components/widgets/custom-table/CustomTableBodyEmpty";
-import CustomTableNotAuthorized from "../../components/widgets/custom-table/CustomTableNotAuthorized";
-
+import { Fragment, useEffect, useState } from "react";
+import { Button, Col }                   from "reactstrap";
+import { Eye, Trash2 }                   from "react-feather";
+import { useLocation }                   from "react-router-dom";
 //API
-import FormDelete               from "../../components/widgets/form-delete/FormDelete";
+import DriveApi                          from "../../services/pages/drive";
 
 //Helper
-import Helper                   from "../../helpers";
-import DetailData               from "./DetailData";
+import Helper                            from "../../helpers";
+
+//Component
+import Skeleton                          from "react-loading-skeleton";
+import TourInput                         from "./InputTour";
+import AddReport                         from "./modal/addReport";
+import DetailTime                        from "./DetailTime";
+import FormDelete                        from "../../components/widgets/form-delete/FormDelete";
+import DetailData                        from "./DetailData";
+import headerTable                       from "./headerTable";
+import CustomTable                       from "../../components/widgets/custom-table";
+import { ModalBase }                     from "../../components/widgets/modals-base";
+import CustomTableBody                   from "../../components/widgets/custom-table/CustomTableBody";
+import DetailDataFormatted               from "./DetailDataFormatted";
+import CustomTableBodyEmpty              from "../../components/widgets/custom-table/CustomTableBodyEmpty";
+import CustomTableNotAuthorized          from "../../components/widgets/custom-table/CustomTableNotAuthorized";
 
 //Export PDF
-import jsPDF                    from 'jspdf';
+import jsPDF                             from 'jspdf';
 import 'jspdf-autotable';
 
-import logoLight                from "../../assets/images/logo/logo_light.png";
-import moment                   from "moment";
+import logoLight                         from "../../assets/images/logo/logo_light.png";
+import moment                            from "moment";
 
 //Export Excel
-import ReactExport              from "react-export-excel";
+import ReactExport                       from "react-export-excel";
 
+// const useQuery = () => {
+//     return new URLSearchParams(useLocation().search);
+// };
 
-import DriveApi                 from "../../services/pages/drive";
-import AddReport                from "./modal/addReport";
-import DetailDataFormatted      from "./DetailDataFormatted";
 
 const Report = (props) => {
+    // let query = useQuery();
 
+    // useEffect(() => {
+    //     if (query.get("title")) {
+    //         onSearch(query.get("title"))
+    //     }
+    // }, []);
+
+    //Props
     const {
         report,
         detailReport,
         detailResults,
-        setSelectedReport,
         isAddFormVisible,
+        setSelectedReport,
         setIsAddFormVisible,
         isDetailReportVisible,
         isDetailResultsVisible,
@@ -51,18 +62,18 @@ const Report = (props) => {
 
         handleDetail,
         handleDetailResults
-    }                                           = props
+    }                                          = props;
 
     //Helper
-    const {getRoleByMenuStatus}                 = Helper;
+    const {getRoleByMenuStatus}                = Helper;
 
-    const [body, setBody]                           = useState([]);
-    const [header, setHeader]                       = useState([]);
-
+    const [body, setBody]                      = useState([]);
+    const [header, setHeader]                  = useState([]);
+    
     //Export Excel
-    const ExcelFile                             = ReactExport.ExcelFile;
-    const ExcelSheet                            = ReactExport.ExcelFile.ExcelSheet;
-    const ExcelColumn                           = ReactExport.ExcelFile.ExcelColumn;
+    const ExcelFile                            = ReactExport.ExcelFile;
+    const ExcelSheet                           = ReactExport.ExcelFile.ExcelSheet;
+    const ExcelColumn                          = ReactExport.ExcelFile.ExcelColumn;
 
     const monthName = [
         "Januari",
@@ -820,7 +831,7 @@ const Report = (props) => {
                     header      = {headerTable} 
                     totalData   = "50"
                     onClickForm = {() => { setIsAddFormVisible(true) }} 
-                    
+
                     //Role
                     roleAdd     = {getRoleByMenuStatus('Laporan', 'add')}
                 >

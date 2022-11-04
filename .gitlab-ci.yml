@@ -30,6 +30,7 @@ deliver:
     ORCESTRATORS_DEV: "docker-compose"
     BETA_TARGET_NAME: "frontend_siacc"
     ORCESTRATORS_BETA: "docker-compose"
+<<<<<<< HEAD
 =======
     DEV_TARGET_NAME: "siaccred_ui"
     DEV_ORCESTRATORS: "docker-compose"
@@ -38,6 +39,9 @@ deliver:
     BETA_ORCESTRATORS: "docker-compose"
   when: on_success
 >>>>>>> fikri
+=======
+  when: on_success
+>>>>>>> dab0d3e1d2b10d932e46fff6a108b1239cd1930f
 
 push-to-prod:
   rules:
@@ -61,6 +65,9 @@ push-to-prod:
     - git config --global user.name "a3 infiniti"
     - git config --global user.email "dev.a3infiniti@outlook.com"
 <<<<<<< HEAD
+<<<<<<< HEAD
  
 =======
 >>>>>>> fikri
+=======
+>>>>>>> dab0d3e1d2b10d932e46fff6a108b1239cd1930f

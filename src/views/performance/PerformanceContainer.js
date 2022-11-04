@@ -1,43 +1,59 @@
-import { Fragment, useContext }     from "react"
-import { Card, Col,Row }            from "reactstrap"
-import CardBody                     from "reactstrap/lib/CardBody"
-import SearchTable                  from "../../components/widgets/custom-table/SearchTable"
-import PerformanceApi               from "../../services/pages/performance"
-import CardDetails                  from "./CardDetail"
-import CardTopUser                  from "./CardTopUser"
-import CardUser                     from "./CardUser"
-import "./Performance.scss"
-import CustomToast                  from '../../components/widgets/custom-toast'
-import Skeleton                     from "react-loading-skeleton"
-import LoadingTopUser               from "./LoadingTopUser"
-import LoadingCardUser              from "./LoadingCardUser"
-import PerfectScrollbar             from 'react-perfect-scrollbar'
-import CategoryAgent                from "./CategoryAgent"
-import CategoryWorkunit             from "./CategoryWorkunit"
-import CustomTableBodyEmpty         from "../../components/widgets/custom-table/CustomTableBodyEmpty"
-import Select                       from "react-select"
-import { selectThemeColors }        from '@utils'
-import { PerformanceContext }       from "../../context/PerformanceContext"
-import NavbarPerformance            from "./NavbarPerformance"
+import { Fragment, useContext, useEffect }  from "react";
+import { Card, Col, Row, CardBody }         from "reactstrap";
 
-import Helper                       from "../../helpers"
-import CustomTableNotAuthorized     from "../../components/widgets/custom-table/CustomTableNotAuthorized"
+import Select                               from "react-select";
+import Skeleton                             from "react-loading-skeleton";
+import { useLocation }                      from "react-router-dom";
+import PerfectScrollbar                     from 'react-perfect-scrollbar';
+import { selectThemeColors }                from '@utils';
+
+//Css
+import "./Performance.scss";
+
+//Helper
+import Helper                               from "../../helpers";
+
+//Context
+import { PerformanceContext }               from "../../context/PerformanceContext";
+
+//Services
+import PerformanceApi                       from "../../services/pages/performance";
+
+//Components
+import CardUser                             from "./CardUser";
+import SearchTable                          from "../../components/widgets/custom-table/SearchTable";
+import CardDetails                          from "./CardDetail";
+import CardTopUser                          from "./CardTopUser";
+import CustomToast                          from '../../components/widgets/custom-toast';
+import CategoryAgent                        from "./CategoryAgent";
+import LoadingTopUser                       from "./LoadingTopUser";
+import LoadingCardUser                      from "./LoadingCardUser";
+import CategoryWorkunit                     from "./CategoryWorkunit";
+import NavbarPerformance                    from "./NavbarPerformance";
+import CustomTableBodyEmpty                 from "../../components/widgets/custom-table/CustomTableBodyEmpty";
+import CustomTableNotAuthorized             from "../../components/widgets/custom-table/CustomTableNotAuthorized";
+
+const useQuery = () => {
+    return new URLSearchParams(useLocation().search);
+};
+
 
 const PerformanceContainer = () => {
+    let query = useQuery();
 
     const { 
         active,
         listData,
+        searchTerm,
         setListData,
         sectorAgent,
         dataSelected,
+        getDataAgent,
+        workunitLevel,
+        getAgentDetail,
         workunitOptions,
         setDataSelected,
-        workunitLevel,
-        getDataAgent,
-        searchTerm,
         getDataWorkunit,
-        getAgentDetail,
     } = useContext(PerformanceContext)
 
     const {getRoleByMenuStatus}  = Helper;
@@ -57,14 +73,20 @@ const PerformanceContainer = () => {
         })
     }
 
+    useEffect(() => {
+        if (query.get("agent")) {
+            onSearch(query.get("agent"));
+        }
+    }, []);
+
     const onSearch = (value) => {
         searchTerm.current = value
         if(active == "workunit"){
             getDataWorkunit({ workunit_level_id: workunitLevel });
         }else{
-            getDataAgent()
+            getDataAgent();
         }
-    }
+    };
 
     return (
         <Fragment>
