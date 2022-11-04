@@ -4,7 +4,7 @@ import { getTemplateArea } from "./default"
 
 export default class FetchServices {
     axiosService
-    baseUrl = "https://apis-redesign.rlidev.pro"
+    baseUrl = "https://apis-redesign.underdev.team"
     token = ""
 
     constructor(_token) {
@@ -21,7 +21,7 @@ export default class FetchServices {
     }
 
     defaultHeader() {
-        const accessControlOrigin = ".rlidev.pro, .siaccinfo.id, localhost:3000, localhost:3001, .mapbox.com, .test-siaccinfo.id, .siaccinfo.my.id "
+        const accessControlOrigin = ".underdev.team, .siaccinfo.id, localhost:3000, localhost:3001, .mapbox.com, .test-siaccinfo.id, .siaccinfo.my.id "
 
         const headers = !process.env.NODE_ENV || process.env.NODE_ENV === 'production' ? {
             "Content-Type": "application/json;charset=utf-8",

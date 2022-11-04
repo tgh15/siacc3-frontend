@@ -1,23 +1,25 @@
 import Select                   from "react-select";
 import { 
     Row, 
-    Col 
+    Col, 
+    Button
 }                               from "reactstrap";
 import SearchTable              from "../../components/widgets/custom-table/SearchTable";
 import VideoPlayer              from "./video";
 import { selectThemeColors }    from '@utils';
-import VideoStreamingAPI from "../../services/pages/video-streaming";
-import { useEffect, useState } from "react";
-import data from "../configuration/work-unit-list/geojson";
-import Skeleton from "react-loading-skeleton";
-import CustomTableBodyEmpty from "../../components/widgets/custom-table/CustomTableBodyEmpty";
+import VideoStreamingAPI        from "../../services/pages/video-streaming";
+import { useEffect, useState }  from "react";
+import Skeleton                 from "react-loading-skeleton";
+import CustomTableBodyEmpty     from "../../components/widgets/custom-table/CustomTableBodyEmpty";
+import CreateVideoStreaming     from "./create";
 
 
 const VideoStreaming = () => {
 
-    const [liveList, setLiveList] = useState(null);
-    const [savedList, setSavedList] = useState(null);
-    const [historyList, setHistoryList] = useState(null);
+    const [liveList, setLiveList]                   = useState(null);
+    const [savedList, setSavedList]                 = useState(null);
+    const [historyList, setHistoryList]             = useState(null);
+    const [isAddVideoVisible, setIsAddVideoVisible] = useState(false);
 
     const GetVideoStreaming = () => {
 
@@ -67,6 +69,26 @@ const VideoStreaming = () => {
     
     return (
         <>
+            <CreateVideoStreaming
+                isAddVideoVisible       = {isAddVideoVisible}
+                setIsAddVideoVisible    = {setIsAddVideoVisible}  
+            />
+
+            <Row>
+                <Col 
+                    md = {4}
+                    className = "mb-1"
+                >
+                    <Button
+                        size        = "md" 
+                        color       = "primary"
+                        onClick     = {() => setIsAddVideoVisible(true)}
+                    >
+                        Tambah Siaran
+                    </Button>
+                </Col>
+            </Row>
+
             <Row>
                 <Col 
                     md          = {3} 

@@ -3,7 +3,23 @@ import { Button, Modal, ModalBody, ModalFooter, ModalHeader } from 'reactstrap'
 
 
 
-export const ModalBase = ({ children, title, show, setShow, size, center, scrollable, footer, unmount, onclose, onOpened, backdrop }) => {
+export const ModalBase = (props) => {
+
+    const { 
+        size, 
+        show, 
+        title, 
+        center, 
+        footer, 
+        unmount, 
+        setShow, 
+        onclose, 
+        children, 
+        onOpened, 
+        backdrop,
+        scrollable, 
+    }                       = props
+
     let isScroll
     if (scrollable) {
         isScroll = "modal-dialog-scrollable";

@@ -27,7 +27,6 @@ const VideoPlayer = (props) => {
                 <Card className="mb-0">
                     <CardHeader className="p-1">
                         <a href={`/video-streaming/${data.id}`}>
-
                             <h4 className="card-title my-1">{data.title}</h4>
                         </a>
                         {
@@ -38,13 +37,23 @@ const VideoPlayer = (props) => {
                         }
                     </CardHeader>
                     <CardBody className="text-center pb-1 px-1 pt-0">
-                        <video 
-                            style           = {detail ? {borderRadius: '10px', width: '70%'} : {borderRadius: '10px', width: '80%'}}
-                            poster          = "https://media.giphy.com/media/PjIKNsWUOhwL6/giphy.gif"
-                            autoPlay 
-                            controls 
-                            className       = 'img-fluid img-video'
-                        />
+                        {
+                            data.broadcast.status === 'finished' ? 
+                                <video 
+                                    src             = {`https://antmedia.underdev.team/WebRTCAppEE/${data.vod.filePath}`}
+                                    style           = {detail ? {borderRadius: '10px', width: '70%'} : {borderRadius: '10px', width: '80%'}}
+                                    poster          = {`https://antmedia.underdev.team/WebRTCAppEE/previews/${data.vod.streamId}_finished.png`}
+                                    controls 
+                                    className       = 'img-fluid img-video'
+                                />
+                            :   
+                                <video 
+                                    src             = {`https://antmedia.underdev.team/WebRTCAppEE/${data.vod.filePath}`}
+                                    style           = {detail ? {borderRadius: '10px', width: '70%'} : {borderRadius: '10px', width: '80%'}} 
+                                    controls 
+                                    className       = 'img-fluid img-video'
+                                />
+                        }
                     </CardBody>
                     <CardFooter className={detail ? "px-1 pt-1 pb-0" : "p-1"}>
                         <Row >

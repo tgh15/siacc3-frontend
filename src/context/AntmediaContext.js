@@ -10,8 +10,8 @@ const AntmediaProvider = ({children}) =>{
 
     let url_antmedia_server, ice_server;
     
-    if(!process.env.NODE_ENV || process.env.NODE_ENV === 'production'){
-        url_antmedia_server = "wss://stream.siaccinfo.id/WebRTCAppEE/websocket"
+    // if(!process.env.NODE_ENV || process.env.NODE_ENV === 'production'){
+        // url_antmedia_server = "wss://stream.siaccinfo.id/WebRTCAppEE/websocket"
         ice_server          =  {
             'iceServers': [
                 {
@@ -26,23 +26,23 @@ const AntmediaProvider = ({children}) =>{
                 }
             ]
         }
-    }else{
-        url_antmedia_server = "wss://antmedia.rlidev.pro/WebRTCAppEE/websocket"
-        ice_server          =  {
-            'iceServers': [
-                {
-                    'urls'          : "stun:158.140.183.123:3478",
-                    'username'      : "devops",
-                    'credential'    : "9051puki",
-                },            
-                {
-                    'urls'          : "turn:158.140.183.123:3478",
-                    'username'      : "devops",
-                    'credential'    : "9051puki",
-                }
-            ]
-        }
-    }
+    // }else{
+        url_antmedia_server = "wss://antmedia.underdev.team/WebRTCAppEE/websocket"
+    //     ice_server          =  {
+    //         'iceServers': [
+    //             {
+    //                 'urls'          : "stun:158.140.183.123:3478",
+    //                 'username'      : "devops",
+    //                 'credential'    : "9051puki",
+    //             },            
+    //             {
+    //                 'urls'          : "turn:158.140.183.123:3478",
+    //                 'username'      : "devops",
+    //                 'credential'    : "9051puki",
+    //             }
+    //         ]
+    //     }
+    // }
 
 
     const setWebRtc = (kind="peer",localvideoId,remoteVideoId, type) => {
@@ -60,7 +60,7 @@ const AntmediaProvider = ({children}) =>{
                     OfferToReceiveVideo : true,
                 },
                 localVideoId            : localvideoId,
-                remoteVideoId           : remoteVideoId,
+                // remoteVideoId           : remoteVideoId,
                 bandwidth               :  "unlimited", 
                 debug                   : true,
                 callback                : (info, obj) => {
@@ -112,6 +112,8 @@ const AntmediaProvider = ({children}) =>{
 
     useEffect(()=>{
         console.log(callback, 'callback2');
+
+        // console.log(errorCallback, 'error callback')
     },[callback])
 
     return <AntmediaContext.Provider 
