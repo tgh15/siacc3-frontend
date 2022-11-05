@@ -184,6 +184,12 @@ const getTimeAgo = (stringDate) => {
     return moment(stringDate).fromNow(true);
 };
 
+const getDuration = (startDate, endDate) => {
+    let duration = moment.duration(moment(endDate).diff(moment(startDate)));
+
+    return duration.minutes();
+};
+
 const fallbackImage_ = (val) => {
     val.target.src = fallback;
 };
@@ -343,7 +349,8 @@ const Helper = {
     formatDate              : formatDate,
     getYearsBefore          : getYearsBefore,
     getMonthName            : getMonthName,
-    getLastDateOfCurrentMonth : getLastDateOfCurrentMonth
+    getLastDateOfCurrentMonth : getLastDateOfCurrentMonth,
+    getDuration             : getDuration
 }
 
 export default Helper;

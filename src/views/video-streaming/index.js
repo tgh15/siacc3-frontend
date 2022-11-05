@@ -8,10 +8,11 @@ import SearchTable              from "../../components/widgets/custom-table/Sear
 import VideoPlayer              from "./video";
 import { selectThemeColors }    from '@utils';
 import VideoStreamingAPI        from "../../services/pages/video-streaming";
-import { useEffect, useState }  from "react";
+import { useContext, useEffect, useState }  from "react";
 import Skeleton                 from "react-loading-skeleton";
 import CustomTableBodyEmpty     from "../../components/widgets/custom-table/CustomTableBodyEmpty";
 import CreateVideoStreaming     from "./create";
+import { AntmediaContext } from "../../context/AntmediaContext";
 
 
 const VideoStreaming = () => {
@@ -20,6 +21,12 @@ const VideoStreaming = () => {
     const [savedList, setSavedList]                 = useState(null);
     const [historyList, setHistoryList]             = useState(null);
     const [isAddVideoVisible, setIsAddVideoVisible] = useState(false);
+
+    const {
+        callback,
+        setWebRtc,
+        webRTCAdaptorPeer
+    }                                               = useContext(AntmediaContext);
 
     const GetVideoStreaming = () => {
 
@@ -36,7 +43,7 @@ const VideoStreaming = () => {
 
                     if( res.data.length > 0){
                         res.data.map((data) => (
-                            data.broadcast.status === "published" ? 
+                            data.broadcast.status === "broadcasting" || data.broadcast.status === "published" ? 
                                 liveList_.push(data)
                             :
                                 data.broadcast.status === "finished" ? 
@@ -65,6 +72,8 @@ const VideoStreaming = () => {
 
     useEffect(() => {
         GetVideoStreaming();
+
+
     }, []); 
     
     return (

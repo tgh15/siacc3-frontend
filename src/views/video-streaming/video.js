@@ -1,3 +1,4 @@
+import { Play } from "react-feather";
 import { 
     Col, 
     Row,
@@ -41,18 +42,21 @@ const VideoPlayer = (props) => {
                             data.broadcast.status === 'finished' ? 
                                 <video 
                                     src             = {`https://antmedia.underdev.team/WebRTCAppEE/${data.vod.filePath}`}
-                                    style           = {detail ? {borderRadius: '10px', width: '70%'} : {borderRadius: '10px', width: '80%'}}
+                                    style           = {detail ? {borderRadius: '10px', width: '70%'} : {borderRadius: '10px', maxHeight: '25vh', width: '80%'}}
                                     poster          = {`https://antmedia.underdev.team/WebRTCAppEE/previews/${data.vod.streamId}_finished.png`}
                                     controls 
                                     className       = 'img-fluid img-video'
                                 />
                             :   
-                                <video 
-                                    src             = {`https://antmedia.underdev.team/WebRTCAppEE/${data.vod.filePath}`}
-                                    style           = {detail ? {borderRadius: '10px', width: '70%'} : {borderRadius: '10px', width: '80%'}} 
-                                    controls 
-                                    className       = 'img-fluid img-video'
-                                />
+                                <div 
+                                    style       = {{borderRadius: '10px', height: '25vh', width: '100%', backgroundColor: 'black'}}
+                                    className   = "d-flex align-items-center justify-content-center"
+                                >
+                                    <Play 
+                                        onClick     = {() => {window.location.href = `/video-streaming/${data.broadcast.streamId}`}}
+                                        className   = "cursor-pointer"
+                                    />
+                                </div>
                         }
                     </CardBody>
                     <CardFooter className={detail ? "px-1 pt-1 pb-0" : "p-1"}>
@@ -65,7 +69,7 @@ const VideoPlayer = (props) => {
                                     <Media>
                                         <Media left href='#'>
                                             <Avatar 
-                                                img         = {`https://ui-avatars.com/api/?name=UN&background=4e73df&color=fff&bold=true`} 
+                                                img         = {data.owner.avatar}
                                                 onError     = {fallbackImage_} 
                                                 imgWidth    = '40' 
                                                 imgHeight   = '40' 
