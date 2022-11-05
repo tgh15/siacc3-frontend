@@ -1,14 +1,26 @@
 .swiper-centered-slides.swiper-container .swiper-slide {
-    padding : 5px 10px !important;
-    font-size: 11px;
+    border           : none;
+    padding          : 4px 10px !important;
+    font-size        : 12px;
+    background-color : transparent;
 }
 
 .swiper-centered-slides.swiper-container .swiper-slide.swiper-slide-active {
-    color: #fff;
-    background-color: #176138;
+    color            : #000;
+    border           : 1px solid transparent;
+    border-bottom    : 2px solid #176138!important;
+    background-color : transparent!important;
 }
 
-.swiper-slide-all{
-    margin-left: 50px !important;
+.swiper-centered-slides .swiper-button-next:after, 
+.swiper-centered-slides .swiper-button-prev:after {
+    width      : 33px!important;
+    height     : 33px!important;
+    margin-top : -14px;
 }
 
+.swiper-wrapper{
+    padding     : 16px;
+    margin-top  : -13px;
+    margin-left : -335px;
+}

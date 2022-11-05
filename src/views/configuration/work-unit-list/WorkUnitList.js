@@ -237,7 +237,7 @@ const WorkUnitList = (props) => {
             />
 
             <Row>
-                <Col md="1">
+                <Col md="1"  className="pr-0">
                     <Button.Ripple
                         size="sm"
                         color="primary"
@@ -252,6 +252,7 @@ const WorkUnitList = (props) => {
                 <Col
                     md="7"
                     id="filter-satker"
+                    className="pl-0"
                 >
                     <WorkUnitLevelSelect
                         getAllData={() => { getData() }}
