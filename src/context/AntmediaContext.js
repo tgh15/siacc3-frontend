@@ -46,9 +46,10 @@ const AntmediaProvider = ({children}) =>{
 
 
     const setWebRtc = (kind="peer",localvideoId,remoteVideoId, type) => {
+        let adaptor;
         if ( kind == "peer" && type === 'video'){
-
-            let adaptor = new WebRTCAdaptor({
+            console.log('doi disini2')
+            adaptor = new WebRTCAdaptor({
                 websocket_url           : url_antmedia_server,
                 mediaConstraints        : {
                     video : true,
@@ -60,32 +61,19 @@ const AntmediaProvider = ({children}) =>{
                     OfferToReceiveVideo : true,
                 },
                 localVideoId            : localvideoId,
-                // remoteVideoId           : remoteVideoId,
+                remoteVideoId           : remoteVideoId,
                 bandwidth               :  "unlimited", 
-                debug                   : true,
                 callback                : (info, obj) => {
-                    setCallback(
-                        {
-                            obj     : obj,
-                            info    : info
-                        }
-                    )
+                    setCallback({obj:obj,info:info})
                 },
                 callbackError           : (error, message) => {
-                    setErrorCallback(
-                        {
-                            error   : error,
-                            message : message
-                        }
-                    )
-                },
+                    setErrorCallback({error:error,message:message})
+                }, 
             })
-
-
-            setWebRtcAdaptorPeer(adaptor);
-
-        }else{
-            let adaptor = new WebRTCAdaptor({
+        }
+        else{
+            console.log('doi disini')
+            adaptor = new WebRTCAdaptor({
                 websocket_url           : url_antmedia_server,
                 mediaConstraints        : {
                     video : false,
@@ -106,14 +94,15 @@ const AntmediaProvider = ({children}) =>{
                     setErrorCallback({error:error,message:message})
                 }, 
             })
-            setWebRtcAdaptorPeer(adaptor) 
         }
+        setWebRtcAdaptorPeer(adaptor) 
+
     }
 
     useEffect(()=>{
         console.log(callback, 'callback2');
 
-        // console.log(errorCallback, 'error callback')
+        console.log(errorCallback, 'error callback')
     },[callback])
 
     return <AntmediaContext.Provider 

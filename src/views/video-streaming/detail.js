@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState }      from "react";
-import { Send, Video }                     from "react-feather";
+import { Send }                                 from "react-feather";
 import { 
     Row,
     Col, 
@@ -12,14 +12,14 @@ import {
     CardFooter, 
     CardHeader, 
     InputGroup,
-}                                   from "reactstrap";
-import Avatar                       from "../../components/widgets/avatar";
-import ChatItem                     from "./chat-item";
-import { useParams }                from "react-router-dom";
-import VideoStreamingAPI            from "../../services/pages/video-streaming";
-import CustomToast                  from "../../components/widgets/custom-toast";
-import Skeleton                     from "react-loading-skeleton";
-import { AntmediaContext }          from "../../context/AntmediaContext";
+}                                               from "reactstrap";
+import Avatar                                   from "../../components/widgets/avatar";
+import ChatItem                                 from "./chat-item";
+import { useParams }                            from "react-router-dom";
+import VideoStreamingAPI                        from "../../services/pages/video-streaming";
+import CustomToast                              from "../../components/widgets/custom-toast";
+import Skeleton                                 from "react-loading-skeleton";
+import { AntmediaContext }                      from "../../context/AntmediaContext";
 
 const VideoStreamingDetail = () => {
 
@@ -62,22 +62,35 @@ const VideoStreamingDetail = () => {
         getDetailVideoStream();
 
         if(webRTCAdaptorPeer === null){
-            setWebRtc("peer","localVideo","remoteVideoPeer", "video")
+            setTimeout(() => {
+                setWebRtc("peer","localVideotest","remotetest", "video")
+            } ,1000);
         }
-
-    }, [])
-
-    useEffect(() => {
-
-        if(webRTCAdaptorPeer !== null && callback.info === 'initialized'){
-            webRTCAdaptorPeer.publish(id);
+        else{
+            if(webRTCAdaptorPeer !== null &&  callback.info === 'initialized' ){
+                setTimeout(() => {
+                    webRTCAdaptorPeer.publish(id);
+                }, 1000);
+            }
         }
 
     }, [webRTCAdaptorPeer, callback])
 
-    useEffect(() => {
-        console.log('col')
-    }, [played]);
+    // // useEffect(() => {
+
+    //     if(webRTCAdaptorPeer !== null && callback.info === 'initialized'){
+    //         webRTCAdaptorPeer.getStreamInfo(id);
+    //         // webRTCAdaptorPeer.publish(id);
+    //         // setTimeout(() => {
+    //             // webRTCAdaptorPeer.publish(id);
+    //         // }, 1000);
+    //     }else if(callback.info === 'ice_connection_state_changed'){
+    //         // webRTCAdaptorPeer.play(id);
+    //         webRTCAdaptorPeer.publish(id);
+
+    //     }
+
+    // // }, [webRTCAdaptorPeer, callback])
 
     return (
         <>
@@ -135,35 +148,24 @@ const VideoStreamingDetail = () => {
                                             {
                                                 // detailData.broadcast.status === 'created' && 
                                                 <video 
-                                                    id              = "localVideo"
-                                                    style           = {{borderRadius: '10px', maxHeight: '30%', width: '100%'}}
+                                                    id              = "localVideotest"
+                                                    style           = {{borderRadius: '10px', maxHeight: '60%', width: '100%'}}
                                                     autoPlay 
                                                     controls 
                                                     className       = 'img-fluid img-video'
                                                 />
-
-
                                             }
-                                                <video 
-                                                    id          = "remoteVideoPeer" 
-                                                    controls 
-                                                    autoPlay 
-                                                    className   = 'img-fluid img-video'
-                                                    onLoadedData    = {() => {console.log('tes33')}}
-
-                                                />
 
                                             {
-                                                // detailData.broadcast.status === 'published' && 
-                                                // <video 
-                                                //     id              = "detailViewer"
-                                                //     style           = {{borderRadius: '10px', maxHeight: '30%', width: '100%'}}
-                                                //     controls 
-                                                //     className       = 'img-fluid img-video'
-                                                // />
+                                                detailData.broadcast.status === 'published' && 
+                                                <video 
+                                                    id              = "remotetest"
+                                                    style           = {{borderRadius: '10px', maxHeight: '60%', width: '100%'}}
+                                                    controls 
+                                                    className       = 'img-fluid img-video'
+                                                />
                                             }
                                         </>
-
                                 }
 
                                 <hr/>
