@@ -1,5 +1,5 @@
 import {useEffect, useState, Fragment}      from 'react';
-import { useLocation }                      from "react-router-dom";
+import { Link, useLocation }                      from "react-router-dom";
 import parse                                from 'html-react-parser';
 
 
@@ -7,6 +7,7 @@ import {
         Col,
         Row,
         Card,
+        Button,
     }                                       from 'reactstrap';
 
 import {
@@ -29,19 +30,23 @@ const useQuery = () => {
 }
 
 const AdvancedSearch = () => {
-
     let query                                               = useQuery();
 
-    //state
+    //State
     const [page, setPage]                                   = useState(1);
     const [report, setReport]                               = useState([]);
     const [agentReport, setAgentReport]                     = useState([]);
     const [agentPerformance, setAgentPerformance]           = useState([]);
     const [workunitPerformance, setWorkunitPerformance]     = useState([]);
+    
+    //State detail
+    const [showDetailAgent, setShowDetailAgent]             = useState(false);
+    const [showDetailReport, setShowDetailReport]           = useState(false);
+    const [showDetailWorkunit, setShowDetailWorkunit]       = useState(false);
     const [showDetailAgentReport, setShowDetailAgentReport] = useState(false);
 
-    const getElasticSearchAPI = () => {
 
+    const getElasticSearchAPI = () => {
         const params = {
             q    : query.get("keyword"),
             page : page
@@ -112,16 +117,47 @@ const AdvancedSearch = () => {
                             agentReport.length > 0 ?
                                 agentReport.map((data, index) => (
                                     <Col md={4} className="d-flex flex-row">
-                                        <NewsWidget
-                                            key                     = {`advanced-search-news-${index}`}
-                                            handleStore             = {(newss,data) => {handleStore(newss,data)}}
+                                        <Link to={"/beranda/detail/"+data.id}>
+                                            <NewsWidget
+                                                key                     = {`advanced-search-news-${index}`}
+                                                handleStore             = {(newss,data) => {handleStore(newss,data)}}
 
-                                            roleLike                = {true}
-                                            roleViewer              = {true}   
-                                            roleDislike             = {true}
-                                            roleComment             = {true}
+                                                roleLike                = {true}
+                                                roleViewer              = {true}   
+                                                roleDislike             = {true}
+                                                roleComment             = {true}
 
-                                            {...data}
+                                                {...data}
+                                            />
+                                        </Link>
+                                    </Col>
+                                ))
+                            :
+                                <Col md={12}>
+                                    <CustomTableBodyEmpty/>
+                                </Col>
+                        }
+                    </Row>
+                </ModalBase>
+
+                {/* Modal Detail Workunit Section */}
+                <ModalBase
+                    show            = {showDetailWorkunit} 
+                    size            = "xl"
+                    title           = "Hasil Pencarian Satuan Kerja"
+                    setShow         = {(par) => { setShowDetailWorkunit(par)}} 
+                    unmountOnClose  = {true}
+                >
+                    <Row>
+                        {
+                            workunitPerformance.length > 0 ?
+                                workunitPerformance.map((data, index) => (
+                                    <Col md={6} className="d-flex flex-row">
+                                        <CardWorkunit
+                                            id      = {data._source.id} 
+                                            key     = {`advanced-search-workunit-${index}`} 
+                                            index   = {index}
+                                            type    = "workunit"
                                         />
                                     </Col>
                                 ))
@@ -133,6 +169,70 @@ const AdvancedSearch = () => {
                     </Row>
                 </ModalBase>
 
+                {/* Modal Detail Agent Performance Section */}
+                <ModalBase
+                    show            = {showDetailAgent} 
+                    size            = "xl"
+                    title           = "Hasil Pencarian Agen"
+                    setShow         = {(par) => { setShowDetailAgent(par)}} 
+                    unmountOnClose  = {true}
+                >
+                    <Row>
+                        {
+                            agentPerformance.length > 0 ?
+                                agentPerformance.map((data, index) => (
+                                    <Col md={6} className="d-flex flex-row">
+                                        <CardWorkunit
+                                            id      = {data._source.uuid} 
+                                            key     = {`advanced-search-agent-${index}`} 
+                                            index   = {index}
+                                            type    = "agent"
+                                        />
+                                    </Col>
+                                ))
+                            :
+                                <Col md={12}>
+                                    <CustomTableBodyEmpty/>
+                                </Col>
+                        }
+                    </Row>
+                </ModalBase>
+
+                {/* Modal Detail Report Section */}
+                <ModalBase
+                    show            = {showDetailReport} 
+                    size            = "xl"
+                    title           = "Hasil Pencarian Laporan"
+                    setShow         = {(par) => { setShowDetailReport(par)}} 
+                    unmountOnClose  = {true}
+                >
+                    <Row>
+                        {
+                            report.length > 0 ?
+                                report.map((data) => (
+                                    <Col md={4} className="d-flex flex-row">
+                                        <Card className="w-100 p-2">
+                                            <Row>
+                                                <Col md={3} className="text-center">
+                                                    <FileText/>
+                                                </Col>
+
+                                                <Col md={9} className="d-flex align-items-center">
+                                                    <h5 className="mb-0">{parse(data._source.title)}</h5>
+                                                </Col>
+                                            </Row>
+                                        </Card>
+                                    </Col>
+                                ))
+                            :
+                                <Col md={12}>
+                                    <CustomTableBodyEmpty/>
+                                </Col>
+                        }
+                    </Row>
+                </ModalBase>
+
+
                 {/* Agent Report Section */}
                 <h2>Berita</h2>
                 <Row className="d-flex">
@@ -141,20 +241,21 @@ const AdvancedSearch = () => {
                             agentReport.map((data, index) => (
                                 index < 3 ? 
                                     <Col md={4} className="d-flex flex-row">
-                                        <NewsWidget
-                                            key                     = {`advanced-search-news-${index}`}
-                                            handleStore             = {(newss,data) => {handleStore(newss,data)}}
+                                        <Link to={"/beranda/detail/"+data.id}>
+                                            <NewsWidget
+                                                key                     = {`advanced-search-news-${index}`}
+                                                handleStore             = {(newss,data) => {handleStore(newss,data)}}
 
-                                            roleLike                = {true}
-                                            roleViewer              = {true}   
-                                            roleDislike             = {true}
-                                            roleComment             = {true}
+                                                roleLike                = {true}
+                                                roleViewer              = {true}   
+                                                roleDislike             = {true}
+                                                roleComment             = {true}
 
-                                            {...data}
-                                        />
+                                                {...data}
+                                            />
+                                        </Link>
                                     </Col>
-                                :
-                                    null
+                                : null
                             ))
                         :
                             <Col md={12}>
@@ -167,12 +268,18 @@ const AdvancedSearch = () => {
                                 md          = {12} 
                                 className   = "d-flex justify-content-end"
                             >
-                                <a onClick={() => setShowDetailAgentReport(true)}>
+                                {/* <a onClick={() => setShowDetailAgentReport(true)}>
                                     <h4>Tampilkan Lebih Banyak</h4>
-                                </a>
+                                </a> */}
+
+                                <Button 
+                                    color   = 'flat-dark' 
+                                    onClick = {() => setShowDetailAgentReport(true)}
+                                >
+                                    Tampilkan Lebih Banyak
+                                </Button>
                             </Col>
-                        :
-                            null
+                        :  null
                     }
                 </Row>
 
@@ -182,14 +289,16 @@ const AdvancedSearch = () => {
                     {
                         workunitPerformance.length > 0 ?
                             workunitPerformance.map((data, index) => (
-                                index < 2 ? 
+                                index < 3 ? 
                                     <Col md={6} className="d-flex flex-row">
-                                        <CardWorkunit
-                                            id      = {data._source.id} 
-                                            key     = {`advanced-search-workunit-${index}`} 
-                                            index   = {index}
-                                            type    = "workunit"
-                                        />
+                                        <Link to={"/configuration/work-unit-list/"+data.id+"?level="+data.workunit_level_id}>
+                                            <CardWorkunit
+                                                id      = {data._source.id} 
+                                                key     = {`advanced-search-workunit-${index}`} 
+                                                index   = {index}
+                                                type    = "workunit"
+                                            />
+                                        </Link>
                                     </Col>
                                 :
                                     null
@@ -205,16 +314,22 @@ const AdvancedSearch = () => {
                                 md          = {12} 
                                 className   = "d-flex justify-content-end"
                             >
-                                <a href="/performance">
+                                {/* <a href="/performance">
                                     <h4>Tampilkan Lebih Banyak</h4>
-                                </a>
+                                </a> */}
+
+                                <Button 
+                                    color   = 'flat-dark' 
+                                    onClick = {() => setShowDetailWorkunit(true)}
+                                >
+                                    Tampilkan Lebih Banyak
+                                </Button>
                             </Col>
-                        :
-                            null
+                        : null
                     }
                 </Row>
 
-                {/* Agent Section */}
+                {/* Agent Performance Section */}
                 <h3>Agen</h3>
                 <Row className="d-flex">
                     {
@@ -222,15 +337,16 @@ const AdvancedSearch = () => {
                             agentPerformance.map((data, index) => (
                                 index < 2 ? 
                                     <Col md={6} className="d-flex flex-row">
-                                        <CardWorkunit
-                                            id      = {data._source.uuid} 
-                                            key     = {`advanced-search-agent-${index}`} 
-                                            index   = {index}
-                                            type    = "agent"
-                                        />
+                                        <Link to={`/performance?id_agent=${data.id}`}>
+                                            <CardWorkunit
+                                                id      = {data._source.uuid} 
+                                                key     = {`advanced-search-agent-${index}`} 
+                                                index   = {index}
+                                                type    = "agent"
+                                            />
+                                        </Link>
                                     </Col>
-                                :
-                                    null
+                                : null
                             ))
                         :
                             <Col md={12}>
@@ -243,12 +359,18 @@ const AdvancedSearch = () => {
                                 md          = {12} 
                                 className   = "d-flex justify-content-end"
                             >
-                                <a href="/performance">
+                                {/* <a href="/performance">
                                     <h4>Tampilkan Lebih Banyak</h4>
-                                </a>
+                                </a> */}
+
+                                <Button 
+                                    color   = 'flat-dark' 
+                                    onClick = {() => setShowDetailAgent(true)}
+                                >
+                                    Tampilkan Lebih Banyak
+                                </Button>
                             </Col>
-                        :
-                            null
+                        : null
                     }
                 </Row>
 
@@ -286,12 +408,18 @@ const AdvancedSearch = () => {
                                 md          = {12} 
                                 className   = "d-flex justify-content-end"
                             >
-                                <a href="/report">
+                                {/* <a href="/report">
                                     <h4>Tampilkan Lebih Banyak</h4>
-                                </a>
+                                </a> */}
+
+                                <Button 
+                                    color   = 'flat-dark' 
+                                    onClick = {() => setShowDetailReport(true)}
+                                >
+                                    Tampilkan Lebih Banyak
+                                </Button>
                             </Col>
-                        :
-                            null
+                        : null
                     }
                 </Row>
             </div>
