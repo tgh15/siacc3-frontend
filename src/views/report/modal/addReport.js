@@ -74,7 +74,6 @@ const FormReport = (props) => {
     //Props
     const {
         onSubmit,
-        reportCategory,
         isAddFormVisible,
         setIsAddFormVisible,
     }                                  = props;
@@ -89,7 +88,6 @@ const FormReport = (props) => {
     const { 
         getMonthName,
         getYearsBefore,
-        getLastDateOfCurrentMonth
     }                                                   = Helper;
 
     //State
@@ -241,7 +239,7 @@ const FormReport = (props) => {
         let formData;
         let _newOrder   = [];
         let _newFilter  = [];
-    
+
         //check is report formatted or note
         if(isFormat){
             // if formatted then check what format type
@@ -293,7 +291,7 @@ const FormReport = (props) => {
             }
     
             if(workunitKind === 2){
-                formData.is_kejati              = true,
+                formData.is_kejati              = true;
                 formData.work_unit_id           = data.workunit_level_2.map((data) => data.value).toString();
             }else if (workunitKind === 3){
                 formData.is_kejari              = true;
@@ -304,11 +302,11 @@ const FormReport = (props) => {
                 formData.work_unit_id           = data.workunit_level_4.map((data) => data.value).toString();
                 formData.work_unit_parent_id    = data.workunit_level_3.value;
             }
-    
+
             onSubmit({model : formData});
-            setIsFormat(null)
-            setReportKind(null)
-            setWorkunitKind(null)
+            setIsFormat(null);
+            setReportKind(null);
+            setWorkunitKind(null);
         }else{
             if(data.content != null && data.content.filter(e => parseInt(e.value) === 1).length > 0){
                 if(data.content.filter(e => parseInt(e.value) >= 10 && parseInt(e.value) <= 17).length > 0){
@@ -516,7 +514,6 @@ const FormReport = (props) => {
             setReportKind(null)
             setWorkunitKind(null)
         }
-
     };
 
     const getChildWorkunit = (workunit_id, level) => {
@@ -807,7 +804,12 @@ const FormReport = (props) => {
                                                     <Select
                                                         id                  = "workunit_level_2" 
                                                         theme               = {selectThemeColors}
-                                                        options             = {workunitLevel2}
+                                                        options             = {
+                                                            workunitKind === 2  ?
+                                                                workunitLevel2
+                                                            :
+                                                                workunitLevel2.filter((data) => (data.label != 'SEMUA KEJAKSAAN TINGGI'))
+                                                        }
                                                         className           = 'react-select'
                                                         placeholder         = "Pilih Satuan Kerja"
                                                         classNamePrefix     = 'select'
@@ -838,7 +840,12 @@ const FormReport = (props) => {
                                                 <Select
                                                     id                  = "workunit_level_3" 
                                                     theme               = {selectThemeColors}
-                                                    options             = {workunitLevel3}
+                                                    options             = {
+                                                        workunitKind === 3  ?
+                                                            workunitLevel3
+                                                        :
+                                                            workunitLevel3.filter((data) => (data.label != 'SEMUA KEJAKSAAN NEGERI'))
+                                                    }
                                                     className           = 'react-select'
                                                     isDisabled          = {!workunitLevel3}
                                                     placeholder         = {workunitLevel3 ? "Pilih Kejaksaan Negeri" : "Pilih Kejati Terlebih Dahulu"}
@@ -871,7 +878,12 @@ const FormReport = (props) => {
                                                     <Select
                                                         id                  = "workunit_level_4" 
                                                         theme               = {selectThemeColors}
-                                                        options             = {workunitLevel4}
+                                                        options             = {
+                                                            workunitKind === 4  ?
+                                                                workunitLevel4
+                                                            :
+                                                                workunitLevel4.filter((data) => (data.label != 'SEMUA CABANG KEJAKSAAN NEGERI'))
+                                                        }
                                                         className           = 'react-select'
                                                         isDisabled          = {!workunitLevel4}
                                                         placeholder         = {workunitLevel4 ? "Pilih Cabang Kejaksaan Negeri" : "Pilih Kejari Terlebih Dahulu"}

@@ -286,17 +286,18 @@ export const WidgetCardNewsBottom = (props)=>{
                         null 
                     }
                     </Row>
-                <Button className="text-right pr-0" color="flat">
-                    {
-                        newsType === 'nasional' ?
-                            <Fragment>
-                                <Globe size={22}/> Nasional
-                            </Fragment>
-                        :
-                            <Fragment>
-                                <MapPin size={18}/> Lokal
-                            </Fragment>}   
-                </Button>
+                    <Button className="text-right pr-0" color="flat">
+                        {
+                            newsType === 'nasional' ?
+                                <Fragment>
+                                    <Globe size={22}/> Nasional
+                                </Fragment>
+                            :
+                                <Fragment>
+                                    <MapPin size={18}/> Lokal
+                                </Fragment>
+                        }   
+                    </Button>
             </div>
         </Fragment>
     )

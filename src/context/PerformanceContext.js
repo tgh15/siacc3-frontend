@@ -1,11 +1,13 @@
-import { createContext, useEffect, useRef, useState } from "react";
-import CustomToast from "../components/widgets/custom-toast";
-import { workunitAPI } from "../services/pages/configuration/workunit";
-import PerformanceApi from "../services/pages/performance";
-import SelectOptionsService from "../services/pages/select-options";
-import { WorkunitLevelList } from "../services/pages/select-options/Workunit";
-
-
+import { 
+        useRef, 
+        useState,
+        useEffect, 
+        createContext, 
+    }                   from "react";
+import CustomToast      from "../components/widgets/custom-toast";
+import { workunitAPI }  from "../services/pages/configuration/workunit";
+import PerformanceApi   from "../services/pages/performance";
+import Helper           from "../helpers";
 const PerformanceContext = createContext(null)
 
 const PerformanceProvider = ({ children }) => {
@@ -27,8 +29,12 @@ const PerformanceProvider = ({ children }) => {
     const [workunitOptions          , setWorkunitOptions]         = useState(null)
     const [workunitOptionsApproval  , setWorkunitOptionsApproval] = useState(null);
 
-    const getWorkunitOptions = () => {
+    const {useQuery}                                              = Helper;
 
+    let query           = useQuery();
+
+    const getWorkunitOptions = () => {
+        
         let data        = [];
         let first       = [{label: 'SEMUA WILAYAH', options: [{label: 'SEMUA WILAYAH', value : 0}]}]
         let level_1     = [];
@@ -71,8 +77,9 @@ const PerformanceProvider = ({ children }) => {
                         ))
 
                         if(level_2.length > 0){
+
                             data.push({
-                                label : 'KEJAKSAAN TINGGI',
+                                label   : 'KEJAKSAAN TINGGI',
                                 options : level_2
                             })
 
@@ -144,6 +151,8 @@ const PerformanceProvider = ({ children }) => {
                                             value : data.id
                                         })   
                                 ))
+
+                                level_2.unshift({label : 'SEMUA KEJAKSAAN TINGGI', value : (level_2.map((data) => (data.value))).toString()})
                                 setWorkunitLevel2(level_2);
                             }
     
@@ -171,7 +180,7 @@ const PerformanceProvider = ({ children }) => {
                                                     value : data.id
                                                 })   
                                         ))
-    
+                                        level_3.unshift({label : 'SEMUA KEJAKSAAN NEGERI', value : (level_3.map((data) => (data.value))).toString()})
                                         setWorkunitLevel3(level_3);
                                     }
     
@@ -191,7 +200,7 @@ const PerformanceProvider = ({ children }) => {
                                                         value : data.id
                                                     })
                                                 ))
-    
+                                                level_4.unshift({label : 'SEMUA CABANG KEJAKSAAN NEGERI', value : (level_4.map((data) => (data.value))).toString()})
                                                 setWorkunitLevel4(level_4);
                                             }
     
@@ -237,7 +246,7 @@ const PerformanceProvider = ({ children }) => {
         setSectorAgent("Nasional")
 
         PerformanceApi.GetAgent({
-            keyword: searchTerm.current,
+            keyword: query.get('agen') != undefined ? query.get('agen') : searchTerm.current,
             onSuccess: (res) => {
                 setListData(res.data.agent_performance)
                 if (res.data.agent_performance.length > 0) {

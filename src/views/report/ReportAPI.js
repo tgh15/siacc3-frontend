@@ -3,6 +3,7 @@ import React, { Fragment, useState, useEffect } from 'react';
 //Component
 import Report                                   from './Report';
 import CustomToast                              from '../../components/widgets/custom-toast';
+import Helper                                   from '../../helpers';
 
 //API
 import { feedsReportAPI }                       from '../../services/pages/feeds/report';
@@ -10,11 +11,12 @@ import { feedsReportAPI }                       from '../../services/pages/feeds
 
 const ReportAPI = () => {
     //State
-    const [report, setReport]                                   = useState([]);
+    const [report, setReport]                                   = useState(null);
     const [loading, setLoading]                                 = useState(false);
     const [idSelected, setIdSelected]                           = useState(false);
     const [showDeleteForm, setShowDeleteForm]                   = useState(false);
     const [reportCategory, setReportCategory]                   = useState([]);
+    const [detailResultLoading, setDetailResultLoading]         = useState(true);
 
     const [detailReport, setDetailReport]                       = useState([]);
     const [detailResults, setdetailResults]                     = useState(null);
@@ -23,14 +25,10 @@ const ReportAPI = () => {
     const [isDetailReportVisible, setIsDetailReportVisible]     = useState(false);
     const [isDetailResultsVisible, setIsDetailResultsVisible]   = useState(false);
 
-
-
     const [showForm, setShowForm]                               = useState(false);
 
-    useEffect(() => {
-        getReport();
-        getReportCategory();
-    }, []);
+    const {useQuery}                                            = Helper;
+    const query                                                 = useQuery();                  
 
     //get report
     const getReport = () => {
@@ -38,8 +36,19 @@ const ReportAPI = () => {
             res => {
                 if (res.status === 200 && res.data != null) {
                     setReport(res.data);
+
+                    if(query.get('id_report') != undefined){
+                        let filter = res.data.filter((data) => (data.id === parseInt(query.get('id_report'))));
+                        if(filter.length > 0 ){
+                            if(filter[0].results.length > 0){
+                                handleDetail(filter[0])
+                            }else{
+                                handleDetailResults(filter[0])
+                            }
+                        }
+                    }
                 }else{
-                    setReport();
+                    setReport([]);
                 }
             },
             err => {
@@ -76,7 +85,7 @@ const ReportAPI = () => {
 
         feedsReportAPI.createReport(formData).then(
             res => {
-                if(res.status === 201){
+                if(res.status === 201 || res.status === 200){
                     setLoading(false);
                     setIsAddFormVisible(false);
 
@@ -97,10 +106,6 @@ const ReportAPI = () => {
     //delete report
     const onDelete = () => {
         setLoading(true);
-
-        const formData = {
-            id : idSelected
-        };
 
         feedsReportAPI.deleteReport(idSelected).then(
             res => {
@@ -125,15 +130,15 @@ const ReportAPI = () => {
 
         setSelectedReport(formData);   
         
-        console.log(formData, 'disini');
-        CustomToast('success', 'Mohon menunggu proses sedang berlangsung');
-
+        setDetailResultLoading(true);
+        setIsDetailResultsVisible(true);
+        setIsDetailReportVisible(false);
+        
         feedsReportAPI.detailReport(formData).then(
             res => {
                 if(res.status == 200 && res.data != null){
                     setdetailResults(res.data);
-                    setIsDetailResultsVisible(true);
-                    setIsDetailReportVisible(false)
+                    setDetailResultLoading(false);
                 }
             },
             err => {
@@ -180,6 +185,14 @@ const ReportAPI = () => {
         doc.save('table.pdf')
     }
 
+    useEffect(() => {
+
+        if(report === null){
+            getReport();
+        }
+        getReportCategory();
+    }, []);
+
     return (
         <Fragment>
             <Report
@@ -196,6 +209,7 @@ const ReportAPI = () => {
                 isAddFormVisible            = {isAddFormVisible}
                 setShowDeleteForm           = {setShowDeleteForm}
                 setSelectedReport           = {setSelectedReport}
+                detailResultLoading         = {detailResultLoading}
                 setIsAddFormVisible         = {setIsAddFormVisible}
                 isDetailReportVisible       = {isDetailReportVisible}
                 isDetailResultsVisible      = {isDetailResultsVisible}

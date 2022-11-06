@@ -217,26 +217,37 @@ export const SelectWilayah  = ({data,show,setShow,onSubmit, index, statePosition
     return(
         <ModalBase show={show} setShow={setShow} title="Tentukan Status" unmount={true}>
             {
-                localStorage.getItem('role') == "Verifikator Pusat" ?
+                localStorage.getItem('role') == "Verifikator Pusat" || localStorage.getItem('role') == "Admin" ?
                     <FormGroup>
                         <Label>Jenis Berita</Label>
                         <p>
-                            <Button onClick={()=>{
-                                setType('nasional')
-                                setAgentUpdate({
-                                    ...agentUpdate,
-                                    kind:2,
-                                })
-                            }} size={"sm"} outline={type!=="nasional"} color="primary">
+                            <Button 
+                                outline = { type !== "nasional" } 
+                                onClick = { () => {
+                                    setType('nasional')
+                                    setAgentUpdate({
+                                        ...agentUpdate,
+                                        kind:2,
+                                    })
+                                }} 
+                                size    = {"sm"} 
+                                color   = "primary"
+                            >
                                 <Globe size={14}/> Nasional
                             </Button>&nbsp;
-                            <Button onClick={()=>{
-                                setType('lokal')
-                                setAgentUpdate({
-                                    ...agentUpdate,
-                                    kind:1,
-                                })
-                            }}  size={"sm"} outline={type!=="lokal"} color="primary">
+
+                            <Button 
+                                onClick = { () => {
+                                    setType('lokal')
+                                    setAgentUpdate({
+                                        ...agentUpdate,
+                                        kind:1,
+                                    })
+                                }}  
+                                size    = {"sm"} 
+                                color   = "primary"
+                                outline = { type !== "lokal"} 
+                            >
                                 <MapPin size={14}/> Lokal
                             </Button>
                         </p>

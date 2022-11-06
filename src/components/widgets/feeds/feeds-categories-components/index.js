@@ -81,7 +81,6 @@ export const FeedCategoriesWidget = ({ modals,onChangeCategories,onFilter,active
 
                     {
                         (modals == null || modals == undefined) ? 
-
                             <FeedsCategoriesFilterModal
                                 title           = "Filter"
                                 showing         = {filterModalState} 

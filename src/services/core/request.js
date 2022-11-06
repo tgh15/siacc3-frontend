@@ -11,7 +11,7 @@ const configHeaders  = !process.env.NODE_ENV || process.env.NODE_ENV === 'produc
 } : {
     "Content-Type"                  : "application/json",   
     "Authorization"                 : "Bearer " + localStorage.getItem("token"), 
-    "Access-Control-Allow-Origin"   : ".rlidev.pro, .siaccinfo.id, localhost:3000, localhost:3001, .mapbox.com, .test-siaccinfo.id, .siaccinfo.my.id, .underdev.team, .arcgis.com",
+    "Access-Control-Allow-Origin"   : ".underdev.team, .siaccinfo.id, localhost:3000, localhost:3001, .mapbox.com, .test-siaccinfo.id, .siaccinfo.my.id, .underdev.team, .arcgis.com",
     'Cache-Control'                 : 'no-cache',
     'Pragma'                        : 'no-cache',
     'Expires'                       : '0',

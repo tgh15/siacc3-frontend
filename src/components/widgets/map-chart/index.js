@@ -168,7 +168,7 @@ export const MapChart = ({id, handleDelete, data,title,detailChartAction, handle
                                             {popupInfo.name}
                                         </p>
 
-                                        <a href={`/configuration/work-unit-list/${popupInfo.workunit_id}`} style = {{ marginTop: '10px' }}>
+                                        <a href={`/configuration/work-unit-list/${popupInfo.workunit_id}?level=${popupInfo.workunit_level}`} style = {{ marginTop: '10px' }}>
                                             Detail
                                         </a>
 

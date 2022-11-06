@@ -21,6 +21,7 @@ import { useQuery } from "../../../components/utility/hooks/useQuery"
 import ImgDataEmpty from "../../../assets/images/pages/emptydata.png"
 import { useParams } from "react-router-dom"
 import ModalPerformance from "./ModalPerformance"
+import CustomTablePaginate from "../../../components/widgets/custom-table/CustomTablePaginate"
 
 
 const CardData = (props) => {
@@ -41,12 +42,13 @@ const Detail = ({ match }) => {
 
     let {id} = useParams();
 
-    const [data, setData]                           = useState(false)
+    const [data, setData]                           = useState(false);
     const [leftState, setLeftState]                 = useState([]);
-    const [dataDetail, setDataDetail]               = useState(null)
+    const [pagination,setPagination]                = useState(null);
+    const [dataDetail, setDataDetail]               = useState(null);
     const [rightState, setRightState]               = useState([]);
     const [defaultDataMap, setDefaultDataMap]       = useState({});
-    const [selectedMarker, setSelectedMarker]       = useState(null)
+    const [selectedMarker, setSelectedMarker]       = useState(null);
     const [performanceAgent, setPerformanceAgent]   = useState({
         loading: true,
         data: []
@@ -60,7 +62,7 @@ const Detail = ({ match }) => {
     const [modalPerformance, setModalPerformance] = useState({
         show: false,
         type: null
-    })
+    });
 
     let query = useQuery();
 
@@ -132,9 +134,11 @@ const Detail = ({ match }) => {
         })
     }
 
-    const getAgentReportByWorkunit = async () => {
+    const getAgentReportByWorkunit = (page=1) => {
+
         const formData = {
-            workunit_id: parseInt(match.params.id)
+            page        : page,
+            workunit_id : parseInt(match.params.id)
         };
 
         feedsAgentReportAPI.getAgentReportByWorkunit(formData).then(
@@ -143,6 +147,8 @@ const Detail = ({ match }) => {
                     if ("agent_report" in res.data && res.data.agent_report != null) {
 
                         let dataFeeds = processAgentReports(res.data.agent_report);
+                        setPagination(res.data.pagination);
+
                         dataFeeds.then(
                             res => {
                                 let arrLength = res.length;
@@ -169,9 +175,9 @@ const Detail = ({ match }) => {
 
         getData();
         getWorkunitDetail();
-        getAgentReportByWorkunit();
         getPerformanceAgent();
         getPerformanceWorkunit();
+        getAgentReportByWorkunit();
 
 
     }, [])
@@ -407,26 +413,29 @@ const Detail = ({ match }) => {
             <p className="text-center font-weight-bolder">Berita - Berita Satker</p>
             <Row>
                 {
-                    leftState.length < 1 &&
-                        rightState.length < 1 ?
+                    leftState.length < 1 && rightState.length < 1 ?
                         <Col md='12' sm='12'>
                             <CustomTableBodyEmpty />
                         </Col>
-                        :
+                    :
                         <Fragment>
+                            <Col md={12}>
+                                <CustomTablePaginate
+                                    getData         = {(params) => { getAgentReportByWorkunit(params.page)}}
+                                    pagination      = {pagination} 
+                                    offsetSearch    = {10} 
+                                />
+                            </Col>
                             <Col md='6' sm='12'>
                                 {
                                     leftState &&
                                     leftState.map((data) => (
                                         <NewsWidget
-                                            key={`detail-workunit-news-${data.id}`}
-                                            // handleStore             = {(newss,data) => {handleStore(newss,data)}}
-
-                                            roleLike={true}
-                                            roleViewer={true}
-                                            roleDislike={true}
-                                            roleComment={true}
-
+                                            key         = {`detail-workunit-news-${data.id}`}
+                                            roleLike    = {true}
+                                            roleViewer  = {true}
+                                            roleDislike = {true}
+                                            roleComment = {true}
                                             {...data}
                                         />
                                     ))
@@ -437,12 +446,11 @@ const Detail = ({ match }) => {
                                     rightState &&
                                     rightState.map((data) => (
                                         <NewsWidget
-                                            key={`detail-workunit-news-${data.id}`}
-                                            roleLike={true}
-                                            roleViewer={true}
-                                            roleDislike={true}
-                                            roleComment={true}
-
+                                            key         = {`detail-workunit-news-${data.id}`}
+                                            roleLike    = {true}
+                                            roleViewer  = {true}
+                                            roleDislike = {true}
+                                            roleComment = {true}
                                             {...data}
                                         />
                                     ))
