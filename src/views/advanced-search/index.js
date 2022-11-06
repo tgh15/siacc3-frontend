@@ -315,18 +315,12 @@ const AdvancedSearch = () => {
                     {
                         workunitPerformance.length > 0 ?
                             workunitPerformance.map((data, index) => (
-<<<<<<< HEAD
                                 index < 2 ? 
                                     <Col 
                                         md        = {6} 
                                         className = "d-flex flex-row"
                                     >
                                         <Link to={"/configuration/work-unit-list/"+data._source.id+"?level="+data._source.workunit_level_id}>
-=======
-                                index < 3 ? 
-                                    <Col md={6} className="d-flex flex-row">
-                                        <Link to={"/configuration/work-unit-list/"+data.id+"?level="+data.workunit_level_id}>
->>>>>>> bce29b2 (udpate)
                                             <CardWorkunit
                                                 id      = {data._source.id} 
                                                 key     = {`advanced-search-workunit-${index}`} 
@@ -367,16 +361,11 @@ const AdvancedSearch = () => {
                         agentPerformance.length > 0 ?
                             agentPerformance.map((data, index) => (
                                 index < 2 ? 
-<<<<<<< HEAD
                                     <Col 
                                         md        = {6} 
                                         className = "d-flex flex-row"
                                     >
                                         <Link to={`/performance?agent=${data._source.name.replace(/<[^>]*>?/gm, '')}`}>
-=======
-                                    <Col md={6} className="d-flex flex-row">
-                                        <Link to={`/performance?id_agent=${data.id}`}>
->>>>>>> bce29b2 (udpate)
                                             <CardWorkunit
                                                 id      = {data._source.uuid} 
                                                 key     = {`advanced-search-agent-${index}`} 
