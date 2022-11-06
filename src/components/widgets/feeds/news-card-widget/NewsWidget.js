@@ -1035,12 +1035,10 @@ export const NewsWidget = (props) => {
                 </Form>
             </ModalBase>
 
-            <div 
+            <Card 
                 ref          = {bodyCardRef} 
-                className    = "card" 
-                onMouseEnter = {() => {
-                    handleViewer();
-                }}
+                style        = {{ overflow: 'auto', height: '90%'}}
+                onMouseEnter = {() => {handleViewer();}}
             >
                 <CardBody>
                     {/* Header */}
@@ -1234,7 +1232,7 @@ export const NewsWidget = (props) => {
                             )
                     }
                 </CardBody>
-            </div>
+            </Card>
         </Fragment>
     );
 };
