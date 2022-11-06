@@ -467,7 +467,7 @@ const AdvancedSearch = () => {
                                     detailAgentPerformance.total > 0 ?
                                         detailAgentPerformance.data.map((data, index) => (
                                             <Col md={6} className="d-flex flex-row">
-                                                <Link to={`/performance?id_agent=${data._source.name}`}>
+                                                <Link to={`/performance?agen=${data._source.name.replace(/<[^>]*>?/gm, '')}`}>
                                                     <CardWorkunit
                                                         id      = {data._source.uuid} 
                                                         key     = {`advanced-search-agent-${index}`} 
@@ -701,7 +701,7 @@ const AdvancedSearch = () => {
                 }
 
                 {/* Agent Performance Section */}
-                <h3>Agen</h3>
+                <h2>Agen</h2>
                 {
                     loading ?
                         <Skeleton height={150} className="mb-1"/>
@@ -712,7 +712,7 @@ const AdvancedSearch = () => {
                                     agentPerformance.data.map((data, index) => (
                                         index < 2 ? 
                                             <Col md={6}>
-                                                <Link to={`/performance?id_agent=${data._source.name}`}>
+                                                <Link to={`/performance?agen=${data._source.name.replace(/<[^>]*>?/gm, '')}`}>
                                                     <CardWorkunit
                                                         id      = {data._source.uuid} 
                                                         key     = {`advanced-search-agent-${index}`} 

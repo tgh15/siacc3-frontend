@@ -28,27 +28,29 @@ const PerformanceContainer = () => {
     const { 
         active,
         listData,
+        searchTerm,
         setListData,
         sectorAgent,
+        getDataAgent,
         dataSelected,
+        workunitLevel,
         workunitOptions,
         setDataSelected,
-        workunitLevel,
-        getDataAgent,
-        searchTerm,
         getDataWorkunit,
         getAgentDetail,
     } = useContext(PerformanceContext)
 
-    const {getRoleByMenuStatus}  = Helper;
+    const {getRoleByMenuStatus, useQuery}  = Helper;
+
+    let query                              = useQuery();
 
     const getDataAgentByUnitwork = (workunitId) => {
         setListData(false)
         setDataSelected(false)
 
         PerformanceApi.GetAgentByWorkUnit({
-            params : {workunit_id : workunitId},
-            onSuccess: (res) => {
+            params      : {workunit_id : workunitId},
+            onSuccess   : (res) => {
                 setListData(res.agent_performance)
                 setDataSelected(res.agent_performance ? res.agent_performance[0] : null)
             }, onFail: (err) => {
@@ -74,7 +76,11 @@ const PerformanceContainer = () => {
                         <Col md="8" sm="12">
                             <Row>
                                 <Col sm={{ size: 5, offset: 7 }}>
-                                    <SearchTable placeholder={active === 'agent' ? "Cari Agen" : "Cari Satuan Kerja" } onSearch={(e)=> {onSearch(e)} } />
+                                    <SearchTable 
+                                        value       = {query.get('agen') != undefined ? query.get('agen') : null}
+                                        onSearch    = {(e)=> {onSearch(e)} } 
+                                        placeholder = {active === 'agent' ? "Cari Agen" : "Cari Satuan Kerja" } 
+                                    />
                                 </Col>
                             </Row>
                             
