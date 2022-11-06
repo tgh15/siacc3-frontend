@@ -1037,7 +1037,7 @@ export const NewsWidget = (props) => {
 
             <Card 
                 ref          = {bodyCardRef} 
-                style        = {{ overflow: 'auto', height: '90%'}}
+                style        = {{ overflow: 'auto', height: 'auto'}}
                 onMouseEnter = {() => {handleViewer();}}
             >
                 <CardBody>

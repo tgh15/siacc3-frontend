@@ -761,8 +761,7 @@ const Report = (props) => {
                             <Button.Ripple 
                                 color   = "primary" 
                                 outline
-                                onClick = {() => { setDetailData(!detailData) }} 
-                                disabled= {detailResultLoading}
+                                onClick = {() => { setIsDetailResultsVisible(!isDetailResultsVisible) }} 
                             >
                                 Batal
                             </Button.Ripple>,

@@ -85,7 +85,7 @@ const ReportAPI = () => {
 
         feedsReportAPI.createReport(formData).then(
             res => {
-                if(res.status === 201){
+                if(res.status === 201 || res.status === 200){
                     setLoading(false);
                     setIsAddFormVisible(false);
 

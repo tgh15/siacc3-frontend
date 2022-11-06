@@ -751,56 +751,61 @@ const AdvancedSearch = () => {
                 }
 
                 {/* Report Section */}
-                <h3>Laporan</h3>
                 {
-                    loading ?
-                        <Skeleton height={150} className="mb-1"/>
-                    :
-                        <Row>
-                            {
-                                parseInt(report.total) > 0 ?
-                                    report.data.map((data, index) => (
-                                        index < 2 ? 
-                                            <Col md={6}>
-                                                <Link to={`/report?id_report=${data._source.id}`}>
-                                                    <Card className="w-100 p-2">
-                                                        <Row>
-                                                            <Col md={3} className="text-center">
-                                                                <FileText/>
-                                                            </Col>
-
-                                                            <Col md={9} className="d-flex align-items-center">
-                                                                <h5 className="mb-0">{parse(data._source.title)}</h5>
-                                                            </Col>
-                                                        </Row>
-                                                    </Card>
-                                                </Link>
-                                            </Col>
+                    (localStorage.getItem('role') === 'Verifikator Pusat' || localStorage.getItem('role') === 'Admin' || localStorage.getItem('role') === 'Pimpinan Pusat') &&
+                    <>                    
+                        <h2>Laporan</h2>
+                        {
+                            loading ?
+                                <Skeleton height={150} className="mb-1"/>
+                            :
+                                <Row>
+                                    {
+                                        parseInt(report.total) > 0 ?
+                                            report.data.map((data, index) => (
+                                                index < 2 ? 
+                                                    <Col md={6}>
+                                                        <Link to={`/report?id_report=${data._source.id}`}>
+                                                            <Card className="w-100 p-2">
+                                                                <Row>
+                                                                    <Col md={3} className="text-center">
+                                                                        <FileText/>
+                                                                    </Col>
+        
+                                                                    <Col md={9} className="d-flex align-items-center">
+                                                                        <h5 className="mb-0">{parse(data._source.title)}</h5>
+                                                                    </Col>
+                                                                </Row>
+                                                            </Card>
+                                                        </Link>
+                                                    </Col>
+                                                :
+                                                    null
+                                            ))
                                         :
+                                            <Col md={12}>
+                                                <CustomTableBodyEmpty/>
+                                            </Col>
+                                    }
+                                    {
+                                        report.total > 2 ?
+                                            <Col 
+                                                md          = {12} 
+                                                className   = "d-flex justify-content-end"
+                                            >
+                                                <Button 
+                                                    color   = 'flat-dark' 
+                                                    onClick = {() => setShowDetailReport(true)}
+                                                >
+                                                    Tampilkan Lebih Banyak
+                                                </Button>
+                                            </Col>
+                                        : 
                                             null
-                                    ))
-                                :
-                                    <Col md={12}>
-                                        <CustomTableBodyEmpty/>
-                                    </Col>
-                            }
-                            {
-                                report.total > 2 ?
-                                    <Col 
-                                        md          = {12} 
-                                        className   = "d-flex justify-content-end"
-                                    >
-                                        <Button 
-                                            color   = 'flat-dark' 
-                                            onClick = {() => setShowDetailReport(true)}
-                                        >
-                                            Tampilkan Lebih Banyak
-                                        </Button>
-                                    </Col>
-                                : 
-                                    null
-                            }
-                        </Row>
+                                    }
+                                </Row>
+                        }
+                    </>
                 }
             </div>
         </Fragment>
