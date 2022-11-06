@@ -131,7 +131,7 @@ const UserActivity = (props) => {
                 placeholder = "Cari Aktifitas Pengguna..."
             >
                 {
-                    listData && listData.map((data, i) => (
+                    false && listData?.map((data, i) => (
                         <div id = "activity-table">
                             <CustomTableBody key={i}>
                                 <Col md="2">
