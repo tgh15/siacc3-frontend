@@ -9,40 +9,22 @@ const AntmediaProvider = ({children}) =>{
     const [webRTCAdaptorPeer,setWebRtcAdaptorPeer]      = useState(null)
 
     let url_antmedia_server, ice_server;
-    
-    // if(!process.env.NODE_ENV || process.env.NODE_ENV === 'production'){
-        // url_antmedia_server = "wss://stream.siaccinfo.id/WebRTCAppEE/websocket"
-        ice_server          =  {
-            'iceServers': [
-                {
-                    'urls'          : "turn:103.106.174.84:3478",
-                    'username'      : "s144cc202i",
-                    'credential'    : "5a1d82cc6821",
-                },            
-                {
-                    'urls'          : "stun:103.106.174.84:3478",
-                    'username'      : "s144cc202i",
-                    'credential'    : "5a1d82cc6821",
-                }
-            ]
-        }
-    // }else{
-        url_antmedia_server = "wss://antmedia.underdev.team/WebRTCAppEE/websocket"
-    //     ice_server          =  {
-    //         'iceServers': [
-    //             {
-    //                 'urls'          : "stun:158.140.183.123:3478",
-    //                 'username'      : "devops",
-    //                 'credential'    : "9051puki",
-    //             },            
-    //             {
-    //                 'urls'          : "turn:158.140.183.123:3478",
-    //                 'username'      : "devops",
-    //                 'credential'    : "9051puki",
-    //             }
-    //         ]
-    //     }
-    // }
+
+    ice_server          =  {
+        'iceServers': [
+            {
+                'urls'          : "turn:103.106.174.84:3478",
+                'username'      : "s144cc202i",
+                'credential'    : "5a1d82cc6821",
+            },            
+            {
+                'urls'          : "stun:103.106.174.84:3478",
+                'username'      : "s144cc202i",
+                'credential'    : "5a1d82cc6821",
+            }
+        ]
+    }
+    url_antmedia_server = "wss://antmedia.underdev.team/WebRTCAppEE/websocket"
 
 
     const setWebRtc = (kind="peer",localvideoId,remoteVideoId, type) => {
