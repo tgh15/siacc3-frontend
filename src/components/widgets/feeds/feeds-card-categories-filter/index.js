@@ -220,7 +220,6 @@ export const FeedsCategoriesFilterModal = (props) => {
                                 />
                             }
                         />
-
                     </FormGroup>
 
                     <FormGroup className="text-center">
