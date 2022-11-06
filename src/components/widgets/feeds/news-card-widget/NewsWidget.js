@@ -69,7 +69,9 @@ export const NewsWidget = (props) => {
         archived,
         subTitle, 
         division, 
-        newsType, 
+        newsType,
+        publish_date, 
+        time_update,
         location, 
         bodyText, 
         imgAvatar, 
@@ -1107,6 +1109,11 @@ export const NewsWidget = (props) => {
                                                 parse(bodyText)
                                         }
                                     </p>
+                        }
+
+                        {
+                            time_update != publish_date &&
+                            `Tanggal Publikasi : ${moment(publish_date).format('DD MMMM YYYY')}`
                         }
 
                         {attach == null ? null : attach.files}

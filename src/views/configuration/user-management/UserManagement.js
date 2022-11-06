@@ -189,7 +189,7 @@ const UserManagement = () => {
                         onClickForm={() => { setDataSelected(false); setModalForm(true) }}
                         placeholder="Cari Pengguna..."
                         onClickFilter={() => { setModalFilter(true) }}
-                        onNext={() => {
+                        onNext  ={() => {
                             if (!filter) {
                                 getData({
                                     page: pagination.current_page + 1,

@@ -44,6 +44,7 @@ export const FeedsCategoriesFilterModal = (props) => {
 
     const [kind, setKind]               = useState(2);
     const [orderBy, setOrderBy]         = useState('latest');
+    const [publishType, setPublishType] = useState('national');
 
 
     const handleSubmit_ = (data) => {
@@ -52,6 +53,7 @@ export const FeedsCategoriesFilterModal = (props) => {
             workunit    : [],
             order_by    : orderBy,
             filter_type : "home",
+            publish_type: 'publish_type'
         }
 
         if(data.workunit != undefined){
@@ -115,6 +117,28 @@ export const FeedsCategoriesFilterModal = (props) => {
                             <Button 
                                 onClick = {()=>{setKind(1)}} 
                                 outline = {kind !== 1} 
+                                color   = {"primary"}
+                            >
+                                Lokal
+                            </Button>
+                        </p>
+                    </FormGroup>
+
+                    <FormGroup>
+                        <Label>Jenis Publikasi</Label>
+                        <p>
+                            <Button
+                                onClick = {()=>{setPublishType('national')}} 
+                                outline = {publishType !== 'national'} 
+                                color   = {"primary"}
+                            >
+                                Nasional
+                            </Button>
+                            &nbsp;
+
+                            <Button 
+                                onClick = {()=>{setPublishType('local')}} 
+                                outline = {publishType !== 'local'} 
                                 color   = {"primary"}
                             >
                                 Lokal
