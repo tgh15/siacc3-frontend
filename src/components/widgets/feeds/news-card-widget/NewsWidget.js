@@ -71,6 +71,7 @@ export const NewsWidget = (props) => {
         division, 
         newsType,
         publish_date, 
+        publish_type,
         time_update,
         location, 
         bodyText, 
@@ -1112,8 +1113,8 @@ export const NewsWidget = (props) => {
                         }
 
                         {
-                            time_update != publish_date &&
-                            `Tanggal Publikasi : ${moment(publish_date).format('DD MMMM YYYY')}`
+                            publish_type != 'not_publish_yet' &&
+                            <p>Tanggal Publikasi : {moment(publish_date).format('DD MMMM YYYY')} ({publish_type === 'local_publish' ? 'Lokal' : 'Nasional'})</p>
                         }
 
                         {attach == null ? null : attach.files}
