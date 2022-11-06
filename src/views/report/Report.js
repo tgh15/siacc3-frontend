@@ -1,5 +1,5 @@
 import { Fragment, useEffect, useState }   from "react";
-import { Button, Col }          from "reactstrap";
+import { Button, Col, Row }          from "reactstrap";
 import { Eye, Trash2 }          from "react-feather";
 
 //Component
@@ -41,8 +41,9 @@ const Report = (props) => {
         report,
         detailReport,
         detailResults,
-        setSelectedReport,
         isAddFormVisible,
+        setSelectedReport,
+        detailResultLoading,
         setIsAddFormVisible,
         isDetailReportVisible,
         isDetailResultsVisible,
@@ -56,8 +57,8 @@ const Report = (props) => {
     //Helper
     const {getRoleByMenuStatus}                 = Helper;
 
-    const [body, setBody]                           = useState([]);
-    const [header, setHeader]                       = useState([]);
+    const [body, setBody]                       = useState([]);
+    const [header, setHeader]                   = useState([]);
 
     //Export Excel
     const ExcelFile                             = ReactExport.ExcelFile;
@@ -761,6 +762,7 @@ const Report = (props) => {
                                 color   = "primary" 
                                 outline
                                 onClick = {() => { setDetailData(!detailData) }} 
+                                disabled= {detailResultLoading}
                             >
                                 Batal
                             </Button.Ripple>,
@@ -774,6 +776,7 @@ const Report = (props) => {
                                             printPDF()
                                         }
                                     }}
+                                    disabled    = {detailResultLoading}
                                     className   = "mr-1" 
                                 >
                                     Print PDF
@@ -787,31 +790,54 @@ const Report = (props) => {
                                             createPDF();
                                         }
                                     }}
+                                    disabled    = {detailResultLoading}
                                     className   = "mr-1" 
                                 >
                                     Export PDF
                                 </Button.Ripple>
-                                {createExcel()}
+                                {
+                                    detailResultLoading ?
+                                        <Button.Ripple 
+                                            color       = "primary" 
+                                            disabled    = {detailResultLoading}
+                                            className   = "mr-1" 
+                                        >
+                                            Export Excel
+                                        </Button.Ripple>
+                                    :
+                                        createExcel()
+                                }
                             </div>,
                     ]}
                     setShow     = {(par) => { setIsDetailResultsVisible(par) }}
                     scrollable  = {true}
                 >
                     {
-                        detailResults != null && "is_formatted" in detailResults && detailResults.is_formatted === true ?
-                            <DetailDataFormatted
-                                detailReport                = {props.detailResults}
-                            />
+
+                        detailResultLoading ?
+                            <Row>
+                                {
+                                    Array(5).fill(0).map((data) => (
+                                        <Col md={12}>
+                                            <Skeleton height={100}/>
+                                        </Col>
+                                    ))
+                                }
+                            </Row>
                         :
-                            <DetailData
-                                onCancel                    = {() => { setIsDetailResultsVisible(!isDetailResultsVisible) }} 
-                                detailReport                = {props.detailResults}
-                                selectedReport              = {props.selectedReport}
-                                selectForwardChat           = {props.selectForwardChat}
-                                isDetailResultsVisible      = {props.isDetailResultsVisible}
-                                setIsDetailResultsVisible   = {props.setIsDetailResultsVisible}
-                            />
-                            
+                            detailResults != null && "is_formatted" in detailResults && detailResults.is_formatted === true ?
+                                <DetailDataFormatted
+                                    detailReport                = {props.detailResults}
+                                />
+                            :
+                                <DetailData
+                                    onCancel                    = {() => { setIsDetailResultsVisible(!isDetailResultsVisible) }} 
+                                    detailReport                = {props.detailResults}
+                                    selectedReport              = {props.selectedReport}
+                                    selectForwardChat           = {props.selectForwardChat}
+                                    isDetailResultsVisible      = {props.isDetailResultsVisible}
+                                    setIsDetailResultsVisible   = {props.setIsDetailResultsVisible}
+                                />   
                     }
                 </ModalBase>
 
@@ -850,7 +876,8 @@ const Report = (props) => {
                                                     "Laporan Bulanan"
                                                 :
                                                     "Hasil"
-                                            : "-"
+                                            : 
+                                                "-"
                                         }
                                     </Col>
                                     <Col md="2">
@@ -860,7 +887,7 @@ const Report = (props) => {
                                                     Terjadwal
                                                 </Button>
                                             :
-                                            <Button color='primary' size='sm'>
+                                                <Button color='primary' size='sm'>
                                                     Selesai
                                                 </Button>
                                         }
@@ -878,7 +905,8 @@ const Report = (props) => {
                                                         className   = "mr-1 cursor-pointer" 
                                                     />
                                                 </div>
-                                            : null
+                                            : 
+                                                null
                                         }
                                         {
                                             getRoleByMenuStatus('Laporan', 'delete') ? 
