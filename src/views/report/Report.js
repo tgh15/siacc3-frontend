@@ -121,7 +121,7 @@ const Report = (props) => {
                                                     _bodyData.push(data.agent_comments != undefined ? data.agent_comments.toString() : data.agent_comments)
                                                 :
                                                         dataHeader.report_content.id === 6 ?
-                                                            _bodyData.push(data.viewer_count != undefined ? data.viewer_count.toString() : data.viewer_count)
+                                                            _bodyData.push(data.viewers != undefined ? data.viewers.toString() : data.viewers)
                                                         :
                                                             dataHeader.report_content.id === 7 ?
                                                                 _bodyData.push(data.categories != undefined ? data.categories.toString() : data.categories)
