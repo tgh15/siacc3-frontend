@@ -53,7 +53,7 @@ export const FeedsCategoriesFilterModal = (props) => {
             workunit    : [],
             order_by    : orderBy,
             filter_type : "home",
-            publish_type: 'publish_type'
+            publish_type: publishType
         }
 
         if(data.workunit != undefined){
@@ -90,6 +90,7 @@ export const FeedsCategoriesFilterModal = (props) => {
         setShow(false);
         onFilter(formData);
         setOrderBy('latest');
+        setPublishType('national');
     }
 
     return(
