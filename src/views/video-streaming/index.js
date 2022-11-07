@@ -22,16 +22,16 @@ const VideoStreaming = () => {
     const [historyList, setHistoryList]             = useState(null);
     const [isAddVideoVisible, setIsAddVideoVisible] = useState(false);
 
-    const {
-        callback,
-        setWebRtc,
-        webRTCAdaptorPeer
-    }                                               = useContext(AntmediaContext);
+    const GetVideoStreaming = (kind = 'published') => {
 
-    const GetVideoStreaming = () => {
+        let param = {};
 
-        const param = {
-            all : true
+        if(kind === 'published'){
+            param.all = true;
+        }else if(kind === 'finished'){
+            param.saved = true;
+        }else{
+            param.history = true;
         }
 
         VideoStreamingAPI.VideoStreamingList(param).then(
@@ -39,26 +39,30 @@ const VideoStreaming = () => {
 
                 if(res.is_error === false){
 
-                    let liveList_ = [], savedList_ = [], historyList_ = [];
-
-                    if( res.data.length > 0){
-                        res.data.map((data) => (
-                            data.broadcast.status === "broadcasting" || data.broadcast.status === "published" ? 
-                                liveList_.push(data)
-                            :
-                                data.broadcast.status === "finished" ? 
-                                    savedList_.push(data)
-                                :
-                                    historyList_.push(data)
-                        ))
+                    if(res.data != null && res.data.length > 0){
+                        
     
-                        setLiveList(liveList_);
-                        setSavedList(savedList_);
-                        setHistoryList(historyList_);
+                        if(kind === 'published'){
+
+                            setLiveList(
+                                res.data.filter((data) => (
+                                    (data.broadcast.status === "broadcasting" || data.broadcast.status === "publish") 
+                                ))
+                            );
+                        }else if(kind === 'finished'){
+                            setSavedList(res.data);
+                        }else{
+                            setHistoryList(res.data);
+                        }
+
                     }else{
-                        setLiveList([]);
-                        setSavedList([]);
-                        setHistoryList([]);
+                        if(kind === 'published'){
+                            setLiveList([]);
+                        }else if(kind === 'finished'){
+                            setSavedList([]);
+                        }else{
+                            setHistoryList([]);
+                        }
                     }
                 }
 
@@ -71,7 +75,9 @@ const VideoStreaming = () => {
     }
 
     useEffect(() => {
-        GetVideoStreaming();
+        GetVideoStreaming('published');
+        GetVideoStreaming('finished');
+        GetVideoStreaming('history');
 
 
     }, []); 
@@ -207,7 +213,9 @@ const VideoStreaming = () => {
                                 </Col>
                             ))
                         :
-                            <CustomTableBodyEmpty/>
+                            <Col md={12}>
+                                <CustomTableBodyEmpty/>
+                            </Col>
                 }
             </Row>
             <hr/>
@@ -241,7 +249,9 @@ const VideoStreaming = () => {
                                 </Col>
                             ))
                         :
-                            <CustomTableBodyEmpty/>
+                            <Col md={12}>
+                                <CustomTableBodyEmpty/>
+                            </Col>
                 }
             </Row>
         </>

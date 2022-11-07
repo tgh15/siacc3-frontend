@@ -187,7 +187,7 @@ const getTimeAgo = (stringDate) => {
 const getDuration = (startDate, endDate) => {
     let duration = moment.duration(moment(endDate).diff(moment(startDate)));
 
-    return duration.minutes();
+    return `${duration.minutes()} Menit ${duration.seconds()} Detik`;
 };
 
 const fallbackImage_ = (val) => {
