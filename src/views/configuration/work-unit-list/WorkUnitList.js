@@ -407,10 +407,13 @@ const WorkUnitList = (props) => {
                         header  = {headerTable}
                         getData = {(params) => { setListData(false); console.log(params); getData(params) }}
                     >
-                        <div id="workunit-list-table">
-                            {
-                                listData && listData.map((data, i) => (
-                                    <CustomTableBody key={i}>
+                        {
+                            listData && listData.map((data, i) => (
+                                <div 
+                                    id  = "workunit-list-table"
+                                    key = {i}
+                                >
+                                    <CustomTableBody>
                                         <Col
                                             md        = "1"
                                             className = "text-center"
@@ -499,10 +502,10 @@ const WorkUnitList = (props) => {
                                             }
                                         </Col>
                                     </CustomTableBody>
-                                ))
-                            }
-                        </div>
-
+                                </div>
+                            ))
+                        }
+                        
                         {!listData && listData != null && <Skeleton height={100} count={3} style={{ marginBottom: "10px" }}/>}
                         {!listData && listData === null && <CustomTableBodyEmpty/>}
                     </CustomTable>

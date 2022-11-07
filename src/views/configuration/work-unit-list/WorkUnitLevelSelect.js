@@ -18,10 +18,10 @@ const WorkUnitLevelSelect = ({ isRtl, onSelect, getAllData, setListData }) => {
 
     const params = {
         className           : 'swiper-centered-slides',
-        slidesPerView       : 'auto',
-        spaceBetween        : 20,
-        centeredSlides      : true,
         navigation          : true,
+        spaceBetween        : 13,
+        slidesPerView       : 20,
+        centeredSlides      : true,
         slideToClickedSlide : true,
     };
 

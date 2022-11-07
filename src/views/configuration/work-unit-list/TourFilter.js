@@ -116,7 +116,12 @@ const TourFilter = (props) => {
                     md = '12' 
                     sm = '12'
                 >
-                    <ShepherdTour steps={steps}>
+                    <ShepherdTour 
+                        steps       = {steps}
+                        tourOptions = {{ 
+                            useModalOverlay: true
+                        }}
+                    >
                         <StartTour/>
                     </ShepherdTour>
                 </Col>
@@ -125,9 +130,9 @@ const TourFilter = (props) => {
                     sm = '12'
                 >
                     <FilterForm
-                        loading                 = {props.loading}
-                        onClose                 = {props.onClose}
-                        onFilter                = { (datas) => props.onFilter(datas)}
+                        loading  = {props.loading}
+                        onClose  = {props.onClose}
+                        onFilter = { (datas) => props.onFilter(datas)}
                     />
                 </Col>
             </Row>
