@@ -12,7 +12,6 @@ import {
     Button,
     FormGroup,
     ModalFooter,
-    FormFeedback,
 }                                   from "reactstrap";
 
 //Helper
@@ -31,6 +30,7 @@ const ModalForm = (props) => {
     //Props
     const {
         data,
+        getData,
         onCancel,
         setListData,
         setModalForm
@@ -44,7 +44,7 @@ const ModalForm = (props) => {
     let query                   = useQuery();
 
     const schema = yup.object().shape({
-        name: yup.string().min(3).required(),
+        name: yup.string().min(3, 'Jumlah minimal karakter adalah 3!').required('Kolom nama belum terisi'),
     }).required();
     
     const { 
@@ -54,25 +54,7 @@ const ModalForm = (props) => {
     } = useForm({ mode: "onChange", resolver: yupResolver(schema) });
 
 
-    const getData = () => {
-        let params; 
-        
-        if(query.get("mode") === 'tour'){
-            params = {tutorial: true}
-        }
-
-        feedsCategoryAPI.getCategory(1, undefined, params).then(
-            res => {
-                setListData(res.data.category);
-            }
-        ).catch(
-            err => {
-                console.log(err);
-                CustomToast("danger", "Oops.");
-            }
-        )
-    };
-
+    //Create category
     const create = (dataForm, params) => {
         const formData = {
             name : dataForm.name
@@ -80,23 +62,24 @@ const ModalForm = (props) => {
 
         feedsCategoryAPI.createCategory(formData, params).then(
             res => {
-                if(res.status === 201){
+                if (!res.is_error) {
                     setLoading(false);
                     setListData(false);
                     setModalForm(false);
                     CustomToast("success", "Data Berhasil Disimpan");
                     
-                    if(params == undefined){
-                        getData({tutorial:true});
-                    }else{
+                    if (params == undefined) {
+                        getData({tutorial: true});
+                    }else {
                         getData();
-                    }    
+                    } 
+                }else {
+                    CustomToast("danger", res.message);
                 }
             }
         ).catch(
             err => {
-                setLoading(false);
-                CustomToast("danger", "Oops.");
+                CustomToast("danger", err.message);
             }
         )
 
@@ -107,30 +90,34 @@ const ModalForm = (props) => {
         selfLearningURL.updateUserModul(formDatas);
     };
 
+    //Update category
     const update = (dataForm, params) => {
         const formData = {
             id      : parseInt(dataForm.id),
             name    : dataForm.name
-        }
+        };
 
         feedsCategoryAPI.updateCategory(formData, params).then(
             res => {
-                setLoading(false);
-                setListData(false);
-                setModalForm(false);
-                CustomToast("success", "Data Berhasil Diubah");
+                if (!res.is_error) {
+                    setLoading(false);
+                    setListData(false);
+                    setModalForm(false);
+                    CustomToast("success", "Data Berhasil Diubah");
 
-                if(params == undefined){
-                    getData({tutorial:true});
-                }else{
-                    getData();
+                    if (params == undefined) {
+                        getData({tutorial: true});
+                    }else {
+                        getData();
+                    }
+                }else {
+                    CustomToast("danger", res.message);
                 }
             }
         ).catch(
             err => {
-                console.log(err);
                 setLoading(false);
-                CustomToast("danger", "Oops.");
+                CustomToast("danger", err.message);
             }
         )
 
@@ -138,23 +125,23 @@ const ModalForm = (props) => {
             id       : parseInt(query.get("moduleId")),
             is_done  : true,
         }
-        selfLearningURL.updateUserModul(formDatas)  
+        selfLearningURL.updateUserModul(formDatas);
     };
 
     const onSubmit = dataForm => {
         setLoading(true);
         
         if (!data) {
-            if(query.get("mode") === "tour"){
-                create(dataForm, {tutorial:true})
-            }else{
-                create(dataForm)
+            if (query.get("mode") === "tour") {
+                create(dataForm, {tutorial: true});
+            }else {
+                create(dataForm);
             }
-        } else {
-            if(query.get("mode") === "tour"){
-                update(dataForm, {tutorial:true})
-            }else{
-                update(dataForm)
+        }else {
+            if (query.get("mode") === "tour") {
+                update(dataForm, {tutorial: true});
+            }else {
+                update(dataForm);
             }
         }
     };
@@ -178,8 +165,22 @@ const ModalForm = (props) => {
                                     defaultValue    = {(data) ? data.name : null}
                                 />
                             </div>
-                            {data &&  <Input name="id" type="hidden" innerRef={register({ required: true })} defaultValue={data.id} /> }
-                            {errors && errors.name && <FormFeedback>{errors.name.message}</FormFeedback>}
+                            {
+                                data &&  
+                                <Input 
+                                    name         = "id" 
+                                    type         = "hidden" 
+                                    innerRef     = {register({ required: true })} 
+                                    defaultValue = {data.id} 
+                                /> 
+                            }
+
+                            {
+                                errors && errors.name && 
+                                <Label style={{ color: 'red' }}>
+                                    {errors.name.message}
+                                </Label>
+                            }
                         </FormGroup>
                     </Col>
                 </Row>

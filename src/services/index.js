@@ -36,6 +36,20 @@ export const employeeURL = {
     
 };
 
+
+
+/*
+    #######################
+    #SEPARTOR API EMPLOYEE#
+    #######################
+*/
+
+export const feedsURL = {
+    feedsPrefix : "feeds",
+};
+
+
+
 /*
 ####################
 #SEPARATOR CRAWLING#
