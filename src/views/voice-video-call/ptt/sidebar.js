@@ -126,7 +126,10 @@ const PTTSidebar = (props) => {
                         Push To Talk
                     </h5>
                     <div className='d-flex cursor-pointer'>
-                        <Plus size="20" onClick={() => {setCreateRoomVisible(true)}}/>
+                        {
+                            (localStorage.getItem('role') === 'Verifikator Pusat' || localStorage.getItem('role') === 'Admin') &&
+                            <Plus size="20" onClick={() => {setCreateRoomVisible(true)}}/>
+                        }
                     </div>
                 </div>
 
@@ -171,33 +174,44 @@ const PTTSidebar = (props) => {
                                         </h3>
                                     </Col>
                                     <Col md={3} className="text-right">
+                                        
                                         {
-                                            pttActive ? 
-                                                <Settings 
-                                                    size    = {20}
-                                                    onClick = {() => setPttActive(false)}
-                                                />
-                                            :
-                                                <LogOut
-                                                    size    = {20}
-                                                    onClick = {() => {setPttActive(true); setPttActiveContent('ptt')}}
-                                                />
+                                            (localStorage.getItem('role') === 'Verifikator Pusat' || localStorage.getItem('role') === 'Admin') &&
+                                            <>
+                                                {
+                                                    pttActive ? 
+                                                        <Settings 
+                                                            size    = {20}
+                                                            onClick = {() => setPttActive(false)}
+                                                        />
+                                                    :
+                                                        <LogOut
+                                                            size    = {20}
+                                                            onClick = {() => {setPttActive(true); setPttActiveContent('ptt')}}
+                                                        />
+                                                }
+                                            </>
+
+                                            
                                         }
+
                                         </Col>
                                 </Row>
 
                                 {
                                     pttActive ? 
                                         <>
-                                            <Button 
-                                                block 
-                                                color       = "primary"
-                                                className   = "mt-1" 
-                                                onClick     = {() => setIsAddUserVisible(true)}
-                                            >
-                                                Tambahkan Anggota
-                                            </Button> 
-
+                                            {
+                                                (localStorage.getItem('role') === 'Verifikator Pusat' || localStorage.getItem('role') === 'Admin') &&
+                                                <Button 
+                                                    block 
+                                                    color       = "primary"
+                                                    className   = "mt-1" 
+                                                    onClick     = {() => setIsAddUserVisible(true)}
+                                                >
+                                                    Tambahkan Anggota
+                                                </Button> 
+                                            }
 
                                             <div className='mt-2 d-flex justify-content-between'>
                                                 <span onClick={() => setIsCollapse(!isCollapse)} className='cursor-pointer'>
@@ -212,10 +226,13 @@ const PTTSidebar = (props) => {
                                                     }
                                                     Channel
                                                 </span>
-                                                <Plus 
-                                                    className='cursor-pointer'
-                                                    onClick={() => setCreateChannelVisible(true)}
-                                                /> 
+                                                {
+                                                    (selected != null && selected.admins_id.filter((data) => data === localStorage.getItem('uuid')).length > 0) &&
+                                                    <Plus 
+                                                        className='cursor-pointer'
+                                                        onClick={() => setCreateChannelVisible(true)}
+                                                    /> 
+                                                }
                                             </div>
                                             <div style={{overflowY:'auto', overflowX: 'hidden', height: '45vh'}}>
                                                 <Collapse 

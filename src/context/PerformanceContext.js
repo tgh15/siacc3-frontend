@@ -152,7 +152,7 @@ const PerformanceProvider = ({ children }) => {
                                         })   
                                 ))
 
-                                level_2.unshift({label : 'SEMUA KEJAKSAAN TINGGI', value : (level_2.map((data) => (data.value))).toString()})
+                                // level_2.unshift({label : 'SEMUA KEJAKSAAN TINGGI', value : (level_2.map((data) => (data.value))).toString()})
                                 setWorkunitLevel2(level_2);
                             }
     
@@ -180,7 +180,7 @@ const PerformanceProvider = ({ children }) => {
                                                     value : data.id
                                                 })   
                                         ))
-                                        level_3.unshift({label : 'SEMUA KEJAKSAAN NEGERI', value : (level_3.map((data) => (data.value))).toString()})
+                                        // level_3.unshift({label : 'SEMUA KEJAKSAAN NEGERI', value : (level_3.map((data) => (data.value))).toString()})
                                         setWorkunitLevel3(level_3);
                                     }
     
@@ -200,7 +200,7 @@ const PerformanceProvider = ({ children }) => {
                                                         value : data.id
                                                     })
                                                 ))
-                                                level_4.unshift({label : 'SEMUA CABANG KEJAKSAAN NEGERI', value : (level_4.map((data) => (data.value))).toString()})
+                                                // level_4.unshift({label : 'SEMUA CABANG KEJAKSAAN NEGERI', value : (level_4.map((data) => (data.value))).toString()})
                                                 setWorkunitLevel4(level_4);
                                             }
     

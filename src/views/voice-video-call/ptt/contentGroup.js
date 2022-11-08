@@ -27,8 +27,7 @@ import { AntmediaContext }                      from '../../../context/AntmediaC
 
 import GeneralInformation                       from './settings/generalInformation';
 import MemberManagement                         from './settings/memberManagement';
-import { active } from 'sortablejs';
-import Helper from '../../../helpers';
+import Helper                                   from '../../../helpers';
 
 const ContentGroup = (props) => {
 
