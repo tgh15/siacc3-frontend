@@ -41,10 +41,10 @@ const steps = [
         ]
     },
     {
-        id          : 'search-data',
-        title       : 'Pencarian Data Setting Performance',
-        text        : 'Masukkan data yang ingin dicari, kemudian tekan tombol enter pada keyboard',
-        attachTo    : { element: '#search-data', on: 'left' },
+        id          : 'add-data',
+        title       : 'Tambah Data Setting Performance',
+        text        : 'Ketika diklik anda akan di arahkan pada tampilan tambah data setting performance',
+        attachTo    : { element: '#add-data', on: 'right' },
         cancelIcon  : {
             enabled : true
         },
@@ -67,10 +67,10 @@ const steps = [
         ]
     },
     {
-        id          : 'add-data',
-        title       : 'Tambah Data Setting Performance',
-        text        : 'Ketika diklik anda akan di arahkan pada tampilan tambah data setting performance',
-        attachTo    : { element: '#add-data', on: 'right' },
+        id          : 'search-data',
+        title       : 'Pencarian Data Setting Performance',
+        text        : 'Masukkan data yang ingin dicari, kemudian tekan tombol enter pada keyboard',
+        attachTo    : { element: '#search-data', on: 'left' },
         cancelIcon  : {
             enabled : true
         },
