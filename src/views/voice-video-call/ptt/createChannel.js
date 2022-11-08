@@ -26,7 +26,7 @@ import { yupResolver }                          from '@hookform/resolvers/yup';
 
 import CommunicationPTT                         from '../../../services/pages/chat/PushToTalk';
 import CustomToast                              from '../../../components/widgets/custom-toast';
-import InputPasswordToggle from '../../../components/widgets/input-password-toggle';
+import InputPasswordToggle                      from '../../../components/widgets/input-password-toggle';
 
 const CreateChannel = (props) => {
     const {
@@ -46,17 +46,23 @@ const CreateChannel = (props) => {
 
     const { 
         register,
-        getValues,
+        getValues, 
         handleSubmit, 
         formState   : { errors }
     }                                           = useForm({resolver: yupResolver(schema)});
 
     const handleAddChannel = (channelId) => {
+
+        const params = {
+            id      : selected.id,
+            channel : 'add'
+        }
+
         const formData = {
             channels_id : [channelId]
         };
 
-        CommunicationPTT.addChannelToSever(selected.id, formData).then(
+        CommunicationPTT.addChannelToSever(formData, params).then(
             res => {
                 if(res.status === 200){
                     CustomToast("success", 'Channel berhasil dibuat.');
@@ -72,9 +78,13 @@ const CreateChannel = (props) => {
     }
 
     const handleSubmit_ = (data) => {
+
+        const params = {
+            mode : 'channel'
+        };
+
         const formData = {
             room_name   : data.name,
-            audience    : selected.member_id
         }
 
         if(isPrivate){
@@ -84,7 +94,7 @@ const CreateChannel = (props) => {
             formData.is_private = false
         }
 
-        CommunicationPTT.createRoom(formData).then(
+        CommunicationPTT.CreateChannel(formData, params).then(
             res => {
                 if(res.status === 200){
 
@@ -143,8 +153,8 @@ const CreateChannel = (props) => {
                             <Label>Password</Label>
                             <InputPasswordToggle
                                 name        = "password"
-                                innerRef    = { isPrivate ? register({required: true }) : register() }
                                 invalid     = {(errors.password) ? true : false}
+                                innerRef    = {isPrivate ? register({required: true }) : register()}
                                 className   = 'input-group-merge'
                             />
                             <Label className="text-danger">{errors.name?.message}</Label>

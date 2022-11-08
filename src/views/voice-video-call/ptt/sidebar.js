@@ -8,24 +8,24 @@ import {
     AlertCircle, 
     ChevronDown,
     ChevronRight,
-}                       from 'react-feather'
+}                               from 'react-feather'
 
 import {
     Col,
     Row,
     Button,
     Collapse
-}                       from 'reactstrap'
+}                               from 'reactstrap'
 
-import Avatar           from '../../../components/widgets/avatar';
-import ChildChannel     from './childChannel';
+import Avatar                   from '../../../components/widgets/avatar';
+import ChildChannel             from './childChannel';
 
 //utils
-import Helper           from '../../../helpers';
-import SelectMultipleUser from '../../../components/widgets/select-multiple-user';
-import { useState } from 'react';
-import CommunicationPTT from '../../../services/pages/chat/PushToTalk';
-import CustomToast from '../../../components/widgets/custom-toast';
+import Helper                   from '../../../helpers';
+import SelectMultipleUser       from '../../../components/widgets/select-multiple-user';
+import { useEffect, useState }             from 'react';
+import CommunicationPTT         from '../../../services/pages/chat/PushToTalk';
+import CustomToast              from '../../../components/widgets/custom-toast';
 
 
 const PTTSidebar = (props) => {
@@ -45,7 +45,10 @@ const PTTSidebar = (props) => {
         setPttActiveContent,
         setCreateRoomVisible,
         setCreateChannelVisible,
-    }                   = props;
+        setSelectedChannelID,
+        setIsConfirmPasswordVisible,
+        handleSelfJoinChannel
+    }                                                   = props;
 
     const [isAddUserVisible, setIsAddUserVisible]       = useState(false);
 
@@ -195,6 +198,7 @@ const PTTSidebar = (props) => {
                                                 Tambahkan Anggota
                                             </Button> 
 
+
                                             <div className='mt-2 d-flex justify-content-between'>
                                                 <span onClick={() => setIsCollapse(!isCollapse)} className='cursor-pointer'>
                                                     {
@@ -213,25 +217,30 @@ const PTTSidebar = (props) => {
                                                     onClick={() => setCreateChannelVisible(true)}
                                                 /> 
                                             </div>
+                                            <div style={{overflowY:'auto', overflowX: 'hidden', height: '45vh'}}>
+                                                <Collapse 
+                                                    isOpen      = {isCollapse}
+                                                    className   = "mt-2"
+                                                >
+                                                    {
+                                                        selected != null && selected.channels != null ? 
+                                                            selected.channels.map((data) => (
+                                                                <ChildChannel 
+                                                                    data                        = {data}
+                                                                    selected                    = {selected}
+                                                                    activeChannel               = {activeChannel}
+                                                                    setActiveChannel            = {setActiveChannel}    
+                                                                    setSelectedChannelID        = {setSelectedChannelID}
+                                                                    setIsConfirmPasswordVisible = {setIsConfirmPasswordVisible}
+                                                                    handleSelfJoinChannel       = {handleSelfJoinChannel}
+                                                                />
+                                                            ))
+                                                        :
+                                                            null
+                                                    }
+                                                </Collapse>
+                                            </div>
 
-                                            <Collapse 
-                                                isOpen      = {isCollapse}
-                                                className   = "mt-2"
-                                            >
-                                                {
-                                                    selected != null && selected.channels != null ? 
-                                                        selected.channels.map((data) => (
-                                                            <ChildChannel 
-                                                                data                = {data}
-                                                                selected            = {selected}
-                                                                activeChannel       = {activeChannel}
-                                                                setActiveChannel    = {setActiveChannel}    
-                                                            />
-                                                        ))
-                                                    :
-                                                        null
-                                                }
-                                            </Collapse>
                                         </>
                                     :                    
                                         <div className='chat-user-list-wrapper list-group' style={{marginLeft: '-18px', marginTop: '10px'}}>
