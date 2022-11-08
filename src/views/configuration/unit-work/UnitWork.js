@@ -1,5 +1,5 @@
 import { Fragment, useEffect, useState }    from "react";
-import { Col }                              from "reactstrap";
+import { Col, Row }                         from "reactstrap";
 import { Edit2, Trash2 }                    from "react-feather";
 import Skeleton                             from "react-loading-skeleton";
 
@@ -12,10 +12,12 @@ import selfLearningURL                      from "../../../services/pages/helpde
 
 //Components
 import TourInput                            from "./TourInput";
+import ButtonAdd                            from "../../../components/widgets/custom-table/ButtonAdd";
 import FormDelete                           from "../../../components/widgets/form-delete/FormDelete";
 import headerTable                          from "./headerTable";
 import CustomToast                          from "../../../components/widgets/custom-toast";
 import CustomTable                          from "../../../components/widgets/custom-table";
+import SearchTable                          from "../../../components/widgets/custom-table/SearchTable";
 import { ModalBase }                        from '@src/components/widgets/modals-base';
 import CustomTableBody                      from "../../../components/widgets/custom-table/CustomTableBody";
 import CustomTableBodyEmpty                 from "../../../components/widgets/custom-table/CustomTableBodyEmpty";
@@ -196,22 +198,38 @@ const UnitWork = (props) => {
                 />
             </ModalBase>
 
+            {/* button add and search */}
+            <Row>
+                <Col md="8">
+                    <ButtonAdd
+                        onClick = {() => { 
+                            setForm(true);
+                            setData(false); 
+                        }}
+                    />
+                </Col>
+                <Col md="4">
+                    <SearchTable
+                        onSearch    = {(keyword) => { 
+                            setListData(false); 
+
+                            if (query.get("mode") === "tour" && query.get("action") === 'search') {
+                                getData({keyword: keyword, tutorial: true});
+                            }else {
+                                getData({keyword: keyword});
+                            }
+                        }}
+                        placeholder = "Cari Unit Kerja..."
+                    />
+                </Col>
+            </Row>
+
             {
                 getRoleByMenuStatus('Unit Kerja', 'work_unit_list') ? 
                     <CustomTable
                         header      = {headerTable}
                         getData     = {(params) => { getData(params) }}
-                        onSearch    = {(keyword) => { 
-                            setListData(false); 
-                            if(query.get("mode") === "tour" && query.get("action") === 'search'){
-                                getData({keyword: keyword, tutorial: true});
-                            }else{
-                                getData({keyword: keyword});
-                            }
-                        }}
                         pagination  = {pagination}
-                        placeholder = "Cari Unit Kerja..."
-                        onClickForm = {() => { setData(false); setForm(true) }}
 
                         //role
                         roleAdd     = {getRoleByMenuStatus('Unit Kerja', 'add')}

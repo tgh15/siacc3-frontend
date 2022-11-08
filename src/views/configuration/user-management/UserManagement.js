@@ -216,9 +216,12 @@ const UserManagement = () => {
                         //Role
                         roleAdd = {getRoleByMenuStatus('Manajemen Pengguna', 'add')}
                     >
-                        <div id="usermanajement-table">
-                            {
-                                listData && listData.map((data, i) => (
+                        {
+                            listData && listData.map((data, i) => (
+                                <div
+                                    id  = "usermanajement-table"
+                                    key = {i}
+                                >
                                     <TableBody
                                         data                  = {data}
                                         index                 = {i}
@@ -230,9 +233,9 @@ const UserManagement = () => {
                                         SetModalUnDevice      = {(par) => { SetModalUnDevice(par) }}
                                         setModalChangeRequest = {(par) => { setModalChangeRequest(par) }}
                                     />
-                                ))
-                            }
-                        </div>
+                                </div>
+                            ))
+                        }
 
                         {!listData && listData !== null && <Skeleton height={60} count={3} style={{ marginBottom: "10px" }}/>}
                         {!listData && listData === null && <CustomTableBodyEmpty/>}

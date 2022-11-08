@@ -137,11 +137,10 @@ const StartTour = () => {
 
     return (
         <Fragment>
-            <div style={{ cursor: 'pointer' }}>
+            <div style={{ cursor: 'pointer', float: 'right' }}>
                 <p 
                     id      = 'positionRight' 
                     ref     = {buttonRef}
-                    style   = {{ zIndex: '3', position: 'absolute', margin: '15px' }}
                     onClick = {tour.start}
                 >
                     {

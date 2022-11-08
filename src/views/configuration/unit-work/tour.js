@@ -9,6 +9,7 @@ import {
 import { Row, Col, UncontrolledTooltip }        from 'reactstrap';
 import { ShepherdTour, ShepherdTourContext }    from 'react-shepherd';
 
+//Css
 import 'shepherd.js/dist/css/shepherd.css';
 import '@styles/react/libs/shepherd-tour/shepherd-tour.scss';
 
@@ -277,16 +278,14 @@ const StartTour = ({ showAction }) => {
             }
             selfLearningURL.updateUserModul(formData);
         }
-
     }, []);
 
     return (
         <Fragment>
-            <div style={{ cursor: 'pointer' }}>
+            <div style={{ cursor: 'pointer', float: 'right' }}>
                 <p 
                     id      = 'positionRight' 
                     ref     = {buttonRef}
-                    style   = {{ zIndex: '3', position: 'absolute' }}
                     onClick = {tour.start}
                 >
                     {
@@ -322,7 +321,7 @@ const TourComponent = () => {
                     sm = '12'
                 >
                     <ShepherdTour 
-                        steps={
+                        steps = {
                             showAction === 'search' ? 
                                 stepsSearch 
                             : 
@@ -337,12 +336,12 @@ const TourComponent = () => {
                                         :
                                             stepsIndex
                         }
-                        tourOptions ={{ 
+
+                        tourOptions = {{ 
                             useModalOverlay: true
                         }}
                     >
                         <StartTour showAction={showAction}/>
-
                     </ShepherdTour>
                 </Col>
                 <Col 

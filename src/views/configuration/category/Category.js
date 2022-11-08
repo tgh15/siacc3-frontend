@@ -1,5 +1,5 @@
 import { Fragment, useEffect, useState }        from 'react';
-import { Col }                                  from 'reactstrap';
+import { Col, Row }                             from 'reactstrap';
 import Skeleton                                 from 'react-loading-skeleton';
 
 //Icon
@@ -13,7 +13,9 @@ import selfLearningURL                          from '../../../services/pages/he
 import { feedsCategoryAPI }                     from '../../../services/pages/feeds/categories';
 
 //Widget
+import ButtonAdd                                from '../../../components/widgets/custom-table/ButtonAdd';
 import FormDelete                               from '../../../components/widgets/form-delete/FormDelete';
+import SearchTable                              from '../../../components/widgets/custom-table/SearchTable';
 import headerTable                              from './headerTable';
 import CustomTable                              from '../../../components/widgets/custom-table';
 import CustomToast                              from '../../../components/widgets/custom-toast';
@@ -108,7 +110,7 @@ const UserActivity = (props) => {
 
     //Get category
     const getData = (params) => {
-        feedsCategoryAPI.getCategory(1, undefined, params).then(
+        feedsCategoryAPI.getCategory(undefined, undefined, params).then(
             res => {
                 if (!res.is_error) {
                     setListData(res.data.category);
@@ -206,23 +208,39 @@ const UserActivity = (props) => {
                     setModalForm    = {(par) => setModalForm(par)} 
                 />
             </ModalBase>
-            {
-                getRoleByMenuStatus('Kategori', 'categories_list') ? 
-                    <CustomTable
-                        header          = {headerTable}
-                        getData         = {(params) => { getData(params) }}
+            
+            {/* button add and search */}
+            <Row>
+                <Col md="8">
+                    <ButtonAdd
+                        onClick={() => { 
+                            setDataForm(null); 
+                            setModalForm(!modalForm) ;
+                        }}
+                    />
+                </Col>
+                <Col md="4">
+                    <SearchTable
                         onSearch    = {(keyword) => { 
                             setListData(false); 
 
                             if(query.get("mode") === "tour" && query.get("action") === 'search'){
                                 getData({ keyword: keyword, tutorial: true})
-                            }else{
+                            }else {
                                 getData({ keyword: keyword})
                             }
                         }}
+                        placeholder = "Cari Kategori..."
+                    />
+                </Col>
+            </Row>
+
+            {
+                getRoleByMenuStatus('Kategori', 'categories_list') ? 
+                    <CustomTable
+                        header          = {headerTable}
+                        getData         = {(params) => { getData(params) }}
                         pagination      = {pagination}
-                        onClickForm     = {() => { setDataForm(null); setModalForm(!modalForm) }}
-                        placeholder     = "Cari Kategori..." 
 
                         //Role
                         roleAdd         = {getRoleByMenuStatus('Kategori', 'add')}

@@ -1,19 +1,19 @@
-import { Fragment, useContext, useEffect, useRef } from 'react';
-import { Row, Col, UncontrolledTooltip }        from 'reactstrap';
-import { ShepherdTour, ShepherdTourContext }    from 'react-shepherd';
+import { useRef, Fragment, useEffect, useContext } from 'react';
+import { Row, Col, UncontrolledTooltip }           from 'reactstrap';
+import { ShepherdTour, ShepherdTourContext }       from 'react-shepherd';
 
 //Css
 import 'shepherd.js/dist/css/shepherd.css';
 import '@styles/react/libs/shepherd-tour/shepherd-tour.scss';
 
 //icon
-import { HelpCircle }                           from 'react-feather';
+import { HelpCircle }                              from 'react-feather';
 
 //Views
-import ModalFilter                              from './ModalFilter';
+import ModalFilter                                 from './ModalFilter';
 
 //Helper
-import Helper                                   from '../../../helpers';
+import Helper                                      from '../../../helpers';
 
 
 const backBtnClass  = 'btn btn-sm btn-outline-primary',
@@ -221,7 +221,10 @@ const TourFilter = (props) => {
                     md = '12' 
                     sm = '12'
                 >
-                    <ShepherdTour steps={stepsFilter}>
+                    <ShepherdTour 
+                        steps       = {stepsFilter}
+                        tourOptions = {{ useModalOverlay: true }}
+                    >
                         <StartTour/>
                     </ShepherdTour>
                 </Col>
