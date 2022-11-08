@@ -13,6 +13,7 @@ const getWorkunitList           = (page, search) =>
                                             (Get(`${employeeURL.employeePrefix}/${employeeURL.workunit}?page=${page}&keyword=${search}`));
 
 const getWorkunitLevel          = () => Get(`${employeeURL.employeePrefix}/${employeeURL.workunitLevel}`);
+const getAllWorkunitList        = () => Get(`${employeeURL.employeePrefix}/workunit/list`);
 const getAgentPerformance       = (page, workunit_id, workunit_level_id) => Get(`${employeeURL.feedsPrefix}/${employeeURL.performance}/${employeeURL.agent}?condition_by=workunit&page=${page}&workunit_id=${workunit_id}&workunit_level_id=${workunit_level_id}`);
 
 //Post
@@ -41,6 +42,7 @@ const workunitListAPI = {
     getWorkunitList,
     getWorkunitLevel,
     getWorkunitRating,
+    getAllWorkunitList,
     getWorkunitProfile,
     createWorkunitList,
     updateWorkunitList,

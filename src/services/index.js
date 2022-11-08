@@ -37,19 +37,6 @@ export const employeeURL = {
 };
 
 
-
-/*
-    #######################
-    #SEPARTOR API EMPLOYEE#
-    #######################
-*/
-
-export const feedsURL = {
-    feedsPrefix : "feeds",
-};
-
-
-
 /*
 ####################
 #SEPARATOR CRAWLING#
@@ -63,3 +50,16 @@ export const crawlingURL = {
     result               : "result",
     data                 : "data"
 };
+
+
+
+/*
+############################
+#SEPARATOR URL RESPONSE API#
+############################
+*/
+
+export const responseURL = {
+    feedsPrefix          : "feeds",
+    activityPrefix       : "api-gw",
+}
