@@ -2,14 +2,14 @@ import { Fragment } from "react"
 import { Button, Spinner } from "reactstrap"
 import { ModalBase } from "../modals-base"
 
-const Footer = ({ onCancel, onDelete,isLoading }) => {
+const Footer = ({ onCancel, onDelete,isLoading, text }) => {
     return (
         <Fragment>
             <Button.Ripple color="primary" onClick={onCancel} outline>
                 Batal
             </Button.Ripple>
             <Button.Ripple color="primary" onClick={onDelete} disabled={(isLoading)}>
-                {(isLoading) ? <Spinner size="sm" color='success' /> : "Hapus"}
+                {(isLoading) ? <Spinner size="sm" color='success' /> : text ? 'Ya' : 'Hapus'}
             </Button.Ripple>
         </Fragment>
     )
@@ -24,7 +24,8 @@ const FormDelete = (props) => {
         description,
         loading,
         size,
-        customDescription
+        customDescription,
+        text
     } = props
 
 
@@ -41,10 +42,11 @@ const FormDelete = (props) => {
                         onCancel    = {() => { setShow(!show) }} 
                         onDelete    = {onDelete} 
                         isLoading   = {loading} 
+                        text        = {text}
                     />
                 }
             >
-               {customDescription ? <h4>{customDescription}</h4> : <h4 className="text-center">Yakin anda akan menghapus {description} ?</h4>} 
+               {customDescription ? <h4>{customDescription}</h4> : <h4 className="text-center">{text ? text : 'Yakin anda akan menghapus'} {description} ?</h4>} 
             </ModalBase>
 
         </Fragment>

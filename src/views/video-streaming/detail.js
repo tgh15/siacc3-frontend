@@ -24,6 +24,7 @@ import Skeleton                                 from "react-loading-skeleton";
 import { AntmediaContext }                      from "../../context/AntmediaContext";
 import Helper                                   from "../../helpers";
 import CustomTableBodyEmpty from "../../components/widgets/custom-table/CustomTableBodyEmpty";
+import FormDelete from "../../components/widgets/form-delete/FormDelete";
 
 const VideoStreamingDetail = () => {
     
@@ -34,6 +35,9 @@ const VideoStreamingDetail = () => {
     const [isPublishReady, setIsPublishReady]       = useState(false);
     const [isCommentReady, setIsCommentReady]       = useState(false);
     const [commentDataPinned, setCommentDataPinned] = useState(null);
+    const [viewerCount, setViewerCount]             = useState(0);
+    const [showDeleteForm, setShowDeleteForm]       = useState(false);
+    const [loading, setLoading]                     = useState(false);
 
     let {id}                                    = useParams();
 
@@ -175,8 +179,15 @@ const VideoStreamingDetail = () => {
                 setIsPublishReady(true)
             }else if(callback.info === 'data_channel_opened'){
                 setIsCommentReady(true);
-            }else if(callback.info === 'data_received'){
-                handleComment(callback.obj)
+            }else if(callback.info === 'data_received' ){
+
+                let parse = JSON.parse(callback.obj.data)
+
+                if(parse.type == 'live_viewer'){
+                    setViewerCount(parseInt(parse.viewer))
+                }else{
+                    handleComment(callback.obj)
+                }
             }
         }
 
@@ -185,6 +196,14 @@ const VideoStreamingDetail = () => {
 
     return (
         <>
+            <FormDelete
+                show        = {showDeleteForm}
+                title       = "Akhiri Siaran Langsung"
+                setShow     = {(par) => setShowDeleteForm(par)}
+                loading     = {loading} 
+                onDelete    = {handleStopPublish}
+                text        = "Yakin Akhiri Siaran Langsung"
+            />
             <Row>
                 <Col
                     md          = {8}
@@ -261,7 +280,7 @@ const VideoStreamingDetail = () => {
                                             }
 
                                             {
-                                                detailData.broadcast.status !== 'finished' &&
+                                                detailData.broadcast.status === 'created' &&
                                                 <>
                                                     {
                                                         !isPublished ?
@@ -278,7 +297,7 @@ const VideoStreamingDetail = () => {
                                                             <Button
                                                                 size      = "lg"
                                                                 color     = "primary"
-                                                                onClick   = {() => handleStopPublish()}
+                                                                onClick   = {() => setShowDeleteForm(true)}
                                                                 className = "w-100"
                                                             >
                                                                 Akhiri Siaran Langsung
@@ -317,7 +336,7 @@ const VideoStreamingDetail = () => {
                                     </Col>
                                     <Col md={6} className="text-center">
                                         <h3>Total Penonton</h3>
-                                        <h4>{detailData != null ? detailData.viewer_count : 0}</h4>
+                                        <h4>{viewerCount}</h4>
                                     </Col>
                                 </Row>
                                 {/* <Row>
@@ -383,7 +402,7 @@ const VideoStreamingDetail = () => {
                                     />
                                     <Button 
                                         color       = 'primary'
-                                        type        = "button"
+                                        type        = "reset"
                                         onClick     = {() => {handleSendChat()}}
                                         className   = 'send' 
                                         disabled    = {!isCommentReady}

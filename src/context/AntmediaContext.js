@@ -86,7 +86,7 @@ const AntmediaProvider = ({children}) =>{
     }
 
     useEffect(()=>{
-        // console.log(callback, 'callback2');
+        console.log(callback, 'callback2');
 
         // console.log(errorCallback, 'error callback')
     },[callback])
