@@ -35,10 +35,13 @@ const ContentGroup = (props) => {
     //Props
     const {
         selected,
+        startPTT,
         getServer,
         setPttActive,
         activeChannel,
+        handlePTTActive,
         pttActiveContent,
+        handlePTTNotActive,
         setPttActiveContent
     }                                     = props;
 
@@ -203,18 +206,28 @@ const ContentGroup = (props) => {
                                         </PerfectScrollbar>
                                         
                                         {
-                                            activeChannel != null && webRTCAdaptorPeer != null ?
+                                            (activeChannel != null && webRTCAdaptorPeer != null) &&
                                                 <Button
-                                                    color = "primary"
+                                                    color        = "primary"
                                                     block
-                                                    style = {{bottom: '0'}}
-                                                    onMouseDown  = {() => {webRTCAdaptorPeer.unmuteLocalMic(); console.log('pencet')}}
-                                                    onMouseUp    = {() => {webRTCAdaptorPeer.muteLocalMic(); console.log('baru')}}
+                                                    style        = {{bottom: '0'}}
+                                                    onMouseDown  = {() => {webRTCAdaptorPeer.unmuteLocalMic(); handlePTTActive()}}
+                                                    onMouseUp    = {() => {webRTCAdaptorPeer.muteLocalMic(); handlePTTNotActive()}}
                                                 >
                                                     Push To Talk
                                                 </Button>
-                                            : 
-                                                null
+                                        }
+
+                                        {
+                                            (activeChannel != null && webRTCAdaptorPeer == null) &&
+                                            <Button
+                                                color        = "primary"
+                                                block
+                                                style        = {{bottom: '0'}}
+                                                onClick      = {() => {startPTT()}}
+                                            >
+                                                Mulai PTT
+                                            </Button>
                                         }
                                         
                                     </div>

@@ -25,7 +25,7 @@ const VideoPlayer = (props) => {
         <>
             {
                 data &&
-                <Card className="mb-0">
+                <Card className="mb-0" style={{height: '100%'}}>
                     <CardHeader className="p-1">
                         <a href={`/video-streaming/${data.id}`}>
                             <h4 className="card-title my-1">{data.title}</h4>
@@ -49,8 +49,8 @@ const VideoPlayer = (props) => {
                                 />
                             :   
                                 <div 
-                                    style       = {{borderRadius: '10px', height: '25vh', width: '100%', backgroundColor: 'black'}}
-                                    className   = "d-flex align-items-center justify-content-center"
+                                    style           = {{borderRadius: '10px', height: '25vh', width: '100%', backgroundColor: 'black'}}
+                                    className       = "d-flex align-items-center justify-content-center"
                                 >
                                     <Play 
                                         onClick     = {() => {window.location.href = `/video-streaming/${data.broadcast.streamId}`}}

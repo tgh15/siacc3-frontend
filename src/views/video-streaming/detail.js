@@ -13,6 +13,7 @@ import {
     CardHeader, 
     InputGroup,
     Media,
+    Alert,
 }                                               from "reactstrap";
 import Avatar                                   from "../../components/widgets/avatar";
 import ChatItem                                 from "./chat-item";
@@ -21,15 +22,18 @@ import VideoStreamingAPI                        from "../../services/pages/video
 import CustomToast                              from "../../components/widgets/custom-toast";
 import Skeleton                                 from "react-loading-skeleton";
 import { AntmediaContext }                      from "../../context/AntmediaContext";
-import moment, { now } from "moment";
-import Helper from "../../helpers";
+import Helper                                   from "../../helpers";
+import CustomTableBodyEmpty from "../../components/widgets/custom-table/CustomTableBodyEmpty";
 
 const VideoStreamingDetail = () => {
-
-    const [msg, setMsg]                         = useState(null);
-    const [detailData, setDetailData]           = useState(null);
-    const [isPublished, setIsPublished]         = useState(null);
-    const [isPublishReady, setIsPublishReady]   = useState(null);
+    
+    const [message, setMessage]                     = useState(null);
+    const [detailData, setDetailData]               = useState(null);
+    const [isPublished, setIsPublished]             = useState(null);
+    const [commentData, setCommentData]             = useState(null);
+    const [isPublishReady, setIsPublishReady]       = useState(false);
+    const [isCommentReady, setIsCommentReady]       = useState(false);
+    const [commentDataPinned, setCommentDataPinned] = useState(null);
 
     let {id}                                    = useParams();
 
@@ -44,6 +48,34 @@ const VideoStreamingDetail = () => {
         fallbackImage_
     }                                           = Helper;
 
+
+    const getCommentVideoStream = () => {
+        const params = {
+            comment     : true,
+            stream_id   : id
+        }
+
+        VideoStreamingAPI.VideoStreamingList(params).then(
+            res => {
+                if(res.is_error === false ){
+                    if(res.data != null){
+                        setCommentData(res.data);
+                        setCommentDataPinned(res.data.filter((data) => (
+                            data.is_pinned === true
+                        )));
+
+                    }else{
+                        setCommentData([]);
+                        setCommentDataPinned([]);
+                    }
+                }
+            },
+            err => {
+
+            }
+        )
+    };
+
     const getDetailVideoStream = () => {
 
         const params = {
@@ -56,13 +88,16 @@ const VideoStreamingDetail = () => {
                     setDetailData(res.data);
 
                     if(webRTCAdaptorPeer === null && res.data.broadcast.status !== 'finished'){
-                        setWebRtc("peer","localVideo","remoteVideo", "video")
+                        setTimeout(() => {
+                            setWebRtc("peer","localVideo","remoteVideo", "video")
+                            setCommentData([]);
+                        },1000)
+                    }else if(res.data.broadcast.status === 'finished'){
+                        getCommentVideoStream();
                     }
-
                 }else{
                     setDetailData([]);
                 }
-                
             },
             err => {
                 CustomToast('danger', 'Terjadi Kesalahan');
@@ -98,14 +133,54 @@ const VideoStreamingDetail = () => {
         }
     }
 
+    const handleSendChat = () => {
+        
+        const param = {
+            comment : true,
+            id      : id
+        };
+
+        const formData = {
+            message : message
+        }
+
+        VideoStreamingAPI.CreateCommentVideoStreaming(formData, param).then(
+            res => {
+                console.log(res, 'send comment video');
+            },
+            err => {
+                console.log(err, 'send comment video');
+            }
+        )
+
+    }
+
+    const handleComment = (comment) => {
+        
+        let data_ = commentData;
+        let value = JSON.parse(comment.data);
+
+        data_.push(value)
+
+        setCommentData([...data_])
+    }
+
     useEffect(() => {
         getDetailVideoStream();    
     }, [])
 
     useEffect(() => {
-        if(webRTCAdaptorPeer !== null &&  callback.info === 'initialized' ){
-            setIsPublishReady(true)
+        if(webRTCAdaptorPeer !== null){
+            if(callback.info === 'initialized'){
+                setIsPublishReady(true)
+            }else if(callback.info === 'data_channel_opened'){
+                setIsCommentReady(true);
+            }else if(callback.info === 'data_received'){
+                handleComment(callback.obj)
+            }
         }
+
+
     }, [callback])
 
     return (
@@ -238,7 +313,7 @@ const VideoStreamingDetail = () => {
                                 <Row className="mt-2">
                                     <Col md={6} className="text-center">
                                         <h3>Total Durasi</h3>
-                                        <h4> {detailData != null ? getDuration(detailData.created_at, new Date) : 0} Menit</h4>
+                                        <h4> {detailData != null ? getDuration(detailData.created_at, new Date) : 0}</h4>
                                     </Col>
                                     <Col md={6} className="text-center">
                                         <h3>Total Penonton</h3>
@@ -257,7 +332,6 @@ const VideoStreamingDetail = () => {
                                     <Col md={4} className="text-center">
                                         <h3>Durasi Tonton</h3>
                                         <h4>100</h4>
-
                                     </Col>
                                 </Row> */}
                             </CardBody>
@@ -266,33 +340,53 @@ const VideoStreamingDetail = () => {
                 </Col>
                 <Col md={4}>
                     <Card style={{ height: '85vh' }}>
-                        <CardHeader>
-                            <ChatItem
-                                pinned = {true}
-                            />
+                        <CardHeader style={{height: '15vh'}}>
+                            <Row className="w-100">
+                                <Col md={12}>
+                                {
+                                    commentDataPinned != null &&
+                                    <Alert color="primary" className="mb-0">
+                                        <ChatItem
+                                            data   = {commentDataPinned[0]}
+                                            pinned = {true}
+                                        />
+                                    </Alert>
+                                }
+                                </Col>
+                            </Row>
                         </CardHeader>
                         <CardBody>
                             <div style={{height: '60vh', overflow: 'auto', borderRadius: '10px'}}>
-                                {Array(10).fill(10).map((data) => (
-                                    <Card className="p-0 mb-1">
-                                        <CardBody className="p-0">
-                                            <ChatItem/>
-                                        </CardBody>
-                                    </Card>
-                                ))}
+                                {
+                                    commentData != null ?
+                                        commentData.map((data) => (
+                                            <Card className="p-0 mb-1">
+                                                <CardBody className="p-0">
+                                                    <ChatItem
+                                                        data = {data}
+                                                    />
+                                                </CardBody>
+                                            </Card>
+                                        ))
+                                    :
+                                        <CustomTableBodyEmpty/>
+                                }
                             </div>
                         </CardBody>
                         <CardFooter>
                             <Form className='chat-app-form'>
                                 <InputGroup className='mr-1 form-send-message'>
                                     <Input
-                                        value       = {msg}
-                                        onChange    = {e => setMsg(e.target.value)}
+                                        onChange    = {e => {setMessage(e.target.value)}}
+                                        disabled    = {!isCommentReady}
                                         placeholder = 'Aa'
                                     />
                                     <Button 
                                         color       = 'primary'
+                                        type        = "button"
+                                        onClick     = {() => {handleSendChat()}}
                                         className   = 'send' 
+                                        disabled    = {!isCommentReady}
                                     >
                                         <Send 
                                             size        = {14} 

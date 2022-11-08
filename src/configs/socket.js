@@ -21,10 +21,15 @@ const LoginQrSocket = (qrToken) => {
     return `${socketPath}/ws/${qrToken}`;
 };
 
+const PTTSocket = (id) => {
+    return `${socketPath}/ws/${id}/ptt`;
+}
+
 export const WebsocketURL = {
+    PTTSocket,
     chatSocket,
     feedsSocket,
+    LoginQrSocket,
     broadcastSocket,
     digitalIdSocket,
-    LoginQrSocket
 };
