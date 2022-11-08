@@ -24,7 +24,11 @@ const AntmediaProvider = ({children}) =>{
             }
         ]
     }
-    url_antmedia_server = "wss://antmedia.underdev.team/WebRTCAppEE/websocket"
+    if(!process.env.NODE_ENV || process.env.NODE_ENV === 'production'){
+        url_antmedia_server = "wss://stream.siaccinfo.id//WebRTCAppEE/websocket"
+    }else{
+        url_antmedia_server = "wss://antmedia.underdev.team/WebRTCAppEE/websocket"
+    }
 
 
     const setWebRtc = (kind="peer",localvideoId,remoteVideoId, type) => {

@@ -68,16 +68,38 @@ const WorkUnitLevelSelect = ({ isRtl, onSelect, getAllData,setListData }) => {
                     >
                         SEMUA SATUAN KERJA
                     </SwiperSlide>
-                    {level && level.map((data, i) => (
-                        <SwiperSlide
-                            key={data.id}
-                            className='rounded swiper-shadow'
-                            onClick={() => { refreshTable(parseInt(data.id)) }}
-                            style={{ marginTop: '5px', paddingTop: '5px' }}
-                        >
-                            <p className='swiper-text mb-0'>{data.name}</p>
-                        </SwiperSlide>
-                    ))}
+                    {
+                        (localStorage.getItem('role') === "Admin Daerah" || localStorage.getItem('role') === "Verifikator Daerah") ?
+                            <>
+                                {
+                                    level && (level.filter((data_) => (data_.id != 1))).map((data) => (
+                                        <SwiperSlide
+                                            key         = {data.id}
+                                            style       = {{ marginTop: '5px', paddingTop: '5px' }}
+                                            onClick     = {() => { refreshTable(parseInt(data.id)) }}
+                                            className   = 'rounded swiper-shadow'
+                                        >
+                                            <p className='swiper-text mb-0'>{data.name}</p>
+                                        </SwiperSlide>
+                                    ))
+                                }
+                            </>
+                        :
+                            <>
+                                {
+                                    level && level.map((data) => (
+                                        <SwiperSlide
+                                            key         = {data.id}
+                                            style       = {{ marginTop: '5px', paddingTop: '5px' }}
+                                            onClick     = {() => { refreshTable(parseInt(data.id)) }}
+                                            className   = 'rounded swiper-shadow'
+                                        >
+                                            <p className='swiper-text mb-0'>{data.name}</p>
+                                        </SwiperSlide>
+                                    ))
+                                }
+                            </>
+                    }
                 </Swiper>
             </CardBody>
         </Card>

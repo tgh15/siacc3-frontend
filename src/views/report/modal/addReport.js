@@ -100,6 +100,7 @@ const FormReport = (props) => {
     const [reportKind , setReportKind]                  = useState(null);
     const [workunitKind, setWorkunitKind]               = useState(null);
 
+    const [workunitLevel2_, setWorkunitLevel2_]         = useState(null);
     const [workunitLevel3, setWorkunitLevel3]           = useState(null);
     const [workunitLevel4, setWorkunitLevel4]           = useState(null);
 
@@ -524,21 +525,32 @@ const FormReport = (props) => {
 
         workunitAPI.getWorkunitFilter(formData).then(
             res => {
-                console.log(res, 'get child workunit');
                 if(!res.is_error && res?.data?.length > 0){
                     
                     if(level === 3){
-                        setWorkunitLevel3(res.data.map((data) => ({
+                        let level_3_ = res.data.map((data) => ({
                             label : "KEJAKSAAN NEGERI " +data.name,
                             value : data.id
-                        })))
+                        }))
+
+                        level_3_.unshift({label : 'SEMUA KEJAKSAAN NEGERI', value : (level_3_.map((data) => (data.value))).toString()})
+                        
+                        setWorkunitLevel3(
+                            level_3_
+                        )
                     }
                     
                     if(level === 4){
-                        setWorkunitLevel4(res.data.map((data) => ({
+                        let level_4_ = res.data.map((data) => ({
                             label : "CABANG KEJAKSAAN NEGERI " + data.name,
                             value : data.id
-                        })))
+                        }))
+
+                        level_4_.unshift({label : 'SEMUA CABANG KEJAKSAAN NEGERI', value : (level_4_.map((data) => (data.value))).toString()})
+                        
+                        setWorkunitLevel4(
+                            level_4_
+                        )
                     }
                 }
             }
@@ -548,6 +560,11 @@ const FormReport = (props) => {
     useEffect(() => {
         Category();
         Employee();
+
+
+        let workunit_level_2 = workunitLevel2;
+        workunit_level_2.unshift({label : 'SEMUA KEJAKSAAN TINGGI', value : (workunitLevel2.map((data) => (data.value))).toString()})
+        setWorkunitLevel2_(workunit_level_2);
     }, []);
 
     useEffect(() => {
@@ -806,9 +823,9 @@ const FormReport = (props) => {
                                                         theme               = {selectThemeColors}
                                                         options             = {
                                                             workunitKind === 2  ?
-                                                                workunitLevel2
+                                                                workunitLevel2_
                                                             :
-                                                                workunitLevel2.filter((data) => (data.label != 'SEMUA KEJAKSAAN TINGGI'))
+                                                                workunitLevel2_.filter((data) => (data.label != 'SEMUA KEJAKSAAN TINGGI'))
                                                         }
                                                         className           = 'react-select'
                                                         placeholder         = "Pilih Satuan Kerja"
@@ -844,7 +861,7 @@ const FormReport = (props) => {
                                                         workunitKind === 3  ?
                                                             workunitLevel3
                                                         :
-                                                            workunitLevel3.filter((data) => (data.label != 'SEMUA KEJAKSAAN NEGERI'))
+                                                            workunitLevel3?.filter((data) => (data.label != 'SEMUA KEJAKSAAN NEGERI'))
                                                     }
                                                     className           = 'react-select'
                                                     isDisabled          = {!workunitLevel3}
@@ -882,7 +899,7 @@ const FormReport = (props) => {
                                                             workunitKind === 4  ?
                                                                 workunitLevel4
                                                             :
-                                                                workunitLevel4.filter((data) => (data.label != 'SEMUA CABANG KEJAKSAAN NEGERI'))
+                                                                workunitLevel4?.filter((data) => (data.label != 'SEMUA CABANG KEJAKSAAN NEGERI'))
                                                         }
                                                         className           = 'react-select'
                                                         isDisabled          = {!workunitLevel4}
