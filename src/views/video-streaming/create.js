@@ -23,6 +23,7 @@ const CreateVideoStreaming = (props) => {
     const schema = yup.object({
         title       : yup.string().max(200, 'Jumlah maksimal karakter adalah 200!').required('Kolom judul siaran belum terisi.'),
         category    : yup.object().shape({ value : yup.string().required('Kolom kategori belum terisi'), label : yup.string().required('Kolom kategori belum terisi')}),
+        saved       : yup.object().shape({ value : yup.string().required('Kolom simpan siaran belum terisi'), label : yup.string().required('Kolom simpan siaran belum terisi')}),
         visibility  : yup.object().shape({ value : yup.string().required('Kolom jenis siaran belum terisi'), label : yup.string().required('Kolom jenis siaran belum terisi')}),
     }).required();
     
@@ -42,6 +43,11 @@ const CreateVideoStreaming = (props) => {
             category    : data.category.value,
             visibility  : data.visibility.value,
         }
+
+        if(data.saved.value === '1'){
+            formData.saved_by = [localStorage.getItem('uuid')]
+        }
+
         
         VideoStreamingAPI.CreateVideoStreaming(formData).then(
             res => {
@@ -151,13 +157,42 @@ const CreateVideoStreaming = (props) => {
                         }
                     </FormGroup>
                     <FormGroup>
+                        <Label>Simpan Siaran</Label>
+                        <Controller
+                            name    = "saved"
+                            rules   = {{required: true}}
+                            control = {control}
+                            as      = {
+                                <Select
+                                    id              = {'saved'}
+                                    theme           = {selectThemeColors}
+                                    options         = {[
+                                        {label : 'Ya', value : 1},
+                                        {label : 'Tidak', value :0}
+                                    ]}
+                                    className       = {`react-select` }
+                                    isClearable     = {true}
+                                    classNamePrefix = 'select'
+                                />
+                            }
+                        />
+                        {
+                            'saved' in errors ? 
+                                <div className="invalid-feedback">
+                                    {errors.saved.message}
+                                </div>
+                            :
+                                null
+                        }
+                    </FormGroup>
+                    <FormGroup>
                         <Button 
                             size        = "md" 
                             type        = "submit"
                             color       = "primary"
                             className   = "w-100" 
                         >
-                            Preview
+                            Buat Siaran Langsung
                         </Button>   
                     </FormGroup>
                 </Form>

@@ -1,3 +1,4 @@
+import moment from "moment";
 import { Bookmark } from "react-feather";
 import { Col, Row } from "reactstrap";
 import Avatar       from "../../components/widgets/avatar";
@@ -27,12 +28,12 @@ const ChatItem = (props) => {
                             />
                         </Col>
                         <Col md={8}>
-                            <p className="mb-0 ml-2">{data.user.name} - {data.user.origin}</p>
-                            <p className="mb-0 ml-2">{data.message}</p>
+                            <p className="mb-0 ml-2">{data?.user?.name} - {data?.user?.origin}</p>
+                            <p className="mb-0 ml-2">{data?.message}</p>
                         </Col>
                         <Col md={3} className="text-center">
                             { pinned && <Bookmark/> }
-                            <p>21.00</p>
+                            <p>{moment(data?.created_at).format('HH:mm')}</p>
                         </Col>
                     </Row>
                 </div>
