@@ -3,6 +3,8 @@ import { Link }                                  from "react-router-dom";
 import Skeleton                                  from "react-loading-skeleton";
 import { Marker, Popup }                         from "react-map-gl";
 import { Col, Row, Button }                      from "reactstrap";
+
+//Icon
 import { Edit2, Eye, Filter, Plus, Trash2 }      from "react-feather";
 
 //Css
@@ -233,8 +235,8 @@ const WorkUnitList = (props) => {
                         setStatusGetData("filter")
                         filterByOrder(par)
                     }}
-                    loading               = {loading}
-                    onClose               = {() => (setFilterForm(!filterForm))}
+                    loading  = {loading}
+                    onClose  = {() => (setFilterForm(!filterForm))}
                 />
             </ModalBase>
 
@@ -280,7 +282,7 @@ const WorkUnitList = (props) => {
                 </Col>
                 <Col md="4">
                     <SearchTable
-                        onSearch={
+                        onSearch    = {
                             (keyword) => {
                                 setStatusGetData(null);
                                 setListData(false);

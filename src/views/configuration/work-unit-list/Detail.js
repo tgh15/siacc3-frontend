@@ -12,18 +12,14 @@ import {
 import Skeleton                          from "react-loading-skeleton";
 import { useParams }                     from "react-router-dom";
 import { Marker, Popup }                 from "react-map-gl";
-import PerfectScrollbar                  from "react-perfect-scrollbar";
 
 //Assets
 import imgMarker                         from "../../../assets/images/map_icons/point-map.png";
-import ImgDataEmpty                      from "../../../assets/images/pages/emptydata.png";
 
 //Services
 import PerformanceApi                    from "../../../services/pages/performance";
-import WorkUnitListApi                   from "../../../services/pages/configuration/unit-work-list";
 import workunitListAPI                   from "../../../services/pages/configuration/unit-work-list/WorkunitList";
 import feedsAgentReportAPI               from "../../../services/pages/feeds/agent-reports";
-import { GetAgentByWorkunit }            from "../../../services/pages/performance/GetAgentByWorkunit";
 
 //Components
 import CustomToast                       from "../../../components/widgets/custom-toast";
@@ -60,8 +56,8 @@ const Detail = ({ match }) => {
     //State
     const [data, setData]                               = useState(false);
     const [leftState, setLeftState]                     = useState([]);
-    const [dataDetail, setDataDetail]                   = useState(null);
     const [rightState, setRightState]                   = useState([]);
+    const [dataDetail, setDataDetail]                   = useState(null);
     const [defaultDataMap, setDefaultDataMap]           = useState({});
     const [selectedMarker, setSelectedMarker]           = useState(null);
 
@@ -84,7 +80,7 @@ const Detail = ({ match }) => {
     const getData = () => {
         const formData = {
             id: parseInt(match.params.id)
-        }
+        };
 
         workunitListAPI.getWorkunitProfile(formData).then(
             res => {
@@ -95,7 +91,7 @@ const Detail = ({ match }) => {
                         "longitude" : res.data.longitude,
                         "zoom"      : 4
                     });
-                } else {
+                }else {
                     CustomToast("danger", res.message);
                 }
             }
@@ -112,12 +108,14 @@ const Detail = ({ match }) => {
 
         const formData = {
             id: parseInt(match.params.id)
-        }
+        };
 
-        workunitListAPI.getWorkunitPerformance(formData).then (
+        workunitListAPI.getWorkunitPerformance(formData).then(
             res => {
-                if (res.status === 200) {
+                if (!res.is_error) {
                     setDataDetail(res.data);
+                }else {
+                    CustomToast("danger", res.message);
                 }
             }
         ).catch(
@@ -133,15 +131,17 @@ const Detail = ({ match }) => {
             workunit_id         : parseInt(id),
             condition_by        : "parent",
             workunit_level_id   : parseInt(query.get("level"))
-        }
-        
+        };
+
         workunitListAPI.getWorkunitRating(1, formData).then(
             res => {
-                if (res.status === 200) {
+                if (!res.is_error) {
                     setPerformanceWorkunit({
                         loading : false,
                         data    : res.data.workunit_performance
                     })
+                }else {
+                    CustomToast("danger", res.message);
                 }
             }
         ).catch(
@@ -151,38 +151,52 @@ const Detail = ({ match }) => {
         )
     };
 
+    //Get rating agent
     const getPerformanceAgent = () => {
-        PerformanceApi.agentByWorkunitAndChild({
-            workunit_id: parseInt(id),
-            workunit_level_id: parseInt(query.get("level")),
-            page: 1
-        }).then(res => {
-            console.log(res.data)
-            setPerformanceAgent({
-                loading: false,
-                data: res.data.agent_performance
-            })
-        }, err => {
-            console.log(err)
-        })
+        const formData = {
+            workunit_id       : parseInt(id),
+            workunit_level_id : parseInt(query.get("level")),
+            page              : 1
+        };
+
+        PerformanceApi.agentByWorkunitAndChild(formData).then(
+            res => {
+                if (!res.is_error) {
+                    setPerformanceAgent({
+                        loading : false,
+                        data    : res.data.agent_performance
+                    })
+                }else {
+                    CustomToast("danger", res.message);
+                }
+            }
+        ).catch(
+            err => {
+                CustomToast("danger", err.message);
+            }
+        )
     };
 
-    const getAgentReportByWorkunit = async () => {
+    //Get agent report by workunit
+    const getAgentReportByWorkunit = () => {
         const formData = {
             workunit_id: parseInt(match.params.id)
         };
 
         feedsAgentReportAPI.getAgentReportByWorkunit(formData).then(
             res => {
-                if (res.status === 200) {
-                    if ("agent_report" in res.data && res.data.agent_report != null) {
-                        let dataFeeds = processAgentReports(res.data.agent_report);
-                        dataFeeds.then(
+                if (!res.is_error) {
+                    if (res.data.agent_report == null) {
+                        setLeftState([]);
+                        setRightState([]);
+                    }else {
+                        processAgentReports(res.data.agent_report).then(
                             res => {
                                 let arrLength = res.length;
 
                                 //search half array length value
                                 let getDivision = Math.round(arrLength / 2);
+
                                 //get first half array
                                 setLeftState([...res.splice(0, getDivision)]);
 
@@ -191,10 +205,13 @@ const Detail = ({ match }) => {
                             }
                         )
                     }
+                }else {
+                    CustomToast("danger", res.message);
                 }
-            },
+            }
+        ).catch(
             err => {
-                error_handler(err);
+                CustomToast("danger", err.message);
             }
         )
     };
@@ -233,28 +250,30 @@ const Detail = ({ match }) => {
                         />
                     </button>
                 </Marker>
-                {selectedMarker ? (
-                    <Popup
-                        onClose   = {() => { setSelectedMarker(null) }}
-                        latitude  = {selectedMarker.latitude}
-                        longitude = {selectedMarker.longitude}
-                    >
-                        <div className="d-flex flex-column align-items-center py-0">
-                            <div >
-                                <ImageRounded 
-                                    src   = {selectedMarker.logo} 
-                                    width = {40}
-                                />
+                {
+                    selectedMarker ? (
+                        <Popup
+                            onClose   = {() => { setSelectedMarker(null) }}
+                            latitude  = {selectedMarker.latitude}
+                            longitude = {selectedMarker.longitude}
+                        >
+                            <div className="d-flex flex-column align-items-center py-0">
+                                <div>
+                                    <ImageRounded 
+                                        src   = {selectedMarker.logo} 
+                                        width = {40}
+                                    />
+                                </div>
+                                <p 
+                                    style     = {{ color: "black", fontSize: "12px" }}
+                                    className = "font-weight-bolder mt-1" 
+                                >
+                                    {selectedMarker.name}
+                                </p>
                             </div>
-                            <p 
-                                style     = {{ color: "black", fontSize: "12px" }}
-                                className = "font-weight-bolder mt-1" 
-                            >
-                                {selectedMarker.name}
-                            </p>
-                        </div>
-                    </Popup>
-                ) : null}
+                        </Popup>
+                    ) : null
+                }
             </MapWorkunit>}
 
             {!data && <Skeleton style={{ height: "300px" }}/>}
@@ -477,8 +496,7 @@ const Detail = ({ match }) => {
                                         }
 
                                         <div className="d-flex justify-content-end">
-                                            <Button 
-                                                
+                                            <Button
                                                 color     = "flat-primary font-weight-bolder"
                                                 onClick   = {() => {
                                                     setModalPerformance({

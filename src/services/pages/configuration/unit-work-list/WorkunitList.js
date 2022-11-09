@@ -1,4 +1,5 @@
 import { employeeURL }              from "..";
+import { responseURL }              from "../../..";
 import { Delete, Get, Post, Put }   from "../../../core/request";
 
 
@@ -13,7 +14,9 @@ const getWorkunitList           = (page, search) =>
                                             (Get(`${employeeURL.employeePrefix}/${employeeURL.workunit}?page=${page}&keyword=${search}`));
 
 const getWorkunitLevel          = () => Get(`${employeeURL.employeePrefix}/${employeeURL.workunitLevel}`);
+
 const getAllWorkunitList        = () => Get(`${employeeURL.employeePrefix}/workunit/list`);
+
 const getAgentPerformance       = (page, workunit_id, workunit_level_id) => Get(`${employeeURL.feedsPrefix}/${employeeURL.performance}/${employeeURL.agent}?condition_by=workunit&page=${page}&workunit_id=${workunit_id}&workunit_level_id=${workunit_level_id}`);
 
 //Post
@@ -25,9 +28,9 @@ const filterWorkunitByLevel     = (page, data) =>
                                     Post(`${employeeURL.employeePrefix}/${employeeURL.workunit}/${employeeURL.byLevel}?page=${page}`, data);
 
 const filterByOrder             = (page, data) => Post(`${employeeURL.employeePrefix}/${employeeURL.workunit}/${employeeURL.filter}?page=${page}`, data);
-const getWorkunitRating         = (page, data) => Post(`${employeeURL.feedsPrefix}/${employeeURL.performance}/${employeeURL.workunit}?page=${page}`, data);
-const getWorkunitProfile        = (data) => Post(`${employeeURL.employeePrefix}/${employeeURL.workunit}/${employeeURL.detail}`, data);
-const getWorkunitPerformance    = (data) => Post(`${employeeURL.feedsPrefix}/${employeeURL.performance}/${employeeURL.workunit}/${employeeURL.detail}`, data);
+const getWorkunitRating         = (page, data) => Post(`${employeeURL.feedsPrefix}/performance/workunit?page=${page}`, data);
+const getWorkunitProfile        = (data) => Post(`${responseURL.employeePrefix}/workunit/detail`, data);
+const getWorkunitPerformance    = (data) => Post(`${responseURL.feedsPrefix}/performance/workunit/detail`, data);
 
 //Put
 const updateWorkunitList        = (data) => Put(`${employeeURL.employeePrefix}/${employeeURL.workunit}/${employeeURL.update}`, data);
