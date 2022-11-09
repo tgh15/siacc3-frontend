@@ -54,10 +54,10 @@ const stepsIndex = [
         ]
     },
     {
-        id          : 'search-data',
-        title       : 'Pencarian Data Unit Kerja',
-        text        : 'Masukkan data yang ingin dicari, kemudian tekan tombol enter pada keyboard',
-        attachTo    : { element: '#search-data', on: 'bottom' },
+        id          : 'add-data',
+        title       : 'Tambah Data Unit Kerja',
+        text        : 'Ketika diklik anda akan di arahkan pada tampilan tambah data unit kerja',
+        attachTo    : { element: '#add-data', on: 'right' },
         cancelIcon  : {
             enabled : true
         },
@@ -80,10 +80,10 @@ const stepsIndex = [
         ]
     },
     {
-        id          : 'add-data',
-        title       : 'Tambah Data Unit Kerja',
-        text        : 'Ketika diklik anda akan di arahkan pada tampilan tambah data unit kerja',
-        attachTo    : { element: '#add-data', on: 'right' },
+        id          : 'search-data',
+        title       : 'Pencarian Data Unit Kerja',
+        text        : 'Masukkan data yang ingin dicari, kemudian tekan tombol enter pada keyboard',
+        attachTo    : { element: '#search-data', on: 'bottom' },
         cancelIcon  : {
             enabled : true
         },

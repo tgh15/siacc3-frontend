@@ -362,8 +362,9 @@ const WorkUnitList = (props) => {
                 {
                     getRoleByMenuStatus('Daftar Satker', 'add') ?
                         <Button
-                            color   = "primary"
+                            id="add-data"
                             size    = "sm"
+                            color   = "primary"
                             outline
                             onClick = {() => {
                                 setData(false);
