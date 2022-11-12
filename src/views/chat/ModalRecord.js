@@ -1,15 +1,15 @@
-import { useContext, useState } from "react"
+import { useContext, useEffect, useState }  from "react"
 
 //Component
-import { Recorder }     from 'react-voice-recorder'
-import { ModalBase }    from "../../components/widgets/modals-base"
-import { ChatContext }  from "../../context/ChatContext"
+import { Recorder }                         from 'react-voice-recorder'
+import { ModalBase }                        from "../../components/widgets/modals-base"
+import { ChatContext }                      from "../../context/ChatContext"
 
 //SCSS
 import './record.scss'
 
 //Service
-import ChatApi          from "../../services/pages/chat"
+import ChatApi                              from "../../services/pages/chat"
 
 const ModalRecord = props => {
 
@@ -18,19 +18,21 @@ const ModalRecord = props => {
         setShow,
     } = props
 
-    const { sendMessage } = useContext(ChatContext)
+    const { sendMessage }                   = useContext(ChatContext)
 
-    const [loading, setLoading]           = useState(false);
-    const [audioDetails, setAudioDetails] = useState({
-        url: null,
-        blob: null,
-        chunks: null,
-        duration: {
-            h: null,
-            m: null,
-            s: null,
+    const [loading, setLoading]             = useState(true);
+    const [audioDetails, setAudioDetails]   = useState(
+        {
+            url         : null,
+            blob        : null,
+            chunks      : null,
+            duration    : {
+                h   : 0,
+                m   : 0,
+                s   : 0
+            }
         }
-    })
+    )
 
     const audioUpload = (file) => {
         const myFile = new File([file], 'rekaman.ogg', {
@@ -54,29 +56,35 @@ const ModalRecord = props => {
     };
 
     const handleAudioStop = (data) => {
+        setLoading(false);
+        console.log('audio stops', data);
         setAudioDetails({ audioDetails: data });
     }
     
     const handleAudioUpload = (file) => {
-        setLoading(true);
-
-        audioUpload(file);
+        if(audioDetails?.audioDetails?.url != null){
+            setLoading(true)
+            audioUpload(file);
+        }
     }
 
     const handleReset = () => {
-        const reset = {
-            url: null,
-            blob: null,
-            chunks: null,
-            duration: {
-                h: null,
-                m: null,
-                s: null,
+        setLoading(true);
+        setAudioDetails({
+            url         : null,
+            blob        : null,
+            chunks      : null,
+            duration    : {
+                h   : 0,
+                m   : 0,
+                s   : 0
             }
-        }
-        setAudioDetails({ audioDetails: reset });
+        });
     }
 
+    useEffect(() => {
+        console.log('terbatas', audioDetails)
+    }, [audioDetails]);
 
 
     return (
@@ -88,9 +96,9 @@ const ModalRecord = props => {
             <Recorder
                 record               = {true}
                 audioURL             = {audioDetails.url}
-                showUIAudio
+                showUIAudio          
                 handleReset          = {() => handleReset()}
-                handleOnChange       = {(value) => handleOnChange(value, 'firstname')}
+                handleOnChange       = {(value) => console.log(value, 'firstname')}
                 handleAudioStop      = {data => handleAudioStop(data)}
                 handleAudioUpload    = {data => handleAudioUpload(data)}
                 uploadButtonDisabled = {loading}
