@@ -1040,7 +1040,7 @@ export const NewsWidget = (props) => {
 
             <Card 
                 ref          = {bodyCardRef} 
-                style        = {{ overflow: 'auto', height: 'auto'}}
+                // style        = {{ overflow: 'auto', height: 'auto'}}
                 onMouseEnter = {() => {handleViewer();}}
             >
                 <CardBody>
@@ -1120,15 +1120,19 @@ export const NewsWidget = (props) => {
                         {attach == null ? null : attach.files}
                         {attach == null ? null : attach.links}
                         
-                        <div style={{wordWrap: 'break-word'}}>
+                        <div style={{wordBreak: 'break-word'}}>
+                            <p>
+
                             {
                                 hashtag != undefined ? 
                                     hashtag.map((data) => (
-                                        <a href={`/advanced-search?keyword=${data.tag.replace('#',"")}`}><h6 className="d-inline text-primary mr-1">{parse(data.tag)}</h6></a>
+                                        <a href={`/advanced-search?keyword=${data.tag.replace('#',"")}`}><span className="mr-1">{parse(data.tag)}</span></a>
                                     ))
                                 :
                                     null
                             }
+                            </p>
+
                         </div>
 
 

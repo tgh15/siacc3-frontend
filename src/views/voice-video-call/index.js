@@ -50,6 +50,7 @@ const IndexVoiceVideoCall = () => {
     const [activeChannel, setActiveChannel]                         = useState(null);
     const [pttActiveContent, setPttActiveContent]                   = useState('ptt');
 
+    const [isPTTReady, setIsPTTReady]                               = useState(false);
     const [password, setPassword]                                   = useState(null);
     const [selectedChannelID, setSelectedChannelID]                 = useState(null);
     const [isConfirmPasswordVisible, setIsConfirmPasswordVisible]   = useState(null);
@@ -150,7 +151,6 @@ const IndexVoiceVideoCall = () => {
     }
 
     const validateChannelPassword = () => {
-
         const params = {
             mode    : 'channel',
             action  : 'member-validate-password',
@@ -268,7 +268,6 @@ const IndexVoiceVideoCall = () => {
                             data.isTalk = false
                     ))
                     selected.member = activeMember;
-                    console.log(selected);
                     setSelected(selected)
                 }
                 
@@ -361,6 +360,7 @@ const IndexVoiceVideoCall = () => {
                                     getServer           = {getServer}
                                     pttActive           = {pttActive}
                                     listHidden          = {true}
+                                    isPTTReady          = {isPTTReady}
                                     setPttActive        = {setPttActive}
                                     activeChannel       = {activeChannel}
                                     pttActiveContent    = {pttActiveContent}
@@ -369,7 +369,6 @@ const IndexVoiceVideoCall = () => {
 
                                     handlePTTActive     = {handlePTTActive}
                                     handlePTTNotActive  = {handlePTTNotActive}
-
                                 />
                         }
                     </div>

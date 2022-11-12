@@ -50,7 +50,7 @@ const ContentGroup = (props) => {
 
     const handleLeaveRoom =() => {
         webRTCAdaptorPeer.leaveFromRoom(activeChannel.roomId);
-        location.reload();
+        // location.reload();
     }
 
     //State
@@ -76,7 +76,6 @@ const ContentGroup = (props) => {
                                             </h5>
                                         </div>
                                         <div className='d-flex align-items-center'>
-                                            
                                             <ButtonDropdown 
                                                 isOpen = {dropdownOpen} 
                                                 toggle = {toggleDropdown}
@@ -89,7 +88,7 @@ const ContentGroup = (props) => {
                                                 </DropdownToggle>
                                                 <DropdownMenu className='mr-3'>
                                                     <DropdownItem 
-                                                        href = '/' 
+                                                        // href = '/' 
                                                         tag  = 'a'
                                                     >
                                                         <Trash 
@@ -107,14 +106,12 @@ const ContentGroup = (props) => {
                                                                 size  = {20}
                                                                 style = {{ marginRight: '9px' }}
                                                             />
-                                                            Tutup Channel
+                                                            Akhiri PTT
                                                         </DropdownItem>
                                                     }
                                                 </DropdownMenu>
                                             </ButtonDropdown>
-                                            
                                         </div>
-
                                     </Fragment>
                                 :
                                     null
