@@ -51,8 +51,6 @@ const VideoCall = (props) => {
             webRTCAdaptorPeer,
         }                                       = useContext(AntmediaContext);
 
-    const [isJoin,setJoin]                      = useState(false);
-    const [isRtcConnect,setIsRtcConnect]        = useState(false);
     const [isMicActive, setIsMicActive]         = useState(true);
     const [isCameraActive, setIsCameraActive]   = useState(true);
 	
@@ -241,9 +239,15 @@ const VideoCall = (props) => {
                                 >
                                     {
                                         isMicActive ? 
-                                            <MicOff onClick={()=>muteLocalMic(privateCallData.data.token)}  size={16}/>
+                                            <MicOff 
+                                                size    = {16}
+                                                onClick = {()=>muteLocalMic(privateCallData.data.token)} 
+                                            />
                                         :
-                                            <Mic onClick={()=>unmuteLocalMic(privateCallData.data.token)} size={16}/>
+                                            <Mic 
+                                                size    = {16}
+                                                onClick = {()=>unmuteLocalMic(privateCallData.data.token)} 
+                                            />
                                     }
                                 </Button.Ripple>
                                 <Button.Ripple 

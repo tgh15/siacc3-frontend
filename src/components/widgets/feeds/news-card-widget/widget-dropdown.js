@@ -109,12 +109,14 @@ export const WidgetChildDropdown = (props)=>{
                         :
                             null
                     }
+                    
                     <DropDownItemWithIcon 
                         Icon    = { Bookmark } 
                         text    = { saved ? "Batalkan Simpan Berita" : "Simpan Berita" } 
                         onClick = { () => { props.setSaved()} }
                         subText = "Simpan ini ke berita tersimpan"
                     />
+
                     {
                         localStorage.getItem('role') === 'Pimpinan Pusat' ? 
                             <DropDownItemWithIcon 
