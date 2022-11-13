@@ -45,5 +45,5 @@ push-to-prod:
     BRANCH: "prod"
     TARGET_BRANCH: "main"
   before_script:
-    - git config --global user.name "a3 infiniti"
-    - git config --global user.email "dev.a3infiniti@outlook.com"
+    - git config --global user.name $(cat $GLOBAL_USERNAME)
+    - git config --global user.email $GLOBAL_EMAIL
