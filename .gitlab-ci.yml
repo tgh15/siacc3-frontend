@@ -47,3 +47,4 @@ push-to-prod:
   before_script:
     - git config --global user.name $(cat $GLOBAL_USERNAME)
     - git config --global user.email $GLOBAL_EMAIL
+ 
