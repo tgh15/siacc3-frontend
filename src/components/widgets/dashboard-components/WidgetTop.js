@@ -20,6 +20,7 @@ const TopWidgetDashboard = (props) => {
         roleAdd,
         roleLink, 
         roleExport,
+        getShareLink,
 
         //print
         exportToJpg,     
@@ -120,6 +121,7 @@ const TopWidgetDashboard = (props) => {
                             size        = "md"
                             color       = "primary" 
                             className   = "btn-icon" 
+                            onClick     = {() => {getShareLink()}}
                         >
                             <Link size={14}/>
                         </Button>
