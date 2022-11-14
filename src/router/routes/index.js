@@ -57,7 +57,13 @@ const Routes = [
   },
   {
     path: '/dashboard',
+    exact: true,
     component: lazy(() => import('../../views/dashboard/DashboardComponent')),
+  },
+  {
+    path: '/dashboard/share/:id',
+    exact: true,
+    component: lazy(() => import('../../views/dashboard/DashboardDetail')),
   },
   {
     path: '/approval-news',

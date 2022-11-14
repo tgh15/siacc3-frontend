@@ -15,7 +15,18 @@ import {
     UncontrolledButtonDropdown,
 }                                       from "reactstrap"
 
-export const _GaugeChart = ({id, handleDelete, data,title,detailChartAction, handleUpdate, index}) => { 
+export const _GaugeChart = (props) => { 
+
+    const {
+        id, 
+        data,
+        title,
+        index,
+        dashboard,
+        handleDelete, 
+        handleUpdate, 
+        detailChartAction, 
+    } = props
 
     const [chartData, setChartData] = useState(0);
 
@@ -77,11 +88,16 @@ export const _GaugeChart = ({id, handleDelete, data,title,detailChartAction, han
                                 >
                                     Detail
                                 </Button>
-                                <DropdownToggle outline className='dropdown-toggle-split' color='secondary' caret></DropdownToggle>
-                                <DropdownMenu>
-                                    <DropdownItem tag='a' onClick={() => {handleUpdate(id, index)}}>Atur Ulang Grafik</DropdownItem>
-                                    <DropdownItem tag='a' onClick={() => {handleDelete(id)}}>Nonaktifkan</DropdownItem>
-                                </DropdownMenu>
+                                {
+                                    !dashboard &&
+                                    <>
+                                        <DropdownToggle outline className='dropdown-toggle-split' color='secondary' caret></DropdownToggle>
+                                        <DropdownMenu>
+                                            <DropdownItem tag='a' onClick={() => {handleUpdate(id, index)}}>Atur Ulang Grafik</DropdownItem>
+                                            <DropdownItem tag='a' onClick={() => {handleDelete(id)}}>Nonaktifkan</DropdownItem>
+                                        </DropdownMenu>
+                                    </>
+                                }
                             </UncontrolledButtonDropdown>
                         </div>
                     :
