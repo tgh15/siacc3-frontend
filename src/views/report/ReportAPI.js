@@ -25,6 +25,10 @@ const ReportAPI = () => {
     const [isDetailReportVisible, setIsDetailReportVisible]     = useState(false);
     const [isDetailResultsVisible, setIsDetailResultsVisible]   = useState(false);
 
+    const [isFormat, setIsFormat]                               = useState(null);
+    const [reportKind , setReportKind]                          = useState(null);
+    const [workunitKind, setWorkunitKind]                       = useState(null);
+
     const [showForm, setShowForm]                               = useState(false);
 
     const {useQuery}                                            = Helper;
@@ -34,7 +38,7 @@ const ReportAPI = () => {
     const getReport = () => {
         feedsReportAPI.getReport().then(
             res => {
-                if (res.status === 200 && res.data != null) {
+                if (res.is_error === false && res.data != null) {
                     setReport(res.data);
 
                     if(query.get('id_report') != undefined){
@@ -49,9 +53,15 @@ const ReportAPI = () => {
                     }
                 }else{
                     setReport([]);
+
+                    if(res.is_error){
+                        console.log(res, 'error get report');
+                        CustomToast('danger', 'Terjadi kesalahan.');
+                    }
                 }
             },
             err => {
+                console.log(err, 'get report error');
                 CustomToast('danger', err.message);
             }
         )
@@ -61,7 +71,7 @@ const ReportAPI = () => {
     const getReportCategory = () => {
         feedsReportAPI.getReportCategory().then(
             res => {
-                if (res.status === 200 && res.data != null) {
+                if (res.is_error === false && res.data != null) {
                     let data_ = res.data.map((data ) => (
                         {
                             label : data.name,
@@ -70,6 +80,13 @@ const ReportAPI = () => {
                     ))
 
                     setReportCategory(data_);
+                }else{
+                    setReportCategory([]);
+
+                    if(res.is_error){
+                        console.log(res, 'error get report category');
+                        CustomToast('danger', 'Terjadi kesalahan.');
+                    }
                 }
             },
             err => {
@@ -85,20 +102,25 @@ const ReportAPI = () => {
 
         feedsReportAPI.createReport(formData).then(
             res => {
-                if(res.status === 201 || res.status === 200){
+                if(res.is_error === false){
                     setLoading(false);
                     setIsAddFormVisible(false);
 
                     CustomToast('success', 'Data report berhasil ditambahkan');
                     getReport();
+                }else{
+                    if(res.message === "time schedule can't be before now"){
+                        CustomToast('danger', 'Waktu schedule harus melebihi waktu sekarang!');
+                    }else{
+                        CustomToast('danger', 'Terjadi Kesalahan.');
+
+                    }
+                    console.log(res, 'create report error');
                 }
             },
             err => {
-                if(err.status == 400 ){
-                    CustomToast('danger', 'Waktu schedule harus melebihi waktu sekarang!');
-                }else{
-                    console.log(err);
-                }
+                console.log(err, 'create report error');
+                CustomToast('danger', 'Terjadi kesalahan.');
             }
         )
     };
@@ -107,19 +129,25 @@ const ReportAPI = () => {
     const onDelete = () => {
         setLoading(true);
 
-        feedsReportAPI.deleteReport(idSelected).then(
+        feedsReportAPI.deleteReport('asd').then(
             res => {
-                if (res.status == 200) {
-                    setLoading(false);
+                if (res.is_error == false) {
                     
                     getReport();
 
                     setShowDeleteForm(!showDeleteForm);
                     CustomToast("success", "Data Berhasil di hapus");
+                }else{
+                    console.log(res, 'delete report error');
+                    CustomToast('danger', 'Terjadi Kesalahan.');
                 }
+
+                setLoading(true);
             },
             err => {
+                setLoading(true);
                 CustomToast('danger', err.message);
+
             }
         )
     };
@@ -136,10 +164,17 @@ const ReportAPI = () => {
         
         feedsReportAPI.detailReport(formData).then(
             res => {
-                if(res.status == 200 && res.data != null){
+                if(res.is_error === false && res.data != null){
                     setdetailResults(res.data);
-                    setDetailResultLoading(false);
+                }else{
+                    setdetailResults([]);
+
+                    if(res.is_error){
+                        console.log(res, 'error handle detail results');
+                        CustomToast('danger', 'Terjadi kesalahan.');
+                    }
                 }
+                setDetailResultLoading(false);
             },
             err => {
                 console.log(err, 'detail report');
@@ -215,6 +250,14 @@ const ReportAPI = () => {
                 isDetailResultsVisible      = {isDetailResultsVisible}
                 setIsDetailReportVisible    = {setIsDetailReportVisible}
                 setIsDetailResultsVisible   = {setIsDetailResultsVisible}
+                isFormat                    = {isFormat}
+                setIsFormat                 = {setIsFormat}
+                reportKind                  = {reportKind}
+                setReportKind               = {setReportKind}
+                workunitKind                = {workunitKind}
+                setWorkunitKind             = {setWorkunitKind}
+
+                
 
                 //function
                 onDelete                    = {onDelete}
