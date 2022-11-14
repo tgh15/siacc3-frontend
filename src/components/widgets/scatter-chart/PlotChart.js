@@ -18,7 +18,22 @@ import Helper                               from "../../../helpers"
 // API
 import dashboardAPI                         from "../../../services/pages/dashboard"
 
-export const PlotChart = ({id, handleDelete, data,title,legend,tooltips,xOptions,yOptions,detailChartAction, handleUpdate, index})=>{
+export const PlotChart = (props)=>{
+
+    const {
+        id, 
+        data,
+        index,
+        title,
+        legend,
+        tooltips,
+        xOptions,
+        yOptions,
+        dashboard,
+        handleDelete, 
+        handleUpdate, 
+        detailChartAction, 
+    } = props;
 
     const [chartData, setChartData] = useState({
         datasets: [
@@ -335,11 +350,16 @@ export const PlotChart = ({id, handleDelete, data,title,legend,tooltips,xOptions
                                 >
                                     Detail
                                 </Button>
-                                <DropdownToggle outline className='dropdown-toggle-split' color='secondary' caret></DropdownToggle>
-                                <DropdownMenu>
-                                    <DropdownItem tag='a' onClick={() => {handleUpdate(id, index)}}>Atur Ulang Grafik</DropdownItem>
-                                    <DropdownItem tag='a' onClick={() => {handleDelete(id)}}>Nonaktifkan</DropdownItem>
-                                </DropdownMenu>
+                                {
+                                    !dashboard &&
+                                    <>
+                                        <DropdownToggle outline className='dropdown-toggle-split' color='secondary' caret></DropdownToggle>
+                                        <DropdownMenu>
+                                            <DropdownItem tag='a' onClick={() => {handleUpdate(id, index)}}>Atur Ulang Grafik</DropdownItem>
+                                            <DropdownItem tag='a' onClick={() => {handleDelete(id)}}>Nonaktifkan</DropdownItem>
+                                        </DropdownMenu>
+                                    </>
+                                }
                             </UncontrolledButtonDropdown>
                         </div>
                     :

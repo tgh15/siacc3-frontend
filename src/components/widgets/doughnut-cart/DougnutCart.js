@@ -15,7 +15,22 @@ import {
     UncontrolledButtonDropdown,
 }                                       from "reactstrap"
 
-export const DoughnutCard = ({id, handleDelete, data,title,legend,tooltips,xOptions,yOptions,detailChartAction, handleUpdate, index})=>{
+export const DoughnutCard = (props)=>{
+
+    const {
+        id, 
+        data,
+        title,
+        index,
+        legend,
+        tooltips,
+        xOptions,
+        yOptions, 
+        dashboard,
+        handleDelete, 
+        handleUpdate, 
+        detailChartAction, 
+    } = props;
     
     const [chartData, setChartData] = useState({
         labels: ['Tablet', 'Mobile', 'Desktop'],
@@ -143,11 +158,16 @@ export const DoughnutCard = ({id, handleDelete, data,title,legend,tooltips,xOpti
                                 >
                                     Detail
                                 </Button>
-                                <DropdownToggle outline className='dropdown-toggle-split' color='secondary' caret></DropdownToggle>
-                                <DropdownMenu>
-                                    <DropdownItem tag='a' onClick={() => {handleUpdate(id, index)}}>Atur Ulang Grafik</DropdownItem>
-                                    <DropdownItem tag='a' onClick={() => {handleDelete(id)}}>Nonaktifkan</DropdownItem>
-                                </DropdownMenu>
+                                {
+                                    !dashboard &&
+                                    <>
+                                        <DropdownToggle outline className='dropdown-toggle-split' color='secondary' caret></DropdownToggle>
+                                        <DropdownMenu>
+                                            <DropdownItem tag='a' onClick={() => {handleUpdate(id, index)}}>Atur Ulang Grafik</DropdownItem>
+                                            <DropdownItem tag='a' onClick={() => {handleDelete(id)}}>Nonaktifkan</DropdownItem>
+                                        </DropdownMenu>
+                                    </>
+                                }
                             </UncontrolledButtonDropdown>
                         </div>
                     :

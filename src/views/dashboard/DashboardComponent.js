@@ -15,7 +15,7 @@ import CustomTableNotAuthorized                                 from '../../comp
 import { ModalBase }                                            from '../../components/widgets/modals-base';
 import { ModalDetailChartUpdate }                               from '../../components/widgets/dashboard-components/ModalDetailChartUpdate';
 
-const DashboardComponent = (props) => {
+const DashboardComponent = () => {
 
     const ref                                                   = useRef();
 
@@ -174,6 +174,19 @@ const DashboardComponent = (props) => {
         )
     };
 
+    const getShareLink = () => {
+        dashboardAPI.getShareLink().then(
+            res => {
+                if(res.status === 200){
+                    navigator.clipboard.writeText(res.data);
+                    CustomToast("success", 'Link dashboard berhasil disalin.');
+                }
+            }, err => {
+                error_handler(err, 'get share link');
+            }
+        )
+    }
+
     const exportToJpg = useCallback(() => {
         if (ref.current === null) {
             return
@@ -273,6 +286,7 @@ const DashboardComponent = (props) => {
                     modalShow       = {modalShow}
                     handleFinish    = {handleFinish}
                     setModalShow    = {setModalShow}
+                    getShareLink    = {getShareLink}
 
                     //Role
                     roleAdd         = {getRoleByMenuStatus('Dashboard', 'add')}
@@ -287,8 +301,8 @@ const DashboardComponent = (props) => {
                 {
                     getRoleByMenuStatus('Dashboard', 'List') ? 
                         <BodyDashboardComponent 
-                            chartRef        = {ref}     
                             rows            = {dashboardLayout}
+                            chartRef        = {ref}     
                             handleDelete    = {handleDelete}
                             handleUpdate    = {handleUpdate}
 

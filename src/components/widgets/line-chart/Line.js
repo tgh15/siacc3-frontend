@@ -18,7 +18,23 @@ import Helper                               from "../../../helpers"
 // API
 import dashboardAPI                         from "../../../services/pages/dashboard"
 
-export const Linechart = ({id, data,title,legend,tooltips,xOptions,yOptions, detailChartAction, handleDelete, handleUpdate, index}) => {
+export const Linechart = (props) => {
+
+    const {
+        id, 
+        data,
+        title,
+        index,
+        legend,
+        tooltips,
+        xOptions,
+        yOptions, 
+        dashboard,
+        handleDelete, 
+        handleUpdate, 
+        detailChartAction, 
+    } = props;
+
     const [chartData, setChartData] = useState({
         labels: [0, 10, 20, 30, 40, 50, 60, 70, 80],
         datasets: [
@@ -154,11 +170,16 @@ export const Linechart = ({id, data,title,legend,tooltips,xOptions,yOptions, det
                                 >
                                     Detail
                                 </Button>
-                                <DropdownToggle outline className='dropdown-toggle-split' color='secondary' caret></DropdownToggle>
-                                <DropdownMenu>
-                                    <DropdownItem tag='a' onClick={() => {handleUpdate(id, index)}}>Atur Ulang Grafik</DropdownItem>
-                                    <DropdownItem tag='a' onClick={() => {handleDelete(id)}}>Nonaktifkan</DropdownItem>
-                                </DropdownMenu>
+                                {
+                                    !dashboard &&
+                                    <>
+                                        <DropdownToggle outline className='dropdown-toggle-split' color='secondary' caret></DropdownToggle>
+                                        <DropdownMenu>
+                                            <DropdownItem tag='a' onClick={() => {handleUpdate(id, index)}}>Atur Ulang Grafik</DropdownItem>
+                                            <DropdownItem tag='a' onClick={() => {handleDelete(id)}}>Nonaktifkan</DropdownItem>
+                                        </DropdownMenu>
+                                    </>
+                                }
                             </UncontrolledButtonDropdown>
                         </div>
                     :
