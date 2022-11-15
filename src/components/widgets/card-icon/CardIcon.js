@@ -20,7 +20,18 @@ import ContainerFluid                       from '../fluid'
 import NewsIcon                             from './NewsIcon'
 import dashboardAPI                         from '../../../services/pages/dashboard'
 
-export const CardIcon = ({id, handleDelete, data,title, detailChartAction, handleUpdate, index})=>{
+export const CardIcon = (props)=>{
+
+    const {
+        id, 
+        data,
+        index,
+        title, 
+        dashboard,
+        handleDelete, 
+        handleUpdate, 
+        detailChartAction, 
+    } = props;
 
     const [chartData, setChartData] = useState(null);
 
@@ -87,11 +98,16 @@ export const CardIcon = ({id, handleDelete, data,title, detailChartAction, handl
                                 >
                                     Detail
                                 </Button>
-                                <DropdownToggle outline className='dropdown-toggle-split' color='secondary' caret></DropdownToggle>
-                                <DropdownMenu>
-                                    <DropdownItem tag='a' onClick={() => {handleUpdate(id, index)}}>Atur Ulang Grafik</DropdownItem>
-                                    <DropdownItem tag='a' onClick={() => {handleDelete(id)}}>Nonaktifkan</DropdownItem>
-                                </DropdownMenu>
+                                {
+                                    !dashboard &&
+                                    <>
+                                        <DropdownToggle outline className='dropdown-toggle-split' color='secondary' caret></DropdownToggle>
+                                        <DropdownMenu>
+                                            <DropdownItem tag='a' onClick={() => {handleUpdate(id, index)}}>Atur Ulang Grafik</DropdownItem>
+                                            <DropdownItem tag='a' onClick={() => {handleDelete(id)}}>Nonaktifkan</DropdownItem>
+                                        </DropdownMenu>
+                                    </>
+                                }
                             </UncontrolledButtonDropdown>
                         </div>
                     :

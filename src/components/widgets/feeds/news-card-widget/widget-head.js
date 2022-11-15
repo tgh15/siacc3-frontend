@@ -30,7 +30,7 @@ export const WidgetNewsCardHeader = (props) => {
                         <div className="media-body">
                             <h6 className="mb-0">
                                 {
-                                    preview ? JSON.parse(localStorage.getItem('userData')).name : title
+                                    preview ? JSON.parse(localStorage.getItem('userData')).name : parse(title)
                                 }
                                 &nbsp; - &nbsp;
                                 <span className="text-primary">

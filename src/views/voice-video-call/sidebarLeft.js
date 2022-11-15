@@ -32,6 +32,7 @@ const SidebarLeft = (props) => {
         //ptt
         server,
         selected,
+        startPTT,
         setServer,
         getServer,
         pttActive,
@@ -39,7 +40,10 @@ const SidebarLeft = (props) => {
         setPttActive,
         activeChannel,       
         setActiveChannel,
-        setPttActiveContent
+        setPttActiveContent,
+        setSelectedChannelID,
+        setIsConfirmPasswordVisible,
+        handleSelfJoinChannel
     } = props;
     
     const [listCall, setListCall]                           = useState([]);
@@ -165,20 +169,25 @@ const SidebarLeft = (props) => {
                             </TabPane>
                             <TabPane tabId="ptt">
                                 <PTTSidebar
-                                    server                  = {server}
-                                    selected                = {selected}
-                                    pttActive               = {pttActive}
-                                    getServer               = {getServer}
-                                    isCollapse              = {isCollapse}
-                                    setSelected             = {setSelected}
-                                    setPttActive            = {setPttActive}
-                                    setIsCollapse           = {setIsCollapse}
-                                    activeChannel           = {activeChannel}
-                                    setActiveChannel        = {setActiveChannel}
-                                    createRoomVisible       = {createRoomVisible}
-                                    setPttActiveContent     = {setPttActiveContent}
-                                    setCreateRoomVisible    = {setCreateRoomVisible}
-                                    setCreateChannelVisible = {setCreateChannelVisible}
+                                    server                      = {server}
+                                    selected                    = {selected}
+                                    startPTT                    = {startPTT}
+                                    pttActive                   = {pttActive}
+                                    getServer                   = {getServer}
+                                    isCollapse                  = {isCollapse}
+                                    setSelected                 = {setSelected}
+                                    setPttActive                = {setPttActive}
+                                    setIsCollapse               = {setIsCollapse}
+                                    activeChannel               = {activeChannel}
+                                    setActiveChannel            = {setActiveChannel}
+                                    createRoomVisible           = {createRoomVisible}
+                                    setPttActiveContent         = {setPttActiveContent}
+                                    setCreateRoomVisible        = {setCreateRoomVisible}
+                                    setCreateChannelVisible     = {setCreateChannelVisible}
+
+                                    setSelectedChannelID        = {setSelectedChannelID}
+                                    handleSelfJoinChannel       = {handleSelfJoinChannel}
+                                    setIsConfirmPasswordVisible = {setIsConfirmPasswordVisible}
                                 />                      
                             </TabPane>
                         </TabContent>

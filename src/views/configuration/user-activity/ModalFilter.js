@@ -7,7 +7,7 @@ import {
 } from "reactstrap";
 
 // React
-import { Fragment, useEffect, useState }    from "react";
+import { Fragment, useContext, useEffect, useState }    from "react";
 import moment                               from "moment";
 import Flatpickr                            from 'react-flatpickr';
 
@@ -18,26 +18,19 @@ import '@styles/react/libs/flatpickr/flatpickr.scss';
 import CustomToast                          from "../../../components/widgets/custom-toast";
 import SelectOptionsService                 from '@src/services/pages/select-options';
 
+import Select                               from 'react-select'
+import { selectThemeColors }                from '@utils'
+import { PerformanceContext } from "../../../context/PerformanceContext";
+
+
 
 const ModalFilter = ({ setPageActive, setFilter, onReset, setSearchTerm, onFilter }) => {
+
+
+    const { workunitOptions }                   = useContext(PerformanceContext);       
     const [picker, setPicker]                   = useState(null);
     const [workunit, setWorkunit]               = useState(false);
     const [filterType, setFilterType]           = useState(null);
-    const [workunitOptions, setWorkunitOptions] = useState(null);
-    
-    const WorkunitOptions = () => {
-        SelectOptionsService.workunit({
-            onSuccess: (res) => {
-                setWorkunitOptions(res);
-            }, onFail: (err) => {
-                CustomToast("danger", err.message);
-            }
-        })
-    };
-
-    useEffect(() => {
-        WorkunitOptions();
-    }, []);
 
     const onClickReset = () => {
         setPageActive(1);
@@ -97,31 +90,16 @@ const ModalFilter = ({ setPageActive, setFilter, onReset, setSearchTerm, onFilte
                     <Fragment>
                         <FormGroup>
                             <Label for='id'>Satuan Kerja</Label>
-                            <CustomInput 
-                                id          = 'select-custom' 
-                                type        = 'select' 
-                                name        = 'sector_id' 
-                                onChange    = {(e) => setWorkunit(e.target.value)}
-                            >
-                                <option 
-                                    value    = ""
-                                    disabled 
-                                    selected 
-                                >
-                                    Pilh Unit Kerja
-                                </option>
-                                {
-                                    workunitOptions &&
-                                    workunitOptions.map((data) => (
-                                        <option 
-                                            key   = {data.key} 
-                                            value = {data.label}
-                                        >
-                                            {data.label}
-                                        </option>
-                                    ))
-                                }
-                            </CustomInput>
+                            <Select
+                                id              = "workunit" 
+                                theme           = {selectThemeColors}
+                                options         = {workunitOptions}
+                                className       = 'react-select'
+                                placeholder     = "Pilih Satker"
+                                onChange        = {(data) => setWorkunit(data.value)}
+                                isClearable
+                                classNamePrefix = 'select'
+                            />
                         </FormGroup>
                     </Fragment>
                 : null

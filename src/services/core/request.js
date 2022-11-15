@@ -11,14 +11,14 @@ const configHeaders  = !process.env.NODE_ENV || process.env.NODE_ENV === 'produc
 } : {
     "Content-Type"                  : "application/json",   
     "Authorization"                 : "Bearer " + localStorage.getItem("token"), 
-    "Access-Control-Allow-Origin"   : ".rlidev.pro, .siaccinfo.id, localhost:3000, localhost:3001, .mapbox.com, .test-siaccinfo.id, .siaccinfo.my.id, .underdev.team, .arcgis.com",
+    "Access-Control-Allow-Origin"   : ".underdev.team, .siaccinfo.id, localhost:3000, localhost:3001, .mapbox.com, .test-siaccinfo.id, .siaccinfo.my.id, .underdev.team, .arcgis.com",
     'Cache-Control'                 : 'no-cache',
     'Pragma'                        : 'no-cache',
     'Expires'                       : '0',
 };
 
 const redirectlogout = (err) => {
-    if (err.response.status == 410) {
+    if (err.response.status == 401) {
         // Redirect them to the /login page, but save the current location they were
         // trying to go to when they were redirected. This allows us to send them
         // along to that page after they login, which is a nicer user experience

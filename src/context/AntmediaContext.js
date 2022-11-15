@@ -9,46 +9,34 @@ const AntmediaProvider = ({children}) =>{
     const [webRTCAdaptorPeer,setWebRtcAdaptorPeer]      = useState(null)
 
     let url_antmedia_server, ice_server;
-    
+
+    ice_server          =  {
+        'iceServers': [
+            {
+                'urls'          : "turn:103.106.174.84:3478",
+                'username'      : "s144cc202i",
+                'credential'    : "5a1d82cc6821",
+            },            
+            {
+                'urls'          : "stun:103.106.174.84:3478",
+                'username'      : "s144cc202i",
+                'credential'    : "5a1d82cc6821",
+            }
+        ]
+    }
     if(!process.env.NODE_ENV || process.env.NODE_ENV === 'production'){
-        url_antmedia_server = "wss://stream.siaccinfo.id/WebRTCAppEE/websocket"
-        ice_server          =  {
-            'iceServers': [
-                {
-                    'urls'          : "turn:103.106.174.84:3478",
-                    'username'      : "s144cc202i",
-                    'credential'    : "5a1d82cc6821",
-                },            
-                {
-                    'urls'          : "stun:103.106.174.84:3478",
-                    'username'      : "s144cc202i",
-                    'credential'    : "5a1d82cc6821",
-                }
-            ]
-        }
+        url_antmedia_server = "wss://stream.siaccinfo.id//WebRTCAppEE/websocket"
     }else{
-        url_antmedia_server = "wss://antmedia.rlidev.pro/WebRTCAppEE/websocket"
-        ice_server          =  {
-            'iceServers': [
-                {
-                    'urls'          : "stun:158.140.183.123:3478",
-                    'username'      : "devops",
-                    'credential'    : "9051puki",
-                },            
-                {
-                    'urls'          : "turn:158.140.183.123:3478",
-                    'username'      : "devops",
-                    'credential'    : "9051puki",
-                }
-            ]
-        }
+        url_antmedia_server = "wss://antmedia.underdev.team/WebRTCAppEE/websocket"
     }
 
 
     const setWebRtc = (kind="peer",localvideoId,remoteVideoId, type) => {
-        if ( kind == "peer" && type === 'video'){
 
-            let adaptor = new WebRTCAdaptor({
+        let adaptor;
+
+        if ( kind == "peer" && type === 'video'){
+            adaptor = new WebRTCAdaptor({
                 websocket_url           : url_antmedia_server,
                 mediaConstraints        : {
                     video : true,
@@ -62,7 +50,6 @@ const AntmediaProvider = ({children}) =>{
                 localVideoId            : localvideoId,
                 remoteVideoId           : remoteVideoId,
                 bandwidth               :  "unlimited", 
-                debug                   : true,
                 callback                : (info, obj) => {
                     setCallback({obj:obj,info:info})
                 },
@@ -70,9 +57,9 @@ const AntmediaProvider = ({children}) =>{
                     setErrorCallback({error:error,message:message})
                 }, 
             })
-            setWebRtcAdaptorPeer(adaptor) 
-        }else{
-            let adaptor = new WebRTCAdaptor({
+        }
+        else{
+            adaptor = new WebRTCAdaptor({
                 websocket_url           : url_antmedia_server,
                 mediaConstraints        : {
                     video : false,
@@ -93,16 +80,19 @@ const AntmediaProvider = ({children}) =>{
                     setErrorCallback({error:error,message:message})
                 }, 
             })
-            setWebRtcAdaptorPeer(adaptor) 
         }
+        setWebRtcAdaptorPeer(adaptor) 
+
     }
 
     useEffect(()=>{
         console.log(callback, 'callback2');
+
+        console.log(errorCallback, 'error callback')
     },[callback])
 
     return <AntmediaContext.Provider 
-            value={{
+            value = {{
                 callback,
                 setWebRtc,
                 errorCallback,

@@ -15,18 +15,19 @@ import CustomTableNotAuthorized                                 from '../../comp
 import { ModalBase }                                            from '../../components/widgets/modals-base';
 import { ModalDetailChartUpdate }                               from '../../components/widgets/dashboard-components/ModalDetailChartUpdate';
 
-const DashboardComponent = (props) => {
+const DashboardComponent = () => {
 
     const ref                                                   = useRef();
 
     const [modalShow,setModalShow]                              = useState(false);
-    const [chartSource, setChartSource]                         = useState(null)
+    const [chartSource, setChartSource]                         = useState(null);
     const [detailLayout, setDetailLayout]                       = useState(null);
     const [selectedIndex, setSelectedIndex]                     = useState(null);
+    const [downloadLoading, setDownloadLoading]                 = useState(false);
     const [dashboardLayout, setDashboardLayout]                 = useState([]);
     const [detailLayoutCol, setDetailLayoutCol]                 = useState(null);
-    const [isUpdateLayoutVisible, setIsUpdateLayoutVisible]     = useState(false);
     const [selectedDataSource, setSelectedDataSource]           = useState(null);
+    const [isUpdateLayoutVisible, setIsUpdateLayoutVisible]     = useState(false);
 
     const {getRoleByMenuStatus}                                 = Helper;
 
@@ -174,10 +175,25 @@ const DashboardComponent = (props) => {
         )
     };
 
+    const getShareLink = () => {
+        dashboardAPI.getShareLink().then(
+            res => {
+                if(res.status === 200){
+                    navigator.clipboard.writeText(res.data);
+                    CustomToast("success", 'Link dashboard berhasil disalin.');
+                }
+            }, err => {
+                error_handler(err, 'get share link');
+            }
+        )
+    }
+
     const exportToJpg = useCallback(() => {
         if (ref.current === null) {
             return
         }
+
+        setDownloadLoading(true);
 
         toJpeg(ref.current, { cacheBust: true, backgroundColor: 'white' , style: { padding: '5px' }})
             .then((dataUrl) => {
@@ -185,6 +201,8 @@ const DashboardComponent = (props) => {
                 link.download   = 'dashboar-export.jpeg'
                 link.href       = dataUrl
                 link.click()
+
+                setDownloadLoading(false);
             })
             .catch((err) => {
                 error_handler(err, 'export to jpg');
@@ -195,6 +213,7 @@ const DashboardComponent = (props) => {
         if (ref.current === null) {
             return
         }
+        setDownloadLoading(true);
 
         toJpeg(ref.current, { cacheBust: true, style: { padding: '5px' }})
             .then((dataUrl) => {
@@ -202,6 +221,8 @@ const DashboardComponent = (props) => {
                 link.download   = 'dashboard-export.png'
                 link.href       = dataUrl
                 link.click()
+
+                setDownloadLoading(false);
             })
             .catch((err) => {
                 error_handler(err, 'export to png');
@@ -221,10 +242,14 @@ const DashboardComponent = (props) => {
             return
         }
 
+        setDownloadLoading(true);
+
         toPng(ref.current, { cacheBust: true, style: { padding: '5px' }})
             .then((dataUrl) => {
                 doc.addImage(dataUrl,'PNG',1,1, width-10, height-110);
                 doc.save(`export-dashboard.pdf`);
+
+                setDownloadLoading(false);
             })
             .catch((err) => {
                 error_handler(err, 'export to pdf');
@@ -244,13 +269,16 @@ const DashboardComponent = (props) => {
             return
         }
 
+        setDownloadLoading(true);
+
         toPng(ref.current, { cacheBust: true, style: { padding: '5px' }})
             .then((dataUrl) => {
                 doc.addImage(dataUrl, 'PNG',1,1, width-10, height-110);
                 
                 let print = window.open(doc.output('bloburl'), '_blank');
                 print.print();
-
+                
+                setDownloadLoading(false);
                 return doc;
             })
             .catch((err) => {
@@ -273,6 +301,7 @@ const DashboardComponent = (props) => {
                     modalShow       = {modalShow}
                     handleFinish    = {handleFinish}
                     setModalShow    = {setModalShow}
+                    getShareLink    = {getShareLink}
 
                     //Role
                     roleAdd         = {getRoleByMenuStatus('Dashboard', 'add')}
@@ -282,13 +311,14 @@ const DashboardComponent = (props) => {
                     exportToJpg     = {exportToJpg}
                     exportToPng     = {exportToPng}
                     exportToPdf     = {exportToPdf}
+                    downloadLoading = {downloadLoading}
                 />
                 
                 {
                     getRoleByMenuStatus('Dashboard', 'List') ? 
                         <BodyDashboardComponent 
-                            chartRef        = {ref}     
                             rows            = {dashboardLayout}
+                            chartRef        = {ref}     
                             handleDelete    = {handleDelete}
                             handleUpdate    = {handleUpdate}
 

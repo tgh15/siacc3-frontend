@@ -19,7 +19,19 @@ import Helper                           from "../../../helpers"
 import dashboardAPI                     from '../../../services/pages/dashboard'
 mapboxgl.workerClass = require('worker-loader!mapbox-gl/dist/mapbox-gl-csp-worker').default;
 
-export const MapChart = ({id, handleDelete, data,title,detailChartAction, handleUpdate, index}) => { 
+export const MapChart = (props) => { 
+
+    const {
+        id, 
+        data,
+        index,
+        title,
+        dashboard,
+        handleUpdate, 
+        handleDelete, 
+        detailChartAction, 
+    } = props;
+
     const size = 20;
 
     const [lng, setLng]                        		= useState(117.94);
@@ -27,7 +39,6 @@ export const MapChart = ({id, handleDelete, data,title,detailChartAction, handle
 	const [zoom, setZoom]                      		= useState(4);
     const [chartData, setChartData]                 = useState([]);
     const [popupInfo, setPopupInfo]                 = useState(null);
-    const [isPopoverVisible, setIsPopoverVisible]   = useState(false);
 	const [viewport, setViewport]                   = useState({
 		zoom: zoom,
 		latitude: lat,
@@ -94,11 +105,16 @@ export const MapChart = ({id, handleDelete, data,title,detailChartAction, handle
                                 >
                                     Detail
                                 </Button>
-                                <DropdownToggle outline className='dropdown-toggle-split' color='secondary' caret></DropdownToggle>
-                                <DropdownMenu>
-                                    <DropdownItem tag='a' onClick={() => {handleUpdate(id, index)}}>Atur Ulang Grafik</DropdownItem>
-                                    <DropdownItem tag='a' onClick={() => {handleDelete(id)}}>Nonaktifkan</DropdownItem>
-                                </DropdownMenu>
+                                {
+                                    !dashboard &&
+                                    <>
+                                        <DropdownToggle outline className='dropdown-toggle-split' color='secondary' caret></DropdownToggle>
+                                        <DropdownMenu>
+                                            <DropdownItem tag='a' onClick={() => {handleUpdate(id, index)}}>Atur Ulang Grafik</DropdownItem>
+                                            <DropdownItem tag='a' onClick={() => {handleDelete(id)}}>Nonaktifkan</DropdownItem>
+                                        </DropdownMenu>
+                                    </>
+                                }
                             </UncontrolledButtonDropdown>
                         </div>
                     :
@@ -106,7 +122,7 @@ export const MapChart = ({id, handleDelete, data,title,detailChartAction, handle
                 }
             </CardHeader>
             <CardBody>
-            <ReactMapGL
+                    <ReactMapGL
                         {...viewport}
                         mapStyle            = "mapbox://styles/zephyrfn/ckra22zgd4uh517m5plawan4p"
                         onViewportChange    = {nextViewport => setViewport(nextViewport)}
@@ -168,7 +184,7 @@ export const MapChart = ({id, handleDelete, data,title,detailChartAction, handle
                                             {popupInfo.name}
                                         </p>
 
-                                        <a href={`/configuration/work-unit-list/${popupInfo.workunit_id}`} style = {{ marginTop: '10px' }}>
+                                        <a href={`/configuration/work-unit-list/${popupInfo.workunit_id}?level=${popupInfo.workunit_level}`} style = {{ marginTop: '10px' }}>
                                             Detail
                                         </a>
 

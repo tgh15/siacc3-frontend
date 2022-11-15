@@ -117,7 +117,7 @@ const CardDetails = (props) => {
                     {dataDetail && <Row className="mt-2 d-flex justify-content-around">
                         <Col>
                             {
-                                getRoleByMenuStatus('Performance', 'point_reduction') && localStorage.getItem('role') === 'Admin' || localStorage.getItem('role') === 'Verifikator Pusat'? 
+                                getRoleByMenuStatus('Performance', 'point_reduction') && (localStorage.getItem('role') === 'Admin' || localStorage.getItem('role') === 'Verifikator Pusat') ? 
                                     <Button.Ripple color="primary" block onClick={() => { setModalLessPoint(true) }} >
                                         Kurangi Nilai
                                     </Button.Ripple>
@@ -127,7 +127,7 @@ const CardDetails = (props) => {
                         </Col>
                         <Col>
                             {
-                                getRoleByMenuStatus('Performance', 'point_history') ? 
+                                getRoleByMenuStatus('Performance', 'point_history') ?
                                     <Button.Ripple color="primary" block outline onClick={() => { setModalHistoryPoint(true) }}>
                                         Riwayat Nilai
                                     </Button.Ripple>

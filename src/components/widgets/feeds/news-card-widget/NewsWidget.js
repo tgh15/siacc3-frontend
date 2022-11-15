@@ -69,7 +69,10 @@ export const NewsWidget = (props) => {
         archived,
         subTitle, 
         division, 
-        newsType, 
+        newsType,
+        publish_date, 
+        publish_type,
+        time_update,
         location, 
         bodyText, 
         imgAvatar, 
@@ -1035,12 +1038,10 @@ export const NewsWidget = (props) => {
                 </Form>
             </ModalBase>
 
-            <div 
+            <Card 
                 ref          = {bodyCardRef} 
-                className    = "card" 
-                onMouseEnter = {() => {
-                    handleViewer();
-                }}
+                // style        = {{ overflow: 'auto', height: 'auto'}}
+                onMouseEnter = {() => {handleViewer();}}
             >
                 <CardBody>
                     {/* Header */}
@@ -1111,18 +1112,27 @@ export const NewsWidget = (props) => {
                                     </p>
                         }
 
+                        {
+                            publish_type != 'not_publish_yet' &&
+                            <p>Tanggal Publikasi : {moment(publish_date).format('DD MMMM YYYY')} ({publish_type === 'local_publish' ? 'Lokal' : 'Nasional'})</p>
+                        }
+
                         {attach == null ? null : attach.files}
                         {attach == null ? null : attach.links}
                         
-                        <div style={{wordWrap: 'break-word'}}>
+                        <div style={{wordBreak: 'break-word'}}>
+                            <p>
+
                             {
                                 hashtag != undefined ? 
                                     hashtag.map((data) => (
-                                        <a href={`/advanced-search?keyword=${data.tag.replace('#',"")}`}><h6 className="d-inline text-primary mr-1">{parse(data.tag)}</h6></a>
+                                        <a href={`/advanced-search?keyword=${data.tag.replace('#',"")}`}><span className="mr-1">{parse(data.tag)}</span></a>
                                     ))
                                 :
                                     null
                             }
+                            </p>
+
                         </div>
 
 
@@ -1234,7 +1244,7 @@ export const NewsWidget = (props) => {
                             )
                     }
                 </CardBody>
-            </div>
+            </Card>
         </Fragment>
     );
 };

@@ -2,7 +2,6 @@ import moment               from "moment";
 import { useHistory }       from "react-router";
 import { useLocation }      from "react-router-dom";
 
-
 import fallback from '../assets/images/portrait/small/150x150.png';
 
 const CustomTableNumber = ({ key, pagination }) => {
@@ -13,7 +12,7 @@ const CustomTableNumber = ({ key, pagination }) => {
     }
 }
 
-const dateIndo = (paramsDate) => {
+const dateIndo  = (paramsDate) => {
     var date = new Date(paramsDate);
 
     return date.getDate() + " " + monthIndo(date.getMonth()) + " " + date.getFullYear() + ", " + date.getHours() + ":" + date.getMinutes()
@@ -185,6 +184,12 @@ const getTimeAgo = (stringDate) => {
     return moment(stringDate).fromNow(true);
 };
 
+const getDuration = (startDate, endDate) => {
+    let duration = moment.duration(moment(endDate).diff(moment(startDate)));
+
+    return `${duration.minutes()} Menit ${duration.seconds()} Detik`;
+};
+
 const fallbackImage_ = (val) => {
     val.target.src = fallback;
 };
@@ -298,6 +303,27 @@ const formatDate = (stringDate) => {
     return date + " " + month + " " + year + ", " + hours + ":" + minutes ;
 };
 
+const getYearsBefore = (howManyYears) => {
+    const year = new Date().getFullYear();
+    return Array.from({length : howManyYears}, (v, i) => ({ label : year - howManyYears + i + 1, value : year - howManyYears + i + 1})).reverse();
+}
+
+const getMonthName = () => {
+    const monthName = moment.months();
+    return monthName.map((data, index) => (
+        {
+            label : data,
+            value : index+1
+        }
+    ))
+};
+
+const getLastDateOfCurrentMonth = (month) => {
+    let date = moment().startOf(month).format('DD');
+
+    return date;
+}
+
 const Helper = {
     dayIndo                 : dayIndo,
     dateIndo                : dateIndo,
@@ -320,7 +346,11 @@ const Helper = {
     getParemeterFromString  : getParemeterFromString,
     useQuery                : useQuery,
     shortenLargeNumber      : shortenLargeNumber,
-    formatDate              : formatDate
+    formatDate              : formatDate,
+    getYearsBefore          : getYearsBefore,
+    getMonthName            : getMonthName,
+    getLastDateOfCurrentMonth : getLastDateOfCurrentMonth,
+    getDuration             : getDuration
 }
 
 export default Helper;

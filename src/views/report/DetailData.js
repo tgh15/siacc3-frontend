@@ -1,10 +1,11 @@
-import { Fragment, useEffect, useState } from "react"
-import { Card, CardBody, CardText, Col,  Row } from "reactstrap"
-import CustomTable from "../../components/widgets/custom-table"
-import CustomTableBody from "../../components/widgets/custom-table/CustomTableBody"
-import Helper from "../../helpers"
-import dataDetails from "./data-details"
-import DoughnutChart from "./doughnut-chart"
+import { Fragment, useEffect, useState }        from "react"
+import { Card, CardBody, CardText, Col,  Row }  from "reactstrap"
+import CustomTable                              from "../../components/widgets/custom-table"
+import CustomTableBody                          from "../../components/widgets/custom-table/CustomTableBody"
+import CustomTableBodyEmpty                     from "../../components/widgets/custom-table/CustomTableBodyEmpty"
+import Helper                                   from "../../helpers"
+import dataDetails                              from "./data-details"
+import DoughnutChart                            from "./doughnut-chart"
 
 
 
@@ -77,58 +78,50 @@ const DetailData = (props) => {
                                                                 2
                                                             :
                                                                 data.report_content.id == 4 ?
-                                                                    // jumlah suka agen
+                                                                    // jumlah komentar pimpinan
                                                                     2
                                                                 :
                                                                     data.report_content.id == 5 ?
-                                                                        // jumlah komentar pimpinan
+                                                                        // jumlah komentar agen
                                                                         2
                                                                     :
                                                                         data.report_content.id == 6 ?
-                                                                            // jumlah komentar agen
+                                                                            // jumlah penonton
                                                                             2
                                                                         :
                                                                             data.report_content.id == 7 ?
-                                                                                // jumlah tidak suka
+                                                                                // kategori
                                                                                 2
                                                                             :
                                                                                 data.report_content.id == 8 ?
-                                                                                    // jumlah penonton
-                                                                                    2
+                                                                                    // nama agen 
+                                                                                    3
                                                                                 :
                                                                                     data.report_content.id == 9 ?
-                                                                                        // kategori
+                                                                                        // satuan kerja
                                                                                         2
                                                                                     :
                                                                                         data.report_content.id == 10 ?
-                                                                                            // nama agen 
+                                                                                            // jabatan
                                                                                             3
                                                                                         :
                                                                                             data.report_content.id == 11 ?
-                                                                                                // satuan kerja
+                                                                                                // jumlah berita di publikasi
                                                                                                 2
-                                                                                            :
+                                                                                            :   
                                                                                                 data.report_content.id == 12 ?
-                                                                                                    // jabatan
-                                                                                                    3
+                                                                                                    //jumlah berita di arsip
+                                                                                                    2
                                                                                                 :
                                                                                                     data.report_content.id == 13 ?
-                                                                                                        // jumlah berita di publikasi
+                                                                                                        //jumlah berita ke pimpinan
                                                                                                         2
-                                                                                                    :   
+                                                                                                    :
                                                                                                         data.report_content.id == 14 ?
-                                                                                                            //jumlah berita di arsip
+                                                                                                            //jumlah agent 
                                                                                                             2
                                                                                                         :
-                                                                                                            data.report_content.id == 15 ?
-                                                                                                                //jumlah berita ke pimpinan
-                                                                                                                2
-                                                                                                            :
-                                                                                                                data.report_content.id == 16 ?
-                                                                                                                    //jumlah agent 
-                                                                                                                    2
-                                                                                                                :
-                                                                                                                    null
+                                                                                                            null
                                                                                                         
                                                                                                     
 
@@ -161,120 +154,108 @@ const DetailData = (props) => {
                                                     <Col
                                                         md={
                                                             dataHeader.report_content.id == 1 ?
-                                                                // isi berita
-                                                                4
-                                                            :
-                                                                dataHeader.report_content.id == 2 ?
-                                                                    // tangal publikasi
-                                                                    2
+                                                                    // isi berita
+                                                                    4
                                                                 :
-                                                                    dataHeader.report_content.id == 3 ?
-                                                                        // jumlah suka pimpinan
+                                                                    dataHeader.report_content.id == 2 ?
+                                                                        // tanggal publikasi
                                                                         2
                                                                     :
-                                                                        dataHeader.report_content.id == 4 ?
-                                                                            // jumlah suka agen
+                                                                        dataHeader.report_content.id == 3 ?
+                                                                            // jumlah suka pimpinan
                                                                             2
                                                                         :
-                                                                            dataHeader.report_content.id == 5 ?
+                                                                            dataHeader.report_content.id == 4 ?
                                                                                 // jumlah komentar pimpinan
                                                                                 2
                                                                             :
-                                                                                dataHeader.report_content.id == 6 ?
+                                                                                dataHeader.report_content.id == 5 ?
                                                                                     // jumlah komentar agen
                                                                                     2
                                                                                 :
-                                                                                    dataHeader.report_content.id == 7 ?
-                                                                                        // jumlah tidak suka
+                                                                                    dataHeader.report_content.id == 6 ?
+                                                                                        // jumlah penonton
                                                                                         2
                                                                                     :
-                                                                                        dataHeader.report_content.id == 8 ?
-                                                                                            // jumlah penonton
+                                                                                        dataHeader.report_content.id == 7 ?
+                                                                                            // kategori
                                                                                             2
                                                                                         :
-                                                                                            dataHeader.report_content.id == 9 ?
-                                                                                                // kategori
-                                                                                                2
+                                                                                            dataHeader.report_content.id == 8 ?
+                                                                                                // nama agen 
+                                                                                                3
                                                                                             :
-                                                                                                dataHeader.report_content.id == 10 ?
-                                                                                                    // nama agen 
-                                                                                                    3
+                                                                                                dataHeader.report_content.id == 9 ?
+                                                                                                    // satuan kerja
+                                                                                                    2
                                                                                                 :
-                                                                                                    dataHeader.report_content.id == 11 ?
-                                                                                                        //satuan kerja
-                                                                                                        2
+                                                                                                    dataHeader.report_content.id == 10 ?
+                                                                                                        // jabatan
+                                                                                                        3
                                                                                                     :
-                                                                                                        dataHeader.report_content.id == 12 ?
-                                                                                                            // jabatan
-                                                                                                            3
-                                                                                                        :
-                                                                                                            dataHeader.report_content.id == 13 ?
-                                                                                                                // jumlah berita di publikasi
+                                                                                                        dataHeader.report_content.id == 11 ?
+                                                                                                            // jumlah berita di publikasi
+                                                                                                            2
+                                                                                                        :   
+                                                                                                            dataHeader.report_content.id == 12 ?
+                                                                                                                //jumlah berita di arsip
                                                                                                                 2
-                                                                                                            :   
-                                                                                                                dataHeader.report_content.id == 14 ?
-                                                                                                                    //jumlah berita di arsip
+                                                                                                            :
+                                                                                                                dataHeader.report_content.id == 13 ?
+                                                                                                                    //jumlah berita ke pimpinan
                                                                                                                     2
                                                                                                                 :
-                                                                                                                    dataHeader.report_content.id == 15 ?
-                                                                                                                        //jumlah berita ke pimpinan
+                                                                                                                    dataHeader.report_content.id == 14 ?
+                                                                                                                        //jumlah agent 
                                                                                                                         2
                                                                                                                     :
-                                                                                                                        dataHeader.report_content.id == 16 ?
-                                                                                                                            //jumlah agen
-                                                                                                                            2
-                                                                                                                        :
-                                                                                                                            0
+                                                                                                                        null
+                                                                                                                    
+                                                                                                                
+            
                                                         }
                                                     >
                                                         {
                                                             dataHeader.report_content.id == 1 ?
-
                                                                 data.when_+' '+'bertempat di '+ (data.where != undefined ? data.where.replace(/[.]+$/g,"") : data.where)  +". "+data.who+' '+ (data.what != undefined ? data.what.replace(/[.]+$/g,"") : data.what )+'. '+data.why+'. '+ (data.how != undefined ? data.how.replace(/[.]+$/g,"")+ '.' : data.how)
                                                             :
                                                                 dataHeader.report_content.id == 2 ?
                                                                     formatDate(data.publication_date)
                                                                 :
                                                                     dataHeader.report_content.id == 3 ?
-                                                                        data.leader_likes
-                                                                    :
-                                                                        dataHeader.report_content.id == 4 ?
-                                                                            data.agent_likes
+                                                                        data.rating
                                                                         :
-                                                                            dataHeader.report_content.id == 5 ?
+                                                                            dataHeader.report_content.id == 4 ?
                                                                                 data.leader_comments
                                                                             :
-                                                                                dataHeader.report_content.id == 6 ?
+                                                                                dataHeader.report_content.id == 5 ?
                                                                                     data.agent_comments
-                                                                                :
-                                                                                    dataHeader.report_content.id == 7 ?
-                                                                                        data.dislikes
                                                                                     :
-                                                                                        dataHeader.report_content.id == 8 ?
+                                                                                        dataHeader.report_content.id == 6 ?
                                                                                             data.viewers
                                                                                         :
-                                                                                            dataHeader.report_content.id == 9 ?
+                                                                                            dataHeader.report_content.id == 7 ?
                                                                                                 data.categories
                                                                                             :
-                                                                                                dataHeader.report_content.id == 10 ?
+                                                                                                dataHeader.report_content.id == 8 ?
                                                                                                     data.employee
                                                                                                 :
-                                                                                                    dataHeader.report_content.id == 11 ?
+                                                                                                    dataHeader.report_content.id == 9 ?
                                                                                                         data.workunit
                                                                                                     :
-                                                                                                        dataHeader.report_content.id == 12 ?
+                                                                                                        dataHeader.report_content.id == 10 ?
                                                                                                             data.position
                                                                                                         :
-                                                                                                            dataHeader.report_content.id == 13 ?
+                                                                                                            dataHeader.report_content.id == 11 ?
                                                                                                                 data.publication_count
                                                                                                             :
-                                                                                                                dataHeader.report_content.id == 14 ?
+                                                                                                                dataHeader.report_content.id == 12 ?
                                                                                                                     data.archive_count
                                                                                                                 :
-                                                                                                                    dataHeader.report_content.id == 15 ?
+                                                                                                                    dataHeader.report_content.id == 13 ?
                                                                                                                         data.forward_count
                                                                                                                     :
-                                                                                                                        dataHeader.report_content.id == 16 ?
+                                                                                                                        dataHeader.report_content.id == 14 ?
                                                                                                                             data.agent_count
                                                                                                                         :
                                                                                                                             null
@@ -282,7 +263,8 @@ const DetailData = (props) => {
                                                         }
                                                     </Col>
                                                 ))
-                                            : <EmptyCard/>
+                                            : 
+                                                <CustomTableBodyEmpty/>
                                         }
                                     </Row>
                                 </CardBody>

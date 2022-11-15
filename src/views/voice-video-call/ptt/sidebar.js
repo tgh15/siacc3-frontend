@@ -8,24 +8,24 @@ import {
     AlertCircle, 
     ChevronDown,
     ChevronRight,
-}                       from 'react-feather'
+}                               from 'react-feather'
 
 import {
     Col,
     Row,
     Button,
     Collapse
-}                       from 'reactstrap'
+}                               from 'reactstrap'
 
-import Avatar           from '../../../components/widgets/avatar';
-import ChildChannel     from './childChannel';
+import Avatar                   from '../../../components/widgets/avatar';
+import ChildChannel             from './childChannel';
 
 //utils
-import Helper           from '../../../helpers';
-import SelectMultipleUser from '../../../components/widgets/select-multiple-user';
-import { useState } from 'react';
-import CommunicationPTT from '../../../services/pages/chat/PushToTalk';
-import CustomToast from '../../../components/widgets/custom-toast';
+import Helper                   from '../../../helpers';
+import SelectMultipleUser       from '../../../components/widgets/select-multiple-user';
+import { useEffect, useState }             from 'react';
+import CommunicationPTT         from '../../../services/pages/chat/PushToTalk';
+import CustomToast              from '../../../components/widgets/custom-toast';
 
 
 const PTTSidebar = (props) => {
@@ -45,7 +45,10 @@ const PTTSidebar = (props) => {
         setPttActiveContent,
         setCreateRoomVisible,
         setCreateChannelVisible,
-    }                   = props;
+        setSelectedChannelID,
+        setIsConfirmPasswordVisible,
+        handleSelfJoinChannel
+    }                                                   = props;
 
     const [isAddUserVisible, setIsAddUserVisible]       = useState(false);
 
@@ -123,7 +126,10 @@ const PTTSidebar = (props) => {
                         Push To Talk
                     </h5>
                     <div className='d-flex cursor-pointer'>
-                        <Plus size="20" onClick={() => {setCreateRoomVisible(true)}}/>
+                        {
+                            (localStorage.getItem('role') === 'Verifikator Pusat' || localStorage.getItem('role') === 'Admin') &&
+                            <Plus size="20" onClick={() => {setCreateRoomVisible(true)}}/>
+                        }
                     </div>
                 </div>
 
@@ -168,32 +174,44 @@ const PTTSidebar = (props) => {
                                         </h3>
                                     </Col>
                                     <Col md={3} className="text-right">
+                                        
                                         {
-                                            pttActive ? 
-                                                <Settings 
-                                                    size    = {20}
-                                                    onClick = {() => setPttActive(false)}
-                                                />
-                                            :
-                                                <LogOut
-                                                    size    = {20}
-                                                    onClick = {() => {setPttActive(true); setPttActiveContent('ptt')}}
-                                                />
+                                            (localStorage.getItem('role') === 'Verifikator Pusat' || localStorage.getItem('role') === 'Admin') &&
+                                            <>
+                                                {
+                                                    pttActive ? 
+                                                        <Settings 
+                                                            size    = {20}
+                                                            onClick = {() => setPttActive(false)}
+                                                        />
+                                                    :
+                                                        <LogOut
+                                                            size    = {20}
+                                                            onClick = {() => {setPttActive(true); setPttActiveContent('ptt')}}
+                                                        />
+                                                }
+                                            </>
+
+                                            
                                         }
+
                                         </Col>
                                 </Row>
 
                                 {
                                     pttActive ? 
                                         <>
-                                            <Button 
-                                                block 
-                                                color       = "primary"
-                                                className   = "mt-1" 
-                                                onClick     = {() => setIsAddUserVisible(true)}
-                                            >
-                                                Tambahkan Anggota
-                                            </Button> 
+                                            {
+                                                (localStorage.getItem('role') === 'Verifikator Pusat' || localStorage.getItem('role') === 'Admin') &&
+                                                <Button 
+                                                    block 
+                                                    color       = "primary"
+                                                    className   = "mt-1" 
+                                                    onClick     = {() => setIsAddUserVisible(true)}
+                                                >
+                                                    Tambahkan Anggota
+                                                </Button> 
+                                            }
 
                                             <div className='mt-2 d-flex justify-content-between'>
                                                 <span onClick={() => setIsCollapse(!isCollapse)} className='cursor-pointer'>
@@ -208,30 +226,38 @@ const PTTSidebar = (props) => {
                                                     }
                                                     Channel
                                                 </span>
-                                                <Plus 
-                                                    className='cursor-pointer'
-                                                    onClick={() => setCreateChannelVisible(true)}
-                                                /> 
+                                                {
+                                                    (selected != null && selected.admins_id.filter((data) => data === localStorage.getItem('uuid')).length > 0) &&
+                                                    <Plus 
+                                                        className='cursor-pointer'
+                                                        onClick={() => setCreateChannelVisible(true)}
+                                                    /> 
+                                                }
+                                            </div>
+                                            <div style={{overflowY:'auto', overflowX: 'hidden', height: '45vh'}}>
+                                                <Collapse 
+                                                    isOpen      = {isCollapse}
+                                                    className   = "mt-2"
+                                                >
+                                                    {
+                                                        selected != null && selected.channels != null ? 
+                                                            selected.channels.map((data) => (
+                                                                <ChildChannel 
+                                                                    data                        = {data}
+                                                                    selected                    = {selected}
+                                                                    activeChannel               = {activeChannel}
+                                                                    setActiveChannel            = {setActiveChannel}    
+                                                                    setSelectedChannelID        = {setSelectedChannelID}
+                                                                    setIsConfirmPasswordVisible = {setIsConfirmPasswordVisible}
+                                                                    handleSelfJoinChannel       = {handleSelfJoinChannel}
+                                                                />
+                                                            ))
+                                                        :
+                                                            null
+                                                    }
+                                                </Collapse>
                                             </div>
 
-                                            <Collapse 
-                                                isOpen      = {isCollapse}
-                                                className   = "mt-2"
-                                            >
-                                                {
-                                                    selected != null && selected.channels != null ? 
-                                                        selected.channels.map((data) => (
-                                                            <ChildChannel 
-                                                                data                = {data}
-                                                                selected            = {selected}
-                                                                activeChannel       = {activeChannel}
-                                                                setActiveChannel    = {setActiveChannel}    
-                                                            />
-                                                        ))
-                                                    :
-                                                        null
-                                                }
-                                            </Collapse>
                                         </>
                                     :                    
                                         <div className='chat-user-list-wrapper list-group' style={{marginLeft: '-18px', marginTop: '10px'}}>

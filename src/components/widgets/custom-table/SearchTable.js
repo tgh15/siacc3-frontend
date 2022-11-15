@@ -10,8 +10,9 @@ import {
 
 const SearchTable = (props) => {
     const {
+        value,
+        onSearch,
         placeholder,
-        onSearch
     } = props
 
     const  onKeyUp = (e) =>  {
@@ -32,8 +33,9 @@ const SearchTable = (props) => {
                     </InputGroupText>
                 </InputGroupAddon>
                 <Input 
-                    onKeyPress  = {(e) => (onKeyUp(e))}
-                    placeholder = {placeholder ?? "Cari..."}  
+                    onKeyPress      = {(e) => (onKeyUp(e))}
+                    placeholder     = {placeholder ?? "Cari..."}  
+                    defaultValue    = {value}
                 />
             </InputGroup>
         </Fragment>

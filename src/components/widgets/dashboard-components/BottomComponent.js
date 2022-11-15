@@ -12,9 +12,27 @@ import { DoughnutCard }                 from '../doughnut-cart/DougnutCart';
 import DetailChartData                  from './ModalDetailChartData';
 import CustomTableBodyEmpty             from '../custom-table/CustomTableBodyEmpty';
 
-const MyChart = ({identity_id, chart, chartTitle, index, handleDelete, options, data, detailChartAction, handleUpdate})=>{
+const MyChart = (props)=>{
 
-    const {plugins, scales} = options;     
+    const {
+        data, 
+        chart, 
+        index, 
+        options, 
+        dashboard,
+        chartTitle, 
+        identity_id, 
+        handleDelete, 
+        handleUpdate,
+        detailChartAction, 
+    } = props;
+
+
+    const {
+        scales,
+        plugins, 
+    } = options;     
+        
     switch (chart) {
         case 'line':
             return (
@@ -27,6 +45,7 @@ const MyChart = ({identity_id, chart, chartTitle, index, handleDelete, options, 
                     tooltips            = {plugins.tooltip.enabled} 
                     xOptions            = {scales.x}
                     yOptions            = {scales.y}
+                    dashboard           = {dashboard}
                     handleDelete        = {handleDelete}
                     handleUpdate        = {handleUpdate}
                     detailChartAction   = {detailChartAction}
@@ -43,6 +62,7 @@ const MyChart = ({identity_id, chart, chartTitle, index, handleDelete, options, 
                     tooltips            = {plugins.tooltip.enabled} 
                     xOptions            = {scales.x}
                     yOptions            = {scales.y}
+                    dashboard           = {dashboard}
                     handleDelete        = {handleDelete}
                     handleUpdate        = {handleUpdate}
                     detailChartAction   = {detailChartAction}
@@ -59,6 +79,7 @@ const MyChart = ({identity_id, chart, chartTitle, index, handleDelete, options, 
                     tooltips            = {plugins.tooltip.enabled} 
                     xOptions            = {scales.x}
                     yOptions            = {scales.y}
+                    dashboard           = {dashboard}
                     handleDelete        = {handleDelete}
                     handleUpdate        = {handleUpdate}
                     detailChartAction   = {detailChartAction}
@@ -75,6 +96,7 @@ const MyChart = ({identity_id, chart, chartTitle, index, handleDelete, options, 
                     tooltips            = {plugins.tooltip.enabled} 
                     xOptions            = {scales.x}
                     yOptions            = {scales.y}
+                    dashboard           = {dashboard}
                     handleDelete        = {handleDelete}
                     handleUpdate        = {handleUpdate}
                     detailChartAction   = {detailChartAction}
@@ -91,6 +113,7 @@ const MyChart = ({identity_id, chart, chartTitle, index, handleDelete, options, 
                     tooltips            = {plugins.tooltip.enabled} 
                     xOptions            = {scales.x}
                     yOptions            = {scales.y}
+                    dashboard           = {dashboard}
                     handleDelete        = {handleDelete}
                     handleUpdate        = {handleUpdate}
                     detailChartAction   = {detailChartAction}
@@ -107,6 +130,7 @@ const MyChart = ({identity_id, chart, chartTitle, index, handleDelete, options, 
                     tooltips            = {plugins.tooltip.enabled} 
                     xOptions            = {scales.x}
                     yOptions            = {scales.y}
+                    dashboard           = {dashboard}
                     handleDelete        = {handleDelete}
                     handleUpdate        = {handleUpdate}
                     detailChartAction   = {detailChartAction}
@@ -123,6 +147,7 @@ const MyChart = ({identity_id, chart, chartTitle, index, handleDelete, options, 
                     tooltips            = {plugins.tooltip.enabled} 
                     xOptions            = {scales.x}
                     yOptions            = {scales.y}
+                    dashboard           = {dashboard}
                     handleDelete        = {handleDelete}
                     handleUpdate        = {handleUpdate}
                     detailChartAction   = {detailChartAction}
@@ -135,6 +160,7 @@ const MyChart = ({identity_id, chart, chartTitle, index, handleDelete, options, 
                     data                = {data}
                     index               = {index}
                     title               = {chartTitle}
+                    dashboard           = {dashboard}
                     handleDelete        = {handleDelete}
                     handleUpdate        = {handleUpdate}
                     detailChartAction   = {detailChartAction}
@@ -146,7 +172,8 @@ const MyChart = ({identity_id, chart, chartTitle, index, handleDelete, options, 
                     id                  = {identity_id}
                     data                = {data}
                     index               = {index}
-                    title               = {chartTitle} 
+                    title               = {chartTitle}
+                    dashboard           = {dashboard}
                     handleDelete        = {handleDelete}
                     handleUpdate        = {handleUpdate}
                     detailChartAction   = {detailChartAction}
@@ -158,10 +185,10 @@ const BodyDashboardComponent = (props) => {
 
     const {
         rows, 
+        chartRef,
+        dashboard,
         handleDelete,
         handleUpdate,
-        printToPdf,
-        chartRef
     }                                                   = props;
 
     const [detailChartData, setDetailChartData]         = useState(null);
@@ -185,6 +212,12 @@ const BodyDashboardComponent = (props) => {
         <Fragment>
             <div ref={chartRef}>
                 {
+                    dashboard &&
+                    <h2>
+                        Dashboard : {dashboard != null ? dashboard.name : null}
+                    </h2>
+                }
+                {
                     Array.isArray(rows) && rows.length > 0 ?
                         rows.map((data) => (
                             <Fragment>
@@ -194,8 +227,8 @@ const BodyDashboardComponent = (props) => {
                                             data.layout.col != undefined ?
                                                 data.layout.col.map((data2,index) => (
                                                     <Col 
-                                                        lg  = {data2.width}
-                                                        style = {{ display: 'flex'}}
+                                                        lg      = {data2.width}
+                                                        style   = {{ display: 'flex'}}
                                                     >
                                                         <MyChart
                                                             data                = {data2.source}
@@ -203,6 +236,7 @@ const BodyDashboardComponent = (props) => {
                                                             width               = {data2.widht}
                                                             index               = {index}
                                                             options             = {data2.options}
+                                                            dashboard           = {dashboard}
                                                             chartTitle          = {data2.name}
                                                             identity_id         = {data.id}
                                                             handleDelete        = {handleDelete}

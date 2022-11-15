@@ -3,6 +3,7 @@ import React, { Fragment, useState, useEffect } from 'react';
 //Component
 import Report                                   from './Report';
 import CustomToast                              from '../../components/widgets/custom-toast';
+import Helper                                   from '../../helpers';
 
 //API
 import { feedsReportAPI }                       from '../../services/pages/feeds/report';
@@ -10,37 +11,57 @@ import { feedsReportAPI }                       from '../../services/pages/feeds
 
 const ReportAPI = () => {
     //State
-    const [report, setReport]                                   = useState([]);
+    const [report, setReport]                                   = useState(null);
     const [loading, setLoading]                                 = useState(false);
     const [idSelected, setIdSelected]                           = useState(false);
     const [showDeleteForm, setShowDeleteForm]                   = useState(false);
     const [reportCategory, setReportCategory]                   = useState([]);
+    const [detailResultLoading, setDetailResultLoading]         = useState(true);
 
     const [detailReport, setDetailReport]                       = useState([]);
     const [detailResults, setdetailResults]                     = useState(null);
     const [selectedReport, setSelectedReport]                   = useState([]);
+    const [isAddFormVisible, setIsAddFormVisible]               = useState(false);
     const [isDetailReportVisible, setIsDetailReportVisible]     = useState(false);
     const [isDetailResultsVisible, setIsDetailResultsVisible]   = useState(false);
 
+    const [isFormat, setIsFormat]                               = useState(null);
+    const [reportKind , setReportKind]                          = useState(null);
+    const [workunitKind, setWorkunitKind]                       = useState(null);
 
-    const [showForm, setShowForm]               = useState(false);
+    const [showForm, setShowForm]                               = useState(false);
 
-    useEffect(() => {
-        getReport();
-        getReportCategory();
-    }, []);
+    const {useQuery}                                            = Helper;
+    const query                                                 = useQuery();                  
 
     //get report
     const getReport = () => {
         feedsReportAPI.getReport().then(
             res => {
-                if (res.status === 200 && res.data != null) {
+                if (res.is_error === false && res.data != null) {
                     setReport(res.data);
+
+                    if(query.get('id_report') != undefined){
+                        let filter = res.data.filter((data) => (data.id === parseInt(query.get('id_report'))));
+                        if(filter.length > 0 ){
+                            if(filter[0].results.length > 0){
+                                handleDetail(filter[0])
+                            }else{
+                                handleDetailResults(filter[0])
+                            }
+                        }
+                    }
                 }else{
-                    setReport();
+                    setReport([]);
+
+                    if(res.is_error){
+                        console.log(res, 'error get report');
+                        CustomToast('danger', 'Terjadi kesalahan.');
+                    }
                 }
             },
             err => {
+                console.log(err, 'get report error');
                 CustomToast('danger', err.message);
             }
         )
@@ -50,7 +71,7 @@ const ReportAPI = () => {
     const getReportCategory = () => {
         feedsReportAPI.getReportCategory().then(
             res => {
-                if (res.status === 200 && res.data != null) {
+                if (res.is_error === false && res.data != null) {
                     let data_ = res.data.map((data ) => (
                         {
                             label : data.name,
@@ -59,6 +80,13 @@ const ReportAPI = () => {
                     ))
 
                     setReportCategory(data_);
+                }else{
+                    setReportCategory([]);
+
+                    if(res.is_error){
+                        console.log(res, 'error get report category');
+                        CustomToast('danger', 'Terjadi kesalahan.');
+                    }
                 }
             },
             err => {
@@ -74,20 +102,25 @@ const ReportAPI = () => {
 
         feedsReportAPI.createReport(formData).then(
             res => {
-                if(res.status === 201){
+                if(res.is_error === false){
                     setLoading(false);
-                    setShowForm(false);
+                    setIsAddFormVisible(false);
 
                     CustomToast('success', 'Data report berhasil ditambahkan');
                     getReport();
+                }else{
+                    if(res.message === "time schedule can't be before now"){
+                        CustomToast('danger', 'Waktu schedule harus melebihi waktu sekarang!');
+                    }else{
+                        CustomToast('danger', 'Terjadi Kesalahan.');
+
+                    }
+                    console.log(res, 'create report error');
                 }
             },
             err => {
-                if(err.status == 400 ){
-                    CustomToast('danger', 'Waktu schedule harus melebihi waktu sekarang!');
-                }else{
-                    console.log(err);
-                }
+                console.log(err, 'create report error');
+                CustomToast('danger', 'Terjadi kesalahan.');
             }
         )
     };
@@ -96,23 +129,25 @@ const ReportAPI = () => {
     const onDelete = () => {
         setLoading(true);
 
-        const formData = {
-            id : idSelected
-        };
-
-        feedsReportAPI.deleteReport(idSelected).then(
+        feedsReportAPI.deleteReport('asd').then(
             res => {
-                if (res.status == 200) {
-                    setLoading(false);
+                if (res.is_error == false) {
                     
                     getReport();
 
                     setShowDeleteForm(!showDeleteForm);
                     CustomToast("success", "Data Berhasil di hapus");
+                }else{
+                    console.log(res, 'delete report error');
+                    CustomToast('danger', 'Terjadi Kesalahan.');
                 }
+
+                setLoading(true);
             },
             err => {
+                setLoading(true);
                 CustomToast('danger', err.message);
+
             }
         )
     };
@@ -123,16 +158,23 @@ const ReportAPI = () => {
 
         setSelectedReport(formData);   
         
-        console.log(formData, 'disini');
-        CustomToast('success', 'Mohon menunggu proses sedang berlangsung');
-
+        setDetailResultLoading(true);
+        setIsDetailResultsVisible(true);
+        setIsDetailReportVisible(false);
+        
         feedsReportAPI.detailReport(formData).then(
             res => {
-                if(res.status == 200 && res.data != null){
+                if(res.is_error === false && res.data != null){
                     setdetailResults(res.data);
-                    setIsDetailResultsVisible(true);
-                    setIsDetailReportVisible(false)
+                }else{
+                    setdetailResults([]);
+
+                    if(res.is_error){
+                        console.log(res, 'error handle detail results');
+                        CustomToast('danger', 'Terjadi kesalahan.');
+                    }
                 }
+                setDetailResultLoading(false);
             },
             err => {
                 console.log(err, 'detail report');
@@ -178,6 +220,14 @@ const ReportAPI = () => {
         doc.save('table.pdf')
     }
 
+    useEffect(() => {
+
+        if(report === null){
+            getReport();
+        }
+        getReportCategory();
+    }, []);
+
     return (
         <Fragment>
             <Report
@@ -191,12 +241,23 @@ const ReportAPI = () => {
                 reportCategory              = {reportCategory}
                 selectedReport              = {selectedReport}
                 showDeleteForm              = {showDeleteForm}
+                isAddFormVisible            = {isAddFormVisible}
                 setShowDeleteForm           = {setShowDeleteForm}
                 setSelectedReport           = {setSelectedReport}
+                detailResultLoading         = {detailResultLoading}
+                setIsAddFormVisible         = {setIsAddFormVisible}
                 isDetailReportVisible       = {isDetailReportVisible}
                 isDetailResultsVisible      = {isDetailResultsVisible}
                 setIsDetailReportVisible    = {setIsDetailReportVisible}
                 setIsDetailResultsVisible   = {setIsDetailResultsVisible}
+                isFormat                    = {isFormat}
+                setIsFormat                 = {setIsFormat}
+                reportKind                  = {reportKind}
+                setReportKind               = {setReportKind}
+                workunitKind                = {workunitKind}
+                setWorkunitKind             = {setWorkunitKind}
+
+                
 
                 //function
                 onDelete                    = {onDelete}

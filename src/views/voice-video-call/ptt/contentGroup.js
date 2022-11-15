@@ -27,18 +27,20 @@ import { AntmediaContext }                      from '../../../context/AntmediaC
 
 import GeneralInformation                       from './settings/generalInformation';
 import MemberManagement                         from './settings/memberManagement';
-import { active } from 'sortablejs';
-import Helper from '../../../helpers';
+import Helper                                   from '../../../helpers';
 
 const ContentGroup = (props) => {
 
     //Props
     const {
         selected,
+        startPTT,
         getServer,
         setPttActive,
         activeChannel,
+        handlePTTActive,
         pttActiveContent,
+        handlePTTNotActive,
         setPttActiveContent
     }                                     = props;
 
@@ -48,7 +50,7 @@ const ContentGroup = (props) => {
 
     const handleLeaveRoom =() => {
         webRTCAdaptorPeer.leaveFromRoom(activeChannel.roomId);
-        location.reload();
+        // location.reload();
     }
 
     //State
@@ -74,7 +76,6 @@ const ContentGroup = (props) => {
                                             </h5>
                                         </div>
                                         <div className='d-flex align-items-center'>
-                                            
                                             <ButtonDropdown 
                                                 isOpen = {dropdownOpen} 
                                                 toggle = {toggleDropdown}
@@ -87,7 +88,7 @@ const ContentGroup = (props) => {
                                                 </DropdownToggle>
                                                 <DropdownMenu className='mr-3'>
                                                     <DropdownItem 
-                                                        href = '/' 
+                                                        // href = '/' 
                                                         tag  = 'a'
                                                     >
                                                         <Trash 
@@ -105,14 +106,12 @@ const ContentGroup = (props) => {
                                                                 size  = {20}
                                                                 style = {{ marginRight: '9px' }}
                                                             />
-                                                            Tutup Channel
+                                                            Akhiri PTT
                                                         </DropdownItem>
                                                     }
                                                 </DropdownMenu>
                                             </ButtonDropdown>
-                                            
                                         </div>
-
                                     </Fragment>
                                 :
                                     null
@@ -203,18 +202,28 @@ const ContentGroup = (props) => {
                                         </PerfectScrollbar>
                                         
                                         {
-                                            activeChannel != null && webRTCAdaptorPeer != null ?
+                                            (activeChannel != null && webRTCAdaptorPeer != null) &&
                                                 <Button
-                                                    color = "primary"
+                                                    color        = "primary"
                                                     block
-                                                    style = {{bottom: '0'}}
-                                                    onMouseDown  = {() => {webRTCAdaptorPeer.unmuteLocalMic(); console.log('pencet')}}
-                                                    onMouseUp    = {() => {webRTCAdaptorPeer.muteLocalMic(); console.log('baru')}}
+                                                    style        = {{bottom: '0'}}
+                                                    onMouseDown  = {() => {webRTCAdaptorPeer.unmuteLocalMic(); handlePTTActive()}}
+                                                    onMouseUp    = {() => {webRTCAdaptorPeer.muteLocalMic(); handlePTTNotActive()}}
                                                 >
                                                     Push To Talk
                                                 </Button>
-                                            : 
-                                                null
+                                        }
+
+                                        {
+                                            (activeChannel != null && webRTCAdaptorPeer == null) &&
+                                            <Button
+                                                color        = "primary"
+                                                block
+                                                style        = {{bottom: '0'}}
+                                                onClick      = {() => {startPTT()}}
+                                            >
+                                                Mulai PTT
+                                            </Button>
                                         }
                                         
                                     </div>

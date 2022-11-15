@@ -59,11 +59,11 @@ const CustomTable = (props) => {
                     }
                 </Col>
                 <CustomTablePaginate 
+                    onNext          = {onNext}
+                    onPrev          = {onPrev} 
                     getData         = {getData}
                     pagination      = {pagination} 
                     offsetSearch    = {offsetSearch}
-                    onNext          = {onNext}
-                    onPrev          = {onPrev} 
                 />
             </Row>
             <Card 

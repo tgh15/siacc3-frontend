@@ -83,7 +83,7 @@ const ApprovalNewsAPI = () => {
                 formData = {
                     category          : 0,
                     order_by          : filterAllState.value.order_by,
-                    status_order      : filterAllState.value.status_order,
+                    status_publish    : filterAllState.value.status_publish,
                     work_unit_id_list : filterAllState.value.work_unit_id_list,
                 }
             }else{
