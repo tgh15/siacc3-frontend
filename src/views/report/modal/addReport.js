@@ -76,6 +76,12 @@ const FormReport = (props) => {
         onSubmit,
         isAddFormVisible,
         setIsAddFormVisible,
+        isFormat,
+        setIsFormat,
+        reportKind,
+        setReportKind,
+        workunitKind,
+        setWorkunitKind,
     }                                  = props;
 
     //Context
@@ -96,9 +102,7 @@ const FormReport = (props) => {
     const [inputCreateDate, setInputCreateDate]         = useState(false);
     const [isHelpModalVisible, setIsHelpModalVisible]   = useState(false);
 
-    const [isFormat, setIsFormat]                       = useState(null);
-    const [reportKind , setReportKind]                  = useState(null);
-    const [workunitKind, setWorkunitKind]               = useState(null);
+
 
     const [workunitLevel2_, setWorkunitLevel2_]         = useState(null);
     const [workunitLevel3, setWorkunitLevel3]           = useState(null);
@@ -305,9 +309,6 @@ const FormReport = (props) => {
             }
 
             onSubmit({model : formData});
-            setIsFormat(null);
-            setReportKind(null);
-            setWorkunitKind(null);
         }else{
             if(data.content != null && data.content.filter(e => parseInt(e.value) === 1).length > 0){
                 if(data.content.filter(e => parseInt(e.value) >= 10 && parseInt(e.value) <= 17).length > 0){
@@ -366,13 +367,12 @@ const FormReport = (props) => {
                     }
     
                     if(data.time != null){
-                        formData.time = moment(data.time).format('YYYY-MM-DDTH:mm:ssZ');
+                        formData.time = moment(data.time[0]).format('YYYY-MM-DDTH:mm:ssZ');
                     }
                 
                     if(data.repeat != null){
                         formData.repeat = data.repeat;
                     }
-                
                     props.onSubmit(formData);
                 }
             }else if(data.content.filter(e => parseInt(e.value) === 14).length > 0){
@@ -420,7 +420,7 @@ const FormReport = (props) => {
                     };
                 
                     if(data.time != null){
-                        formData.time = moment(data.time).format('YYYY-MM-DDTH:mm:ssZ');
+                        formData.time = moment(data.time[0]).format('YYYY-MM-DDTH:mm:ssZ');
                     }
                 
                     if(data.repeat != null){
@@ -437,7 +437,7 @@ const FormReport = (props) => {
                             is_formatted : false
                         }
                     }
-                
+
                     props.onSubmit(formData);
                 }else{
                     CustomToast('warning', 'Jika memilih Jumlah Agen, maka harus memilih Satuan Kerja');
@@ -486,7 +486,7 @@ const FormReport = (props) => {
                     };
                 
                     if(data.time != null){
-                        formData.time = moment(data.time).format('YYYY-MM-DDTH:mm:ssZ');
+                        formData.time = moment(data.time[0]).format('YYYY-MM-DDTH:mm:ssZ');
                     }
                 
                     if(data.repeat != null){
@@ -503,7 +503,7 @@ const FormReport = (props) => {
                             is_formatted : false
                         }
                     }
-                
+            
                     props.onSubmit(formData);
                 }else{
                     CustomToast('warning', 'Jika memilih Jumlah Berita Di Publikasi, Jumlah Berita di Arsip, Jumlah Berita Ke Pimpinan, maka harus memilih Nama Agen atau Satuan Kerja');
@@ -511,9 +511,7 @@ const FormReport = (props) => {
             }else{
                 CustomToast('warning', 'Isi laporan harus menggunakan Satuan Kerja atau Nama Agen.');
             }
-            setIsFormat(null)
-            setReportKind(null)
-            setWorkunitKind(null)
+
         }
     };
 
@@ -533,8 +531,10 @@ const FormReport = (props) => {
                             value : data.id
                         }))
 
-                        level_3_.unshift({label : 'SEMUA KEJAKSAAN NEGERI', value : (level_3_.map((data) => (data.value))).toString()})
-                        
+                        if(level_3_.length > 0){
+                            level_3_.unshift({label : 'SEMUA KEJAKSAAN NEGERI', value : (level_3_.map((data) => (data.value))).toString()})
+                        }
+
                         setWorkunitLevel3(
                             level_3_
                         )
@@ -546,7 +546,9 @@ const FormReport = (props) => {
                             value : data.id
                         }))
 
-                        level_4_.unshift({label : 'SEMUA CABANG KEJAKSAAN NEGERI', value : (level_4_.map((data) => (data.value))).toString()})
+                        if(level_4_.length > 0){
+                            level_4_.unshift({label : 'SEMUA CABANG KEJAKSAAN NEGERI', value : (level_4_.map((data) => (data.value))).toString()})
+                        }
                         
                         setWorkunitLevel4(
                             level_4_
@@ -561,9 +563,10 @@ const FormReport = (props) => {
         Category();
         Employee();
 
-
         let workunit_level_2 = workunitLevel2;
-        workunit_level_2.unshift({label : 'SEMUA KEJAKSAAN TINGGI', value : (workunitLevel2.map((data) => (data.value))).toString()})
+        if(workunit_level_2 != null && workunit_level_2.length > 0){
+            workunit_level_2.unshift({label : 'SEMUA KEJAKSAAN TINGGI', value : (workunitLevel2.map((data) => (data.value))).toString()})
+        }
         setWorkunitLevel2_(workunit_level_2);
     }, []);
 
@@ -1055,7 +1058,7 @@ const FormReport = (props) => {
                                                                 as      = {
                                                                     <Flatpickr 
                                                                         id          = 'time' 
-                                                                        options     = {{ dateFormat: "d-m-Y H:i", enableTime: true, time_24hr: true }}
+                                                                        options     = {{ dateFormat: "d-m-Y", enableTime: true, time_24hr: true }}
                                                                         className   = 'form-control' 
                                                                         placeholder = {moment().format('DD-M-YYYY')}
                                                                     />

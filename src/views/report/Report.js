@@ -49,6 +49,12 @@ const Report = (props) => {
         isDetailResultsVisible,
         setIsDetailReportVisible,
         setIsDetailResultsVisible,
+        isFormat,
+        setIsFormat,
+        reportKind,
+        setReportKind,
+        workunitKind,
+        setWorkunitKind,
 
         handleDetail,
         handleDetailResults
@@ -709,6 +715,12 @@ const Report = (props) => {
                     reportCategory      = {props.reportCategory}
                     isAddFormVisible    = {isAddFormVisible}
                     setIsAddFormVisible = {setIsAddFormVisible}
+                    isFormat            = {isFormat}
+                    setIsFormat         = {setIsFormat}
+                    reportKind          = {reportKind}
+                    setReportKind       = {setReportKind}
+                    workunitKind        = {workunitKind}
+                    setWorkunitKind     = {setWorkunitKind}
                 />
 
                 {/* modal delete */}
