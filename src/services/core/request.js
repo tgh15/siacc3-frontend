@@ -18,7 +18,7 @@ const configHeaders  = !process.env.NODE_ENV || process.env.NODE_ENV === 'produc
 };
 
 const redirectlogout = (err) => {
-    if (err.response.status == 410) {
+    if (err.response.status == 401) {
         // Redirect them to the /login page, but save the current location they were
         // trying to go to when they were redirected. This allows us to send them
         // along to that page after they login, which is a nicer user experience

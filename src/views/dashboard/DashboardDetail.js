@@ -1,10 +1,10 @@
 
-import { useEffect, useState }                     from "react";
+import { useEffect, useState }          from "react";
 import { useParams }                    from "react-router-dom";
 import CustomTableNotAuthorized         from "../../components/widgets/custom-table/CustomTableNotAuthorized";
 import { BodyDashboardComponent }       from "../../components/widgets/dashboard-components";
 import Helper                           from "../../helpers";
-import dashboardAPI from "../../services/pages/dashboard";
+import dashboardAPI                     from "../../services/pages/dashboard";
 
 const DashboardDetail = () => {
 

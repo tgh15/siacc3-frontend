@@ -20,13 +20,14 @@ const DashboardComponent = () => {
     const ref                                                   = useRef();
 
     const [modalShow,setModalShow]                              = useState(false);
-    const [chartSource, setChartSource]                         = useState(null)
+    const [chartSource, setChartSource]                         = useState(null);
     const [detailLayout, setDetailLayout]                       = useState(null);
     const [selectedIndex, setSelectedIndex]                     = useState(null);
+    const [downloadLoading, setDownloadLoading]                 = useState(false);
     const [dashboardLayout, setDashboardLayout]                 = useState([]);
     const [detailLayoutCol, setDetailLayoutCol]                 = useState(null);
-    const [isUpdateLayoutVisible, setIsUpdateLayoutVisible]     = useState(false);
     const [selectedDataSource, setSelectedDataSource]           = useState(null);
+    const [isUpdateLayoutVisible, setIsUpdateLayoutVisible]     = useState(false);
 
     const {getRoleByMenuStatus}                                 = Helper;
 
@@ -192,12 +193,16 @@ const DashboardComponent = () => {
             return
         }
 
+        setDownloadLoading(true);
+
         toJpeg(ref.current, { cacheBust: true, backgroundColor: 'white' , style: { padding: '5px' }})
             .then((dataUrl) => {
                 const link      = document.createElement('a')
                 link.download   = 'dashboar-export.jpeg'
                 link.href       = dataUrl
                 link.click()
+
+                setDownloadLoading(false);
             })
             .catch((err) => {
                 error_handler(err, 'export to jpg');
@@ -208,6 +213,7 @@ const DashboardComponent = () => {
         if (ref.current === null) {
             return
         }
+        setDownloadLoading(true);
 
         toJpeg(ref.current, { cacheBust: true, style: { padding: '5px' }})
             .then((dataUrl) => {
@@ -215,6 +221,8 @@ const DashboardComponent = () => {
                 link.download   = 'dashboard-export.png'
                 link.href       = dataUrl
                 link.click()
+
+                setDownloadLoading(false);
             })
             .catch((err) => {
                 error_handler(err, 'export to png');
@@ -234,10 +242,14 @@ const DashboardComponent = () => {
             return
         }
 
+        setDownloadLoading(true);
+
         toPng(ref.current, { cacheBust: true, style: { padding: '5px' }})
             .then((dataUrl) => {
                 doc.addImage(dataUrl,'PNG',1,1, width-10, height-110);
                 doc.save(`export-dashboard.pdf`);
+
+                setDownloadLoading(false);
             })
             .catch((err) => {
                 error_handler(err, 'export to pdf');
@@ -257,13 +269,16 @@ const DashboardComponent = () => {
             return
         }
 
+        setDownloadLoading(true);
+
         toPng(ref.current, { cacheBust: true, style: { padding: '5px' }})
             .then((dataUrl) => {
                 doc.addImage(dataUrl, 'PNG',1,1, width-10, height-110);
                 
                 let print = window.open(doc.output('bloburl'), '_blank');
                 print.print();
-
+                
+                setDownloadLoading(false);
                 return doc;
             })
             .catch((err) => {
@@ -296,6 +311,7 @@ const DashboardComponent = () => {
                     exportToJpg     = {exportToJpg}
                     exportToPng     = {exportToPng}
                     exportToPdf     = {exportToPdf}
+                    downloadLoading = {downloadLoading}
                 />
                 
                 {
