@@ -2,10 +2,11 @@ import { Fragment, useContext }                 from 'react';
 import { Row, Col, UncontrolledTooltip }        from 'reactstrap';
 import { ShepherdTour, ShepherdTourContext }    from 'react-shepherd';
 
+//Css
 import 'shepherd.js/dist/css/shepherd.css';
 import '@styles/react/libs/shepherd-tour/shepherd-tour.scss';
 
-//icon
+//Icon
 import { HelpCircle }                           from 'react-feather';
 
 //Views
@@ -39,10 +40,10 @@ const steps = [
         ]
     },
     {
-        id          : 'search-data',
-        title       : 'Pencarian Data Privilage Role',
-        text        : 'Masukkan data yang ingin dicari, kemudian tekan tombol enter pada keyboard',
-        attachTo    : { element: '#search-data', on: 'bottom' },
+        id          : 'add-data',
+        title       : 'Tambah Data Privilage Role',
+        text        : 'Ketika diklik anda akan di arahkan pada tampilan tambah data privilage role',
+        attachTo    : { element: '#add-data', on: 'right' },
         cancelIcon  : {
             enabled : true
         },
@@ -65,10 +66,10 @@ const steps = [
         ]
     },
     {
-        id          : 'add-data',
-        title       : 'Tambah Data Privilage Role',
-        text        : 'Ketika diklik anda akan di arahkan pada tampilan tambah data privilage role',
-        attachTo    : { element: '#add-data', on: 'right' },
+        id          : 'search-data',
+        title       : 'Pencarian Data Privilage Role',
+        text        : 'Masukkan data yang ingin dicari, kemudian tekan tombol enter pada keyboard',
+        attachTo    : { element: '#search-data', on: 'bottom' },
         cancelIcon  : {
             enabled : true
         },
@@ -145,10 +146,9 @@ const StartTour = () => {
 
     return (
         <Fragment>
-            <div style={{cursor: 'pointer'}}>
+            <div style={{ cursor: 'pointer', float: 'right' }}>
                 <p 
                     id      = 'positionRight' 
-                    style   = {{zIndex: '3', position: 'absolute'}}
                     onClick = {tour.start} 
                     outline 
                 >
@@ -174,10 +174,8 @@ const TourComponent = () => {
                     sm = '12'
                 >
                     <ShepherdTour
-                        steps = {steps}
-                        tourOptions = {{
-                            useModalOverlay: true
-                        }}
+                        steps       = {steps}
+                        tourOptions = {{ useModalOverlay: true }}
                     >
                         <StartTour/>
                     </ShepherdTour>

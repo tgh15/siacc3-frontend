@@ -60,6 +60,7 @@ export const crawlingURL = {
 */
 
 export const responseURL = {
+    authPrefix           : "auth",
     feedsPrefix          : "feeds",
     employeePrefix       : "employee-biodata",
     activityPrefix       : "api-gw",

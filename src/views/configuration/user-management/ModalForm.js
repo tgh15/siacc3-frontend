@@ -1,9 +1,10 @@
 import { 
     Fragment, 
-    useContext, 
+    useState,
     useEffect, 
-    useState 
+    useContext, 
 } from 'react';
+
 import Select                   from 'react-select';
 import { yupResolver }          from '@hookform/resolvers/yup';
 import { selectThemeColors }    from '@utils';
@@ -21,12 +22,26 @@ import {
     Media,
     Button,
     FormGroup,
-    ModalFooter,
-    CustomInput,
+    ModalFooter
 } from "reactstrap";
 
 //Css
 import "./UserManagement.scss";
+
+//Helper
+import Helper                                       from '../../../helpers';
+
+//Context
+import { PerformanceContext }                       from '../../../context/PerformanceContext';
+
+//Validation
+import {schemaEdit, schemaEditAdmin}                from './validationEditAccount';
+
+//Services
+import AuthService                                  from '../../../services/pages/authentication/AuthService';
+import positionAPI                                  from '../../../services/pages/configuration/position';
+import UserManagementApi                            from '../../../services/pages/configuration/user-management';
+import userManagementAPI                            from '../../../services/pages/configuration/user-management/UserManagement';
 
 //Component
 import schema                                       from './validation';
@@ -34,38 +49,35 @@ import CustomToast                                  from "../../../components/wi
 import AccountForm                                  from './AccountForm';
 import SubmitButton                                 from '../../../components/widgets/submit-button';
 import EditAccountForm                              from './EditAccoutForm';
-import UserManagementApi                            from '../../../services/pages/configuration/user-management';
-import SelectOptionsService                         from '../../../services/pages/select-options';
-
-//Context
-import { PerformanceContext }                       from '../../../context/PerformanceContext';
-
-//Helper
-import Helper                                       from '../../../helpers';
-import AuthService                                  from '../../../services/pages/authentication/AuthService';
-
-//Validation
-import {schemaEdit, schemaEditAdmin}                from './validationEditAccount';
 
 
 const ModalForm = (props) => {
     const {
         data,
-        setListData,
+        getData,
         setModalForm,
     } = props;
 
     // context
-    const { workunitOptions } = useContext(PerformanceContext);
+    const { workunitOptions }                       = useContext(PerformanceContext);
 
     // states
     const [photo, setPhoto]                         = useState(data ? data.photo : defaultPhoto);
     const [loading, setLoading]                     = useState(false);
+    const [photoFile, setPhotoFile]                 = useState(null);
     const [sectorOptions, setSectorOptions]         = useState(false);
     const [PositionOptions, setPositionOptions]     = useState(false);
     const [AuthGroupOptions, setAuthGroupOptions]   = useState(false);
 
-    const { register, errors, handleSubmit, control, setValue, setError, clearErrors } = useForm(
+    const { 
+            errors, 
+            control, 
+            register, 
+            setValue, 
+            setError, 
+            clearErrors,
+            handleSubmit, 
+    } = useForm(
         { 
             mode: "onChange", resolver: yupResolver(
                 !data ? 
@@ -77,142 +89,239 @@ const ModalForm = (props) => {
                         schemaEdit
             )
         }
-    )
+    );
 
     const handleLogout = () => {
         AuthService.logout({
             token : localStorage.getItem("token"),
             onSuccess : (data) => {
             localStorage.clear()
-  
+
             window.location.href = "/login"
             },
             onFail : (err) => {
             localStorage.clear()
-  
+
             window.location.href = "/login"
             }
         });
-    }
+    };
 
+    //Selected photo
     const selectPhoto = e => {
         const reader = new FileReader(),
         files = e.target.files
-        
         reader.onload = function () {
-            setPhoto(reader.result)
+            setPhoto(reader.result);
+            setPhotoFile(files[0]);
         }
-
         reader.readAsDataURL(files[0]);
     };
 
+    //Get auth group
     const getAuthGroupOptions = () => {
-        SelectOptionsService.authGroupList({
-            onSuccess: (res) => {
-                setAuthGroupOptions(res);
-            },
-            onFail: (err) => {
+        userManagementAPI.getAuthGroupList().then(
+            res => {
+                if (!res.is_error) {
+                    let newData = [];
+
+                    res.data.result.map((data, i) => {
+                        if (localStorage.getItem('role') === 'Verifikator Daerah' || localStorage.getItem('role') === 'Admin Daerah') {
+                            if (data.title === 'admin-daerah' || data.title === 'verifikator-daerah' || data.title === 'pimpinan-daerah' || data.title === 'agen') {
+                                newData.push({
+                                    key   : i,
+                                    value : data.id,
+                                    label : data.name
+                                })
+                            }
+                        }else {
+                            newData.push({
+                                key   : i,
+                                value : data.id,
+                                label : data.name
+                            })
+                        }
+                    })
+
+                    setAuthGroupOptions(newData);
+                }else {
+                    CustomToast("danger", res.message);
+                }
+            }
+        ).catch(
+            err => {
                 CustomToast("danger", err.message);
             }
-        })
+        )
     };
 
+    //Get position list
     const getPositionOptions = () => {
-        SelectOptionsService.positionList({
-            onSuccess: (res) => {
-                setPositionOptions(res);
-            },
-            onFail: (err) => {
+        positionAPI.getPositionList().then(
+            res => {
+                if (!res.is_error) {
+                    let newData = [];
+
+                    res.data.map((data, i) => (
+                        newData.push({
+                            key   : i,
+                            value : data.id,
+                            label : data.name
+                        })
+                    ))
+
+                    setPositionOptions(newData);
+                }else {
+                    CustomToast("danger", res.message);
+                }
+            }
+        ).catch(
+            err => {
                 CustomToast("danger", err.message);
             }
-        })
+        )
     };
 
+    //Get sector list (struktur/bidang)
     const getSectorOptions = () => {
-        SelectOptionsService.sector({
-            onSuccess: (res) => {
-                setSectorOptions(res);
-            },
-            onFail: (err) => {
+        positionAPI.getSectorList().then(
+            res => {
+                if (!res.is_error) {
+                    let newData = [];
+
+                    res.data.map((data, i) => (
+                        newData.push({
+                            key   : i,
+                            value : data.id,
+                            label : data.name
+                        })
+                    ))
+
+                    setSectorOptions(newData);
+                }else {
+                    CustomToast("danger", res.message);
+                }
+            }
+        ).catch(
+            err => {
                 CustomToast("danger", err.message);
             }
-        })
+        )
     };
 
-    const getData = () => {
-        setListData(false);
+    //Create employee
+    const create = (dataForm) => {
+        delete dataForm.photo;
 
-        UserManagementApi.get({
-            onSuccess: (res) => {
-                setListData(res.employee);
-            }, onFail: (err) => {
-                console.log(err);
-            }
-        })
-    };
+        userManagementAPI.createUserManagement(dataForm).then(
+            res => {
+                if (!res.is_error) {
+                    if (photoFile === null) {
+                        setLoading(false);
+                        getData({page: 1});
+                        setModalForm(false);
+                        CustomToast("success", "Data Berhasil Disimpan");
+                    }else {
+                        let dataPhoto = new FormData();
 
-    const create = dataForm => {
-        UserManagementApi.create({
-            data: dataForm,
+                        dataPhoto.append("photo[]", photoFile);
+                        dataPhoto.append("uuid", res.data.uuid);
 
-            onSuccess: (res) => {
-                setLoading(false);
-                setModalForm(false);
-                CustomToast("success", "Data Berhasil Disimpan");
-                getData();
-            },
-            onFail: (err) => {
-                if(err.data.status == '409'){
-                    if(err.data.message == 'Duplicate Username !'){
-                        CustomToast("danger", 'Usename Telah Digunakan');
-                    }else if(err.data.message == 'Duplicate Employee Data !'){
-                        CustomToast("danger", 'Nomor KTP Telah Digunakan');
-                    }else{
-                        CustomToast("danger", err.data.message);
+                        userManagementAPI.uploadPhoto(dataPhoto).then(
+                            res => {
+                                if (!res.is_error) {
+                                    setLoading(false);
+                                    getData({page: 1});
+                                    setModalForm(false);
+                                    CustomToast("success", "Data Berhasil Disimpan");
+                                }else {
+                                    CustomToast("danger", res.message);
+                                }
+                            }
+                        )
+                    }
+                }else {
+                    if (err.status === 400) {
+                        if (err.message === "Error While Insert Employee ! Email Has Been Used") {
+                            CustomToast("danger", "Email Telah Digunakan");
+                        }
                     }
                 }
-                else if(err.data.message == 'Error While Update Employee ! Email Has Been Used' || err.data.message == 'Error While Create Employee ! Email Has Been Used'){
-                    CustomToast("danger", 'Email Telah Digunakan');
-                }else{
-                    CustomToast("danger", err.data.message);
-                }
-                setLoading(false);
             }
-        })
+        ).catch(
+            err => {
+                CustomToast("danger", err.message);
+            }
+        )
     };
 
-    const update = dataForm => {
-
-        UserManagementApi.update({
+    //Update employee
+    const update = (dataForm) => {
+        const formData = {
+            ...dataForm,
             id              : data.id,
             data            : dataForm,
             uuid            : data.uuid,
             photo           : data.photo,
-            storage         : data.storage,
             photo_id        : data.photo_id,
             username        : data.username,
             uuid_user       : data.uuid_user,
-            old_user_group  : parseInt(data.user_group[0].id),
+            old_user_group  : [parseInt(data.user_group[0].id)],
             password        : dataForm.update_password.length > 0 ? dataForm.update_password : undefined,
-            onSuccess: (res) => {
-                setLoading(false);
-                setModalForm(false);
-                CustomToast("success", "Data Berhasil Diubah");
-                getData();
+        };
 
-                if(data.uuid === localStorage.getItem('uuid')){
-                    CustomToast("warning", "Silahkan melakukan login ulang.");
-                    setTimeout(() => {
-                        handleLogout();
-                    }, 3000)
+        userManagementAPI.updateUserManagement(formData).then(
+            res => {
+                if (!res.is_error) {
+                    if (photoFile === null) {
+                        setLoading(false);
+                        getData({page: 1});
+                        setModalForm(false);
+                        CustomToast("success", "Data Berhasil Diubah");
+
+                        if(data.uuid === localStorage.getItem('uuid')){
+                            CustomToast("warning", "Silahkan melakukan login ulang.");
+                            setTimeout(() => {
+                                handleLogout();
+                            }, 3000);
+                        }
+                    }else {
+                        let dataPhoto = new FormData();
+
+                        dataPhoto.append("photo[]", photoFile);
+                        dataPhoto.append("uuid", res.data.uuid);
+                        dataPhoto.append("old_photo_id", res.data.photo_id);
+
+                        userManagementAPI.updatePhoto(dataPhoto).then(
+                            res => {
+                                if (!res.is_error) {
+                                    setLoading(false);
+                                    getData({page: 1});
+                                    setModalForm(false);
+                                    CustomToast("success", "Data Berhasil Diubah");
+
+                                    if(data.uuid === localStorage.getItem('uuid')){
+                                        CustomToast("warning", "Silahkan melakukan login ulang.");
+                                        setTimeout(() => {
+                                            handleLogout();
+                                        }, 3000);
+                                    }
+                                }else {
+                                    CustomToast("danger", res.message);
+                                }
+                            }
+                        )
+                    }
+                }else {
+                    CustomToast("danger", res.message);
                 }
-            },
-            onFail: (err) => {
-                console.log("danger", err);
-                CustomToast("danger", err.data.message);
-                setLoading(false);
             }
-        })
+        ).catch(
+            err => {
+                setLoading(false);
+                CustomToast("danger", err.message);
+            }
+        )
     };
 
     const checkOldPassword = (data) => {
@@ -241,16 +350,16 @@ const ModalForm = (props) => {
     };
 
     const onSubmit = dataForm => {
-        setLoading(true);
-
+        setLoading(true); 
+    
         dataForm.ktp            = dataForm.ktp.toString();
-        dataForm.sector_id      = dataForm.sector_id.value;
-        dataForm.user_group     = parseInt(dataForm.user_group.value);
-        dataForm.position_id    = dataForm.position_id.value;
-        dataForm.workunit_id    = dataForm.workunit_id.value;
+        dataForm.sector_id      = parseInt(dataForm.sector_id.value);
+        dataForm.user_group     = [parseInt(dataForm.user_group.value)];
+        dataForm.position_id    = parseInt(dataForm.position_id.value);
+        dataForm.workunit_id    = parseInt(dataForm.workunit_id.value);
         dataForm.identity_id    = dataForm.identity_id.toString();
         dataForm.phone_number   = dataForm.phone_number.toString();
-
+        
         if (!data) {
             create(dataForm);
         } else {
@@ -263,8 +372,6 @@ const ModalForm = (props) => {
             }
         }
     };
-
-
     
     useEffect(() => {
         getAuthGroupOptions();
@@ -272,10 +379,10 @@ const ModalForm = (props) => {
         getSectorOptions();
 
         if(data){
-            setValue('sector_id'    ,{value: data.sector_id, label: data.sector})
-            setValue('workunit_id'  ,{value: data.workunit_id, label: data.workunit})
-            setValue('position_id'  ,{value: data.position_id, label: data.position})
-            setValue('user_group'   ,{value: data.user_group[0].id, label: data.user_group[0].name})
+            setValue('sector_id'    ,{value: data.sector_id, label: data.sector});
+            setValue('workunit_id'  ,{value: data.workunit_id, label: data.workunit});
+            setValue('position_id'  ,{value: data.position_id, label: data.position});
+            setValue('user_group'   ,{value: data.user_group[0].id, label: data.user_group[0].name});
         }
     }, []);
 
@@ -362,8 +469,13 @@ const ModalForm = (props) => {
                                         tabIndex     = {5}
                                     />
                                 </div>
-                                {console.log(errors)}
-                                {errors && errors.workunit_id && <Label>{errors?.workunit_id?.label?.message}</Label>}
+                                
+                                {
+                                    errors && errors.workunit_id && 
+                                    <Label style={{ color: 'red' }}>
+                                        {errors?.workunit_id?.label?.message}
+                                    </Label>
+                                }
                             </FormGroup>
                             <FormGroup>
                                 <Label for='position_id'>Jabatan</Label>
@@ -393,7 +505,13 @@ const ModalForm = (props) => {
                                         tabIndex     = {6}
                                     />
                                 </div>
-                                {errors && errors.position_id && <Label>{errors?.position_id?.label?.message}</Label>}
+
+                                {
+                                    errors && errors.position_id && 
+                                    <Label style={{ color: 'red' }}>
+                                        {errors?.position_id?.label?.message}
+                                    </Label>
+                                }
                             </FormGroup>
                         </Col>
                     </Row>
@@ -424,7 +542,12 @@ const ModalForm = (props) => {
                                     />
                                 </div>
 
-                                {errors && errors.identity_id && <Label>{errors.identity_id.message}</Label>}
+                                {
+                                    errors && errors.identity_id &&
+                                    <Label style={{ color: 'red' }}>
+                                        {errors.identity_id.message}
+                                    </Label>
+                                }
                             </FormGroup>
                         </Col>
                         <Col
@@ -460,7 +583,12 @@ const ModalForm = (props) => {
                                     />
                                 </div>
 
-                                {errors && errors.sector_id && <Label>{errors?.sector_id?.label?.message}</Label>}
+                                {
+                                    errors && errors.sector_id && 
+                                    <Label style={{ color: 'red' }}>
+                                        {errors?.sector_id?.label?.message}
+                                    </Label>
+                                }
                             </FormGroup>
                         </Col>
                     </Row>
@@ -491,7 +619,12 @@ const ModalForm = (props) => {
                                     />
                                 </div>
 
-                                {errors && errors.ktp && <Label>{errors.ktp.message}</Label>}
+                                {
+                                    errors && errors.ktp && 
+                                    <Label style={{ color: 'red' }}>
+                                        {errors.ktp.message}
+                                    </Label>
+                                }
                             </FormGroup>
                         </Col>
                         <Col
@@ -511,7 +644,12 @@ const ModalForm = (props) => {
                                     />
                                 </div>
 
-                                {errors && errors.phone_number && <Label>{errors.phone_number.message}</Label>}
+                                {
+                                    errors && errors.phone_number &&
+                                    <Label style={{ color: 'red' }}>
+                                        {errors.phone_number.message}
+                                    </Label>
+                                }
                             </FormGroup>
                         </Col>
                     </Row>
@@ -534,7 +672,12 @@ const ModalForm = (props) => {
                                     />
                                 </div>
 
-                                {errors && errors.name && <Label>{errors.name.message}</Label>}
+                                {
+                                    errors && errors.name && 
+                                    <Label style={{ color: 'red' }}>
+                                        {errors.name.message}
+                                    </Label>
+                                }
                             </FormGroup>
                         </Col>
 
@@ -554,7 +697,13 @@ const ModalForm = (props) => {
                                         defaultValue = {(data) ? data.email : null}
                                     />
                                 </div>
-                                {errors && errors.email && <Label>{errors.email.message}</Label>}
+
+                                {
+                                    errors && errors.email && 
+                                    <Label style={{ color: 'red' }}>
+                                        {errors.email.message}
+                                    </Label>
+                                }
                             </FormGroup>
                         </Col>
                     </Row>
@@ -593,7 +742,12 @@ const ModalForm = (props) => {
                                         tabIndex     = {4}
                                     />
                                 </div>
-                                {errors && errors.user_group && <Label>{errors?.user_group?.label?.message}</Label>}
+                                {
+                                    errors && errors.user_group && 
+                                    <Label style={{ color: 'red' }}>
+                                        {errors?.user_group?.label?.message}
+                                    </Label>
+                                }
                             </FormGroup>
                         </Col>
                         <Col
@@ -615,7 +769,12 @@ const ModalForm = (props) => {
                                     />
                                 </div>
 
-                                {errors && errors.address && <Label>{errors.address.message}</Label>}
+                                {
+                                    errors && errors.address && 
+                                    <Label style={{ color: 'red' }}>
+                                        {errors.address.message}
+                                    </Label>
+                                }
                             </FormGroup>
                         </Col>
                     </Row>

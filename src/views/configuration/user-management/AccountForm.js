@@ -10,6 +10,7 @@ import {
 //Components
 import InputPasswordToggle                      from "../../../components/widgets/input-password-toggle";
 
+
 const AccountForm = (props) => {
     const {
         register,
@@ -28,7 +29,13 @@ const AccountForm = (props) => {
                             innerRef    = {register()}
                             placeholder = "Nama Pengguna"
                         />
-                        {errors && errors.username && <Label>{errors.username.message}</Label>}
+
+                        {
+                            errors && errors.username && 
+                            <Label style={{ color: 'red' }}>
+                                {errors.username.message}
+                            </Label>
+                        }
                     </FormGroup>
                 </Col>
                 <Col md={6}>
@@ -42,7 +49,13 @@ const AccountForm = (props) => {
                             className   = 'input-group-merge'
                             placeholder = "Password"
                         />
-                        {errors && errors.password && <Label>{errors.password.message}</Label>}
+
+                        {
+                            errors && errors.password && 
+                            <Label style={{ color: 'red' }}>
+                                {errors.password.message}
+                            </Label>
+                        }
                     </FormGroup>
                 </Col>
                 <Col md={6}>
@@ -55,7 +68,13 @@ const AccountForm = (props) => {
                             className   = 'input-group-merge'
                             placeholder = "Ulangi Password"
                         />
-                        {errors && errors.repeat_password && <Label>{errors.repeat_password.message}</Label>}
+
+                        {
+                            errors && errors.repeat_password && 
+                            <Label style={{ color: 'red' }}>
+                                {errors.repeat_password.message}
+                            </Label>
+                        }
                     </FormGroup>
                 </Col>
             </Row>

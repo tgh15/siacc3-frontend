@@ -14,9 +14,7 @@ const getWorkunitList           = (page, search) =>
                                             (Get(`${employeeURL.employeePrefix}/${employeeURL.workunit}?page=${page}&keyword=${search}`));
 
 const getWorkunitLevel          = () => Get(`${employeeURL.employeePrefix}/${employeeURL.workunitLevel}`);
-
 const getAllWorkunitList        = () => Get(`${employeeURL.employeePrefix}/workunit/list`);
-
 const getAgentPerformance       = (page, workunit_id, workunit_level_id) => Get(`${employeeURL.feedsPrefix}/${employeeURL.performance}/${employeeURL.agent}?condition_by=workunit&page=${page}&workunit_id=${workunit_id}&workunit_level_id=${workunit_level_id}`);
 
 //Post
@@ -27,6 +25,7 @@ const filterWorkunitByLevel     = (page, data) =>
                                 :
                                     Post(`${employeeURL.employeePrefix}/${employeeURL.workunit}/${employeeURL.byLevel}?page=${page}`, data);
 
+const uploadLogo                = (data) => Post(`${responseURL.employeePrefix}/workunit/update-logo`, data);
 const filterByOrder             = (page, data) => Post(`${employeeURL.employeePrefix}/${employeeURL.workunit}/${employeeURL.filter}?page=${page}`, data);
 const getWorkunitRating         = (page, data) => Post(`${employeeURL.feedsPrefix}/performance/workunit?page=${page}`, data);
 const getWorkunitProfile        = (data) => Post(`${responseURL.employeePrefix}/workunit/detail`, data);
@@ -35,12 +34,12 @@ const getWorkunitPerformance    = (data) => Post(`${responseURL.feedsPrefix}/per
 //Put
 const updateWorkunitList        = (data) => Put(`${employeeURL.employeePrefix}/${employeeURL.workunit}/${employeeURL.update}`, data);
 
-
 //Delete
 const deleteWorkunitList        = (data) => Delete(`${employeeURL.employeePrefix}/${employeeURL.workunit}/${employeeURL.delete}`, data);
 
 
 const workunitListAPI = {
+    uploadLogo,
     filterByOrder,
     getWorkunitList,
     getWorkunitLevel,

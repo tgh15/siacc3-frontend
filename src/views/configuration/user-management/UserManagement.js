@@ -144,6 +144,7 @@ const UserManagement = () => {
             >
                 <TourInput
                     data            = {dataSelected}
+                    getData         = {getData}
                     setListData     = {(par) => { setListData(par) }}
                     setModalForm    = {(par) => { setModalForm(par) }}
                 />

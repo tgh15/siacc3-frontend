@@ -46,6 +46,7 @@ const ModalForm = (props) => {
     //State
     const [logo, setLogo]                                   = useState(data.logo ?? defaultLogo);
     const [loading, setLoading]                             = useState(false);
+    const [logoFile, setLogoFile]                           = useState(null);
     const [workUnitLevelOptions, setWorkUnitLevelOptions]   = useState(false);
 
     const { 
@@ -56,11 +57,12 @@ const ModalForm = (props) => {
         handleSubmit, 
     } = useForm({ mode: "onChange", resolver: yupResolver(validation) });
 
-    const selectLogo = e => {
+    const selectLogo = (e) => {
         const reader = new FileReader(),
-            files = e.target.files
+            files = e.target.files;
         reader.onload = function () {
-            setLogo(reader.result)
+            setLogo(reader.result);
+            setLogoFile(files[0]);
         }
         reader.readAsDataURL(files[0]);
     };
@@ -106,12 +108,34 @@ const ModalForm = (props) => {
         workunitListAPI.createWorkunitList(formData).then(
             res => {
                 if (!res.is_error) {
-                    setLoading(false);
-                    setModalForm(false);
-                    CustomToast("success", "Data Berhasil Disimpan");
-                    setListData(false);
-                    getData();
-                } else {
+                    if (logoFile == null) {
+                        getData();
+                        setLoading(false);
+                        setListData(false);
+                        setModalForm(false);
+                        CustomToast("success", "Data Berhasil Disimpan");
+                    }else {
+                        let dataPhoto = new FormData();
+
+                        dataPhoto.append("logo[]", logoFile);
+                        dataPhoto.append("workunit_id", res.data.id);
+                        dataPhoto.append("uuid", localStorage.getItem("uuid"));
+
+                        workunitListAPI.uploadLogo(dataPhoto).then(
+                            res => {
+                                if (!res.is_error) {
+                                    getData();
+                                    setLoading(false);
+                                    setListData(false);
+                                    setModalForm(false);
+                                    CustomToast("success", "Data Berhasil Disimpan");
+                                }else {
+                                    CustomToast("danger", res.message);
+                                }
+                            }
+                        )
+                    }
+                }else {
                     CustomToast("danger", res.message);
                 }
             }
@@ -121,30 +145,57 @@ const ModalForm = (props) => {
                 CustomToast("danger", err.message);
             }
         )
-    }
+    };
 
     //Update
     const update = (dataForm) => {
         let formData = {
             ...dataForm,
             id                  : data.id,
+            data                : dataForm,
+            old_logo_id         : data.logo_id,
+            logo                : data, logo,
+            logo_name           : data.logo_name,
             sequence            : 1,
             latitude            : parseFloat(dataForm.latitude),
             parent_id           : parseInt(dataForm.parent_id.value),
             longitude           : parseFloat(dataForm.longitude),
             workunit_level_id   : parseInt(dataForm.workunit_level_id.value),
-        }
+        };
 
         workunitListAPI.updateWorkunitList(formData).then(
             res => {
+                console.log(res,"-res")
                 if (!res.is_error) {
-                    setLoading(false);
-                    setModalForm(false);
-                    CustomToast("success", "Data Berhasil Diubah");
-                    setListData(false);
-                    getData();
-                } else {
-                    CustomToast("danger", err.message);
+                    if (logoFile == null) {
+                        getData();
+                        setLoading(false);
+                        setListData(false);
+                        setModalForm(false);
+                        CustomToast("success", "Data Berhasil Diubah");
+                    }else {
+                        let dataPhoto = new FormData();
+
+                        dataPhoto.append("logo[]", logoFile);
+                        dataPhoto.append("workunit_id", res.data.id);
+                        dataPhoto.append("old_logo_id", res.data.logo_id);
+
+                        workunitListAPI.uploadLogo(dataPhoto).then(
+                            res => {
+                                if (!res.is_error) {
+                                    getData();
+                                    setLoading(false);
+                                    setListData(false);
+                                    setModalForm(false);
+                                    CustomToast("success", "Data Berhasil Diubah");
+                                }else {
+                                    CustomToast("danger", res.message);
+                                }
+                            }
+                        )
+                    }
+                }else {
+                    CustomToast("danger", res.message);
                 }
             }
         ).catch(
@@ -153,7 +204,7 @@ const ModalForm = (props) => {
                 CustomToast("danger", err.message);
             }
         )
-    }
+    };
 
     const onSubmit = (dataForm) => {
         setLoading(true);
@@ -238,7 +289,7 @@ const ModalForm = (props) => {
                                     placeholder  = 'Alamat'
                                     innerRef     = {register()}
                                     invalid      = {(errors.address) ? true : false}
-                                    defaultValue ={(data) ? data.address : null} 
+                                    defaultValue = {(data) ? data.address : null} 
                                 />
                             </div>
                             {
