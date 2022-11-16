@@ -37,11 +37,11 @@ export const Get = (path, params) => {
             headers     : configHeaders,
         }).then(
             res => {
-                // if(res.data.is_error && res.data.message === 'pengguna telah keluar dari aplikasi'){
-                //     redirectlogout(res)
-                // }else{
-                // }
-                resolve(res.data);
+                if(res.data.is_error && res.data.message === 'pengguna telah keluar dari aplikasi'){
+                    redirectlogout(res)
+                }else{
+                    resolve(res.data);
+                }
             },
         ).catch(
             err => {

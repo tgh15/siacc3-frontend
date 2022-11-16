@@ -9,7 +9,6 @@ export default class FetchServices {
 
     constructor(_token) {
         this.axiosService = axios
-        const envi = process.env.NODE_ENV
         this.baseUrl = !process.env.NODE_ENV || process.env.NODE_ENV === "production" ? window._env_.REACT_APP_API_GATEWAY : process.env.REACT_APP_API_GATEWAY
 
         if (_token == undefined || _token == null) {
@@ -110,7 +109,6 @@ export default class FetchServices {
                 resolve(response.data)
             }).catch(err => {
                 if (err.response) {
-                    this.redirectlogout(err)
                     reject(err.response)
                 } else if (err.request) {
                     reject(err.request)
@@ -137,7 +135,6 @@ export default class FetchServices {
                 resolve(response.data)
             }).catch(err => {
                 if (err.response) {
-                    this.redirectlogout(err)
                     reject(err.response)
                 } else if (err.request) {
                     reject(err.request)
@@ -162,7 +159,6 @@ export default class FetchServices {
                 resolve(response.data)
             }).catch(err => {
                 if (err.response) {
-                    this.redirectlogout(err)
                     reject(err.response)
                 } else if (err.request) {
                     reject(err.request)
@@ -187,7 +183,6 @@ export default class FetchServices {
                 resolve(response.data)
             }).catch(err => {
                 if (err.response) {
-                    this.redirectlogout(err)
                     reject(err.response)
                 } else if (err.request) {
                     reject(err.request)
@@ -214,7 +209,6 @@ export default class FetchServices {
                 resolve(response.data)
             }).catch(err => {
                 if (err.response) {
-                    this.redirectlogout(err)
                     reject(err.response)
                 } else if (err.request) {
                     reject(err.request)
@@ -227,7 +221,7 @@ export default class FetchServices {
     }
 
     redirectlogout = (err) => {
-        if (err.response.status == 410) {
+        if (err.data.status == 401) {
             // Redirect them to the /login page, but save the current location they were
             // trying to go to when they were redirected. This allows us to send them
             // along to that page after they login, which is a nicer user experience
