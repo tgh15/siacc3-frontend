@@ -25,7 +25,7 @@ const UserManagementProvider = ({ children }) => {
 
         workunitAPI.getWorkunitLevelList({workunit_level_id : 1}).then(
             res => {
-                if(res.data.length > 0){
+                if(!res.is_error && res.data.length > 0){
 
                     res.data.map((val) => (
                         data.push({
@@ -43,7 +43,7 @@ const UserManagementProvider = ({ children }) => {
 
         workunitAPI.getWorkunitLevelList({workunit_level_id : 2}).then(
             res => {
-                if(res.data.length > 0){
+                if(!res.is_error && res.data.length > 0){
                     res.data.map((val) => (
                         data.push({
                             label : val.name,
@@ -60,7 +60,7 @@ const UserManagementProvider = ({ children }) => {
 
         workunitAPI.getWorkunitLevelList({workunit_level_id : 3}).then(
             res => {
-                if(res.data.length > 0){
+                if(!res.is_error && res.data.length > 0){
                     res.data.map((val) => (
                         data.push({
                             label : val.name,
@@ -77,7 +77,7 @@ const UserManagementProvider = ({ children }) => {
 
         workunitAPI.getWorkunitLevelList({workunit_level_id : 4}).then(
             res => {
-                if(res.data.length > 0){
+                if(!res.is_error && res.data.length > 0){
                     res.data.map((val) => (
                         data.push({
                             label : val.name,
@@ -98,8 +98,6 @@ const UserManagementProvider = ({ children }) => {
     const getData = (params) => {
         setFilter(false);
         setListData(false);
-
-        console.log(params);
 
         userManagementAPI.getUserManagement(params).then(
             res => {

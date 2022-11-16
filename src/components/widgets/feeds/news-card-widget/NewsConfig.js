@@ -207,49 +207,51 @@ export const newsByStatus = (data) => {
 
         feedsAgentReportAPI.getAgentReportByStatus(formData).then(
             response => {
-                let NmapData                         = [];
-                const { data : {agent_report:data} } = response;
-
-                if(Array.isArray(data)){
-                    data.map(valueData=>{
-                        const {
-                            id              : id,
-                            who             : who,
-                            why             : why,
-                            how             : how,
-                            when_           : when,
-                            status,
-                            what,
-                            title,
-                            where           : where,
-                            created_at      : time_update,
-                            location_name   : location,
-                            employee        : { 
-                                name        : account,
-                                position    : wo1,
-                                workunit    : wo2,
-                                photo       : img
-                            },
-                            
-                        } = valueData;
-        
-                        let model = {
-                            ...approveModel,
-                        };
-
-                        model.id            = id;
-                        model.account       = account
-                        model.division      = `${wo1} ${wo2}`
-                        model.location      = location
-                        model.title         = title
-                        model.status        = status
-                        model.timeUpdate    = moment(time_update).calendar();
-                        model.avatar        = (img) || `https://ui-avatars.com/api/?name=${ account ? account : "UN"}&background=4e73df&color=fff&bold=true`
-                        model.text          = `${when}, telah terjadi ${what}, bertempat di ${where} ${who}. Kejadian ini terjadi karena ${why}, ${how}`
-                        NmapData.push(model)
-                    })
-                } 
-                resolve(NmapData);
+                if(!response.is_error){
+                    let NmapData                         = [];
+                    const { data : {agent_report:data} } = response;
+    
+                    if(Array.isArray(data)){
+                        data.map(valueData=>{
+                            const {
+                                id              : id,
+                                who             : who,
+                                why             : why,
+                                how             : how,
+                                when_           : when,
+                                status,
+                                what,
+                                title,
+                                where           : where,
+                                created_at      : time_update,
+                                location_name   : location,
+                                employee        : { 
+                                    name        : account,
+                                    position    : wo1,
+                                    workunit    : wo2,
+                                    photo       : img
+                                },
+                                
+                            } = valueData;
+            
+                            let model = {
+                                ...approveModel,
+                            };
+    
+                            model.id            = id;
+                            model.account       = account
+                            model.division      = `${wo1} ${wo2}`
+                            model.location      = location
+                            model.title         = title
+                            model.status        = status
+                            model.timeUpdate    = moment(time_update).calendar();
+                            model.avatar        = (img) || `https://ui-avatars.com/api/?name=${ account ? account : "UN"}&background=4e73df&color=fff&bold=true`
+                            model.text          = `${when}, telah terjadi ${what}, bertempat di ${where} ${who}. Kejadian ini terjadi karena ${why}, ${how}`
+                            NmapData.push(model)
+                        })
+                    } 
+                    resolve(NmapData);
+                }
         }).catch(err=>{
             reject(err)
         })

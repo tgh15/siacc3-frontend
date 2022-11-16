@@ -18,7 +18,7 @@ const configHeaders  = !process.env.NODE_ENV || process.env.NODE_ENV === 'produc
 };
 
 const redirectlogout = (err) => {
-    if (err.response.status == 401) {
+    if (err.data.status == 401) {
         // Redirect them to the /login page, but save the current location they were
         // trying to go to when they were redirected. This allows us to send them
         // along to that page after they login, which is a nicer user experience
@@ -37,12 +37,15 @@ export const Get = (path, params) => {
             headers     : configHeaders,
         }).then(
             res => {
+                // if(res.data.is_error && res.data.message === 'pengguna telah keluar dari aplikasi'){
+                //     redirectlogout(res)
+                // }else{
+                // }
                 resolve(res.data);
             },
         ).catch(
             err => {
                 if(err.response){
-                    redirectlogout(err)
                     reject(err.response);
                 }else if(err.request) {
                     reject(err.request);
@@ -159,7 +162,6 @@ export const postDownload = (path, formData, fileName) => {
         ).catch(
             err => {
                 if(err.response){
-                    redirectlogout(err)
                     reject(err.response);
                 }else if(err.request) {
                     reject(err.request);

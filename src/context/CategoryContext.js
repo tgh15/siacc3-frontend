@@ -13,22 +13,25 @@ export const CategoryProvider   = ({ children }) => {
     const getCategoryAPI = () => {
         feedsCategoryAPI.getCategory().then(
             res => {                    
-                if("category" in res.data && res.data.category != null){
-                    console.log(res.data.category);
-                    //Add all category to list
-                    res.data.category.unshift(
-                        {
-                            id   : "all",
-                            name : "Semua"
-                        },
-                        {
-                            id   : "selected_news",
-                            name : "Berita Pilihan"
-                        }
-                    )
+                if(!res.is_error){
 
-                    setCategory(res.data.category);
+                    if("category" in res.data && res.data.category != null){
+                        //Add all category to list
+                        res.data.category.unshift(
+                            {
+                                id   : "all",
+                                name : "Semua"
+                            },
+                            {
+                                id   : "selected_news",
+                                name : "Berita Pilihan"
+                            }
+                        )
+
+                        setCategory(res.data.category);
+                    }
                 }
+
             },
             err => {
                 // error_handler(err, 'category');

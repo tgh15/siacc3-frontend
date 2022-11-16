@@ -14,7 +14,6 @@ export const FeedURL = {
     performance : "performance",
     agent       : "agent",
     workunit    : "workunit"
-
 }
 
 const workunitByParent          = ({ data, page }) => Post(`${FeedURL.feedPrefix}/${FeedURL.performance}/${FeedURL.workunit}?&page=${page}`, data);

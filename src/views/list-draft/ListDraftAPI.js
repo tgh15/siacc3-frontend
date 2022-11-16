@@ -48,13 +48,17 @@ const ListDraftAPI = () => {
 
         feedsDraftAPI.getListDraft(params).then(
             res => {
-                if (res.status === 200 && res.data != null) {
-                    setLoading(false);
-                    setListDraft(res.data.result);
-                    setPagination(res.data.pagination)
-                    setFilterListDraft(res.data.result); 
+                if(!res.is_error){
+                    if (res.status === 200 && res.data != null) {
+                        setLoading(false);
+                        setListDraft(res.data.result);
+                        setPagination(res.data.pagination)
+                        setFilterListDraft(res.data.result); 
+                    }else{
+                        setListDraft([]);
+                    }
                 }else{
-                    setListDraft([]);
+                    CustomToast('danger', res.message);
                 }
             },
             err => {
@@ -105,16 +109,20 @@ const ListDraftAPI = () => {
     const onDelete = () => {
         feedsDraftAPI.deleteListDraft(selectedId).then(
             res => {
-                if (res.status === 200) {
-                    setLoading(true);
-                    setListDraft(false);
-                    setShowDeleteForm(false);
-
-                    //Success Message
-                    CustomToast('success', 'Data Berhasil di hapus');
-
-                    //Refresh List Draft
-                    getDraftAPI();
+                if(!res.is_error){
+                    if (res.status === 200) {
+                        setLoading(true);
+                        setListDraft(false);
+                        setShowDeleteForm(false);
+    
+                        //Success Message
+                        CustomToast('success', 'Data Berhasil di hapus');
+    
+                        //Refresh List Draft
+                        getDraftAPI();
+                    }
+                }else{
+                    CustomToast('danger', res.message);
                 }
             },
             err => {

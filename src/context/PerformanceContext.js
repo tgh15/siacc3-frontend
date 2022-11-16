@@ -50,72 +50,73 @@ const PerformanceProvider = ({ children }) => {
 
             workunitAPI.getWorkunitFilter(formData).then(
                 res => {
-
-                    console.log(res.data, 'result workunit');
-
-                    if(res.data.length > 0){
-                        res.data.map((data) => (
-                            data.workunit_level === "KEJAKSAAN TINGGI" ?
-                                level_2.push({
-                                    label : data.name,
-                                    value : data.id
-                                })
-                            :
-                                data.workunit_level === "KEJAKSAAN NEGERI" ?
-                                    level_3.push({
+                    if(!res.is_error){
+                        if(res.data.length > 0){
+                            res.data.map((data) => (
+                                data.workunit_level === "KEJAKSAAN TINGGI" ?
+                                    level_2.push({
                                         label : data.name,
                                         value : data.id
                                     })
                                 :
-                                    data.workunit_level === "CABANG KEJAKSAAN NEGERI" ?
-                                        level_4.push({
+                                    data.workunit_level === "KEJAKSAAN NEGERI" ?
+                                        level_3.push({
                                             label : data.name,
                                             value : data.id
                                         })
                                     :
-                                        null
-                        ))
-
-                        if(level_2.length > 0){
-
-                            data.push({
-                                label   : 'KEJAKSAAN TINGGI',
-                                options : level_2
-                            })
-
-                            setWorkunitLevel2(level_2);
+                                        data.workunit_level === "CABANG KEJAKSAAN NEGERI" ?
+                                            level_4.push({
+                                                label : data.name,
+                                                value : data.id
+                                            })
+                                        :
+                                            null
+                            ))
+    
+                            if(level_2.length > 0){
+    
+                                data.push({
+                                    label   : 'KEJAKSAAN TINGGI',
+                                    options : level_2
+                                })
+    
+                                setWorkunitLevel2(level_2);
+                            }
+    
+                            if(level_3.length > 0){
+                                data.push({
+                                    label : 'KEJAKSAAN NEGERI',
+                                    options : level_3
+                                })
+    
+                                setWorkunitLevel3(level_3);
+                            }
+    
+                            if(level_4.length > 0){
+                                data.push({
+                                    label : 'CABANG KEJAKSAAN NEGERI',
+                                    options : level_4
+                                })
+    
+                                setWorkunitLevel4(level_4);
+                            }
+    
                         }
-
-                        if(level_3.length > 0){
-                            data.push({
-                                label : 'KEJAKSAAN NEGERI',
-                                options : level_3
-                            })
-
-                            setWorkunitLevel3(level_3);
-                        }
-
-                        if(level_4.length > 0){
-                            data.push({
-                                label : 'CABANG KEJAKSAAN NEGERI',
-                                options : level_4
-                            })
-
-                            setWorkunitLevel4(level_4);
-                        }
-
+    
+                        setWorkunitOptions(data);
+                    }else{
+                        CustomToast('danger', res.message);
                     }
-
-                    setWorkunitOptions(data);
                 },
                 err => {
-                    console.log(err, 'err');
+                    CustomToast('danger', err.message);
                 }
             )
         }else{
             workunitAPI.getWorkunitLevelList({workunit_level_id : 1}).then(
                 res => {
-                    if(res.data.length > 0){
+                    if(!res.is_error && res.data.length > 0){
                         res.data.map((data) => (
                             level_1.push({
                                 label : data.name,
@@ -136,7 +137,7 @@ const PerformanceProvider = ({ children }) => {
     
                     workunitAPI.getWorkunitLevelList({workunit_level_id : 2}).then(
                         res => {
-                            if(res.data.length > 0){
+                            if(!res.is_error && res.data.length > 0){
                                 res.data.map((data) => (
                                     
                                     localStorage.getItem('role') === 'Verifikator Daerah' || localStorage.getItem('role') === 'Admin Daerah' ?
@@ -165,7 +166,7 @@ const PerformanceProvider = ({ children }) => {
     
                             workunitAPI.getWorkunitLevelList({workunit_level_id : 3}).then(
                                 res => {
-                                    if(res.data.length > 0){
+                                    if(!res.is_error && res.data.length > 0){
                                         res.data.map((data) => (
     
                                             localStorage.getItem('role') === 'Verifikator Daerah' || localStorage.getItem('role') === 'Admin Daerah' ?
@@ -193,7 +194,7 @@ const PerformanceProvider = ({ children }) => {
     
                                     workunitAPI.getWorkunitLevelList({workunit_level_id : 4}).then(
                                         res => {
-                                            if(res.data.length > 0){
+                                            if(!res.is_error && res.data.length > 0){
                                                 res.data.map((data) => (
                                                     level_4.push({
                                                         label : 'CABANG KEJAKSAAN NEGERI ' + data.name,
@@ -248,15 +249,18 @@ const PerformanceProvider = ({ children }) => {
         PerformanceApi.GetAgent({
             keyword: query.get('agen') != undefined ? query.get('agen') : searchTerm.current,
             onSuccess: (res) => {
-                setListData(res.data.agent_performance)
-                if (res.data.agent_performance.length > 0) {
-                    setDataSelected(res.data.agent_performance ? res.data.agent_performance[0] : null)
-                    getAgentDetail(res.data.agent_performance ? res.data.agent_performance[0].uuid : null)
-                    getAgentPoints(1, res.data.agent_performance[0].uuid)
+                if(!res.is_error){
+                    setListData(res.data.agent_performance)
+                    if (res.data.agent_performance.length > 0) {
+                        setDataSelected(res.data.agent_performance ? res.data.agent_performance[0] : null)
+                        getAgentDetail(res.data.agent_performance ? res.data.agent_performance[0].uuid : null)
+                        getAgentPoints(1, res.data.agent_performance[0].uuid)
+                    }
+                }else{
+                    CustomToast("danger", res.message);
                 }
-
             }, onFail: (err) => {
-                // CustomToast("danger", err.message);
+                CustomToast("danger", err.message);
             }
         })
     }
@@ -341,6 +345,7 @@ const PerformanceProvider = ({ children }) => {
         PerformanceApi.getAgetDetail({
             datas: datas,
             onSuccess: (res) => {
+
                 setDataDetail(res)
                 getAgentPoints(1, uuid)
             }, onFail: (err) => {

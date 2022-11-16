@@ -28,7 +28,6 @@ const FormDeduction = props => {
             PerformanceApi.agentPointsDeduction({
                 datas : datas,
                 onSuccess : (res) => {
-                    
                     getAgentDetail(dataDetail.uuid)
                     CustomToast("success","Pengurangan Point Berhasil")
                 },

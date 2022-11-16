@@ -33,32 +33,38 @@ const SevedFeedsAPI = () => {
 
         feedsAgentReportApprovalAPI.getAgentByStored(formData).then(
             res => {
-                const {data} = res;
 
-                if(data.agent_report === null){
-                    setLeftState([]);
-                    setRightState([]);
-                    setLoadingAllState(false);
+                if(!res.is_error){
+                    const {data} = res;
+    
+                    if(data.agent_report === null){
+                        setLeftState([]);
+                        setRightState([]);
+                        setLoadingAllState(false);
+                    }else{
+                        processAgentReports(data.agent_report).then(
+                            res => {
+                                //get array length
+                                let arrLength = res.length;
+    
+                                //search hal array length value
+                                let getDivision = Math.round(arrLength/2);
+                                
+                                //get first half array
+                                setLeftState(res.splice(0,getDivision));
+    
+                                //get last half array
+                                setRightState(res.splice(0,arrLength-getDivision));
+                                
+                                //efek loding
+                                setLoadingAllState(false);
+                            }
+                        );
+                    }
                 }else{
-                    processAgentReports(data.agent_report).then(
-                        res => {
-                            //get array length
-                            let arrLength = res.length;
-
-                            //search hal array length value
-                            let getDivision = Math.round(arrLength/2);
-                            
-                            //get first half array
-                            setLeftState(res.splice(0,getDivision));
-
-                            //get last half array
-                            setRightState(res.splice(0,arrLength-getDivision));
-                            
-                            //efek loding
-                            setLoadingAllState(false);
-                        }
-                    );
+                    CustomToast('danger', res.message);
                 }
+
             },
             err => {
                 CustomToast('danger', err.message);

@@ -1,4 +1,7 @@
-import React, { Fragment, useState, useContext }    from 'react';
+import React, { 
+    Fragment, 
+    useState 
+}                                       from 'react';
 import { 
     Row, 
     Col, 
@@ -10,21 +13,20 @@ import {
     TabPane,
     CardBody, 
     TabContent,
-} from 'reactstrap';
-
-import InfiniteScroll                   from "react-infinite-scroll-component";
+}                                       from 'reactstrap';
 
 //Components
-import { NewsWidget }                   from '../../components/widgets/feeds/news-card-widget';
-import CustomTableBodyEmpty             from '../../components/widgets/custom-table/CustomTableBodyEmpty';
-import { ApprovedNewsWidget }           from '../../components/widgets/feeds/feeds-approved-news/Approve';
-import CustomTableNotAuthorized         from '../../components/widgets/custom-table/CustomTableNotAuthorized';
-import CustomTablePaginate              from '../../components/widgets/custom-table/CustomTablePaginate';
-import { CategoryFilter }               from '../../components/widgets/feeds/feeds-categories-components/categoryFilter';
-
-import Helper                           from '../../helpers'; 
 import SearchTable                      from '../../components/widgets/custom-table/SearchTable';
 import FeedSkeleton                     from '../../components/widgets/feed-skeleton/FeedSkeleton';
+import CustomTablePaginate              from '../../components/widgets/custom-table/CustomTablePaginate';
+import CustomTableBodyEmpty             from '../../components/widgets/custom-table/CustomTableBodyEmpty';
+import CustomTableNotAuthorized         from '../../components/widgets/custom-table/CustomTableNotAuthorized';
+import { NewsWidget }                   from '../../components/widgets/feeds/news-card-widget';
+import { CategoryFilter }               from '../../components/widgets/feeds/feeds-categories-components/categoryFilter';
+import { ApprovedNewsWidget }           from '../../components/widgets/feeds/feeds-approved-news/Approve';
+
+//Helper
+import Helper                           from '../../helpers'; 
 
 const PersetujuanBerita = (props) => {
 

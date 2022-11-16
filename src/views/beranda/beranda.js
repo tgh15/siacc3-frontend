@@ -133,16 +133,18 @@ const Beranda = (props) => {
 
         feedsBerandaAgentReport.getTrendingByType(formData).then(
             res => {
-                const {data} = res;
-
-                if (data.agent_report === null) {
-                    setTrendingReport([]);
+                if (!res.is_error){
+                    if(res.data.agent_report === null){
+                        setTrendingReport([]);
+                    }else{
+                        processAgentReports(res.data.agent_report).then(
+                            res => {
+                                setTrendingReport(res);
+                            }
+                        )
+                    }
                 }else{
-                    processAgentReports(data.agent_report).then(
-                        res => {
-                            setTrendingReport(res);
-                        }
-                    )
+                    CustomToast('danger', res.message);
                 }
             },
             err => {

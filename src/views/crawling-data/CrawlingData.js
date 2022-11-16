@@ -33,7 +33,7 @@ import CrawlingResult                               from "../../components/widge
 import CrawlingCreate                               from "../../components/widgets/crawling-components/CrawlingCreate";
 
 import logoLight                                    from "../../assets/images/logo/logo_light.png";
-import CrawlingFilter from "../../components/widgets/crawling-components/CrawlingFilter";
+import CrawlingFilter                               from "../../components/widgets/crawling-components/CrawlingFilter";
 
 const Crawlingdata = () => {
 
@@ -58,19 +58,23 @@ const Crawlingdata = () => {
     const getResultAll = () => {
         crawlingAPI.getResultAll('crawling').then(
             res => {
-                if(res.status === 200){
-                    setResult(res.data);
-                    setStatus(1)
-
-                    let data_ = [];
-
-                    res.data.map((data,index) => (
-                        data_.push([index+1,data.name, data.query.keyword, data.query.size, moment(data.created_at).format('LL')])
-                    ))
-
-                    setBody(data_);
+                if(!res.is_error){
+                    if(res.status === 200){
+                        setResult(res.data);
+                        setStatus(1)
+    
+                        let data_ = [];
+    
+                        res.data.map((data,index) => (
+                            data_.push([index+1,data.name, data.query.keyword, data.query.size, moment(data.created_at).format('LL')])
+                        ))
+    
+                        setBody(data_);
+                    }else{
+                        setResult(null);
+                    }
                 }else{
-                    setResult(null);
+                    CustomToast('danger', res.message);
                 }
 
                 setShowFilterForm(false);
@@ -84,11 +88,15 @@ const Crawlingdata = () => {
     const getResultArchive = () => {
         crawlingAPI.getResultArchive('crawling').then(
             res => {
-                if(res.status === 200){
-                    setResult(res.data);
-                    setStatus(2);
+                if(!res.is_error){
+                    if(res.status === 200){
+                        setResult(res.data);
+                        setStatus(2);
+                    }else{
+                        setResult(null);
+                    }
                 }else{
-                    setResult(null);
+                    CustomToast('danger', res.message);
                 }
             },
             err => {
@@ -101,21 +109,26 @@ const Crawlingdata = () => {
         setLoading(true);
         crawlingAPI.deleteResult(id).then(
             res => {
-                if(res.status === 200){
-                    CustomToast("success", "Crawling Berhasil Dihapus.");
-                    // message.success('Hasil pencarian crawling berhasil dihapus.');
-                    getResultAll();
-
-                    setLoading(false);
-                    setSelectedData(null);
-                    setShowDeleteForm(false);
+                if(!res.is_error){
+                    if(res.status === 200){
+                        CustomToast("success", "Crawling Berhasil Dihapus.");
+                        // message.success('Hasil pencarian crawling berhasil dihapus.');
+                        getResultAll();
+    
+                        setLoading(false);
+                        setSelectedData(null);
+                        setShowDeleteForm(false);
+                    }else{
+                        setLoading(false);
+                        setSelectedData(null);
+                    }
                 }else{
-                    setLoading(false);
-                    setSelectedData(null);
+                    CustomToast('danger', res.message);
                 }
             },
             err => {
                 console.log('delete result crawling', err);
+                CustomToast('danger', err.message);
             }
         )
     }
@@ -135,10 +148,14 @@ const Crawlingdata = () => {
 
         crawlingAPI.createQuery(formData).then(
             res => {
-                if(res.status === 200){
-                    CustomToast('success','Tambah Crawling Data Berhasil');
-                    setShowSubmitForm(false);
-                    history.push(`/crawling-data/${res.data.id}`);
+                if(!res.is_error){
+                    if(res.status === 200){
+                        CustomToast('success','Tambah Crawling Data Berhasil');
+                        setShowSubmitForm(false);
+                        history.push(`/crawling-data/${res.data.id}`);
+                    }
+                }else{
+                    CustomToast('danger', res.message);
                 }
             },
             err => {
@@ -155,9 +172,13 @@ const Crawlingdata = () => {
 
         crawlingAPI.updateResult(formData).then(
             res => {
-                if(res.status === 200){
-                    CustomToast('success','Data Crawling Berhasil Diarsipkan.');
-                    getResultAll();
+                if(!res.is_error){
+                    if(res.status === 200){
+                        CustomToast('success','Data Crawling Berhasil Diarsipkan.');
+                        getResultAll();
+                    }
+                }else{
+                    CustomToast('danger', res.message);
                 }
             },
             err => {
@@ -174,9 +195,13 @@ const Crawlingdata = () => {
 
         crawlingAPI.updateResult(formData).then(
             res => {
-                if(res.status === 200){
-                    CustomToast('success','Arsip Data Crawling Dibatalkan.');
-                    getResultArchive();
+                if(!res.is_error){
+                    if(res.status === 200){
+                        CustomToast('success','Arsip Data Crawling Dibatalkan.');
+                        getResultArchive();
+                    }
+                }else{
+                    CustomToast('danger', res.message);
                 }
             },
             err => {
@@ -208,25 +233,30 @@ const Crawlingdata = () => {
 
         crawlingAPI.getResultAll('crawling',filter_).then(
             res => {
-                if(res.status === 200){
-                    setResult(res.data);
-                    setStatus(1)
-
-                    let data_ = [];
-
-                    res.data.map((data,index) => (
-                        data_.push([index+1,data.name, data.query.keyword, data.query.size, moment(data.created_at).format('LL')])
-                    ))
-
-                    setBody(data_);
+                if(!res.is_error){
+                    if(res.status === 200){
+                        setResult(res.data);
+                        setStatus(1)
+    
+                        let data_ = [];
+    
+                        res.data.map((data,index) => (
+                            data_.push([index+1,data.name, data.query.keyword, data.query.size, moment(data.created_at).format('LL')])
+                        ))
+    
+                        setBody(data_);
+                    }else{
+                        setResult(null);
+                    }
+                    CustomToast("success", 'Filter data berhasil.');
+                    setShowFilterForm(false);
                 }else{
-                    setResult(null);
+                    CustomToast('danger', res.message);
                 }
-                CustomToast("success", 'Filter data berhasil.');
-                setShowFilterForm(false);
             },
             err => {
                 console.log('get result all crawling', err);
+                CustomToast('danger', err.message);
             }
         )
     };
@@ -239,15 +269,20 @@ const Crawlingdata = () => {
 
         crawlingAPI.updateResult(formData).then(
             res => {
-                if(res.status === 200){
-                    CustomToast('success','Data Crawling Berhasil Diubah.');
-                    getResultAll();
-
-                    setShowResultForm(false);
+                if(!res.is_error){
+                    if(res.status === 200){
+                        CustomToast('success','Data Crawling Berhasil Diubah.');
+                        getResultAll();
+    
+                        setShowResultForm(false);
+                    }
+                }else{
+                    CustomToast('danger', res.message);
                 }
             },
             err => {
                 console.log('update result crawling', err);
+                CustomToast('danger', err.message);
             }
         )
     }
