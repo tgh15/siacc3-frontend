@@ -218,7 +218,7 @@ const ModalForm = (props) => {
                 if (!res.is_error) {
                     if (photoFile === null) {
                         setLoading(false);
-                        getData({page: 1});
+                        getData({page : 1});
                         setModalForm(false);
                         CustomToast("success", "Data Berhasil Disimpan");
                     }else {
@@ -231,7 +231,7 @@ const ModalForm = (props) => {
                             res => {
                                 if (!res.is_error) {
                                     setLoading(false);
-                                    getData({page: 1});
+                                    getData({page : 1});
                                     setModalForm(false);
                                     CustomToast("success", "Data Berhasil Disimpan");
                                 }else {

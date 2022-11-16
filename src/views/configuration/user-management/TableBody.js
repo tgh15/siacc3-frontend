@@ -77,7 +77,7 @@ const TableBody = props => {
                 if (!res.is_error) {
                     setLoading(false);
                     setListData(false);
-                    getData({ page:1 });
+                    getData({page : 1});
                     setShowDeleteForm(!showDeleteForm);
                     CustomToast("success", "Data Berhasil di hapus");
                 }else {

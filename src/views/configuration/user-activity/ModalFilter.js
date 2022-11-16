@@ -2,7 +2,6 @@ import {
     Label,
     Button,
     FormGroup,
-    CustomInput,
     ModalFooter,
 } from "reactstrap";
 
@@ -16,15 +15,7 @@ import { selectThemeColors }                from '@utils';
 //Css
 import '@styles/react/libs/flatpickr/flatpickr.scss';
 
-//Services
-import workunitListAPI                      from "../../../services/pages/configuration/unit-work-list/WorkunitList";
-
-//Components
-import CustomToast                          from "../../../components/widgets/custom-toast";
-
-import Select                               from 'react-select'
-import { selectThemeColors }                from '@utils'
-import { PerformanceContext } from "../../../context/PerformanceContext";
+import { PerformanceContext }               from "../../../context/PerformanceContext";
 
 
 

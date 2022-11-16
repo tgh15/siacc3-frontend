@@ -141,8 +141,7 @@ const ModalFilter = ({ setModalFilter, onFilter }) => {
                         outline 
                         onClick = {() => { 
                             getData({
-                                page   : 1,
-                                params : {}
+                                page : 1
                             }); 
                         setModalFilter(false) }}
                     >

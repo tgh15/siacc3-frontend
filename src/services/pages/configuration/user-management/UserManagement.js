@@ -4,7 +4,8 @@ import { Delete, Get, Post, Put } from "../../../core/request";
 
 //Get
 const getAuthGroupList      = () => Get(`${responseURL.authPrefix}/groups?show_all=true`);
-const getUserManagement     = (page, params) => Get(`${responseURL.employeePrefix}/employee?page=${page}`, params);
+const getUserManagement     = (params) => Get(`${responseURL.employeePrefix}/employee`, params);
+const getUserManagementList = (params) => Get(`${responseURL.employeePrefix}/employee/list`, params);
 
 //Post
 const getFilter             = (data, page) => Post(`${responseURL.employeePrefix}/employee/filter?page=${page}`, data);
@@ -28,6 +29,7 @@ const userManagementAPI = {
     updateUserManagement,
     createUserManagement,
     deleteUserManagement,
+    getUserManagementList,
 }
 
 export default userManagementAPI;

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { createContext } from "react";
 import UserManagementApi from "../services/pages/configuration/user-management";
+import userManagementAPI from "../services/pages/configuration/user-management/UserManagement";
 
 
 const EmployeeContext = createContext(null)
@@ -11,26 +12,42 @@ const EmployeeProvider = ({ children }) => {
     const [employeesList, setEmployeesList] = useState(null);
 
     const getEmployees = () => {
-        UserManagementApi.list({
-            onSuccess: (res) => {
 
-                setEmployees(res)
-
-                let data_ = [];
-                res.map((data) => (
-                    data_.push({
-                        label : data.name,
-                        value : data.id
-                    })
-                ))
-
-                setEmployeesList(data_);
-                
+        userManagementAPI.getUserManagementList().then(
+            res => {
+                if(!res.is_error){
+                    if(res.data != null){
+                        setEmployees(res.data);
+                        setEmployeesList(res.data.map((data) => ({label : data.name, value : data.id})) )
+                    }
+                }
+                console.log(res, 'get user management')
             },
-            onFail: (err) => {
-                console.log(err)
+            err => {
+                console.log(err, 'console log error');
             }
-        })
+        )
+        
+        // UserManagementApi.list({
+        //     onSuccess: (res) => {
+
+        //         setEmployees(res)
+
+        //         let data_ = [];
+        //         res.map((data) => (
+        //             data_.push({
+        //                 label : data.name,
+        //                 value : data.id
+        //             })
+        //         ))
+
+        //         setEmployeesList(data_);
+                
+        //     },
+        //     onFail: (err) => {
+        //         console.log(err)
+        //     }
+        // })
     }
 
     const getLeader = () => {

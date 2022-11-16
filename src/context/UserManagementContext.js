@@ -95,11 +95,13 @@ const UserManagementProvider = ({ children }) => {
     };
 
     //Get data employee (user management)
-    const getData = ({page, params}) => {
+    const getData = (params) => {
         setFilter(false);
         setListData(false);
 
-        userManagementAPI.getUserManagement(page, params).then(
+        console.log(params);
+
+        userManagementAPI.getUserManagement(params).then(
             res => {
                 if (!res.is_error) {
                     setFilter(false);

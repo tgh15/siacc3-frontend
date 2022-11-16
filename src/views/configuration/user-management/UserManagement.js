@@ -56,7 +56,7 @@ const UserManagement = () => {
     const [modalChangeRequest, setModalChangeRequest] = useState(false);
 
     // refs
-    const keyword = useRef({ keyword : "" });
+    const keyword = useRef({keyword : ""});
 
     //Filter
     const getDataFilter = (datas, page) => {
@@ -130,7 +130,7 @@ const UserManagement = () => {
             <ModalDeviced
                 data            = {dataSelected}
                 show            = {modalDeviced}
-                refreshData     = {(par) => { getData({page:1}) }}
+                refreshData     = {(par) => { getData({page : 1}) }}
                 SetModalDeviced = {(par) => { SetModalDeviced(par) }}
             />
 
@@ -176,6 +176,7 @@ const UserManagement = () => {
                     <CustomTable
                         header   = {HeaderTable}
                         getData  = {(params) => {
+                            console.log(params, 'pamars2')
                             getData({
                                 page: pagination.page,
                                 ...params
@@ -185,8 +186,8 @@ const UserManagement = () => {
                             keyword.current.keyword = value;
 
                             getData({
-                                page   : 1,
-                                params : keyword.current
+                                page    : 1,
+                                keyword : keyword.current.keyword
                             });
                         }}
                         pagination      = {pagination}
@@ -196,8 +197,8 @@ const UserManagement = () => {
                         onNext          = {() => {
                             if (!filter) {
                                 getData({
-                                    page   : pagination.current_page + 1,
-                                    params : keyword.current
+                                    page    : pagination.current_page + 1,
+                                    keyword : keyword.current.keyword
                                 });
                             }else{
                                 getDataFilter(dataFilter, pagination.current_page + 1);
@@ -206,8 +207,8 @@ const UserManagement = () => {
                         onPrev  = {() => {
                             if (!filter) {
                                 getData({
-                                    page   : pagination.current_page - 1,
-                                    params : keyword.current
+                                    page    : pagination.current_page - 1,
+                                    keyword : keyword.current.keyword
                                 });
                             }else{
                                 getDataFilter(dataFilter, pagination.current_page - 1);

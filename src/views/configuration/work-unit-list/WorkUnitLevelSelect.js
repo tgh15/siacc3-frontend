@@ -58,13 +58,8 @@ const WorkUnitLevelSelect = ({ isRtl, onSelect, getAllData, setListData }) => {
         >
             <CardBody className="p-0">
                 <Swiper
-<<<<<<< HEAD
-                    dir={isRtl ? 'rtl' : 'ltr'} {...params}
-                    // onSlideChange={(e) => { onSwiper(e.activeIndex) }}
-=======
                     {...params}
                     dir = {isRtl ? 'rtl' : 'ltr'} 
->>>>>>> amate-v2
                 >
                     <SwiperSlide
                         onClick   = {() => { getAllData() }}
@@ -74,40 +69,6 @@ const WorkUnitLevelSelect = ({ isRtl, onSelect, getAllData, setListData }) => {
                             SEMUA SATUAN KERJA
                         </p>
                     </SwiperSlide>
-<<<<<<< HEAD
-                    {
-                        (localStorage.getItem('role') === "Admin Daerah" || localStorage.getItem('role') === "Verifikator Daerah") ?
-                            <>
-                                {
-                                    level && (level.filter((data_) => (data_.id != 1))).map((data) => (
-                                        <SwiperSlide
-                                            key         = {data.id}
-                                            style       = {{ marginTop: '5px', paddingTop: '5px' }}
-                                            onClick     = {() => { refreshTable(parseInt(data.id)) }}
-                                            className   = 'rounded swiper-shadow'
-                                        >
-                                            <p className='swiper-text mb-0'>{data.name}</p>
-                                        </SwiperSlide>
-                                    ))
-                                }
-                            </>
-                        :
-                            <>
-                                {
-                                    level && level.map((data) => (
-                                        <SwiperSlide
-                                            key         = {data.id}
-                                            style       = {{ marginTop: '5px', paddingTop: '5px' }}
-                                            onClick     = {() => { refreshTable(parseInt(data.id)) }}
-                                            className   = 'rounded swiper-shadow'
-                                        >
-                                            <p className='swiper-text mb-0'>{data.name}</p>
-                                        </SwiperSlide>
-                                    ))
-                                }
-                            </>
-                    }
-=======
 
                     {level && level.map((data, i) => (
                         <SwiperSlide
@@ -120,7 +81,6 @@ const WorkUnitLevelSelect = ({ isRtl, onSelect, getAllData, setListData }) => {
                             </p>
                         </SwiperSlide>
                     ))}
->>>>>>> amate-v2
                 </Swiper>
             </CardBody>
         </Card>

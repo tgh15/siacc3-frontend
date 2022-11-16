@@ -21,7 +21,7 @@ const RejectDevice = props => {
 
             onSuccess: (res) => {
                 CustomToast("success","Berhasil Tolak Pergantian Device");
-                getData({page:1});
+                getData({page : 1});
                 setShow(false);
                 setChangeDevice(false);
             },onFail : (err) => {
