@@ -1,21 +1,22 @@
-import { Fragment, useEffect, useState }    from "react";
+import { Fragment, useState } from "react";
+import Select                 from 'react-select';
+import { selectThemeColors }  from '@utils';
+
 import {
     Row,
     Col,
     Label,
     Button,
     FormGroup,
-    ModalFooter,
-    CustomInput,
+    ModalFooter
 } from "reactstrap";
 
-import SelectOptionsService                 from '@src/services/pages/select-options';
-
 //Component
-import CustomToast                          from "../../../components/widgets/custom-toast";
+import CustomToast            from "../../../components/widgets/custom-toast";
 
 //API
-import PositionApi                          from "../../../services/pages/configuration/position";
+import positionAPI            from "../../../services/pages/configuration/position/index";
+import ButtonLoading          from "../../../components/widgets/loading-button";
 
 const typeOptions = [
     { key: "1", value: 1, label: 'PELAKSANA' },
@@ -27,64 +28,44 @@ const typeOptions = [
 const ModalFilter = (props) => {
     const {
         onReset,
-        setListData
+        setListData, 
+        sectorOptions,
+        workUnitLevelOptions
     } = props;
 
     //State
-    const [sector,setSector]                                = useState(null);
-    const [newsType, setNewsType]                           = useState("latest");
-    const [positionType,setPositionType]                    = useState(null);
-    const [workunitLevel,setWorkunitLevel]                  = useState(null);
-    const [sectorOptions, setSectorOptions]                 = useState(false);
-    const [workUnitLevelOptions, setworkUnitLevelOptions]   = useState(false);
+    const [sector, setSector]               = useState(null);
+    const [loading, setLoading]             = useState(false);
+    const [newsType, setNewsType]           = useState("latest");
+    const [positionType, setPositionType]   = useState(null);
+    const [workunitLevel, setWorkunitLevel] = useState(null);
 
-    const WorkUnitLevelOptions = () => {
-        SelectOptionsService.workUnitLevel({
-            onSuccess: (res) => {
-                setworkUnitLevelOptions(res);
-            }, onFail: (err) => {
-                CustomToast("danger", err.message);
-            }
-        })
-    };
-
-    const onFilter = () => {
+    const handleFilter = () => {
+        setLoading(true);
         setListData(false);
 
-        let dataFilter = {
+        const formData = {
             order_by            : newsType,
             position_type       : parseInt(positionType),
             workunit_level_id   : parseInt(workunitLevel),
             sector_id           : parseInt(sector)
-        } 
+        };
 
-        PositionApi.filter({
-            data : dataFilter,
-            onSuccess : (res) => {
-                setListData(res.position);
-            },
-            onFail : (err) => {
+        positionAPI.filterPosition(formData).then(
+            res => {
+                if (!res.is_error) {
+                    setLoading(false);
+                    setListData(res.data.position);
+                }else {
+                    CustomToast("danger", res.message);
+                }
             }
-        })
-    };
-
-    const SectorOptions = () => {
-        SelectOptionsService.sector({
-            onSuccess: (res) => {
-                setSectorOptions(res);
-            }, onFail: (err) => {
+        ).catch(
+            err => {
                 CustomToast("danger", err.message);
             }
-        })
+        )
     };
-
-    useEffect(() => {
-        WorkUnitLevelOptions();
-    }, []);
-
-    useEffect(() => {
-        SectorOptions();
-    }, []);
 
     return (
         <Fragment>
@@ -97,8 +78,8 @@ const ModalFilter = (props) => {
                                 Terbaru
                             </Button.Ripple> : 
                             <Button.Ripple 
-                                block 
                                 color   = "primary" 
+                                block 
                                 outline 
                                 onClick = {() => setNewsType("latest")}
                             >
@@ -106,7 +87,7 @@ const ModalFilter = (props) => {
                             </Button.Ripple>
                         }
                     </Col>
-                    <Col className="mr-1">
+                    <Col>
                         {
                             (newsType === "longest") ? <Button.Ripple block className="ml-1" color="primary">
                                 Terlama
@@ -115,7 +96,6 @@ const ModalFilter = (props) => {
                                 color       = "primary" 
                                 block 
                                 outline
-                                className   = "ml-1" 
                                 onClick     = {() => setNewsType("longest")}
                             >
                                 Terlama
@@ -127,87 +107,49 @@ const ModalFilter = (props) => {
             <FormGroup>
                 <Label for='name'>Tipe Jabatan</Label>
                 <div id="position-typee">
-                    <CustomInput 
-                        id          = 'select-custom' 
-                        type        = 'select'  
-                        onChange    = {(e) => {setPositionType(e.target.value)}}
-                    >
-                        <option 
-                            value    = ""
-                            disabled 
-                            selected 
-                        >
-                            Pilih Tipe Jabatan
-                        </option>
-                        {
-                            typeOptions.map((data, i) => (
-                                <option 
-                                    key     = {data.key}
-                                    value   = {data.value}
-                                >
-                                    {data.label}
-                                </option>
-                            ))
-                        }
-                    </CustomInput>
+                    <Select
+                        name            = 'clear'
+                        block
+                        theme           = {selectThemeColors}
+                        options         = {typeOptions}
+                        onChange        = {(e) => { setPositionType(e.value)} }
+                        className       = 'react-select'
+                        isClearable
+                        placeholder     = "Pilih Tipe Jabatan"
+                        classNamePrefix = 'select'
+                    />
                 </div>
             </FormGroup>
             <FormGroup>
                 <Label for='id'>Satuan Kerja</Label>
                 <div id="workunit-position">
-                    <CustomInput 
-                        id       = 'select-custom'  
-                        type     = 'select'  
-                        onChange = {(e) => {setWorkunitLevel(e.target.value)}}
-                    >
-                        <option 
-                            value    = ""
-                            disabled
-                            selected 
-                        >
-                            Pilh Satuan Kerja
-                        </option>
-                        {
-                            workUnitLevelOptions && 
-                            workUnitLevelOptions.map((data) => (
-                                <option 
-                                    key   = {data.key} 
-                                    value = {data.value}
-                                >
-                                    {data.label}
-                                </option>
-                            ))
-                        }
-                    </CustomInput>
+                    <Select
+                        name            = 'clear'
+                        block
+                        theme           = {selectThemeColors}
+                        options         = {workUnitLevelOptions}
+                        onChange        = {(e) => { setWorkunitLevel(e.value)} }
+                        className       = 'react-select'
+                        isClearable
+                        placeholder     = "Pilih Satuan Kerja"
+                        classNamePrefix = 'select'
+                    />
                 </div>
             </FormGroup>
             <FormGroup>
                 <Label for='id'>Unit Kerja</Label>
                 <div id="units-position">
-                    <CustomInput 
-                        id          = 'select-custom'  
-                        type        = 'select'  
-                        onChange    = {(e) => {setSector(e.target.value)}}
-                    >
-                        <option 
-                            value    = ""
-                            disabled 
-                            selected 
-                        > 
-                            Pilh Unit Kerja 
-                        </option>
-                        {
-                            sectorOptions && 
-                            sectorOptions.map((data) => (
-                                <option 
-                                    key={data.key} 
-                                    value={data.value}
-                                >
-                                    {data.label}
-                                </option>
-                            ))
-                        }
-                    </CustomInput>
+                    <Select
+                        name            = 'clear'
+                        block
+                        theme           = {selectThemeColors}
+                        options         = {sectorOptions}
+                        onChange        = {(e) => { setSector(e.value)} }
+                        className       = 'react-select'
+                        isClearable
+                        placeholder     = "Pilih Unit Kerja"
+                        classNamePrefix = 'select'
+                    />
                 </div>
             </FormGroup>
 
@@ -222,12 +164,13 @@ const ModalFilter = (props) => {
                     </Button.Ripple>
                 </div>
                 <div id="position-apply">
-                    <Button.Ripple 
-                        color   = 'primary' 
-                        onClick = {onFilter}
+                    <ButtonLoading
+                        color     = 'primary' 
+                        action    = {handleFilter}
+                        isLoading = {loading}
                     >
                         Terapkan
-                    </Button.Ripple>
+                    </ButtonLoading>
                 </div>
             </ModalFooter>
         </Fragment>

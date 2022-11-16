@@ -1,20 +1,29 @@
-import { Fragment, useContext, useState, useEffect, useRef } from 'react';
-import { Row, Col, UncontrolledTooltip }        from 'reactstrap';
-import { ShepherdTour, ShepherdTourContext }    from 'react-shepherd';
+import { 
+    useRef, 
+    Fragment, 
+    useState, 
+    useEffect, 
+    useContext, 
+} from 'react';
+
+import { Row, Col, UncontrolledTooltip }     from 'reactstrap';
+import { ShepherdTour, ShepherdTourContext } from 'react-shepherd';
 
 //Css
 import 'shepherd.js/dist/css/shepherd.css';
 import '@styles/react/libs/shepherd-tour/shepherd-tour.scss';
 
 //Icon
-import { HelpCircle }                           from 'react-feather';
+import { HelpCircle }                        from 'react-feather';
 
 //Views
-import Position                                 from './Position';
+import Position                              from './Position';
 
 //Helper
-import Helper                                   from '../../../helpers';
-import selfLearningURL from '../../../services/pages/helpdesk/self-learning';
+import Helper                                from '../../../helpers';
+
+//Services
+import selfLearningURL                       from '../../../services/pages/helpdesk/self-learning';
 
 
 const backBtnClass  = 'btn btn-sm btn-outline-primary',
@@ -325,11 +334,10 @@ const StartTour = ({ showAction }) => {
 
     return (
         <Fragment>
-            <div style={{ cursor: 'pointer', display: 'flex', justifyContent: 'end' }}>
+            <div style={{ cursor: 'pointer', float: 'right' }}>
                 <p 
                     id      = 'positionLeft' 
                     ref     = {buttonRef}
-                    style   = {{ zIndex: '3', position: 'absolute', margin: '50px 150px 0 0' }}
                     onClick = {tour.start}
                 >
                     {
@@ -363,7 +371,8 @@ const TourComponent = () => {
                     md = '12' 
                     sm = '12'
                 >
-                    <ShepherdTour steps={
+                    <ShepherdTour 
+                        steps = {
                             showAction === 'filter' ?
                                 stepsIndexFilter
                             :

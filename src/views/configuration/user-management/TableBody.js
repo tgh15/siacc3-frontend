@@ -2,9 +2,11 @@ import { Fragment, useState, useEffect, useContext }        from "react";
 import { CheckCircle, Edit2, Eye, Key, Trash2, XCircle }    from "react-feather";
 import { Col, Media }                                       from "reactstrap";
 
+//Helper
+import Helper                                               from "../../../helpers";
+
 //Components
 import Avatar                                               from "../../../components/widgets/avatar";
-import Helper                                               from "../../../helpers";
 import FormDelete                                           from "../../../components/widgets/form-delete/FormDelete";
 import CustomToast                                          from "../../../components/widgets/custom-toast";
 import CustomTableBody                                      from "../../../components/widgets/custom-table/CustomTableBody";
@@ -12,6 +14,7 @@ import { UserManagementContext }                            from "../../../conte
 
 //API
 import UserManagementApi                                    from "../../../services/pages/configuration/user-management";
+import userManagementAPI                                    from "../../../services/pages/configuration/user-management/UserManagement";
 
 
 const TableBody = props => {
@@ -36,11 +39,11 @@ const TableBody = props => {
         setDataSelected,
         setDeviceSelected 
     } = useContext(UserManagementContext);
-
+    
     //State
-    const [device, setDevice]                   = useState();
-    const [loading, setLoading]                 = useState(false);
-    const [showDeleteForm, setShowDeleteForm]   = useState(false);
+    const [device, setDevice]                     = useState();
+    const [loading, setLoading]                   = useState(false);
+    const [showDeleteForm, setShowDeleteForm]     = useState(false);
 
     const iconKey = (data) => {
         if (data && data.type == "not_connected") {
@@ -63,23 +66,29 @@ const TableBody = props => {
         })
     };
 
+    //Delete
     const onDelete = () => {
-        UserManagementApi.delete({
-            id: dataSelected.id,
-            photo_id: dataSelected.photo_id,
+        const formData = {
+            id : dataSelected.id
+        };
 
-            onSuccess: (res) => {
-                setListData(false);
-                getData({page:1});
-                setLoading(false);
-                setShowDeleteForm(!showDeleteForm);
-                CustomToast("success", "Data Berhasil di hapus");
-            },
-            onFail: (err) => {
-                CustomToast("danger", err.message);
-                console.log(err, 'disini error');
+        userManagementAPI.deleteUserManagement(formData).then(
+            res => {
+                if (!res.is_error) {
+                    setLoading(false);
+                    setListData(false);
+                    getData({ page:1 });
+                    setShowDeleteForm(!showDeleteForm);
+                    CustomToast("success", "Data Berhasil di hapus");
+                }else {
+                    CustomToast("danger", res.message);
+                }
             }
-        })
+        ).catch(
+            err => {
+                CustomToast("danger", err.message);
+            }
+        )
     };
 
     useEffect(() => {
@@ -125,7 +134,10 @@ const TableBody = props => {
                 <Col md="2">
                     {data.user_group ? data.user_group[0].name : null}
                 </Col>
-                <Col md="2" className="d-flex justify-content-around">
+                <Col 
+                    md        = "2" 
+                    className = "d-flex justify-content-around"
+                >
                     {
                         getRoleByMenuStatus('Manajemen Pengguna', 'show') ?
                             <div id="usermanajement-detail">
@@ -135,8 +147,7 @@ const TableBody = props => {
                                     className   = "cursor-pointer" 
                                 />
                             </div>
-                        :
-                            null
+                        : null
                     }
 
                     {
@@ -144,8 +155,7 @@ const TableBody = props => {
                             <div id="usermanajement-device">
                                 {iconKey(device)}
                             </div>
-                        :
-                            null
+                        : null
                     }
 
                     {
@@ -173,8 +183,7 @@ const TableBody = props => {
                                     className   = "cursor-pointer"
                                 />
                             )
-                        :
-                            null
+                        : null
                     }
                     {
                         getRoleByMenuStatus('Manajemen Pengguna', 'edit') ?
@@ -185,8 +194,7 @@ const TableBody = props => {
                                     className   = "cursor-pointer" 
                                 />
                             </div>
-                        :
-                            null
+                        : null
                     }
                     {
                         getRoleByMenuStatus('Manajemen Pengguna', 'delete') ?
@@ -197,8 +205,7 @@ const TableBody = props => {
                                     className   = "cursor-pointer" 
                                 />
                             </div>
-                        :
-                            null
+                        : null
                     }
                 </Col>
             </CustomTableBody>

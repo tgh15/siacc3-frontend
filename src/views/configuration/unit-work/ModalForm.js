@@ -9,27 +9,32 @@ import {
     FormGroup,
     ModalFooter,
     CustomInput,
-    FormFeedback,
 } from "reactstrap";
 
+import Select                               from 'react-select';
 import * as yup                             from 'yup';
-import { useForm }                          from 'react-hook-form';
 import { yupResolver }                      from '@hookform/resolvers/yup';
+import { selectThemeColors }                from '@utils';
+import { Controller, useForm }              from 'react-hook-form';
 
 //Components
 import IconSwitch                           from '../../../components/widgets/icon-switch/IconSwitch';
 import CustomToast                          from "../../../components/widgets/custom-toast";
 import SubmitButton                         from '../../../components/widgets/submit-button';
 
-//API
+//Helper
 import Helper                               from '../../../helpers';
-import WorkUnitApi                          from "../../../services/pages/configuration/unit-work/index";
+
+//API
+import sectorAPI                            from '../../../services/pages/configuration/unit-work';
 import selfLearningURL                      from '../../../services/pages/helpdesk/self-learning';
+
 
 const ModalForm = (props) => {
     //Props
     const {
         data,
+        getData,
         onCancel,
         setListData,
         setModalForm
@@ -38,48 +43,37 @@ const ModalForm = (props) => {
     //Helper
     const {useQuery}                        = Helper;
 
+    //Query
+    let query                               = useQuery();
+
     //State
     const [loading, setLoading]             = useState(false);
     const [isAssisten, setAssisten]         = useState(false);
     const [parentOptions, setParentOptions] = useState([]);
 
+    //Schema
+    const schema = yup.object().shape({
+        name        : yup.string().min(3, 'Kolom nama belum terisi').required(),
+        description : yup.string().required('Kolom deskripsi belum terisi'),
+        sequence    : yup.number().typeError('Hanya bisa memasukkan angka').integer().required('Kolom urutan belum terisi'),
+    }).required();
 
-    let query        = useQuery();
-
-    const getOptions = (params) => {
-        WorkUnitApi.get({
-            onSuccess: (res) => {
-                var datas = [];
-                res.data.sector.map((data, i) => {
-                    datas.push({ "key": i, "label": data.name, "value": data.id });
-                })
-                setParentOptions(datas);
-            }, onFail: (err) => {
-                CustomToast("danger", err.message);
-            }, params
-        })
-    };
-
-    const getData = () => {
-        let params;
-        if(query.get("mode") === 'tour'){
-            params = {tutorial: true}
-        }
-
-        WorkUnitApi.get({
-            params,
-            onSuccess: (res) => {
-                setListData(res.data.sector);
-            }, onFail: (err) => {
-                console.log(err);
-            }
-        })
-
-
-    };
+    const { 
+        errors, 
+        control,
+        setValue,
+        register, 
+        handleSubmit 
+    } = useForm({ mode: "onChange", resolver: yupResolver(schema) });
 
     useEffect(() => {
-        getOptions()
+        getOptions();
+
+        if(data){
+            data.parent_id ? 
+                setValue('parent_id', {value: data.parent_id, label: data.parent}) 
+            : undefined
+        }
     }, []);
 
     useEffect(() => {
@@ -90,88 +84,127 @@ const ModalForm = (props) => {
         }
     }, []);
 
-    const schema = yup.object().shape({
-        name        : yup.string().min(3).required(),
-        description : yup.string().required(),
-        sequence    : yup.number().required(),
-    }).required();
+    //Select induk
+    const getOptions = (params) => {
+        sectorAPI.getAllSector(params).then(
+            res => {
+                if (!res.is_error) {
+                    let newData = [];
 
-    const { register, errors, handleSubmit } = useForm({ mode: "onChange", resolver: yupResolver(schema) })
+                    res.data.sector.map((data) => (
+                        newData.push({
+                            value : data.id,
+                            label : data.name
+                        })
+                    ))
 
-    const onSubmit = dataForm => {
+                    setParentOptions(newData);
+                }
+            }
+        ).catch(
+            err => {
+                CustomToast("danger", err.message);
+            }
+        )
+    };
+    
+    //Create
+    const create = (dataForm, params) => {
+        const formData = {
+            name              : dataForm.name,
+            description       : dataForm.description,
+            sequence          : parseInt(dataForm.sequence),
+            is_assisten       : isAssisten ? 1 : 0,
+            parent_id         : parseInt(dataForm.parent_id.value)
+        };
+
+        sectorAPI.createSector(formData, params).then(
+            res => {
+                if (!res.is_error) {
+                    setLoading(false);
+                    setListData(false);
+                    setModalForm(false);
+                    CustomToast("success", "Data Berhasil Disimpan");
+                    
+                    if(params == undefined) {
+                        getData({tutorial:true});
+                    }else {
+                        getData();
+                    }
+                }else {
+                    CustomToast("denger", res.message);
+                }
+            }
+        ).catch(
+            err => {
+                CustomToast("danger", err.message);
+            }
+        )
+        
+        //tour
+        const tourFormData = {
+            id       : parseInt(query.get("moduleId")),
+            is_done  : true,
+        }
+        selfLearningURL.updateUserModul(tourFormData);
+    };
+
+    //Update
+    const update = (dataForm, params) => {
+        const formData = {
+            id                : parseInt(dataForm.id),
+            name              : dataForm.name,
+            description       : dataForm.description,
+            sequence          : parseInt(dataForm.sequence),
+            is_assisten       : isAssisten ? 1 : 0,
+            parent_id         : parseInt(dataForm.parent_id.value)
+        };
+
+        sectorAPI.updateSector(formData, params).then(
+            res => {
+                if (!res.is_error) {
+                    setLoading(false);
+                    setListData(false);
+                    setModalForm(false);
+                    CustomToast("success", "Data Berhasil DiUbah");
+
+                    if(params == undefined){
+                        getData({tutorial:true});
+                    }else{
+                        getData();
+                    }
+                }
+            }
+        ).catch(
+            err => {
+                CustomToast("danger", err.message);
+            }
+        )
+        
+        //tour
+        const tourFormData = {
+            id       : parseInt(query.get("moduleId")),
+            is_done  : true,
+        }
+        selfLearningURL.updateUserModul(tourFormData);
+    }
+
+    const onSubmit = (dataForm) => {
         setLoading(true);
 
         if (!data) {
             if(query.get("mode") === "tour"){
-                create(dataForm, {tutorial:true})
+                create(dataForm, {tutorial:true});
             }else{
-                create(dataForm)
+                create(dataForm);
             }
         } else {
             if(query.get("mode") === "tour"){
-                update(dataForm, {tutorial:true})
+                update(dataForm, {tutorial:true});
             }else{
-                update(dataForm)
+                update(dataForm);
             }
         }
-    };
-
-    const create = (dataForm, params) => {
-        WorkUnitApi.create({
-            data: dataForm,
-            onSuccess: (res) => {
-                setLoading(false);
-                setModalForm(false);
-                CustomToast("success", "Data Berhasil Disimpan");
-                setListData(false);
-
-                if(params == undefined){
-                    getData({tutorial:true});
-                }else{
-                    getData();
-                }
-            },
-            onFail: (err) => {
-                console.log(err);
-                // CustomToast("danger", err.message);
-            }, params
-        })
-
-        const formData = {
-            id       : parseInt(query.get("moduleId")),
-            is_done  : true,
-        }
-        selfLearningURL.updateUserModul(formData)        
-    };
-
-    const update = (dataForm, params) => {
-        WorkUnitApi.update({
-            data : dataForm,
-            id   : data.id,
-
-            onSuccess: (res) => {
-                setLoading(false);
-                CustomToast("success", "Data Berhasil DiUbah");
-                setListData(false);
-                setModalForm(false);
-
-                if(params == undefined){
-                    getData({tutorial:true});
-                }else{
-                    getData();
-                }
-            },
-            onFail: (err) => {
-                CustomToast("danger", err.message);
-            },
-            params
-        })
-
-        const formData = {
-            id       : parseInt(query.get("moduleId")),
-            is_done  : true,
-        }
-        selfLearningURL.updateUserModul(formData)   
     };
 
     const chekedAsissten = () => {
@@ -181,7 +214,15 @@ const ModalForm = (props) => {
     return (
         <Fragment>
             <Form onSubmit={handleSubmit(onSubmit)}>
-                <Row>
+                <Row className='mb-1'>
+                    {data &&  
+                        <Input 
+                            name         = "id" 
+                            type         = "hidden" 
+                            innerRef     = {register({ required: true })} 
+                            defaultValue = {data.id} 
+                        />
+                    }
                     <Col 
                         md = "6" 
                         sm = "12"
@@ -189,25 +230,21 @@ const ModalForm = (props) => {
                         <FormGroup>
                             <Label> Induk</Label>
                             <div id="workunit-induk">
-                                <CustomInput 
-                                    id       = 'select-custom' 
-                                    type     = 'select' 
-                                    name     = 'parent_id' 
-                                    value    = {data.parent_id} 
-                                    innerRef = {register()}
-                                >
-                                <option value="">Pilih Induk</option>
-                                    {
-                                        parentOptions.map((data,i) => (
-                                            <option 
-                                                key   = {data.key} 
-                                                value = {data.value}
-                                            >
-                                                {data.label}
-                                            </option>
-                                        ))
+                                <Controller
+                                    name    = "parent_id"
+                                    control = {control}
+                                    as      = {
+                                        <Select
+                                            id              = "parent_id"
+                                            theme           = {selectThemeColors}
+                                            options         = {parentOptions}
+                                            className       = 'react-select'
+                                            placeholder     = "Pilih Induk"
+                                            isClearable
+                                            classNamePrefix = 'select'
+                                        />
                                     }
-                                </CustomInput>
+                                />
                             </div>
                         </FormGroup>
                     </Col>
@@ -226,16 +263,22 @@ const ModalForm = (props) => {
                                 defaultValue = {(data) ? data.name : ""}
                             />
                         </div>
-                        {errors && errors.name && <FormFeedback>{errors.name.message}</FormFeedback>}
+                        {
+                            errors && errors.name && 
+                            <Label style={{ color: 'red' }}>
+                                {errors.name.message}
+                            </Label>
+                        }
                     </Col>
-
                     <Col 
                         md = "6" 
                         sm = "12"
                     >
                         <Label >Asisten</Label>
-                        <br/>
-                        <div id="workunit-assistant">
+                        <div 
+                            id    = "workunit-assistant" 
+                            style = {{ position: 'fixed' }}
+                        >
                             <CustomInput
                                 id       = 'icon-primary'
                                 type     = 'switch'
@@ -253,9 +296,10 @@ const ModalForm = (props) => {
                             />
                         </div>
                         <br/>
+
                         <Label 
                             for       = 'name' 
-                            className = "mt-2"
+                            className = "mt-3"
                         >
                             Urutan
                         </Label>
@@ -268,7 +312,12 @@ const ModalForm = (props) => {
                                 defaultValue = {data ? data.sequence : ""}
                             />
                         </div>
-                        {errors && errors.sequence && <FormFeedback>{errors.sequence.message}</FormFeedback>}
+                        {
+                            errors && errors.sequence && 
+                            <Label style={{ color: 'red' }}>
+                                {errors.sequence.message}
+                            </Label>
+                        }
                     </Col>
                     <Col 
                         md = "6" 
@@ -285,7 +334,12 @@ const ModalForm = (props) => {
                                 defaultValue = {(data) ? data.description : ""}
                             />
                         </div>
-                        {errors && errors.description && <FormFeedback>{errors.description.message}</FormFeedback>}
+                        {
+                            errors && errors.description && 
+                            <Label style={{ color: 'red' }}>
+                                {errors.description.message}
+                            </Label>
+                        }
                     </Col>
                 </Row>
 

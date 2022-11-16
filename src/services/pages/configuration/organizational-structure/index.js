@@ -1,7 +1,12 @@
-import {Get} from './Get';
+import { employeeURL } from '../../../index';
+import { Post }        from '../../../core/request';
 
-const OrganizationalStructureApi = {
-    get:Get,
-    
+
+const getStructure = (data) => Post(`${employeeURL.employeePrefix}/position/filter`, data);
+
+
+const OrganizationalStructureAPI = {
+    getStructure
 }
-export default OrganizationalStructureApi
+
+export default OrganizationalStructureAPI;

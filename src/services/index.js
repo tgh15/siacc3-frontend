@@ -36,6 +36,7 @@ export const employeeURL = {
     
 };
 
+
 /*
 ####################
 ######CRAWLING######
@@ -49,3 +50,18 @@ export const crawlingURL = {
     result               : "result",
     data                 : "data"
 };
+
+
+
+/*
+############################
+#SEPARATOR URL RESPONSE API#
+############################
+*/
+
+export const responseURL = {
+    authPrefix           : "auth",
+    feedsPrefix          : "feeds",
+    employeePrefix       : "employee-biodata",
+    activityPrefix       : "api-gw",
+}

@@ -1,9 +1,5 @@
-import { 
-        Get, 
-        Put,
-        Post, 
-    }               from "../../core/request";
-import { authURL }  from "./url";
+import { Get, Post, Put }     from "../../core/request";
+import { authURL }            from "./url";
 
 
 //Get

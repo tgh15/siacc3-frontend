@@ -10,13 +10,17 @@ import {
 import { Fragment, useContext, useEffect, useState }    from "react";
 import moment                               from "moment";
 import Flatpickr                            from 'react-flatpickr';
+import Select                               from 'react-select';
+import { selectThemeColors }                from '@utils';
 
 //Css
 import '@styles/react/libs/flatpickr/flatpickr.scss';
 
+//Services
+import workunitListAPI                      from "../../../services/pages/configuration/unit-work-list/WorkunitList";
+
 //Components
 import CustomToast                          from "../../../components/widgets/custom-toast";
-import SelectOptionsService                 from '@src/services/pages/select-options';
 
 import Select                               from 'react-select'
 import { selectThemeColors }                from '@utils'
@@ -51,22 +55,15 @@ const ModalFilter = ({ setPageActive, setFilter, onReset, setSearchTerm, onFilte
             <FormGroup>
                 <Label for='id'>Filter</Label>
                 <div id="activity-filter">
-                    <CustomInput 
-                        id          = 'select-custom' 
-                        type        = 'select'
-                        name        = 'sector_id' 
-                        onChange    = {(e) => setFilterType(e.target.value)}
-                    >
-                        <option 
-                            value    = ""
-                            disabled 
-                            selected 
-                        >
-                            Pilih Filter
-                        </option>
-                        <option value="time">Waktu</option>
-                        <option value="origin">Satuan Kerja</option>
-                    </CustomInput>
+                    <Select
+                        name            = 'sector_id'
+                        theme           = {selectThemeColors}
+                        options         = {typeOptions}
+                        onChange        = {(e) => { setFilterType(e.value)}}
+                        className       = 'react-select'
+                        placeholder     = "Pilih Filter"
+                        classNamePrefix = 'select'
+                    />
                 </div>
             </FormGroup>
             {
@@ -78,7 +75,7 @@ const ModalFilter = ({ setPageActive, setFilter, onReset, setSearchTerm, onFilte
                                 id              = 'default-picker'
                                 onChange        = {date => setPicker(date)} 
                                 className       = 'form-control' 
-                                defaultValue    ={picker} 
+                                defaultValue    = {picker} 
                             />
                         </FormGroup>
                     </Fragment>

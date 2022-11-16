@@ -1,17 +1,26 @@
+import { Row, Col }     from 'reactstrap';
+
+//Css
 import "./UserManagement.scss";
 
-import { Row, Col }     from 'reactstrap';
+//Components
 import ImageRounded     from '../../../components/widgets/image-rounded';
 import ProfileQrCode    from '../../../components/widgets/profile-qrcode';
 
-const Detail = ({ data }) => {
 
+const Detail = ({ data }) => {
     return (
         <Row className="mx-0">
-            <Col sm="4" className="p-3">
+            <Col 
+                sm        = "4" 
+                className = "p-3"
+            >
                 <ProfileQrCode data={data}/>
             </Col>
-            <Col sm="8" className="py-3 pl-0">
+            <Col 
+                sm        = "8" 
+                className = "py-3 pl-0"
+            >
                 <Row>
                     <Col md="6">
                         <span className="font-weight-bolder">
@@ -46,7 +55,6 @@ const Detail = ({ data }) => {
                                 <td>{data.sector}</td>
                             </tr>
                         </table>
-
                     </Col>
                     <Col md="6">
                         <table className='table-detail mx-0'>

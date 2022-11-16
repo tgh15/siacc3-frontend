@@ -422,11 +422,11 @@ const StartTour = ({ showAction }) => {
 
     return (
         <Fragment>
-            <div style={{ cursor: 'pointer', display: 'flex', justifyContent: 'end' }}>
+            <div style={{ cursor: 'pointer', float: 'right' }}>
                 <p 
                     id      = 'positionLeft' 
                     ref     = {buttonRef}
-                    style   = {{ zIndex: '3', position: 'absolute', margin: '422px 150px 0 0' }}
+                    // style   = {{ zIndex: '3', position: 'absolute', margin: '440px 160px 0 0' }}
                     onClick = {tour.start}
                 >
                     {
@@ -481,6 +481,10 @@ const TourComponent = () => {
                                             :
                                                 stepsIndex
                         }
+
+                        tourOptions = {{ 
+                            useModalOverlay: true
+                        }}
                     >
                         <StartTour showAction={showAction}/>
                     </ShepherdTour>

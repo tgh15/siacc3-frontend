@@ -1,57 +1,70 @@
-import { Fragment, useContext, useEffect, useRef, useState } from "react";
-import { Edit2, Eye, Star, Trash2 } from "react-feather";
+import { 
+    useRef, 
+    useState, 
+    Fragment, 
+    useEffect, 
+    useContext, 
+} from "react";
+
 import { Col, Row, Nav, NavItem, NavLink } from "reactstrap";
+import Skeleton                            from "react-loading-skeleton";
+
+//Icon
+import { Edit2, Eye, Star, Trash2 }        from "react-feather";
+
+//Helper
+import Helper                              from "../../../helpers";
+
+//Services
+import SelectOptionsService                from "../../../services/pages/select-options";
+import SettingPerformanceApi               from "../../../services/pages/configuration/setting-performance";
 
 //Components
-import Helper from "../../../helpers";
-import Detail from "./Detail";
-import Skeleton from "react-loading-skeleton";
-import ButtonAdd from "../../../components/widgets/custom-table/ButtonAdd";
-import FormDelete from "../../../components/widgets/form-delete/FormDelete";
-import headerTable from "./headerTable";
-import CustomTable from "../../../components/widgets/custom-table";
-import SearchTable from "../../../components/widgets/custom-table/SearchTable";
-import CustomToast from "../../../components/widgets/custom-toast";
-import { ModalBase } from "../../../components/widgets/modals-base";
-import CustomTableBody from "../../../components/widgets/custom-table/CustomTableBody";
-import CustomTablePaginate from "../../../components/widgets/custom-table/CustomTablePaginate";
-import CustomTableBodyEmpty from "../../../components/widgets/custom-table/CustomTableBodyEmpty";
-import SelectOptionsService from "../../../services/pages/select-options";
-import FormSettingPerformance from './FormSettingPerformance';
-import CustomTableNotAuthorized from "../../../components/widgets/custom-table/CustomTableNotAuthorized";
+import Detail                              from "./Detail";
+import Rating                              from 'react-rating';
+import FormTrophy                          from "./FormTrophy";
+import FormRating                          from "./FormRating";
+import ButtonAdd                           from "../../../components/widgets/custom-table/ButtonAdd";
+import FormDelete                          from "../../../components/widgets/form-delete/FormDelete";
+import headerTable                         from "./headerTable";
+import CustomTable                         from "../../../components/widgets/custom-table";
+import SearchTable                         from "../../../components/widgets/custom-table/SearchTable";
+import CustomToast                         from "../../../components/widgets/custom-toast";
+import { ModalBase }                       from "../../../components/widgets/modals-base";
+import { ThemeColors }                     from "../../../components/utility/context/ThemeColors";
+import CustomTableBody                     from "../../../components/widgets/custom-table/CustomTableBody";
+import headerTableTrophy                   from "./headerTableTrophy";
+import headerTableRating                   from "./headerTableRating";
+import CustomTablePaginate                 from "../../../components/widgets/custom-table/CustomTablePaginate";
+import CustomTableBodyEmpty                from "../../../components/widgets/custom-table/CustomTableBodyEmpty";
+import FormSettingPerformance              from './FormSettingPerformance';
+import CustomTableNotAuthorized            from "../../../components/widgets/custom-table/CustomTableNotAuthorized";
 
-//API
-import SettingPerformanceApi from "../../../services/pages/configuration/setting-performance";
-import headerTableTrophy from "./headerTableTrophy";
-import headerTableRating from "./headerTableRating";
-import { ThemeColors } from "../../../components/utility/context/ThemeColors";
-import Rating from 'react-rating'
-import FormTrophy from "./FormTrophy";
-import FormRating from "./FormRating";
 
 const SettingPerformance = () => {
     //UseRef
     const searchTerm = useRef("");
 
     //State
-    const [isEvent, setIsEvent] = useState(true);
-    const [loading, setLoading] = useState(false);
-    const [showForm, setShowForm] = useState(false);
-    const [listData, setListData] = useState(false);
-    const [showDetail, setShowDetail] = useState(false);
-    const [pagination, setPagination] = useState(false);
-    const [staticBadge, setStaticBadge] = useState(null);
-    const [dataSelected, setDataSelected] = useState(false);
-    const [showDeleteForm, setShowDeleteForm] = useState(false);
-    const [workunitOption, setWorkunitOption] = useState(null);
+    const [isEvent, setIsEvent]                             = useState(true);
+    const [loading, setLoading]                             = useState(false);
+    const [showForm, setShowForm]                           = useState(false);
+    const [listData, setListData]                           = useState(false);
+    const [showDetail, setShowDetail]                       = useState(false);
+    const [pagination, setPagination]                       = useState(false);
+    const [staticBadge, setStaticBadge]                     = useState(null);
+    const [dataSelected, setDataSelected]                   = useState(false);
+    const [showDeleteForm, setShowDeleteForm]               = useState(false);
+    const [workunitOption, setWorkunitOption]               = useState(null);
+    const [showFormTrophy, setShowFormTrophy]               = useState(false);
+    const [showFormRating, setShowFormRating]               = useState(false);
     const [kindAchievementOption, setKindAchievementOption] = useState(null);
-    const [showFormTrophy, setShowFormTrophy] = useState(false);
-    const [showFormRating, setShowFormRating] = useState(false);
 
+    //Helper
     const { getRoleByMenuStatus } = Helper;
 
-    // context 
-    const themeColors = useContext(ThemeColors)
+    //Context 
+    const themeColors = useContext(ThemeColors);
 
     const toggle = tab => {
         if (isEvent !== tab) {
@@ -157,7 +170,6 @@ const SettingPerformance = () => {
                 }
             );
         }
-
     };
 
     const getKindOptions = () => {
@@ -190,7 +202,7 @@ const SettingPerformance = () => {
         } else if (isEvent == "rating") {
             return headerTableRating;
         }
-    }
+    };
 
     // body
     const getTableBody = (data, i) => {
@@ -221,10 +233,10 @@ const SettingPerformance = () => {
                 <Fragment>
                     <Col md="3">
                         <Rating
-                            emptySymbol={<Star size={32} fill='#babfc7' stroke='#babfc7' />}
-                            fullSymbol={<Star size={32} fill={themeColors.colors.warning.main} stroke={themeColors.colors.warning.main} />}
-                            initialRating={data.rating}
                             readonly
+                            fullSymbol    = {<Star size={32} fill={themeColors.colors.warning.main} stroke={themeColors.colors.warning.main}/>}
+                            emptySymbol   = {<Star size={32} fill='#babfc7' stroke='#babfc7'/>}
+                            initialRating = {data.rating}
                         />
                     </Col>
                     <Col md="6">
@@ -233,7 +245,7 @@ const SettingPerformance = () => {
                 </Fragment>
             );
         }
-    }
+    };
 
     //  desctiption for form delete
     const getDescFormDelete = () => {
@@ -244,7 +256,7 @@ const SettingPerformance = () => {
         } else if (isEvent == "rating") {
             return dataSelected.note
         }
-    }
+    };
 
     const callForm = () => {
         if (isEvent == true || isEvent == false) {
@@ -254,134 +266,137 @@ const SettingPerformance = () => {
         } else if (isEvent == "rating") {
             setShowFormRating(true);
         }
-    }
+    };
 
     useEffect(() => {
-        workunitOptions();
         getData(true);
         setIsEvent(true);
         getStaticBadge();
         getKindOptions();
+        workunitOptions();
     }, []);
-
-
-
-
 
     return (
         <Fragment>
             {/* modal Detail */}
             <ModalBase
-                show={showDetail}
-                size="lg"
-                title="Detail Pengaturan Performance"
-                setShow={(par) => { setShowDetail(par) }}
+                show    = {showDetail}
+                size    = "lg"
+                title   = "Detail Pengaturan Performance"
+                setShow = {(par) => { setShowDetail(par) }}
             >
                 <Detail
-                    isEvent={isEvent}
-                    themeColors={themeColors}
-                    data={dataSelected}
-                    onClose={() => { setShowDetail(false) }}
+                    data        = {dataSelected}
+                    isEvent     = {isEvent}
+                    onClose     = {() => { setShowDetail(false) }}
+                    themeColors = {themeColors}
                 />
             </ModalBase>
 
             {/* Modal Form */}
             <ModalBase
-                show={showForm}
-                size="lg"
-                title={`${dataSelected ? "Ubah" : "Tambah"} Pengaturan Penilaian`}
-                setShow={(par) => { setShowForm(par) }}
+                show    = {showForm}
+                size    = "lg"
+                title   = {`${dataSelected ? "Ubah" : "Tambah"} Pengaturan Penilaian`}
+                setShow = {(par) => { setShowForm(par) }}
             >
                 <FormSettingPerformance
-                    data={dataSelected}
-                    isEvent={isEvent}
-                    onCancel={() => setShowForm(!showForm)}
-                    staticBadge={staticBadge}
-                    refreshData={() => { getData({ is_event: isEvent }) }}
-                    workunitOption={workunitOption}
-                    kindAchievementOption={kindAchievementOption}
+                    data                  = {dataSelected}
+                    isEvent               = {isEvent}
+                    onCancel              = {() => setShowForm(!showForm)}
+                    staticBadge           = {staticBadge}
+                    refreshData           = {() => { getData({ is_event: isEvent }) }}
+                    workunitOption        = {workunitOption}
+                    kindAchievementOption = {kindAchievementOption}
                 />
             </ModalBase>
 
             {/* Form Trophy */}
             <FormTrophy
-                show={showFormTrophy}
-                setShow={(par) => setShowFormTrophy(par)}
-                onClose={() => setShowFormTrophy(!showFormTrophy)}
-                refreshData={() => { getData(isEvent) }}
-                isEvent={isEvent}
-                data={dataSelected}
+                show        = {showFormTrophy}
+                data        = {dataSelected}
+                setShow     = {(par) => setShowFormTrophy(par)}
+                onClose     = {() => setShowFormTrophy(!showFormTrophy)}
+                isEvent     = {isEvent}
+                refreshData = {() => { getData(isEvent) }}
             />
 
             {/* Form Rating */}
             <FormRating
-                show={showFormRating}
-                setShow={(par) => setShowFormRating(par)}
-                onClose={() => setShowFormRating(!showFormRating)}
-                refreshData={() => { getData(isEvent) }}
-                data={dataSelected}
-                themeColors={themeColors}
-                listData={listData}
+                show        = {showFormRating}
+                data        = {dataSelected}
+                setShow     = {(par) => setShowFormRating(par)}
+                onClose     = {() => setShowFormRating(!showFormRating)}
+                listData    = {listData}
+                refreshData = {() => { getData(isEvent) }}
+                themeColors = {themeColors}
             />
 
             {/* modal form delete */}
             <FormDelete
-                show={showDeleteForm}
-                title="Hapus Setting Performance"
-                setShow={(par) => setShowDeleteForm(par)}
-                loading={loading}
-                onDelete={onDelete}
-                description={getDescFormDelete()}
+                show        = {showDeleteForm}
+                title       = "Hapus Setting Performance"
+                setShow     = {(par) => setShowDeleteForm(par)}
+                loading     = {loading}
+                onDelete    = {onDelete}
+                description = {getDescFormDelete()}
             />
 
             <Row>
                 <Col md="1">
                     {
                         getRoleByMenuStatus('Setting Performance', 'add') ?
-                            <ButtonAdd onClick={() => {
-                                setDataSelected(false);
-                                callForm();
-                            }} />
-                            :
-                            null
+                            <ButtonAdd 
+                                onClick={() => {
+                                    setDataSelected(false);
+                                    callForm();
+                                }} 
+                            />
+                        : null
                     }
                 </Col>
                 <Col md={{ size: 3, offset: 8 }}>
                     <SearchTable
-                        onSearch={(e) => { searchTerm.current = e; getData(isEvent) }}
-                        placeholder="Cari Setting Performance"
+                        onSearch    = {(e) => { 
+                            searchTerm.current = e; 
+                            getData(isEvent); 
+                        }}
+                        placeholder = "Cari Setting Performance"
                     />
                 </Col>
                 <Col md="4">
-                    <Nav className="mb-0" tabs>
+                    <Nav 
+                        tabs
+                        className="mb-0" 
+                    >
                         <NavItem>
                             <NavLink
-                                active={isEvent === true}
-                                onClick={() => { toggle(true) }}
+                                active  = {isEvent === true}
+                                onClick = {() => { toggle(true) }}
                             >
                                 Event
                             </NavLink>
                         </NavItem>
                         <NavItem>
                             <NavLink
-                                active={isEvent == false}
-                                onClick={() => { toggle(false) }}
+                                active  = {isEvent == false}
+                                onClick = {() => { toggle(false) }}
                             >
                                 Core
                             </NavLink>
                         </NavItem>
                         <NavItem>
                             <NavLink
-                                active={isEvent == "trophy"}
-                                onClick={() => { toggle("trophy") }}
+                                active  = {isEvent == "trophy"}
+                                onClick = {() => { toggle("trophy") }}
                             >
                                 Trophy
                             </NavLink>
                         </NavItem>
                         <NavItem>
                             <NavLink
-                                active={isEvent == "rating"}
-                                onClick={() => { toggle("rating") }}
+                                active  = {isEvent == "rating"}
+                                onClick = {() => { toggle("rating") }}
                             >
                                 Rating
                             </NavLink>
@@ -390,74 +405,72 @@ const SettingPerformance = () => {
                 </Col>
 
                 <CustomTablePaginate
-                    getData={(e) => { getData(isEvent, e.page) }}
-                    pagination={pagination}
-                    offsetSearch={6}
+                    getData      = {(e) => { getData(isEvent, e.page) }}
+                    pagination   = {pagination}
+                    offsetSearch = {6}
                 />
             </Row>
 
             {
                 getRoleByMenuStatus('Setting Performance', 'event_list') ?
-                    <div id="performance-table">
-                        <CustomTable header={getHeaderTable()}
-
-                        >
-                            {
-                                listData && listData.map((data, i) => (
-                                    <CustomTableBody key={i}>
+                    <CustomTable header={getHeaderTable()}>
+                        {
+                            listData && listData.map((data, i) => (
+                                <div 
+                                    id  = "performance-table" 
+                                    key = {i}
+                                >
+                                    <CustomTableBody>
                                         <Col md="1">
                                             {Helper.customTableNumber({ key: i, pagination: pagination })}
                                         </Col>
+
                                         {getTableBody(data, i)}
-                                        <Col md="2" className="d-flex justify-content-arround">
+
+                                        <Col 
+                                            md        = "2" 
+                                            className = "d-flex justify-content-arround"
+                                        >
                                             {
                                                 getRoleByMenuStatus('Setting Performance', 'show') ?
                                                     <Eye
-                                                        id="performance-detail"
-                                                        size={20}
-                                                        onClick={() => { setShowDetail(true); setDataSelected(data) }}
-                                                        className="cursor-pointer"
+                                                        id        = "performance-detail"
+                                                        size      = {20}
+                                                        onClick   = {() => { setShowDetail(true); setDataSelected(data) }}
+                                                        className = "cursor-pointer"
                                                     />
-                                                    :
-                                                    null
+                                                : null
                                             }
                                             {
                                                 getRoleByMenuStatus('Setting Performance', 'edit') ?
-
                                                     <Edit2
-                                                        id="performance-update"
-                                                        size={20}
-                                                        onClick={() => { setDataSelected(data); callForm() }}
-                                                        className="ml-1 cursor-pointer"
+                                                        id        = "performance-update"
+                                                        size      = {20}
+                                                        onClick   = {() => { setDataSelected(data); callForm() }}
+                                                        className = "ml-1 cursor-pointer"
                                                     />
-
-                                                    :
-                                                    null
+                                                : null
                                             }
                                             {
                                                 getRoleByMenuStatus('Setting Performance', 'delete') ?
-
                                                     <Trash2
-                                                        id="performance-delete"
-                                                        size={20}
-                                                        onClick={() => { setDataSelected(data); setShowDeleteForm(true) }}
-                                                        className="ml-1 cursor-pointer"
+                                                        id        = "performance-delete"
+                                                        size      = {20}
+                                                        onClick   = {() => { setDataSelected(data); setShowDeleteForm(true) }}
+                                                        className = "ml-1 cursor-pointer"
                                                     />
-
-                                                    :
-                                                    null
+                                                : null
                                             }
                                         </Col>
                                     </CustomTableBody>
-                                ))
-                            }
-                            {!listData && listData !== null && <Skeleton height={60} count={5} style={{ marginBottom: "10px" }} />}
-                            {!listData && listData === null && <CustomTableBodyEmpty />}
-                        </CustomTable>
+                                </div>
+                            ))
+                        }
 
-                    </div>
-                    :
-                    <CustomTableNotAuthorized />
+                        {!listData && listData !== null && <Skeleton height={60} count={5} style={{ marginBottom: "10px" }} />}
+                        {!listData && listData === null && <CustomTableBodyEmpty />}
+                    </CustomTable>
+                : <CustomTableNotAuthorized />
             }
         </Fragment>
     );

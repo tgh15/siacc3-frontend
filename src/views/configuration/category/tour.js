@@ -54,10 +54,10 @@ const stepsIndex = [
         ]
     },
     {
-        id          : 'search-data',
-        title       : 'Pencarian Data Kategori',
-        text        : 'Masukkan data yang ingin dicari, kemudian tekan tombol enter pada keyboard',
-        attachTo    : { element: '#search-data', on: 'bottom' },
+        id          : 'add-data',
+        title       : 'Tambah Data Kategori',
+        text        : 'Ketika diklik anda akan di arahkan pada tampilan tambah data kategori',
+        attachTo    : { element: '#add-data', on: 'right' },
         cancelIcon  : {
             enabled : true
         },
@@ -80,10 +80,10 @@ const stepsIndex = [
         ]
     },
     {
-        id          : 'add-data',
-        title       : 'Tambah Data Kategori',
-        text        : 'Ketika diklik anda akan di arahkan pada tampilan tambah data kategori',
-        attachTo    : { element: '#add-data', on: 'right' },
+        id          : 'search-data',
+        title       : 'Pencarian Data Kategori',
+        text        : 'Masukkan data yang ingin dicari, kemudian tekan tombol enter pada keyboard',
+        attachTo    : { element: '#search-data', on: 'bottom' },
         cancelIcon  : {
             enabled : true
         },
@@ -284,11 +284,10 @@ const StartTour = ({ showAction }) => {
 
     return (
         <Fragment>
-            <div style={{ cursor: 'pointer' }}>
+            <div style={{ cursor: 'pointer', float: 'right' }}>
                 <p 
                     id      = 'positionRight' 
                     ref     = {buttonRef}
-                    style   = {{ zIndex: '3', position: 'absolute' }}
                     onClick = {tour.start}
                 >
                     {

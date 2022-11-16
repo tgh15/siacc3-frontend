@@ -2,10 +2,11 @@ import { Fragment, useContext }                 from 'react';
 import { Row, Col, UncontrolledTooltip }        from 'reactstrap';
 import { ShepherdTour, ShepherdTourContext }    from 'react-shepherd';
 
+//Css
 import 'shepherd.js/dist/css/shepherd.css';
 import '@styles/react/libs/shepherd-tour/shepherd-tour.scss';
 
-//icon
+//Icon
 import { HelpCircle }                           from 'react-feather';
 
 //Views
@@ -15,6 +16,7 @@ import SettingPerformance                       from './SettingPerformance';
 const backBtnClass  = 'btn btn-sm btn-outline-primary',
 nextBtnClass        = 'btn btn-sm btn-primary btn-next'
 let instance        = null;
+
 
 const steps = [
     {
@@ -39,10 +41,10 @@ const steps = [
         ]
     },
     {
-        id          : 'search-data',
-        title       : 'Pencarian Data Setting Performance',
-        text        : 'Masukkan data yang ingin dicari, kemudian tekan tombol enter pada keyboard',
-        attachTo    : { element: '#search-data', on: 'left' },
+        id          : 'add-data',
+        title       : 'Tambah Data Setting Performance',
+        text        : 'Ketika diklik anda akan di arahkan pada tampilan tambah data setting performance',
+        attachTo    : { element: '#add-data', on: 'right' },
         cancelIcon  : {
             enabled : true
         },
@@ -65,10 +67,10 @@ const steps = [
         ]
     },
     {
-        id          : 'add-data',
-        title       : 'Tambah Data Setting Performance',
-        text        : 'Ketika diklik anda akan di arahkan pada tampilan tambah data setting performance',
-        attachTo    : { element: '#add-data', on: 'right' },
+        id          : 'search-data',
+        title       : 'Pencarian Data Setting Performance',
+        text        : 'Masukkan data yang ingin dicari, kemudian tekan tombol enter pada keyboard',
+        attachTo    : { element: '#search-data', on: 'left' },
         cancelIcon  : {
             enabled : true
         },
@@ -171,10 +173,9 @@ const StartTour = () => {
 
     return (
         <Fragment>
-            <div style={{cursor: 'pointer', float: 'right'}}>
+            <div style={{ cursor: 'pointer', float: 'right' }}>
                 <p 
-                    id      = 'positionLeft' 
-                    style   = {{zIndex: '3', position: 'absolute', marginTop: '50px', marginLeft: '-170px'}}
+                    id      = 'positionLeft'
                     onClick = {tour.start} 
                     outline 
                 >
@@ -195,17 +196,21 @@ const TourComponent = () => {
     return (
         <Fragment>
             <Row>
-                <Col md='12' sm='12'>
+                <Col 
+                    md = '12' 
+                    sm = '12'
+                >
                 <ShepherdTour
-                    steps = {steps}
-                    tourOptions = {{
-                        useModalOverlay: true
-                    }}
+                    steps       = {steps}
+                    tourOptions = {{ useModalOverlay: true }}
                 >
                     <StartTour/>
                 </ShepherdTour>
                 </Col>
-                <Col md='12' sm='12'>
+                <Col 
+                    md = '12' 
+                    sm = '12'
+                >
                     <SettingPerformance/>
                 </Col>
             </Row>

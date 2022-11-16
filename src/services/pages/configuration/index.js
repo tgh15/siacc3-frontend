@@ -1,4 +1,5 @@
 export const employeeURL = {
+    feedsPrefix      : "feeds",
     employeePrefix   : "employee-biodata",
     dashboardPrefix  : "dashboard",
     
@@ -23,6 +24,9 @@ export const employeeURL = {
     updateFile       : "update-photo",
     uploadLogo       : "upload-logo",
     updateLogo       : "update-logo",
+
+    agent            : "agent",
+    performance      : "performance",
 
     //Dashboard
     charts           : "charts",
