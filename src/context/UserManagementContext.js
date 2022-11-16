@@ -1,27 +1,31 @@
-import { createContext, useEffect, useState } from "react"
-import UserManagementApi from "../services/pages/configuration/user-management"
-import { workunitAPI } from "../services/pages/configuration/workunit"
-import SelectOptionsService from "../services/pages/select-options"
+import { createContext, useEffect, useState }   from "react";
 
-const UserManagementContext = createContext(null)
+//Services
+import { workunitAPI }                          from "../services/pages/configuration/workunit";
+import userManagementAPI                        from "../services/pages/configuration/user-management/UserManagement";
+
+//Components
+import CustomToast                              from "../components/widgets/custom-toast";
+
+//Context
+const UserManagementContext  = createContext(null);
+
 
 const UserManagementProvider = ({ children }) => {
-
-    const [filter, setFilter]                   = useState(false)
-    const [listData, setListData]               = useState(false)
-    const [pagination, setPagination]           = useState(false)
-    const [dataSelected, setDataSelected]       = useState(false)
-    const [deviceSelected, setDeviceSelected]   = useState({})
-    const [workunitOptions, setWorkunitOptions] = useState([])
+    //State
+    const [filter, setFilter]                   = useState(false);
+    const [listData, setListData]               = useState(false);
+    const [pagination, setPagination]           = useState(false);
+    const [dataSelected, setDataSelected]       = useState(false);
+    const [deviceSelected, setDeviceSelected]   = useState({});
+    const [workunitOptions, setWorkunitOptions] = useState([]);
     
     const getWorkunitOptions = () => {
-
-
         let data    = [];
 
         workunitAPI.getWorkunitLevelList({workunit_level_id : 1}).then(
             res => {
-                if(res.data.length > 0){
+                if(!res.is_error && res.data.length > 0){
 
                     res.data.map((val) => (
                         data.push({
@@ -39,7 +43,7 @@ const UserManagementProvider = ({ children }) => {
 
         workunitAPI.getWorkunitLevelList({workunit_level_id : 2}).then(
             res => {
-                if(res.data.length > 0){
+                if(!res.is_error && res.data.length > 0){
                     res.data.map((val) => (
                         data.push({
                             label : val.name,
@@ -53,9 +57,10 @@ const UserManagementProvider = ({ children }) => {
                 console.log(err, 'disini');
             }
         )
+
         workunitAPI.getWorkunitLevelList({workunit_level_id : 3}).then(
             res => {
-                if(res.data.length > 0){
+                if(!res.is_error && res.data.length > 0){
                     res.data.map((val) => (
                         data.push({
                             label : val.name,
@@ -72,7 +77,7 @@ const UserManagementProvider = ({ children }) => {
 
         workunitAPI.getWorkunitLevelList({workunit_level_id : 4}).then(
             res => {
-                if(res.data.length > 0){
+                if(!res.is_error && res.data.length > 0){
                     res.data.map((val) => (
                         data.push({
                             label : val.name,
@@ -86,32 +91,38 @@ const UserManagementProvider = ({ children }) => {
                 console.log(err, 'disini');
             }
         )
-        setWorkunitOptions(data)
-    }
+        setWorkunitOptions(data);
+    };
 
-    const getData = ({ page, params }) => {
-        setFilter(false)
+    //Get data employee (user management)
+    const getData = (params) => {
+        setFilter(false);
         setListData(false);
-        UserManagementApi.get({
-            params: params,
-            page: page,
-            onSuccess: (res) => {
-                setFilter(false)
-                setListData(res.employee);
-                setPagination(res.pagination);
-            }, onFail: (err) => {
-                console.log(err, 'disini juga error');
+
+        userManagementAPI.getUserManagement(params).then(
+            res => {
+                if (!res.is_error) {
+                    setFilter(false);
+                    setListData(res.data.employee);
+                    setPagination(res.data.pagination);
+                }else {
+                    CustomToast("danger", res.message);
+                }
             }
-        })
-    }
+        ).catch(
+            err => {
+                CustomToast("danger", err.message);
+            }
+        )
+    };
 
     useEffect(() => {
-        getData({ page: 1 })
+        getData({ page: 1 });
     }, []);
 
     useEffect(() => {
-        getWorkunitOptions()
-    }, [])
+        getWorkunitOptions();
+    }, []);
 
     return <UserManagementContext.Provider
         value={{

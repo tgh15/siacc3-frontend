@@ -1,20 +1,27 @@
 import { Fragment, useEffect, useState }    from "react";
-import { Col }                              from "reactstrap";
+import { Col, Row }                         from "reactstrap";
 import { Edit2, Trash2 }                    from "react-feather";
-
-import Helper                               from "../../../helpers";
 import Skeleton                             from "react-loading-skeleton";
+
+//Helper
+import Helper                               from "../../../helpers";
+
+//Services
+import sectorAPI                            from "../../../services/pages/configuration/unit-work";
+import selfLearningURL                      from "../../../services/pages/helpdesk/self-learning";
+
+//Components
 import TourInput                            from "./TourInput";
+import ButtonAdd                            from "../../../components/widgets/custom-table/ButtonAdd";
 import FormDelete                           from "../../../components/widgets/form-delete/FormDelete";
 import headerTable                          from "./headerTable";
 import CustomToast                          from "../../../components/widgets/custom-toast";
 import CustomTable                          from "../../../components/widgets/custom-table";
-import WorkUnitApi                          from "../../../services/pages/configuration/unit-work/index";
+import SearchTable                          from "../../../components/widgets/custom-table/SearchTable";
 import { ModalBase }                        from '@src/components/widgets/modals-base';
 import CustomTableBody                      from "../../../components/widgets/custom-table/CustomTableBody";
 import CustomTableBodyEmpty                 from "../../../components/widgets/custom-table/CustomTableBodyEmpty";
 import CustomTableNotAuthorized             from "../../../components/widgets/custom-table/CustomTableNotAuthorized";
-import selfLearningURL                      from "../../../services/pages/helpdesk/self-learning";
 
 
 const UnitWork = (props) => {
@@ -97,30 +104,40 @@ const UnitWork = (props) => {
         }
     }, []);
 
-    //Get data
+    //Get workunit
     const getData = (params) => {
-        WorkUnitApi.get({
-            onSuccess: (res) => {
-                setListData(res.data.sector);
-                setPagination(res.data.pagination);
-            }, onFail: (err) => {
-                CustomToast("danger", err.message)
-            }, params
-        })
-
+        sectorAPI.getAllSector(params).then(
+            res => {
+                if (!res.is_error) {
+                    setListData(res.data.sector);
+                    setPagination(res.data.pagination);
+                } else {
+                    CustomToast("danger", res.message);
+                }
+            }
+        ).catch(
+            err => {
+                CustomToast("danger", err.message);
+            }
+        )
+        
+        //tour
         if(query.get('action') === 'search' && params.keyword != undefined){
             const formData = {
                 id       : parseInt(query.get("moduleId")),
                 is_done  : true,
             }
-            selfLearningURL.updateUserModul(formData)  
+            selfLearningURL.updateUserModul(formData); 
         }
-
     };
 
-    //Delete data
+    //Delete workunit
     const onDelete = () => {
         setLoading(true);
+
+        const formData = {
+            id : data.id
+        };
 
         let params;
 
@@ -128,27 +145,31 @@ const UnitWork = (props) => {
             params = {tutorial:true}
         }
 
-        WorkUnitApi.delete({
-            id: data.id,
-            onSuccess: (res) => {
-                setListData(false);
-                getData()
-                setLoading(false);
-                setShowDeleteForm(!showDeleteForm)
-                CustomToast("success", "Data Berhasil di hapus")
-            },
-            onFail: (err) => {
+        sectorAPI.deleteSector(formData, params).then(
+            res => {
+                if (!res.is_error) {
+                    getData();
+                    setLoading(false);
+                    setListData(false);
+                    setShowDeleteForm(!showDeleteForm);
+                    CustomToast("success", "Data Berhasil di hapus");
+                } else {
+                    CustomToast("danger", res.message);
+                }
+            }
+        ).catch(
+            err => {
                 CustomToast("danger", err.message);
-            },
-            params
-        })
-
+            }
+        )
+        
+        //tour
         if(query.get("mode") === "tour" && query.get("action") === 'delete'){
             const formData = {
                 id       : parseInt(query.get("moduleId")),
                 is_done  : true,
             }
-            selfLearningURL.updateUserModul(formData)   
+            selfLearningURL.updateUserModul(formData);
         }
     };
 
@@ -170,34 +191,54 @@ const UnitWork = (props) => {
             >
                 <TourInput
                     data            = {data}
+                    getData         = {getData}
                     onCancel        = {() => { setForm(!form) }} 
                     setListData     = {(params) => { setListData(params) }} 
                     setModalForm    = {(e) => { setForm(e) }} 
                 />
             </ModalBase>
 
+            {/* button add and search */}
+            <Row>
+                <Col md="8">
+                    <ButtonAdd
+                        onClick = {() => { 
+                            setForm(true);
+                            setData(false); 
+                        }}
+                    />
+                </Col>
+                <Col md="4">
+                    <SearchTable
+                        onSearch    = {(keyword) => { 
+                            setListData(false); 
+
+                            if (query.get("mode") === "tour" && query.get("action") === 'search') {
+                                getData({keyword: keyword, tutorial: true});
+                            }else {
+                                getData({keyword: keyword});
+                            }
+                        }}
+                        placeholder = "Cari Unit Kerja..."
+                    />
+                </Col>
+            </Row>
+
             {
                 getRoleByMenuStatus('Unit Kerja', 'work_unit_list') ? 
                     <CustomTable
                         header      = {headerTable}
                         getData     = {(params) => { getData(params) }}
-                        onSearch    = {(keyword) => { 
-                            setListData(false); 
-                            if(query.get("mode") === "tour" && query.get("action") === 'search'){
-                                getData({ keyword: keyword, tutorial: true})
-                            }else{
-                                getData({ keyword: keyword})
-                            }
-                        }}
                         pagination  = {pagination}
-                        placeholder = "Cari Unit Kerja..."
-                        onClickForm = {() => { setData(false); setForm(true) }}
 
                         //role
                         roleAdd     = {getRoleByMenuStatus('Unit Kerja', 'add')}
                     >
                         {listData && listData.map((data, i) => (
-                            <div id="workunit-table">
+                            <div
+                                id  = "workunit-table"
+                                key = {i}
+                            >
                                 <CustomTableBody>
                                     <Col md="1">
                                         {Helper.customTableNumber({ key: i, pagination: pagination })}

@@ -214,7 +214,17 @@ const TourComponent = (props) => {
                     md = '12' 
                     sm = '12'
                 >
-                    <ShepherdTour steps={props.data == null ? stepsCreate : stepsUpdate}>
+                    <ShepherdTour 
+                        steps       = {
+                            props.data == null ? 
+                                stepsCreate 
+                            : 
+                                stepsUpdate
+                        }
+                        tourOptions = {{ 
+                            useModalOverlay: true
+                        }}
+                    >
                         <StartTour/>
                     </ShepherdTour>
                 </Col>
@@ -224,6 +234,7 @@ const TourComponent = (props) => {
                 >
                     <ModalForm
                         data            = {props.data}
+                        getData         = {props.getData}
                         onCancel        = {props.onCancel}
                         setListData     = {props.setListData}
                         setModalForm    = {props.setModalForm}

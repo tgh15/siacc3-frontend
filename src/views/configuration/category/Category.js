@@ -1,5 +1,5 @@
 import { Fragment, useEffect, useState }        from 'react';
-import { Col }                                  from 'reactstrap';
+import { Col, Row }                             from 'reactstrap';
 import Skeleton                                 from 'react-loading-skeleton';
 
 //Icon
@@ -13,7 +13,9 @@ import selfLearningURL                          from '../../../services/pages/he
 import { feedsCategoryAPI }                     from '../../../services/pages/feeds/categories';
 
 //Widget
+import ButtonAdd                                from '../../../components/widgets/custom-table/ButtonAdd';
 import FormDelete                               from '../../../components/widgets/form-delete/FormDelete';
+import SearchTable                              from '../../../components/widgets/custom-table/SearchTable';
 import headerTable                              from './headerTable';
 import CustomTable                              from '../../../components/widgets/custom-table';
 import CustomToast                              from '../../../components/widgets/custom-toast';
@@ -106,18 +108,24 @@ const UserActivity = (props) => {
         }
     }, []);
 
+    //Get category
     const getData = (params) => {
-        feedsCategoryAPI.getCategory(1, undefined, params).then(
+        feedsCategoryAPI.getCategory(undefined, undefined, params).then(
             res => {
-                setListData(res.data.category);
-                setPagination(res.data.pagination);
+                if (!res.is_error) {
+                    setListData(res.data.category);
+                    setPagination(res.data.pagination);
+                }else {
+                    CustomToast("danger", res.message);
+                }
             }
         ).catch(
             err => {
-                console.log(err);
+                CustomToast("danger", err.message);
             }
         )
-
+        
+        //tour
         if(query.get('action') === 'search' && params.keyword != undefined){
             const formData = {
                 id       : parseInt(query.get("moduleId")),
@@ -127,6 +135,7 @@ const UserActivity = (props) => {
         };
     };
 
+    //Delete category
     const onDelete = () => {
         setLoading(true);
         
@@ -142,30 +151,34 @@ const UserActivity = (props) => {
 
         feedsCategoryAPI.deleteCategory(formData, params).then(
             res => {
-                setLoading(false);
-                setListData(false);
-                setShowDeleteForm(!showDeleteForm);
-                CustomToast("success", "Data Berhasil di hapus");
+                if (!res.is_error) {
+                    setLoading(false);
+                    setListData(false);
+                    setShowDeleteForm(!showDeleteForm);
+                    CustomToast("success", "Data Berhasil di hapus");
 
-                if(query.get("mode") === 'tour'){
-                    getData({tutorial:true});
-                }else{
-                    getData();
+                    if (query.get("mode") === 'tour') {
+                        getData({tutorial: true});
+                    }else {
+                        getData();
+                    }
+                }else {
+                    CustomToast("danger", err.message);
                 }
             }
         ).catch(
             err => {
-                console.log(err);
                 CustomToast("danger", err.message);
             }
         )
 
+        //tour
         if(query.get("mode") === "tour" && query.get("action") === 'delete'){
             const formData = {
                 id       : parseInt(query.get("moduleId")),
                 is_done  : true,
             }
-            selfLearningURL.updateUserModul(formData)   
+            selfLearningURL.updateUserModul(formData);
         };
     };
 
@@ -188,36 +201,56 @@ const UserActivity = (props) => {
             >
                 <TourComponent
                     data            = {dataForm}
+                    getData         = {getData}
                     onCancel        = {() => setModalForm(false)}
                     modalForm       = {modalForm}
                     setListData     = {(data) => setListData(data)}
                     setModalForm    = {(par) => setModalForm(par)} 
                 />
             </ModalBase>
-            {
-                getRoleByMenuStatus('Kategori', 'categories_list') ? 
-                    <CustomTable
-                        header          = {headerTable}
-                        getData         = {(params) => { getData(params) }}
+            
+            {/* button add and search */}
+            <Row>
+                <Col md="8">
+                    <ButtonAdd
+                        onClick={() => { 
+                            setDataForm(null); 
+                            setModalForm(!modalForm) ;
+                        }}
+                    />
+                </Col>
+                <Col md="4">
+                    <SearchTable
                         onSearch    = {(keyword) => { 
                             setListData(false); 
 
                             if(query.get("mode") === "tour" && query.get("action") === 'search'){
                                 getData({ keyword: keyword, tutorial: true})
-                            }else{
+                            }else {
                                 getData({ keyword: keyword})
                             }
                         }}
+                        placeholder = "Cari Kategori..."
+                    />
+                </Col>
+            </Row>
+
+            {
+                getRoleByMenuStatus('Kategori', 'categories_list') ? 
+                    <CustomTable
+                        header          = {headerTable}
+                        getData         = {(params) => { getData(params) }}
                         pagination      = {pagination}
-                        onClickForm     = {() => { setDataForm(null); setModalForm(!modalForm) }}
-                        placeholder     = "Cari Kategori..." 
 
                         //Role
                         roleAdd         = {getRoleByMenuStatus('Kategori', 'add')}
                     >
-                        <div id="category-table">
-                            {
-                                listData && listData.map((data, i) => (
+                        {
+                            listData && listData.map((data, i) => (
+                                <div 
+                                    id  = "category-table" 
+                                    key = {i}
+                                >
                                     <CustomTableBody>
                                         <Col md="1">
                                             {Helper.customTableNumber({ key: i, pagination: pagination })}
@@ -253,10 +286,10 @@ const UserActivity = (props) => {
                                             }
                                         </Col>
                                     </CustomTableBody>
-                                ))
-                            }
-                        </div>
-
+                                </div>
+                            ))
+                        }
+                        
                         {!listData && listData !== null && <Skeleton height={60} count={3} style={{ marginBottom: "10px" }} />}
                         {!listData && listData === null && <CustomTableBodyEmpty />}
                     </CustomTable>

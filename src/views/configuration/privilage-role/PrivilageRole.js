@@ -1,23 +1,30 @@
 import { Fragment, useEffect, useState } from 'react';
-import { Col }                           from 'reactstrap';
+import { Col, Row }                      from 'reactstrap';
+import Skeleton                          from 'react-loading-skeleton';
+
+//Icon
 import { Edit2, Trash2 }                 from 'react-feather';
 
+//Css
 import "./PrivilageRole.scss";
 
+//Helper
+import Helper                            from '../../../helpers';
+
+//API
+import PrivilageRoleAPI                  from '../../../services/pages/configuration/privilage-role';
+
 //Components
-import Skeleton                          from 'react-loading-skeleton';
+import ModalForm                         from './ModalForm';
+import ButtonAdd                         from '../../../components/widgets/custom-table/ButtonAdd';
+import FormDelete                        from '../../../components/widgets/form-delete/FormDelete';
+import SearchTable                       from '../../../components/widgets/custom-table/SearchTable';
 import CustomTable                       from '../../../components/widgets/custom-table'
 import HeaderTable                       from './HeaderTable';
 import CustomToast                       from '../../../components/widgets/custom-toast';
 import CustomTableBody                   from '../../../components/widgets/custom-table/CustomTableBody';
 import CustomTableNotAuthorized          from '../../../components/widgets/custom-table/CustomTableNotAuthorized';
 
-//API
-import PrivilageRoleApi                  from '../../../services/pages/configuration/privilage-role';
-
-import Helper                            from '../../../helpers';
-import ModalForm                         from './ModalForm';
-import FormDelete                        from '../../../components/widgets/form-delete/FormDelete';
 
 const PrivilageRole = () => {
     //Helper
@@ -32,40 +39,72 @@ const PrivilageRole = () => {
     const [showModalForm, setShowModalForm]     = useState(false);
     const [showDeleteForm, setShowDeleteForm]   = useState(false);
 
-    const getData = (params) => {
-        PrivilageRoleApi.get(params).then(res => {
-            setListData(res.data.result);
-            setPagination(res.data.pagination);
-        }, err => {
-            console.log(err);
-        })
-    };
-
-    const getTemplate = () => {
-        PrivilageRoleApi.getTemplate().then(res => {
-            setTemplates(res.data);
-        }, err => {
-            console.log(err);
-        });
-    }
-
     useEffect(() => {
         getData();
         getTemplate();
     }, []);
 
+    //Get groups
+    const getData = (params) => {
+        PrivilageRoleAPI.getGroups(params).then(
+            res => {
+                if (!res.is_error) {
+                    setListData(res.data.result);
+                    setPagination(res.data.pagination);
+                }else {
+                    CustomToast("danger", res.message);
+                }
+            }
+        ).catch(
+            err => {
+                CustomToast("danger", err.message);
+            }
+        )
+    };
+
+    //Get template
+    const getTemplate = () => {
+        PrivilageRoleAPI.getTemplate().then(
+            res => {
+                if (!res.is_error) {
+                    setTemplates(res.data);
+                }else {
+                    CustomToast("danger", res.message);
+                }
+            }
+        ).catch(
+            err => {
+                CustomToast("danger", err.message);
+            }
+        )
+    };
+
+    //Delete groups
     const handleDelete = () => {
         setLoading(true);
-        PrivilageRoleApi.deleteGroup(dataSelected.id).then(res => {
-            setListData(false);
-            getData();
-            setLoading(false);
-            setShowDeleteForm(!showDeleteForm);
-            CustomToast("success", "Data Berhasil di hapus");
-        }, err => {
-            console.log(err);
-        });
-    }
+
+        const formData = {
+            group_id : parseInt(dataSelected.id)
+        };
+
+        PrivilageRoleAPI.deleteGroup(formData).then(
+            res => {
+                if (!res.is_error) {
+                    getData();
+                    setLoading(false);
+                    setListData(false);
+                    setShowDeleteForm(!showDeleteForm);
+                    CustomToast("success", "Data Berhasil di hapus");
+                }else {
+                    CustomToast("danger", res.message);
+                }
+            }
+        ).catch(
+            err => {
+                CustomToast("danger", err.message);
+            }
+        )
+    };
 
     return (
         getRoleByMenuStatus('Privilage Role', 'privilege_role_list') ?
@@ -89,19 +128,36 @@ const PrivilageRole = () => {
                     templates       = {templates}
                     setDataSelected = {setDataSelected}
                 />
+
+                {/* button add and search */}
+                <Row className="mb-1">
+                    <Col md="8">
+                        <ButtonAdd onClick={() => setShowModalForm(true)}/>
+                    </Col>
+                    <Col md="4">
+                        <SearchTable
+                            onSearch = {(keyword) => { 
+                                setListData(false);
+                                getData({ keyword: keyword });
+                            }}
+                        />
+                    </Col>
+                </Row>
+
                 <CustomTable
-                    header          = {HeaderTable}
-                    getData         = {(params) => { getData(params) }}
-                    onSearch        = {(keyword) => { setListData(false); getData({ keyword: keyword }) }}
-                    onClickForm     = {() => setShowModalForm(true)}
-                    pagination      = {pagination}
+                    header     = {HeaderTable}
+                    getData    = {(params) => { getData(params) }}
+                    pagination = {pagination}
 
                     //Role
-                    roleAdd={getRoleByMenuStatus('Privilage Role', 'add')}
+                    roleAdd    = {getRoleByMenuStatus('Privilage Role', 'add')}
                 >
-                    <div id="privilage-table">
-                        {
-                            listData && listData.map((data, i) => (
+                    {
+                        listData && listData.map((data, i) => (
+                            <div 
+                                id  = "privilage-table"
+                                key = {i}
+                            >
                                 <CustomTableBody>
                                     <Col md="1">
                                         {i + 1}
@@ -118,7 +174,10 @@ const PrivilageRole = () => {
                                                 <Edit2
                                                     id        = "privilage-update"
                                                     size      = {20}
-                                                    onClick   = {() => { setDataSelected(data); setShowModalForm(true) }}
+                                                    onClick   = {() => {
+                                                        setDataSelected(data); 
+                                                        setShowModalForm(true);
+                                                    }}
                                                     className = "cursor-pointer"
                                                 />
                                             : null
@@ -128,16 +187,19 @@ const PrivilageRole = () => {
                                                 <Trash2
                                                     id        = "privilage-delete"
                                                     size      = {20}
-                                                    onClick   = {() => { setDataSelected(data); setShowDeleteForm(true) }}
+                                                    onClick   = {() => { 
+                                                        setDataSelected(data);
+                                                        setShowDeleteForm(true);
+                                                    }}
                                                     className = "cursor-pointer"
                                                 />
                                             : null
                                         }
                                     </Col>
                                 </CustomTableBody>
-                            ))
-                        }
-                    </div>
+                            </div>
+                        ))
+                    }
 
                     {
                         !listData && 

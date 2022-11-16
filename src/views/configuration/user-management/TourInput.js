@@ -422,6 +422,7 @@ const TourInput = (props) => {
                 >
                     <ModalForm
                         data            = {props.data}
+                        getData         = {props.getData}
                         setListData     = {props.setListData}
                         setModalForm    = {props.setModalForm}
                     />

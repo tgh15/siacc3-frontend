@@ -38,8 +38,6 @@ import CustomTablePaginate from '../../components/widgets/custom-table/CustomTab
 
 const ListDraft = (props) => {
 
-    console.log(props , 'draft');
-
     const handleSearch = (e) => {
         props.setFilter({type: 'text', value: e});
     };

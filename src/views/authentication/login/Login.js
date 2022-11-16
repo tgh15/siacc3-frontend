@@ -1,5 +1,5 @@
-import { useRef, useState }             from 'react'
-import { Link }                         from 'react-router-dom'
+import { useRef, useState }             from 'react';
+import { Link }                         from 'react-router-dom';
 import { 
         Card, 
         Form, 
@@ -8,49 +8,52 @@ import {
         Button, 
         CardBody, 
         FormGroup, 
-    }                                   from 'reactstrap'
+    }                                   from 'reactstrap';
 
-import { useForm }                      from 'react-hook-form'
-import { yupResolver }                  from '@hookform/resolvers/yup'
-import * as yup                         from 'yup'
+import { useForm }                      from 'react-hook-form';
+import { yupResolver }                  from '@hookform/resolvers/yup';
+import * as yup                         from 'yup';
 
 //Assets
-import Logo                             from '@src/assets/images/logo/logo_dark.svg'
+import Logo                             from '@src/assets/images/logo/logo_dark.svg';
 
 //Service
-import AuthService                      from '../../../services/pages/authentication/AuthService'
+import authAPI                          from '../../../services/pages/authentication/auth';
 
 //Custom Component
-import ButtonHelp                       from './ButtonHelp'
-import ConfirmOtp                       from './ConfirmOtp'
-import CustomToast                      from '@src/components/widgets/custom-toast'
-import ImageRounded                     from '@src/components/widgets/image-rounded'
-import SubmitButton                     from '@src/components/widgets/submit-button'
-import { ModalBase }                    from '@src/components/widgets/modals-base'
-import InputPasswordToggle              from '@src/components/widgets/input-password-toggle'
+import ButtonHelp                       from './ButtonHelp';
+import ConfirmOtp                       from './ConfirmOtp';
+import CustomToast                      from '@src/components/widgets/custom-toast';
+import ImageRounded                     from '@src/components/widgets/image-rounded';
+import SubmitButton                     from '@src/components/widgets/submit-button';
+import { ModalBase }                    from '@src/components/widgets/modals-base';
+import InputPasswordToggle              from '@src/components/widgets/input-password-toggle';
 
 //Utils
-import { secondsToMs }                  from '@utils'
+import { secondsToMs }                  from '@utils';
 
 //Scss
-import '../../../components/scss/base/pages/page-auth.scss'
 import "./login.scss";
+import '../../../components/scss/base/pages/page-auth.scss';
 
-const Login = props => {
 
-    let {fcmToken}                      = props
+const Login = (props) => {
+    // Props
+    let {fcmToken}                      = props;
 
-    const [email, setEmail]             = useState(false)
-    const [username, setUsername]       = useState(false)
-    const [password, setPassword]       = useState(false)
-    const [isPending, setPending]       = useState(false)
-    const [isLoading, setIsLoading]     = useState(false)
-    const [confirmOtp, setConfirmOtp]   = useState(false)
+    // State
+    const [email, setEmail]             = useState(false);
+    const [username, setUsername]       = useState(false);
+    const [password, setPassword]       = useState(false);
+    const [isPending, setPending]       = useState(false);
+    const [isLoading, setIsLoading]     = useState(false);
+    const [confirmOtp, setConfirmOtp]   = useState(false);
     const [pendingTime, setPendingTime] = useState(60);
 
-    let intervalRef                     = useRef()
+    // Ref
+    let intervalRef                     = useRef();
 
-    //schema for form validation
+    //Schema for form validation
     const schema                        = yup.object().shape({
         username: yup.string().required('Kolom nama pengguna tidak boleh kosong.'),
         password: yup.string().required('Kolom kata tidak boleh kosong.'),
@@ -60,14 +63,18 @@ const Login = props => {
         if (prev <= 0) {
             setPendingTime(60);
             clearInterval(intervalRef.current);
-            setPending(false)
+            setPending(false);
         }
         return prev - 1
     });
 
-    const { register, errors, handleSubmit } = useForm({ mode: "onChange", resolver: yupResolver(schema) })
+    const { 
+        errors, 
+        register, 
+        handleSubmit 
+    } = useForm({ mode: "onChange", resolver: yupResolver(schema) });
 
-    const onSubmit = data => {
+    const onSubmit = (data) => {
         setUsername(data.username);
         setPassword(data.password);
 
@@ -88,57 +95,51 @@ const Login = props => {
 
         setIsLoading(true);
 
-        AuthService.post({
-            data: formData,
-            onSuccess: (res) => {
-
+        authAPI.loginUser(formData).then(
+            res => {
                 setIsLoading(false);
 
-                if (res.message === "otp") {
-                    setEmail(res.data.email)
-                    setPassword(data.password)
-                    setConfirmOtp(true)
-                } else {
-
-                    let userData = {
-                        "name"  : res.data.biodata.name,
-                        "photo" : res.data.biodata.photo,
-                    }
-
-                    localStorage.setItem("userData", JSON.stringify(userData));
-                    localStorage.setItem("uuid", res.data.biodata.uuid);
-                    localStorage.setItem("uuid_user", res.data.biodata.uuid_user);
-                    localStorage.setItem("role", res.data.biodata.user_group[0].name);
-                    localStorage.setItem("position_id", res.data.biodata.position_id);
-                    localStorage.setItem("workunit_id", res.data.biodata.workunit_id);
-                    localStorage.setItem("workunit", res.data.biodata.workunit);
-                    localStorage.setItem("menu", JSON.stringify(res.data.menu));
-
-                    if (!process.env.NODE_ENV || process.env.NODE_ENV === 'production') {
+                if (!res.is_error) {
+                    if (res.code === "auth_login_get_otp") {
+                        setEmail(res.data.email);
+                        setPassword(data.password);
+                        setConfirmOtp(true);
                     } else {
-                        localStorage.setItem("token", res.data.token);
+                        localStorage.setItem("userData", JSON.stringify(res.data.biodata));
+                        localStorage.setItem("role", res.data.biodata.user_group[0].name);
+                        localStorage.setItem("menu", JSON.stringify(res.data.menu));
+                        localStorage.setItem("username", res.data.username);
+    
+                        if (!process.env.NODE_ENV || process.env.NODE_ENV === 'production') {
+                        } else {
+                            localStorage.setItem("token", res.data.token);
+                        }
+    
+                        if (localStorage.getItem('role') === 'Helpdesk') {
+                            window.location.href = "/helpdesk/home";
+                        } else {
+                            window.location.href = "/beranda";
+                        }
                     }
-
-                    if (localStorage.getItem('role') === 'Helpdesk') {
-                        window.location.href = "/helpdesk/home";
-                    } else {
-                        window.location.href = "/beranda";
-                    }
-                }
-            },
-
-            onFail: (err) => {
-                setIsLoading(false);
-                if (err == "pending for 1 minutes") {
-                    setPending(true)
-                    intervalRef.current = setInterval(decreasePendingTime, 1000);
                 } else {
-                    clearInterval(intervalRef.current);
-                    CustomToast("danger", err)
+                    if (res.code === "auth_login_error_password_not_match") {
+                        clearInterval(intervalRef.current);
+                        CustomToast("danger", "Username atau password yang dimasukkan salah.");
+                    } else if (res.code === "auth_login_error_freeze_login") {
+                        setPending(true);
+                        intervalRef.current = setInterval(decreasePendingTime, 1000);
+                    }else{
+                        CustomToast("danger", "Data akun tidak ditemukan.");
+                    }
                 }
             }
-        })
-    }
+        ).catch(
+            err => {
+                setIsLoading(false);
+                CustomToast("danger", err.code);
+            }
+        );
+    };
 
     return (
         <div className='auth-wrapper auth-v1 px-2'>
@@ -146,11 +147,11 @@ const Login = props => {
                 <Card className='mb-0'>
                     <CardBody>
                         <ModalBase 
-                            show    = {confirmOtp} 
-                            title   = {"Otentikasi Akun Data"}
-                            center  = {true} 
-                            setShow = {(par) => { setConfirmOtp(par)}} 
-                            backdrop= "static"
+                            show        = {confirmOtp} 
+                            title       = {"Otentikasi Akun Data"}
+                            center      = {true} 
+                            setShow     = {(par) => { setConfirmOtp(par)}} 
+                            backdrop    = "static"
                         >
                             <div className="container-fluid">
                                 <ConfirmOtp 
@@ -211,7 +212,6 @@ const Login = props => {
                                 />
 
                                 {errors && errors.username && <Label className="text-danger">{errors.username.message}</Label>}
-
                             </FormGroup>
                             <FormGroup>
                                 <div className='d-flex justify-content-between'>
@@ -229,6 +229,7 @@ const Login = props => {
                                     innerRef    = {register({ required: true })}
                                     className   = 'input-group-merge'
                                 />
+
                                 {errors && errors.password && <Label className="text-danger">{errors.password.message}</Label>}
                             </FormGroup>
                             <div className='d-flex justify-content-between'>
@@ -269,11 +270,9 @@ const Login = props => {
                     </CardBody>
                 </Card>
             </div>
-
             <ButtonHelp/>
-
         </div>
     )
 }
 
-export default Login
+export default Login;

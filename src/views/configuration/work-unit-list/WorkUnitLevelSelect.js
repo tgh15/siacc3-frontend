@@ -1,105 +1,86 @@
-import { useEffect, useState } from 'react';
-import { Swiper, SwiperSlide } from 'swiper/react';
-import { Card, CardBody } from 'reactstrap';
+import { useEffect, useState }  from 'react';
+import { Swiper, SwiperSlide }  from 'swiper/react';
+import { Card, CardBody }       from 'reactstrap';
+
+//Css
+import "./WorkUnitLevelSelect.scss";
+
+//Services
+import workunitListAPI          from '../../../services/pages/configuration/unit-work-list/WorkunitList';
 
 //Components
-import "./WorkUnitLevelSelect.scss";
-import WorkUnitLevelApi from '../../../services/pages/employee/workunit';
-import CustomToast from '../../../components/widgets/custom-toast';
-import WorkUnitListApi from "../../../services/pages/configuration/unit-work-list";
+import CustomToast              from '../../../components/widgets/custom-toast';
 
 
-const WorkUnitLevelSelect = ({ isRtl, onSelect, getAllData,setListData }) => {
+const WorkUnitLevelSelect = ({ isRtl, onSelect, getAllData, setListData }) => {
     //State
     const [level, setLevel] = useState(false)
 
     const params = {
-        className: 'swiper-centered-slides',
-        slidesPerView: 'auto',
-        spaceBetween: 20,
-        centeredSlides: true,
-        navigation: true,
-        slideToClickedSlide: true,
-    }
+        className           : 'swiper-centered-slides',
+        navigation          : true,
+        spaceBetween        : 13,
+        slidesPerView       : 20,
+        centeredSlides      : true,
+        slideToClickedSlide : true,
+    };
+
+    useEffect(() => {
+        getData();
+    }, []);
+
+    const getData = () => { 
+        setListData(false);
+
+        workunitListAPI.getWorkunitLevel().then(
+            res => {
+                if (!res.is_error) {
+                    setLevel(res.data.workunit_level);
+                } else {
+                    CustomToast("danger", res.message);
+                }
+            }
+        ).catch(
+            err => {
+                CustomToast("danger", err.message);
+            }
+        )
+    };
 
     const refreshTable = (workunit_level_id) => {
         onSelect(workunit_level_id);
     };
 
-    const getData = () => {
-        setListData(false)
-        WorkUnitLevelApi({
-            onSuccess: (res) => {
-                let data_;
-
-                if(localStorage.getItem('role') === 'Verifikator Daerah' || localStorage.getItem('role') === 'Admin Daerah'){
-                    data_ = res.data.data.workunit_level.filter((data) => (
-                        data.name !== 'KEJAKSAAN AGUNG'
-                    ))
-                }else{
-                    data_ = res.data.data.workunit_level
-                }
-                setLevel(data_);
-            },
-            onFail: (err) => {
-                CustomToast("danger", err.message);
-            }
-        })
-    };
-
-    useEffect(() => {
-        getData()
-    }, []);
-
     return (
         <Card
-            id="filter-satker"
-            className='bg-transparent shadow-none'
+            id        = "filter-satker"
+            className = 'bg-transparent shadow-none'
         >
             <CardBody className="p-0">
                 <Swiper
-                    dir={isRtl ? 'rtl' : 'ltr'} {...params}
-                    // onSlideChange={(e) => { onSwiper(e.activeIndex) }}
+                    {...params}
+                    dir = {isRtl ? 'rtl' : 'ltr'} 
                 >
                     <SwiperSlide
-                        onClick={() => { getAllData() }}
-                        className='rounded swiper-shadow swiper-slide-all'
-                        style={{ marginLeft: '-450px', marginTop: '5px' }}
+                        onClick   = {() => { getAllData() }}
+                        className = 'rounded swiper-slide-all'
                     >
-                        SEMUA SATUAN KERJA
+                        <p className='swiper-text mb-0'>
+                            SEMUA SATUAN KERJA
+                        </p>
                     </SwiperSlide>
-                    {
-                        (localStorage.getItem('role') === "Admin Daerah" || localStorage.getItem('role') === "Verifikator Daerah") ?
-                            <>
-                                {
-                                    level && (level.filter((data_) => (data_.id != 1))).map((data) => (
-                                        <SwiperSlide
-                                            key         = {data.id}
-                                            style       = {{ marginTop: '5px', paddingTop: '5px' }}
-                                            onClick     = {() => { refreshTable(parseInt(data.id)) }}
-                                            className   = 'rounded swiper-shadow'
-                                        >
-                                            <p className='swiper-text mb-0'>{data.name}</p>
-                                        </SwiperSlide>
-                                    ))
-                                }
-                            </>
-                        :
-                            <>
-                                {
-                                    level && level.map((data) => (
-                                        <SwiperSlide
-                                            key         = {data.id}
-                                            style       = {{ marginTop: '5px', paddingTop: '5px' }}
-                                            onClick     = {() => { refreshTable(parseInt(data.id)) }}
-                                            className   = 'rounded swiper-shadow'
-                                        >
-                                            <p className='swiper-text mb-0'>{data.name}</p>
-                                        </SwiperSlide>
-                                    ))
-                                }
-                            </>
-                    }
+
+                    {level && level.map((data, i) => (
+                        <SwiperSlide
+                            key       = {data.id}
+                            onClick   = {() => { refreshTable(parseInt(data.id)) }}
+                            className = 'rounded  swiper-slide-all'
+                        >
+                            <p className='swiper-text mb-0'>
+                                {data.name}
+                            </p>
+                        </SwiperSlide>
+                    ))}
                 </Swiper>
             </CardBody>
         </Card>

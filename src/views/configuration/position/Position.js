@@ -9,7 +9,7 @@ import { Edit2, Trash2 }                    from "react-feather";
 import Helper                               from "../../../helpers";
 
 //URL API
-import PositionApi                          from "../../../services/pages/configuration/position";
+import positionAPI                          from "../../../services/pages/configuration/position/index";
 import selfLearningURL                      from "../../../services/pages/helpdesk/self-learning";
 
 //Components
@@ -27,21 +27,24 @@ import CustomTableNotAuthorized             from "../../../components/widgets/cu
 
 const Position = (props) => {
     //Props
-    const {setShowAction}                       = props;
+    const {setShowAction}                                 = props;
 
     //State
-    const [data,setData]                        = useState(false);
-    const [form, setForm]                       = useState(false);
-    const [filter, setFilter]                   = useState(false);
-    const [loading,setLoading]                  = useState(false);
-    const [listData, setListData]               = useState(false);
-    const [pagination, setPagination]           = useState(false);
-    const [showDeleteForm,setShowDeleteForm]    = useState(false);
+    const [data,setData]                                  = useState(false);
+    const [form, setForm]                                 = useState(false);
+    const [filter, setFilter]                             = useState(false);
+    const [loading,setLoading]                            = useState(false);
+    const [listData, setListData]                         = useState(false);
+    const [pagination, setPagination]                     = useState(false);
+    const [sectorOptions, setSectorOptions]               = useState(false);
+    const [showDeleteForm, setShowDeleteForm]             = useState(false);
+    const [postionOptions, setpositionOptions]            = useState(false);
+    const [workUnitLevelOptions, setworkUnitLevelOptions] = useState(false);
 
     //Helper
-    const {getRoleByMenuStatus, useQuery}       = Helper;
+    const {getRoleByMenuStatus, useQuery} = Helper;
 
-    let query                                   = useQuery();
+    let query                             = useQuery();
 
     // useEffect tour action
     useEffect(() => {
@@ -115,30 +118,48 @@ const Position = (props) => {
             getData();
         }
     }, []);
-    
+
+    useEffect(() => {
+        SectorOptions();
+        PositionOptions();
+        WorkUnitLevelOptions();
+    }, []);
+
+    //Get all
     const getData = (params) => {
         setListData(false);
 
-        PositionApi.get({
-            onSuccess: (res) => {
-                setListData(res.data.position);
-                setPagination(res.data.pagination);
-            }, onFail: (err) => {
+        positionAPI.getAllPosition(params).then(
+            res => {
+                if (!res.is_error) {
+                    setListData(res.data.position);
+                    setPagination(res.data.pagination);
+                }else {
+                    CustomToast("danger", res.message);
+                }
+            }
+        ).catch(
+            err => {
                 CustomToast("danger", err.message);
-            }, params
-        })
+            }
+        )
 
         if(query.get('action') === 'search' && params.keyword != undefined){
             const formData = {
                 id       : parseInt(query.get("moduleId")),
                 is_done  : true,
             }
-            selfLearningURL.updateUserModul(formData)
-        };
+            selfLearningURL.updateUserModul(formData);
+        }
     };
 
+    //Delete
     const onDelete = () => {
         setLoading(true);
+
+        const formData = {
+            id : data.id
+        }
 
         let params;
 
@@ -146,33 +167,117 @@ const Position = (props) => {
             params = {tutorial: true}
         }
 
-        PositionApi.delete({
-            id: data.id,
+        positionAPI.deletePosition(formData, params).then(
+            res => {
+                if (!res.is_error) {
+                    setListData(false);
+                    setLoading(false);
+                    setShowDeleteForm(!showDeleteForm);
+                    CustomToast("success","Data Berhasil di hapus");
 
-            onSuccess: (res) => {
-                setListData(false);
-                setLoading(false);
-                setShowDeleteForm(!showDeleteForm);
-                CustomToast("success","Data Berhasil di hapus");
-
-                if(query.get("mode") === 'tour'){
-                    getData({tutorial:true});
-                }else{
-                    getData();
+                    if(query.get("mode") === 'tour'){
+                        getData({tutorial:true});
+                    }else {
+                        getData();
+                    }
+                }else {
+                    CustomToast("danger", res.message);
                 }
-            },
-            onFail: (err) => {
+            }
+        ).catch(
+            err => {
                 CustomToast("danger", err.message);
-            }, params
-        })
+            }
+        )
 
         if(query.get("mode") === "tour" && query.get("action") === 'delete'){
             const formData = {
                 id       : parseInt(query.get("moduleId")),
                 is_done  : true,
             }
-            selfLearningURL.updateUserModul(formData)   
+            selfLearningURL.updateUserModul(formData); 
         };
+    };
+
+    //Workunit level
+    const WorkUnitLevelOptions = () => {
+        positionAPI.getWorkunitLevel().then(
+            res => {
+                if (!res.is_error) {
+                    let newData = [];
+
+                    res.data.workunit_level.map((data, i) => (
+                        newData.push({
+                            key   : i,
+                            value : data.id,
+                            label : data.name
+                        })
+                    ))
+
+                    setworkUnitLevelOptions(newData);
+                }else {
+                    CustomToast("danger", res.message);
+                }
+            }
+        ).catch(
+            err => {
+                CustomToast("danger", err.message);
+            }
+        )
+    };
+
+    //Position list
+    const PositionOptions = () => {
+        positionAPI.getPositionList().then(
+            res => {
+                if (!res.is_error) {
+                    let newData = [];
+
+                    res.data.map((data, i) => (
+                        newData.push({
+                            key   : i,
+                            value : data.id,
+                            label : data.name
+                        })
+                    ))
+
+                    setpositionOptions(newData);
+                }else {
+                    CustomToast("danger", res.message);
+                }
+            }
+        ).catch(
+            err => {
+                CustomToast("danger", err.message);
+            }
+        )
+    };
+
+    //Sector list
+    const SectorOptions = () => {
+        positionAPI.getSectorList().then(
+            res => {
+                if (!res.is_error) {
+                    let newData = [];
+
+                    res.data.map((data, i) => (
+                        newData.push({
+                            key   : i,
+                            value : data.id,
+                            label : data.name
+                        })
+                    ))
+
+                    setSectorOptions(newData);
+                } else {
+                    CustomToast("danger", res.message);
+                }
+            }
+        ).catch(
+            err => {
+                CustomToast("danger", err.message);
+            }
+        )
     };
 
     return (
@@ -185,8 +290,10 @@ const Position = (props) => {
                 setShow = {() => { setFilter(!filter) }}
             >
                 <TourFilter
-                    onReset     = {() => { getData(); setFilter(!filter) }} 
-                    setListData = {(par) => {setListData(par)}}
+                    onReset              = {() => { getData(); setFilter(!filter) }} 
+                    setListData          = {(par) => {setListData(par)}}
+                    sectorOptions        = {sectorOptions}
+                    workUnitLevelOptions = {workUnitLevelOptions}
                 />
             </ModalBase>
 
@@ -198,10 +305,14 @@ const Position = (props) => {
                 setShow = {() => { setForm(!form) }}
             >
                 <TourInput
-                    data            = {data} 
-                    onCancel        = {() => { setForm(!form) }} 
-                    setListData     = {(par) => { setListData(par) }}
-                    setModalForm    = { (par) => {setForm(par)}} 
+                    data                 = {data} 
+                    getData              = {getData}
+                    onCancel             = {() => { setForm(!form) }} 
+                    setListData          = {(par) => { setListData(par) }}
+                    setModalForm         = { (par) => {setForm(par)}} 
+                    sectorOptions        = {sectorOptions}
+                    postionOptions       = {postionOptions}
+                    workUnitLevelOptions = {workUnitLevelOptions}
                 />
             </ModalBase>
 
@@ -240,8 +351,11 @@ const Position = (props) => {
                     >
                         {
                             listData && listData.map((data, i) => (
-                                <div id="position-table">
-                                    <CustomTableBody key={i}>
+                                <div 
+                                    id  = "position-table" 
+                                    key = {i}
+                                >
+                                    <CustomTableBody>
                                         <Col md="1">
                                             {Helper.customTableNumber({key:i,pagination : pagination})}
                                         </Col>

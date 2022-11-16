@@ -215,7 +215,7 @@ export const AddBeritaFormComponent = (props)=>{
 
         feedsDraftAPI.createDraft(data).then(
             res => {
-                if(res.status === 201){
+                if(!res.is_error){
                     setDraftId(res.data.id);
                 }
             },

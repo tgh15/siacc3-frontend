@@ -2,26 +2,30 @@ import {
     useRef, 
     Fragment, 
     useState, 
-    useEffect, 
-}                                       from 'react';
-import { Col, Media, Row }              from 'reactstrap';
+} from 'react';
+import { Col, Media }       from 'reactstrap';
+import Skeleton             from 'react-loading-skeleton';
 
-import Avatar                           from '@components/avatar';
-import Skeleton                         from 'react-loading-skeleton';
+//Image
+import Avatar               from '@components/avatar';
+
+//Helper
+import Helper               from '../../../helpers';
+
+//Services
+import activityAPI          from '../../../services/pages/configuration/user-activity';
 
 //Components
-import Helper                           from '../../../helpers';
-import TourFilter                       from './TourFilter';
-import headerTable                      from './headerTable';
-import CustomTable                      from '../../../components/widgets/custom-table';
-import CustomToast                      from '../../../components/widgets/custom-toast';
-import SearchTable                      from '../../../components/widgets/custom-table/SearchTable';
-import ButtonFilter                     from '../../../components/widgets/custom-table/ButtonFilter';
-import { ModalBase }                    from '../../../components/widgets/modals-base';
-import CustomTableBody                  from '../../../components/widgets/custom-table/CustomTableBody';
-import UserActivityApi                  from '../../../services/pages/configuration/user-activity';
-import CustomTablePaginate              from '../../../components/widgets/custom-table/CustomTablePaginate';
-import CustomTableBodyEmpty             from '../../../components/widgets/custom-table/CustomTableBodyEmpty';
+import TourFilter           from './TourFilter';
+import headerTable          from './headerTable';
+import CustomTable          from '../../../components/widgets/custom-table';
+import CustomToast          from '../../../components/widgets/custom-toast';
+import SearchTable          from '../../../components/widgets/custom-table/SearchTable';
+import ButtonFilter         from '../../../components/widgets/custom-table/ButtonFilter';
+import { ModalBase }        from '../../../components/widgets/modals-base';
+import CustomTableBody      from '../../../components/widgets/custom-table/CustomTableBody';
+import CustomTablePaginate  from '../../../components/widgets/custom-table/CustomTablePaginate';
+import CustomTableBodyEmpty from '../../../components/widgets/custom-table/CustomTableBodyEmpty';
 
 
 const UserActivity = (props) => {
@@ -56,28 +60,28 @@ const UserActivity = (props) => {
     }, []);
 
     const getData = () => {
+        setListData(false);
+
         let params = {
             page    : pageActive.current,
             filter  : filter.current,
-            search  : searchTerm.current
+            keyword : searchTerm.current
         }
-        setListData(false);
 
-        UserActivityApi.get({
-            onSuccess: (res) => {
-                setListData(res.data);
-                var customPagination = {
-                    has_next        : (res.next == "") ? false : true,
-                    has_previous    : (res.prev == "") ? false : true,
-                    current_page    : res.current_page,
-                    total_page      : res.total_page,
-                    data_total      : res.total
+        activityAPI.getActivity(params).then(
+            res => {
+                if (!res.is_error) {
+                    setListData(res.data.result);
+                    setPagination(res.data.pagination);
+                }else {
+                    CustomToast("danger", res.message);
                 }
-                setPagination(customPagination);
-            }, onFail: (err) => {
+            }
+        ).catch(
+            err => {
                 CustomToast("danger", err.message);
-            }, params: params
-        })
+            }
+        )
     };
 
     return (
@@ -97,43 +101,48 @@ const UserActivity = (props) => {
                 />
             </ModalBase>
 
-            <Row>
+            {/* filter and search */}
+            <div className='d-flex justify-content-between'>
                 <div id="filter-data">
-                    <Col md={1}>
-                        <ButtonFilter onClick={() => {setFilterModal(!filterModal)}}/>
-                    </Col>
+                    <ButtonFilter onClick={() => {setFilterModal(!filterModal)}}/>
                 </div>
-                <Col 
-                    sm = {{ size: 4, offset: 7 }} 
-                    id = "search-data"
-                >
-                    <SearchTable onSearch= {(par) => {
+                <div style={{ width: '350px' }}>
+                    <SearchTable 
+                        onSearch = {(par) => {
                             filter.current     = "all"; 
                             pageActive.current = 1; 
                             searchTerm.current = par; 
                             getData(); 
                         }}
                     />
-                </Col>
-            </Row>
+                </div>
+            </div>
 
             {/* pagination */}
-            <CustomTablePaginate 
-                onNext          = {() => {pageActive.current = pagination.current_page+1; getData()}} 
-                onPrev          = {() => {pageActive.current = pagination.current_page-1; getData()}}
-                pagination      = {pagination}  
-                offsetSearch    = {10} 
-            /><br/>
+            <div style={{ marginBottom: '20px', marginRight: '-20px' }}>
+                <CustomTablePaginate 
+                    onNext          = {() => {
+                        pageActive.current = pagination.current_page+1; 
+                        getData();
+                    }} 
+                    onPrev          = {() => {
+                        pageActive.current = pagination.current_page-1;
+                        getData();
+                    }}
+                    pagination      = {pagination}  
+                    offsetSearch    = {10} 
+                />
+            </div>
             
             {/* table */}
-            <CustomTable
-                header      = {headerTable} 
-                placeholder = "Cari Aktifitas Pengguna..."
-            >
+            <CustomTable header={headerTable}>
                 {
-                    listData && listData?.map((data, i) => (
-                        <div id = "activity-table">
-                            <CustomTableBody key={i}>
+                    listData && listData.map((data, i) => (
+                        <div 
+                            id  = "activity-table"
+                            key = {i}
+                        >
+                            <CustomTableBody>
                                 <Col md="2">
                                     {Helper.dateIndo(data.time)}
                                 </Col>
@@ -144,13 +153,13 @@ const UserActivity = (props) => {
                                             img         = {data.avatar} 
                                             status      = 'online'
                                             onError     = {fallbackImage_}
-                                            imgHeight   = '40' 
                                             imgWidth    = '40' 
+                                            imgHeight   = '40' 
                                         />
                                     </Media>
                                     <Media body>
                                         <Media className="mb-0 ml-1">{data.name}</Media>
-                                            <h6 className="text-muted ml-1 mt-0">{data.origin} </h6>
+                                            <h6 className="text-muted ml-1 mt-0">{data.origin}</h6>
                                         </Media>
                                     </Media>
                                 </Col>

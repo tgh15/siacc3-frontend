@@ -72,7 +72,7 @@ const ApprovalNewsAPI = () => {
 
         setLoadingAllState(true);
 
-        let formData;
+        let formData, params = {};
 
         if(filterAllState === null){
             formData = {
@@ -93,30 +93,43 @@ const ApprovalNewsAPI = () => {
             }
         }
 
-        feedsAgentReportApprovalAPI.getAgentByStatus(formData, page, filterAllState != null && filterAllState.type == 'keyword' ? filterAllState.value : null).then(
+        if(page != undefined){
+            params.page = page;
+        }
+
+        if(filterAllState != null && filterAllState.type == 'keyword'){
+            params.keyword = filterAllState.value;
+        }
+
+        feedsAgentReportApprovalAPI.getAgentByStatus(formData, params).then(
             res => {
-                if ("agent_report" in res.data && res.data.agent_report != null) {
-                    //get array length
-                    let arrLength = res.data.agent_report.length;
+                if(!res.is_error){
+                    if ("agent_report" in res.data && res.data.agent_report != null) {
+                        //get array length
+                        let arrLength = res.data.agent_report.length;
 
-                    //search half array length value
-                    let getDivision = Math.round(arrLength/2);
+                        //search half array length value
+                        let getDivision = Math.round(arrLength/2);
 
-                    //get first half array
-                    setStatusAllLeftState(res.data.agent_report.splice(0,getDivision));
+                        //get first half array
+                        setStatusAllLeftState(res.data.agent_report.splice(0,getDivision));
 
-                    //get last half array
-                    setStatusAllRightState(res.data.agent_report.splice(0,arrLength-getDivision));
+                        //get last half array
+                        setStatusAllRightState(res.data.agent_report.splice(0,arrLength-getDivision));
 
-                    setAllStatusCount(res.data.pagination.data_total);
-                    setLoadingAllState(false);
-                    setAllStatusPagination(res.data.pagination);
+                        setAllStatusCount(res.data.pagination.data_total);
+                        setLoadingAllState(false);
+                        setAllStatusPagination(res.data.pagination);
 
+                    }else{
+                        setLoadingAllState(false);
+                        setStatusAllLeftState([]);
+                        setStatusAllRightState([]);
+                    }
                 }else{
-                    setLoadingAllState(false);
-                    setStatusAllLeftState([]);
-                    setStatusAllRightState([]);
+                    CustomToast("danger", res.message);
                 }
+
             },
             err => {
                 CustomToast("danger", err.message);
@@ -136,20 +149,21 @@ const ApprovalNewsAPI = () => {
 
         feedsAgentReportApprovalAPI.getAgentByTypeShared(formData, page).then(
             res => {
-                const {data} = res;
-
-                setTypeSharedPagination(data.pagination);
-
-                if(data.agent_report === null){
-                    setTypeSharedLeftState([]);
-                    setTypeSharedRightState([]);
-                    setLoadingTypeShared(false);
-                }else{
-                    processAgentReports(data.agent_report).then(
+                if(!res.is_error){
+                    const {data} = res;
+    
+                    setTypeSharedPagination(data.pagination);
+    
+                    if(data.agent_report === null){
+                        setTypeSharedLeftState([]);
+                        setTypeSharedRightState([]);
+                        setLoadingTypeShared(false);
+                    }else{
+                        processAgentReports(data.agent_report).then(
                         res => {
                             //get array length
                             let arrLength = res.length;
-
+    
                             //search half array length value
                             let getDivision = Math.round(arrLength/2);
                             
@@ -158,11 +172,14 @@ const ApprovalNewsAPI = () => {
                             
                             //get last half array
                             setTypeSharedRightState(res.splice(0,arrLength-getDivision));
-
+    
                             setLoadingTypeShared(false);
                         }
                         );
                     }
+                }else{
+                    CustomToast("danger", res.message);
+                }
             },
             err => {
                 CustomToast("danger", err.message);
@@ -182,30 +199,33 @@ const ApprovalNewsAPI = () => {
 
         feedsAgentReportApprovalAPI.getAgentByTypeShared(formData, page).then(
             res => {
-                const {data} = res;
-                setTypeSharedLimitPagination(data.pagination);
-
-                if(data.agent_report === null){
-                    setTypeSharedLimitLeftState([]);
-                    setTypeSharedLimitRightState([]);
+                if(!res.is_error){
+                    const {data} = res;
+                    setTypeSharedLimitPagination(data.pagination);
+    
+                    if(data.agent_report === null){
+                        setTypeSharedLimitLeftState([]);
+                        setTypeSharedLimitRightState([]);
+                    }else{
+                        processAgentReports(data.agent_report).then(
+                            res => {
+                                //get array length
+                                let arrLength = res.length;
+    
+                                //search half array length value
+                                let getDivision = Math.round(arrLength/2);
+                                
+                                //get first half array
+                                setTypeSharedLimitLeftState(res.splice(0,getDivision));
+                                
+                                //get last half array
+                                setTypeSharedLimitRightState(res.splice(0,arrLength-getDivision));
+                            }
+                        );
+                    }
                 }else{
-                    processAgentReports(data.agent_report).then(
-                        res => {
-                            //get array length
-                            let arrLength = res.length;
-
-                            //search half array length value
-                            let getDivision = Math.round(arrLength/2);
-                            
-                            //get first half array
-                            setTypeSharedLimitLeftState(res.splice(0,getDivision));
-                            
-                            //get last half array
-                            setTypeSharedLimitRightState(res.splice(0,arrLength-getDivision));
-                        }
-                    );
+                    CustomToast("danger", res.message);
                 }
-
                 setLoadingTypeShareLimit(false);
             },
             err => {
@@ -223,21 +243,25 @@ const ApprovalNewsAPI = () => {
 
         feedsAgentReportApprovalAPI.getAgentByPositionShared(formData, page).then(
             res => {
-                if ("agent_report" in res.data && res.data.agent_report != null) {
-                    //get array length
-                    let arrLength = res.data.agent_report.length;
-
-                    //search half array length value
-                    let getDivision = Math.round(arrLength/2);
-
-                    //get first half array
-                    setPositionSharedLeftState(res.data.agent_report.splice(0,getDivision));
-
-                    //get last half array
-                    setPositionSharedRightState(res.data.agent_report.splice(0,arrLength-getDivision));
+                if(!res.is_error){
+                    if ("agent_report" in res.data && res.data.agent_report != null) {
+                        //get array length
+                        let arrLength = res.data.agent_report.length;
+    
+                        //search half array length value
+                        let getDivision = Math.round(arrLength/2);
+    
+                        //get first half array
+                        setPositionSharedLeftState(res.data.agent_report.splice(0,getDivision));
+    
+                        //get last half array
+                        setPositionSharedRightState(res.data.agent_report.splice(0,arrLength-getDivision));
+                    }else{
+                        setPositionSharedLeftState([]);
+                        setPositionSharedRightState([]);
+                    }
                 }else{
-                    setPositionSharedLeftState([]);
-                    setPositionSharedRightState([]);
+                    CustomToast("danger", res.message);
                 }
             },
             err => {
@@ -254,21 +278,26 @@ const ApprovalNewsAPI = () => {
 
         feedsAgentReportApprovalAPI.getAgentByArchive(formData, page).then(
             res => {
-                if ("agent_report" in res.data && res.data.agent_report != null) {
-                    //get array length
-                    let arrLength = res.data.agent_report.length;
 
-                    //search half array length value
-                    let getDivision = Math.round(arrLength/2);
-
-                    //get first half array
-                    setArchiveLeftState(res.data.agent_report.splice(0,getDivision));
-
-                    //get last half array
-                    setArchiveRightState(res.data.agent_report.splice(0,arrLength-getDivision));
+                if(!res.is_error){
+                    if ("agent_report" in res.data && res.data.agent_report != null) {
+                        //get array length
+                        let arrLength = res.data.agent_report.length;
+    
+                        //search half array length value
+                        let getDivision = Math.round(arrLength/2);
+    
+                        //get first half array
+                        setArchiveLeftState(res.data.agent_report.splice(0,getDivision));
+    
+                        //get last half array
+                        setArchiveRightState(res.data.agent_report.splice(0,arrLength-getDivision));
+                    }else{
+                        setArchiveLeftState([]);
+                        setArchiveRightState([]);
+                    }
                 }else{
-                    setArchiveLeftState([]);
-                    setArchiveRightState([]);
+                    CustomToast("danger", res.message);
                 }
             },
             err => {
@@ -286,73 +315,77 @@ const ApprovalNewsAPI = () => {
 
         employeeAPI.getChild(formData).then(
             res => {
-                if(res.status === 200 && res.data != null && res.data.length > 0){
-
-                    let level_1 = [];
-                    let level_2 = [];
-                    let level_3 = [];
-                    let level_4 = [];
-                    let data    = [];
-
-                    res.data.map((data) => {
-                        if(data.workunit_level_id === 1){
-                            level_1.push({
-                                value : data.id,
-                                label : data.name
-                            });
-                        }
-
-                        if(data.workunit_level_id === 2){
-                            level_2.push({
-                                value : data.id,
-                                label : data.name
-                            });
-                        }
-
-                        if(data.workunit_level_id === 3){
-                            level_3.push({
-                                value : data.id,
-                                label : data.name
-                            });
-                        }
-
-                        if(data.workunit_level_id === 4){
-                            level_4.push({
-                                value : data.id,
-                                label : data.name
-                            });
-                        }
-                    })
-                    
-                    if(level_1.length > 0){
-                        data.push({
-                            label   : 'Kejaksaan Agung',
-                            options : level_1 
+                if(!res.is_error){
+                    if(res.data != null && res.data.length > 0){
+    
+                        let level_1 = [];
+                        let level_2 = [];
+                        let level_3 = [];
+                        let level_4 = [];
+                        let data    = [];
+    
+                        res.data.map((data) => {
+                            if(data.workunit_level_id === 1){
+                                level_1.push({
+                                    value : data.id,
+                                    label : data.name
+                                });
+                            }
+    
+                            if(data.workunit_level_id === 2){
+                                level_2.push({
+                                    value : data.id,
+                                    label : data.name
+                                });
+                            }
+    
+                            if(data.workunit_level_id === 3){
+                                level_3.push({
+                                    value : data.id,
+                                    label : data.name
+                                });
+                            }
+    
+                            if(data.workunit_level_id === 4){
+                                level_4.push({
+                                    value : data.id,
+                                    label : data.name
+                                });
+                            }
                         })
+                        
+                        if(level_1.length > 0){
+                            data.push({
+                                label   : 'Kejaksaan Agung',
+                                options : level_1 
+                            })
+                        }
+    
+                        if(level_2.length > 0){
+                            data.push({
+                                label : 'Kejaksaan Tinggi',
+                                options : level_2
+                            })
+                        }
+    
+                        if(level_3.length > 0){
+                            data.push({
+                                label : 'Kejaksaan Negeri',
+                                options : level_3
+                            })
+                        }
+    
+                        if(level_4.length > 0){
+                            data.push({
+                                label : 'Cabang Kejaksaan Negeri',
+                                options : level_4
+                            })
+                        }
+    
+                        setWorkunitFilter(data);
                     }
-
-                    if(level_2.length > 0){
-                        data.push({
-                            label : 'Kejaksaan Tinggi',
-                            options : level_2
-                        })
-                    }
-
-                    if(level_3.length > 0){
-                        data.push({
-                            label : 'Kejaksaan Negeri',
-                            options : level_3
-                        })
-                    }
-
-                    if(level_4.length > 0){
-                        data.push({
-                            label : 'Cabang Kejaksaan Negeri',
-                            options : level_4
-                        })
-                    }
-
-                    setWorkunitFilter(data);
+                }else{
+                    CustomToast('danger', res.message);
                 }
             },
             err => {

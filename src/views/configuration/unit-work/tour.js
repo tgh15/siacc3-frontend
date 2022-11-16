@@ -6,9 +6,10 @@ import {
     useContext, 
 } from 'react';
 
-import { Row, Col, UncontrolledTooltip, Button }        from 'reactstrap';
+import { Row, Col, UncontrolledTooltip }        from 'reactstrap';
 import { ShepherdTour, ShepherdTourContext }    from 'react-shepherd';
 
+//Css
 import 'shepherd.js/dist/css/shepherd.css';
 import '@styles/react/libs/shepherd-tour/shepherd-tour.scss';
 
@@ -20,6 +21,8 @@ import UnitWork                                 from './UnitWork';
 
 //Helper
 import Helper                                   from '../../../helpers';
+
+//Services
 import selfLearningURL                          from '../../../services/pages/helpdesk/self-learning';
 
 
@@ -51,10 +54,10 @@ const stepsIndex = [
         ]
     },
     {
-        id          : 'search-data',
-        title       : 'Pencarian Data Unit Kerja',
-        text        : 'Masukkan data yang ingin dicari, kemudian tekan tombol enter pada keyboard',
-        attachTo    : { element: '#search-data', on: 'bottom' },
+        id          : 'add-data',
+        title       : 'Tambah Data Unit Kerja',
+        text        : 'Ketika diklik anda akan di arahkan pada tampilan tambah data unit kerja',
+        attachTo    : { element: '#add-data', on: 'right' },
         cancelIcon  : {
             enabled : true
         },
@@ -77,10 +80,10 @@ const stepsIndex = [
         ]
     },
     {
-        id          : 'add-data',
-        title       : 'Tambah Data Unit Kerja',
-        text        : 'Ketika diklik anda akan di arahkan pada tampilan tambah data unit kerja',
-        attachTo    : { element: '#add-data', on: 'right' },
+        id          : 'search-data',
+        title       : 'Pencarian Data Unit Kerja',
+        text        : 'Masukkan data yang ingin dicari, kemudian tekan tombol enter pada keyboard',
+        attachTo    : { element: '#search-data', on: 'bottom' },
         cancelIcon  : {
             enabled : true
         },
@@ -275,16 +278,14 @@ const StartTour = ({ showAction }) => {
             }
             selfLearningURL.updateUserModul(formData);
         }
-
     }, []);
 
     return (
         <Fragment>
-            <div style={{ cursor: 'pointer' }}>
+            <div style={{ cursor: 'pointer', float: 'right' }}>
                 <p 
                     id      = 'positionRight' 
                     ref     = {buttonRef}
-                    style   = {{ zIndex: '3', position: 'absolute' }}
                     onClick = {tour.start}
                 >
                     {
@@ -320,7 +321,7 @@ const TourComponent = () => {
                     sm = '12'
                 >
                     <ShepherdTour 
-                        steps={
+                        steps = {
                             showAction === 'search' ? 
                                 stepsSearch 
                             : 
@@ -335,12 +336,12 @@ const TourComponent = () => {
                                         :
                                             stepsIndex
                         }
-                        tourOptions ={{ 
+
+                        tourOptions = {{ 
                             useModalOverlay: true
                         }}
                     >
                         <StartTour showAction={showAction}/>
-
                     </ShepherdTour>
                 </Col>
                 <Col 

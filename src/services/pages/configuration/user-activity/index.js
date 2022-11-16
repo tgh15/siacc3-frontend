@@ -1,9 +1,12 @@
-import { Get } from "./Get"
+import { Get }         from "../../../core/request";
+import { responseURL } from "../../../index";
 
 
-const UserActivityApi = {
-    get:Get,
+const getActivity = (params) => Get(`${responseURL.activityPrefix}/activities`, params);
 
-    
+
+const activityAPI = {
+    getActivity
 }
-export default UserActivityApi
+
+export default activityAPI;

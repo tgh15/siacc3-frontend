@@ -474,7 +474,18 @@ const TourInput = (props) => {
                     md = '12' 
                     sm = '12'
                 >
-                    <ShepherdTour steps={props.data == false ? stepsCreate : stepsUpdate}>
+                    <ShepherdTour 
+                        steps = {
+                            props.data == false ? 
+                                stepsCreate 
+                            : 
+                                stepsUpdate
+                        }
+
+                        tourOptions = {{ 
+                            useModalOverlay: true
+                        }}
+                    >
                         <StartTour/>
                     </ShepherdTour>
                 </Col>
@@ -483,10 +494,14 @@ const TourInput = (props) => {
                     sm = '12'
                 >
                     <ModalForm
-                        data            = {props.data}
-                        onCancel        = {props.onCancel}
-                        setListData     = {props.setListData}
-                        setModalForm    = {props.setModalForm}
+                        data                 = {props.data}
+                        getData              = {props.getData}
+                        onCancel             = {props.onCancel}
+                        setListData          = {props.setListData}
+                        setModalForm         = {props.setModalForm}
+                        sectorOptions        = {props.sectorOptions}
+                        postionOptions       = {props.postionOptions}
+                        workUnitLevelOptions = {props.workUnitLevelOptions}
                     />
                 </Col>
             </Row>

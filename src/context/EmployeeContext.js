@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { createContext } from "react";
+import CustomToast from "../components/widgets/custom-toast";
 import UserManagementApi from "../services/pages/configuration/user-management";
+import userManagementAPI from "../services/pages/configuration/user-management/UserManagement";
 
 
 const EmployeeContext = createContext(null)
@@ -11,25 +13,27 @@ const EmployeeProvider = ({ children }) => {
     const [employeesList, setEmployeesList] = useState(null);
 
     const getEmployees = () => {
-        UserManagementApi.list({
-            onSuccess: (res) => {
-                setEmployees(res)
 
-                let data_ = [];
-                res.map((data) => (
-                    data_.push({
-                        label : data.name,
-                        value : data.id
-                    })
-                ))
-
-                setEmployeesList(data_);
-                
+        userManagementAPI.getUserManagementList().then(
+            res => {
+                if(!res.is_error){
+                    if(res.data != null){
+                        setEmployees(res.data);
+                        setEmployeesList(res.data.map((data) => ({label : data.name, value : data.id})) )
+                    }else{
+                        setEmployees([]);
+                        setEmployeesList([]);
+                    }
+                }else{
+                    CustomToast('danger', 'Terjadi Kesalahan.');
+                }
             },
-            onFail: (err) => {
-                console.log(err)
+            err => {
+                CustomToast('danger', 'Terjadi Kesalahan.');
+                console.log(err, 'console log error');
             }
-        })
+        )
+    
     }
 
     const getLeader = () => {

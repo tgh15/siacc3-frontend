@@ -14,7 +14,9 @@ import OrganizationalStructure                     from './OrganizationalStructu
 
 //Helper
 import Helper                                      from '../../../helpers';
-import selfLearningURL from '../../../services/pages/helpdesk/self-learning';
+
+//Services
+import selfLearningURL                             from '../../../services/pages/helpdesk/self-learning';
 
 
 const backBtnClass  = 'btn btn-sm btn-outline-primary',
@@ -161,11 +163,10 @@ const StartTour = () => {
 
     return (
         <Fragment>
-            <div style={{ cursor: 'pointer', display: 'flex', justifyContent: 'end' }}>
+            <div style={{ cursor: 'pointer', float: 'right' }}>
                 <p 
                     id      = 'positionLeft' 
                     ref     = {buttonRef}
-                    style   = {{ zIndex: '3', position: 'absolute', margin: '10px 10px 0 0' }}
                     onClick = {tour.start}
                 >
                     {

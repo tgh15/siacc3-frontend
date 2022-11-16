@@ -15,12 +15,15 @@ const NotificationProvider = (props) => {
   const getNotifications = () => {
     NotificationAPI.unreadNotification().then(res => {
       let datas = [];
-      res.data.map(item => {
-        datas.push(item.notification)
-      })
 
-      setNotifications(datas)
-      setNotificationUnread(res.data.filter(item => item.is_read === false).length);
+      if(!res.is_error){
+        res.data.map(item => {
+          datas.push(item.notification)
+        })
+
+        setNotifications(datas)
+        setNotificationUnread(res.data.filter(item => item.is_read === false).length);
+      }
     }, err => {
       console.log(err)
     })

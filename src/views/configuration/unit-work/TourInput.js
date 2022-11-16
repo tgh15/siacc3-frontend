@@ -2,6 +2,7 @@ import { Fragment, useContext, useEffect, useRef }  from 'react';
 import { Row, Col, UncontrolledTooltip }            from 'reactstrap';
 import { ShepherdTour, ShepherdTourContext }        from 'react-shepherd';
 
+//Css
 import 'shepherd.js/dist/css/shepherd.css';
 import '@styles/react/libs/shepherd-tour/shepherd-tour.scss';
 
@@ -421,7 +422,18 @@ const TourInput = (props) => {
                     md = '12' 
                     sm = '12'
                 >
-                    <ShepherdTour steps={props.data == false ? stepsCreate : stepsUpdate}>
+                    <ShepherdTour 
+                        steps   = {
+                            props.data == false ? 
+                                stepsCreate 
+                            : 
+                                stepsUpdate
+                        }
+                        
+                        tourOptions = {{ 
+                            useModalOverlay: true
+                        }}
+                    >
                         <StartTour/>
                     </ShepherdTour>
                 </Col>
@@ -431,6 +443,7 @@ const TourInput = (props) => {
                 >
                     <ModalForm
                         data            = {props.data}
+                        getData         = {props.getData}
                         setListData     = {props.setListData}
                         setModalForm    = {props.setModalForm}
                     />

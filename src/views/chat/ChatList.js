@@ -1,30 +1,59 @@
-import { useContext, useEffect, useState } from "react";
-import { Check, CornerUpLeft, CornerUpRight, Download, File, MoreVertical, Trash2, X } from "react-feather";
-import { DropdownItem, DropdownMenu, DropdownToggle, UncontrolledDropdown } from "reactstrap";
-import { ChatContext } from "../../context/ChatContext";
-import feedsAgentReportAPI from "../../services/pages/feeds/agent-reports";
-import imgDone from '../../assets/icons/done.svg'
+import { 
+    useState,
+    useEffect, 
+    useContext, 
+}                                       from "react";
+import {
+    X,
+    File, 
+    Check, 
+    Trash2, 
+    Download, 
+    CornerUpLeft, 
+    CornerUpRight, 
+    MoreVertical, 
+}                                       from "react-feather";
+import { 
+    DropdownItem, 
+    DropdownMenu, 
+    DropdownToggle, 
+    UncontrolledDropdown 
+}                                       from "reactstrap";
+import { ChatContext }                  from "../../context/ChatContext";
+import feedsAgentReportAPI              from "../../services/pages/feeds/agent-reports";
+import imgDone                          from '../../assets/icons/done.svg'
 
 const ChatList = props => {
 
-    const { chat, item, setImageSelected, setModalForward, modalForward } = props
+    const { 
+        chat, 
+        item, 
+        modalForward,
+        setModalForward, 
+        setImageSelected, 
+    } = props
 
-    const { setSelectedMessage, handleRevokeAll, handleRevokeMe } = useContext(ChatContext);
-    const [content, setContent] = useState(null)
+    const { 
+        handleRevokeMe,
+        handleRevokeAll, 
+        setSelectedMessage, 
+    }                               = useContext(ChatContext);
+    const [content, setContent]     = useState(null)
 
     const renderReport = (msg) => {
 
         feedsAgentReportAPI.detailAgentReport({ agent_report_id: parseInt(msg) })
             .then(res => {
-                setContent(res.data.title)
+                if(!res.is_error){    
+                    setContent(res.data.title)
+                }
             }, err => {
                 console.log(err)
             })
     }
 
     // ** User Profile
-    let userUuid = localStorage.getItem('uuid')
-
+    let userUuid = localStorage.getItem('uuid');
     useEffect(() => {
         if (chat.content_type == "public_report") {
             renderReport(chat.content)

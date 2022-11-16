@@ -1,9 +1,8 @@
 import { Fragment, useEffect, useState }    from 'react';
 import Select                               from 'react-select';
-import { useForm }                          from 'react-hook-form';
 import { yupResolver }                      from '@hookform/resolvers/yup';
+import { Controller, useForm }              from 'react-hook-form';
 import { selectThemeColors }                from '@utils';
-import SelectOptionsService                 from '@src/services/pages/select-options';
 
 import {
     Row,
@@ -13,189 +12,169 @@ import {
     Label,
     Button,
     FormGroup,
-    ModalFooter,
-    CustomInput,
-    FormFeedback,
+    ModalFooter
 } from "reactstrap";
 
 //Helper
 import Helper                               from '../../../helpers';
 
 //URL API
+import positionAPI                          from '../../../services/pages/configuration/position/index';
 import selfLearningURL                      from '../../../services/pages/helpdesk/self-learning';
 
+//Components
 import validation                           from './validation';
-import PositionApi                          from '../../../services/pages/configuration/position';
 import CustomToast                          from '../../../components/widgets/custom-toast';
 import SubmitButton                         from '../../../components/widgets/submit-button';
 
 const typeOptions = [
-    { key: "1", value: 1, label: 'PELAKSANA' },
-    { key: "2", value: 2, label: 'FUNGSIONAL' },
-    { key: "3", value: 3, label: 'STRUKTURAL' },
+    { value: 1, label: 'PELAKSANA' },
+    { value: 2, label: 'FUNGSIONAL' },
+    { value: 3, label: 'STRUKTURAL' },
 ];
 
 
 const ModalForm = (props) => {
     const {
         data,
+        getData,
         onCancel,
         setListData,
         setModalForm,
+        sectorOptions,
+        postionOptions,
+        workUnitLevelOptions,
     } = props;
 
     //State
-    const [loading, setLoading]                             = useState(false);
-    const [parentId, setParentId]                           = useState(null);
-    const [sectorOptions, setSectorOptions]                 = useState(false);
-    const [postionOptions, setpositionOptions]              = useState(false);
-    const [workUnitLevelOptions, setworkUnitLevelOptions]   = useState(false);
+    const [loading, setLoading] = useState(false);
 
     //Helper
-    const {useQuery}                                        = Helper;
+    const {useQuery}            = Helper;
 
-    let query                                               = useQuery();
+    let query                   = useQuery();
 
     const {
         errors, 
+        control,
+        setValue,
         register, 
         handleSubmit 
     } = useForm({ mode: "onChange", resolver: yupResolver(validation) });
 
-    const WorkUnitLevelOptions = () => {
-        SelectOptionsService.workUnitLevel({
-            onSuccess: (res) => {
-                setworkUnitLevelOptions(res);
-            }, onFail: (err) => {
-                CustomToast("danger", err.message);
-            }
-        })
-    };
-
-    const PositionOptions = () => {
-        SelectOptionsService.positionList({
-            onSuccess: (res) => {
-                console.log(res);
-                setpositionOptions(res);
-            }, onFail: (err) => {
-                CustomToast("danger", err.message);
-            }
-        })
-    };
-
-    const SectorOptions = () => {
-        SelectOptionsService.sector({
-            onSuccess: (res) => {
-                setSectorOptions(res);
-            }, onFail: (err) => {
-                CustomToast("danger", err.message);
-            }
-        })
-    };
-
     useEffect(() => {
-        WorkUnitLevelOptions();
-    }, []);
-
-    useEffect(() => {
-        PositionOptions();
-    }, []);
-
-    useEffect(() => {
-        SectorOptions();
-    }, []);
-
-    const getData = () => {
-        let params;
-
-        if(query.get("mode") === 'tour'){
-            params = {tutorial: true}
+        if(data){
+            setValue('parent_id',         data.parent_id ? {value: data.parent_id, label: data.parent} : null)
+            setValue('sector_id',         data.sector_id ? {value: data.sector_id, label: data.sector} : null)
+            setValue('position_type',     data.position_type ? {value: data.position_type, label: data.type_name} : null)
+            setValue('workunit_level_id', data.workunit_level_id ? {value: data.workunit_level_id, label: data.workunit_level} : null)
         }
+    }, []);
 
-        PositionApi.get({
-            params,
-            onSuccess: (res) => {
-                setListData(res.data.position);
-            }, onFail: (err) => {
-                console.log(err);
-            }
-        })
-    };
-
+    //Create
     const create = (dataForm, params) => {
-        PositionApi.create({
-            data: dataForm,
-            onSuccess: (res) => {
-                setLoading(false);
-                setModalForm(false);
-                CustomToast("success", "Data Berhasil Disimpan");
-                setListData(false);
-                
-                if(params == undefined){
-                    getData({tutorial:true});
-                }else{
-                    getData();
+        const formData = {
+            name                : dataForm.name,
+            sector_id           : parseInt(dataForm.sector_id.value),
+            parent_id           : parseInt(dataForm.parent_id.value),
+            description         : dataForm.description,
+            position_type       : parseInt(dataForm.position_type.value),
+            workunit_level_id   : parseInt(dataForm.workunit_level_id.value),
+        };
+
+        positionAPI.createPosition(formData, params).then(
+            res => {
+                if (!res.is_error) {
+                    setLoading(false);
+                    setModalForm(false);
+                    CustomToast("success", "Data Berhasil Disimpan");
+                    setListData(false);
+                    
+                    if(params == undefined){
+                        getData({tutorial:true});
+                    }else{
+                        getData();
+                    }
+                }else {
+                    CustomToast("danger", res.message);
                 }
-            },
-            onFail: (err) => {
-                if(err.data.message === 'data posisi sudah ada'){
+            }
+        ).catch(
+            err => {
+                if (err.message === "data posisi sudah ada") {
                     CustomToast("danger", "Data posisi sudah digunakan");
-                }else{
-                    CustomToast("danger", err.data.message);
+                }else {
+                    CustomToast("danger", err.message);
                 }
-            }, params
-        })
-
-        const formData = {
+            }
+        )
+        
+        //tour
+        const tourFormData = {
             id       : parseInt(query.get("moduleId")),
             is_done  : true,
         }
-        selfLearningURL.updateUserModul(formData)   
+        selfLearningURL.updateUserModul(tourFormData); 
     };
 
+    //Update
     const update = (dataForm, params) => {
-        PositionApi.update({
-            id: data.id,
-            data: dataForm,
-
-            onSuccess: (res) => {
-                setLoading(false);
-                setModalForm(false);
-                CustomToast("success", "Data Berhasil Diubah");
-                setListData(false);
-                
-                if(params == undefined){
-                    getData({tutorial:true});
-                }else{
-                    getData();
-                }
-            },
-            onFail: (err) => {
-                CustomToast("danger", err.message);
-            }, params
-        })
-
         const formData = {
+            ...dataForm,
+            id                  : data.id,
+            name                : dataForm.name,
+            sector_id           : parseInt(dataForm.sector_id.value),
+            parent_id           : parseInt(dataForm.parent_id.value),
+            description         : dataForm.description,
+            position_type       : parseInt(dataForm.position_type.value),
+            workunit_level_id   : parseInt(dataForm.workunit_level_id.value),
+        };
+
+        positionAPI.updatePosition(formData, params).then(
+            res => {
+                if (!res.is_error) {
+                    setLoading(false);
+                    setModalForm(false);
+                    CustomToast("success", "Data Berhasil Diubah");
+                    setListData(false);
+                    
+                    if(params == undefined){
+                        getData({tutorial:true});
+                    }else {
+                        getData();
+                    }
+                }else {
+                    CustomToast("danger", res.message);
+                }
+            }
+        ).catch(
+            err => {
+                CustomToast("danger", err.message);
+            }
+        )
+        
+        //tour
+        const tourFormData = {
             id       : parseInt(query.get("moduleId")),
             is_done  : true,
         }
-        selfLearningURL.updateUserModul(formData) 
+        selfLearningURL.updateUserModul(tourFormData);
     };
-
+    
     const onSubmit = dataForm => {
         setLoading(true);
 
         if (!data) {
             if(query.get("mode") === "tour"){
-                create(dataForm, {tutorial:true})
-            }else{
-                create(dataForm)
+                create(dataForm, {tutorial:true});
+            }else {
+                create(dataForm);
             }
-        } else {
+        }else {
             if(query.get("mode") === "tour"){
-                update(dataForm, {tutorial:true})
-            }else{
-                update(dataForm)
+                update(dataForm, {tutorial:true});
+            }else {
+                update(dataForm);
             }
         }
     };
@@ -211,20 +190,20 @@ const ModalForm = (props) => {
                         <FormGroup>
                             <Label for='id'>Induk</Label>
                             <div id="position-parent">
-                                <Select
-                                    theme           = {selectThemeColors}
-                                    options         = {postionOptions}
-                                    className       = 'react-select'
-                                    isClearable
-                                    placeholder     = "Pilih Induk Satuan Kerja"
-                                    classNamePrefix = 'select'
-                                />
-                                <Input
-                                    type            = "hidden" 
-                                    name            = "parent_id" 
-                                    invalid         = {(errors.parent_id) ? true : false} 
-                                    innerRef        = {register()} 
-                                    defaultValue    = {data ? data.parent_id : parentId}
+                                <Controller
+                                    name    = "parent_id"
+                                    control = {control}
+                                    as      = {
+                                        <Select
+                                            id              = "parent_id"
+                                            theme           = {selectThemeColors}
+                                            options         = {postionOptions}
+                                            className       = 'react-select'
+                                            placeholder     = "Pilih Induk Satuan Kerja"
+                                            isClearable
+                                            classNamePrefix = 'select'
+                                        />
+                                    }
                                 />
                             </div>
                         </FormGroup>
@@ -235,7 +214,7 @@ const ModalForm = (props) => {
                     >
                         <FormGroup>
                             <Label for='name'>Nama</Label>
-                            <br />
+                            <br/>
                             <div id="position-name">
                                 <Input
                                     name            = 'name'
@@ -244,82 +223,95 @@ const ModalForm = (props) => {
                                     defaultValue    = {(data) ? data.name : null}
                                 />
                             </div>
-                            {errors && errors.name && <FormFeedback>{errors.name.message}</FormFeedback>}
+                            {
+                                errors && errors.name && 
+                                <Label style={{ color: 'red' }}>
+                                    {errors.name.message}
+                                </Label>
+                            }
                         </FormGroup>
                     </Col>
-
-                    <Col md="6" sm="12">
+                    <Col 
+                        md = "6" 
+                        sm = "12"
+                    >
                         <FormGroup>
                             <Label for='id'>Tipe Jabatan</Label>
                             <div id="position-type">
-                                <CustomInput 
-                                    id          = 'select-custom' 
-                                    type        = 'select' 
-                                    name        = 'position_type' 
-                                    value       = {data.position_type}
-                                    invalid     = {(errors.position_type) ? true : false}
-                                    innerRef    = {register()}  
-                                >
-                                    <option disabled selected value=""> Pilih Tipe Jabatan </option>
-                                    {typeOptions.map((data, i) => (
-                                        <option 
-                                            key     = {data.key} 
-                                            value   = {data.value}
-                                        >
-                                            {data.label}
-                                        </option>
-                                    ))}
-                                </CustomInput>
+                                <Controller
+                                    name    = "position_type"
+                                    control = {control}
+                                    as      = {
+                                        <Select
+                                            id              = "position_type"
+                                            theme           = {selectThemeColors}
+                                            options         = {typeOptions}
+                                            className       = 'react-select'
+                                            placeholder     = "Pilih Satuan Kerja"
+                                            isClearable
+                                            classNamePrefix = 'select'
+                                        />
+                                    }
+                                />
                             </div>
-                            {errors && errors.position_type && <FormFeedback>{errors.position_type.message}</FormFeedback>}
+                            {
+                                errors && errors.position_type && 
+                                <Label style={{ color: 'red' }}>
+                                    {errors?.position_type?.label?.message}
+                                </Label>
+                            }
                         </FormGroup>
                         <FormGroup>
                             <Label for='id'>Satuan Kerja</Label>
                             <div id="position-workunit">
-                                <CustomInput 
-                                    id          = 'select-custom'
-                                    type        = 'select' 
-                                    name        = 'workunit_level_id' 
-                                    value       = {data.workunit_level_id} 
-                                    invalid     = {(errors.workunit_level_id) ? true : false}
-                                    innerRef    = {register()} 
-                                >
-                                    <option disabled selected value=""> Pilih Satuan Kerja </option>
-                                    {workUnitLevelOptions && workUnitLevelOptions.map((data, i) => (
-                                        <option 
-                                            key     = {data.key} 
-                                            value   = {data.value}
-                                        >
-                                            {data.label}
-                                        </option>
-                                    ))}
-                                </CustomInput>
+                                <Controller
+                                    name    = "workunit_level_id"
+                                    control = {control}
+                                    as      = {
+                                        <Select
+                                            id              = "workunit_level_id"
+                                            theme           = {selectThemeColors}
+                                            options         = {workUnitLevelOptions}
+                                            className       = 'react-select'
+                                            placeholder     = "Pilih Satuan Kerja"
+                                            isClearable
+                                            classNamePrefix = 'select'
+                                        />
+                                    }
+                                />
                             </div>
-                            {errors && errors.workunit_level_id && <FormFeedback>{errors.workunit_level_id.message}</FormFeedback>}
+                            {
+                                errors && errors.workunit_level_id && 
+                                <Label style={{ color: 'red' }}>
+                                    {errors?.workunit_level_id?.label?.message}
+                                </Label>
+                            }
                         </FormGroup>
                         <FormGroup>
                             <Label for='id'>Unit Kerja</Label>
                             <div id="position-units">
-                                <CustomInput 
-                                    id          = 'select-custom' 
-                                    type        = 'select' 
-                                    name        = 'sector_id' 
-                                    value       = {data.sector_id} 
-                                    invalid     = {(errors.sector_id) ? true : false}
-                                    innerRef    = {register()} 
-                                >
-                                    <option disabled selected value=""> Pilh Unit Kerja </option>
-                                    {sectorOptions && sectorOptions.map((data, i) => (
-                                        <option 
-                                            key     = {data.key} 
-                                            value   = {data.value}
-                                        >
-                                            {data.label}
-                                        </option>
-                                    ))}
-                                </CustomInput>
+                                <Controller
+                                    name    = "sector_id"
+                                    control = {control}
+                                    as      = {
+                                        <Select
+                                            id              = "sector_id"
+                                            theme           = {selectThemeColors}
+                                            options         = {sectorOptions}
+                                            className       = 'react-select'
+                                            placeholder     = "Pilih Unit Kerja"
+                                            isClearable
+                                            classNamePrefix = 'select'
+                                        />
+                                    }
+                                />
                             </div>
-                            {errors && errors.sector_id && <FormFeedback>{errors.sector_id.message}</FormFeedback>}
+                            {
+                                errors && errors.sector_id && 
+                                <Label style={{ color: 'red' }}>
+                                    {errors?.sector_id?.label?.message}
+                                </Label>
+                            }
                         </FormGroup>
                     </Col>
                     <Col 
@@ -338,7 +330,12 @@ const ModalForm = (props) => {
                                     defaultValue    = {(data) ? data.description : null}
                                 />
                             </div>
-                            {errors && errors.description && <FormFeedback>{errors.description.message}</FormFeedback>}
+                            {
+                                errors && errors.description && 
+                                <Label style={{ color: 'red' }}>
+                                    {errors.description.message}
+                                </Label>
+                            }
                         </FormGroup>
                     </Col>
                 </Row>

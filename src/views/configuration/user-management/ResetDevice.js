@@ -31,7 +31,7 @@ const ResetDevice = props => {
 
             onSuccess: (res) => {
                 CustomToast("success", "Device Berhasil Direset");
-                getData({page:1});
+                getData({page : 1});
                 setLoading(false);
                 setShow(false);
                 SetModalDeviced(false);

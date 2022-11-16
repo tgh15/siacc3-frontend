@@ -1,37 +1,45 @@
-import { Fragment, useRef }                     from "react"
-import { Col, Input, Row, Form, FormFeedback }  from "reactstrap"
-import { useForm }                              from 'react-hook-form'
-import { yupResolver }                          from '@hookform/resolvers/yup'
-import * as yup                                 from 'yup'
-import SubmitButton                             from "../../../components/widgets/submit-button"
-import { useState }                             from "react"
-import AuthService                              from "../../../services/pages/authentication/AuthService"
-import CustomToast                              from "../../../components/widgets/custom-toast"
+import { Fragment, useRef, useState }           from "react";
+import { Col, Input, Row, Form, FormFeedback }  from "reactstrap";
+
+import * as yup                                 from 'yup';
+import { useForm }                              from 'react-hook-form';
+import { yupResolver }                          from '@hookform/resolvers/yup';
+
+//Service
+import authAPI                                  from "../../../services/pages/authentication/auth";
+
+//Component
+import CustomToast                              from "../../../components/widgets/custom-toast";
+import SubmitButton                             from "../../../components/widgets/submit-button";
 
 const ConfirmOtp = ({ email, username, password, fcmToken }) => {
+    // State
+    const [isLoading, setLoading]       = useState(false);
+    const [timeLimit, setTimeLimit]     = useState(60);
+    const [isDisabled, setDisabled]     = useState(false);
 
-    //function to change email letter to * symbol
-    const showEmail = email.replace(/(.{2})(.*)(?=@)/,
-    function(gp1, gp2, gp3) { 
-      for(let i = 0; i < gp3.length; i++) { 
-        gp2+= "*"; 
-      } return gp2; 
-    });
-
-    // states
-    const [isLoading, setLoading]       = useState(false)
-    const [timeLimit, setTimeLimit]     = useState(60)
-    const [isDisabled, setDisabled]     = useState(false)
-
+    //Schema for form validation
     const schema = yup.object().shape({
-        otp: yup.string().max(6).min(6).required(),
+        otp: yup.string().max(6, 'OTP maksimal 6 karakter').min(6, 'OTP minimal 6 karakter.').required("Kolom kode OTP tidak boleh kosong."),
     }).required();
 
-    const { register, errors, handleSubmit } = useForm({ mode: "onChange", resolver: yupResolver(schema) })
+    const { 
+        errors, 
+        register, 
+        handleSubmit 
+    } = useForm({ mode: "onChange", resolver: yupResolver(schema) });
 
-    const onSubmit = data => {
+    //Function to change email letter to * symbol
+    const showEmail = email.replace(/(.{3})(.*)(?=@)/,
+        (gp1, gp2, gp3) => { 
+        for(let i = 0; i < gp3.length; i++) { 
+            gp2 += "*"; 
+        } return gp2; 
+    });
 
-        let formData;
+    const onSubmit = (data) => {
+        let params, formData;
+
         if (fcmToken) {
             formData = {
                 username    : data.username,
@@ -45,44 +53,42 @@ const ConfirmOtp = ({ email, username, password, fcmToken }) => {
             }
         }
 
+        params = {
+            otp : data.otp
+        }
+
         setLoading(true);
-        AuthService.confirmOtp({
-            data: formData,
-            otp: data.otp,
-            onSuccess: (res) => {
-                setLoading(false);
-                
-                let userData = {
-                    "name"  : res.data.biodata.name,
-                    "photo" : res.data.biodata.photo,
-                }
 
-                localStorage.setItem("userData", JSON.stringify(userData));
-                localStorage.setItem("uuid", res.data.biodata.uuid);
-                localStorage.setItem("uuid_user", res.data.biodata.uuid_user);
-                localStorage.setItem("role", res.data.biodata.user_group[0].name);
-                localStorage.setItem("token", res.data.token);
-                localStorage.setItem("position_id", res.data.biodata.position_id);
-                localStorage.setItem("workunit_id", res.data.biodata.workunit_id);
-                localStorage.setItem("workunit", res.data.biodata.workunit);
-                localStorage.setItem("menu", JSON.stringify(res.data.menu));
-
-                if(res.data.biodata.user_group[0].name != 'Helpdesk'){
-                    window.location.href = "/beranda";
-                }else{
-                    window.location.href = "/helpdesk/home";
-                }
-            },
-            onFail: (err) => {
+        authAPI.loginUser(formData,params).then(
+            res => {
                 setLoading(false);
-                CustomToast("danger", err)
+
+                if (!res.is_error) {
+                    localStorage.setItem("userData", JSON.stringify(res.data.biodata));
+                    localStorage.setItem("role", res.data.biodata.user_group[0].name);
+                    localStorage.setItem("menu", JSON.stringify(res.data.menu));
+                    localStorage.setItem("token", res.data.token);
+
+                    if (res.data.biodata.user_group[0].name != 'Helpdesk') {
+                        window.location.href = "/beranda";
+                    } else {
+                        window.location.href = "/helpdesk/home";
+                    }
+                } else {
+                    CustomToast("danger", "Kode OTP tidak sesuai");
+                }
             }
-        })
+        ).catch(
+            err => {
+                setLoading(false);
+                CustomToast("danger", err.code);
+            }
+        );
     }
 
     const repeatSendOtp = () => {
-
         let formData;
+
         if (fcmToken) {
             formData = {
                 username: username,
@@ -97,33 +103,35 @@ const ConfirmOtp = ({ email, username, password, fcmToken }) => {
         }
 
         setLoading(true);
-        AuthService.post({
-            data: formData,
-            onSuccess: (res) => {
+
+        authAPI.loginUser(formData).then(
+            res => {
                 setLoading(false);
-                CustomToast("success", "Kode Otp Baru Berhasil dikirim")
+                CustomToast("success", "Kode OTP Baru Berhasil dikirim");
 
                 setDisabled(true);
                 intervalRef.current = setInterval(decreaseNum, 1000);
-
-            }, onFail: (err) => {
-                setLoading(false);
-                CustomToast("danger", err.message)
             }
-        })
+        ).catch(
+            err => {
+                setLoading(false);
+                CustomToast("danger", err.code);
+            }
+        );
     }
 
-    let intervalRef = useRef()
+    let intervalRef = useRef();
+
     const decreaseNum = () => setTimeLimit((prev) => {
         if (prev === 1) {
             clearInterval(intervalRef.current);
             setDisabled(false);
             setTimeLimit(60);
         }
-       return prev - 1
+        return prev - 1
     });
 
-    function secondsToMs(d) {
+    const secondsToMs = (d) => {
         d = Number(d);
         var m = Math.floor(d % 3600 / 60);
         var s = Math.floor(d % 3600 % 60);
@@ -133,14 +141,12 @@ const ConfirmOtp = ({ email, username, password, fcmToken }) => {
         return mDisplay + sDisplay;
     }
 
-
-
     return (
         <Fragment>
             <Form onSubmit={handleSubmit(onSubmit)}>
                 <p className="text-center">
-                    Melindungi Data Anda adalah prioritas kami. Harap Konfirmasi
-                    Akun anda dengan memasukkan kode otorisasi yang dikirim ke <br />
+                    Melindungi data anda adalah prioritas kami. Harap konfirmasi
+                    akun anda dengan memasukkan kode otorisasi yang dikirim ke <br/>
                     <span className="font-weight-bolder">{showEmail}</span>
                 </p>
                 <Input
@@ -156,14 +162,16 @@ const ConfirmOtp = ({ email, username, password, fcmToken }) => {
                 {errors && errors.otp && <FormFeedback className="text-center">{errors.otp.message}</FormFeedback>}
 
                 <Row className="mt-1">
-                    <Col md="8">
+                    <Col md="12">
                         <p>
-                            Mungkin butuh beberapa menit untuk menerima kode Anda.
+                            Mungkin butuh beberapa menit untuk menerima kode anda.
                         </p>
-                        <p>Belum Menerima Kode?
+                    </Col>
+                    <Col md="8">
+                        <p>Belum menerima kode?
                             {
                                 !isDisabled ?
-                                    <span 
+                                    <span
                                         onClick     = {repeatSendOtp}
                                         className   = "text-primary cursor-pointer" 
                                     >
@@ -176,7 +184,7 @@ const ConfirmOtp = ({ email, username, password, fcmToken }) => {
                             }
                         </p>
                     </Col>
-                    <Col className="align-self-end offset-md-1 mb-1 " >
+                    <Col className="align-self-end offset-md-1 mb-1">
                         <SubmitButton 
                             size        = "sm" 
                             color       = "primary" 
@@ -184,7 +192,6 @@ const ConfirmOtp = ({ email, username, password, fcmToken }) => {
                         >
                             Kirim
                         </SubmitButton>
-
                     </Col>
                 </Row>
             </Form>
@@ -192,4 +199,4 @@ const ConfirmOtp = ({ email, username, password, fcmToken }) => {
     )
 }
 
-export default ConfirmOtp
+export default ConfirmOtp;

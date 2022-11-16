@@ -33,18 +33,6 @@ import './components/scss/core.scss';
 import './assets/scss/style.scss';
 import 'react-loading-skeleton/dist/skeleton.css';
 
-// import siacc from "./assets/images/logo/siacc.png"
-// const Logging = ()=>{
-//   const fileUrl = siacc
-//   var style = [
-//     'font-size: 1px;',
-//     'line-height: ' + 128 + 'px;',
-//     'padding: ' + 128 * .5 + 'px ' + 128* .5 + 'px;',
-//     'background-size: ' + 128+ 'px ' + 128 + 'px;',
-//     'background: no-repeat url('+ fileUrl +');'
-// ].join(' ');
-// }
-// Logging();
 const LazyApp = lazy(() => import('./App'));
 
 axios.defaults.withCredentials = true;

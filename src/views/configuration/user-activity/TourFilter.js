@@ -143,7 +143,12 @@ const TourFilter = (props) => {
                     md = '12' 
                     sm = '12'
                 >
-                    <ShepherdTour steps={stepsFilter}>
+                    <ShepherdTour 
+                        steps       = {stepsFilter}
+                        tourOptions = {{ 
+                            useModalOverlay: true
+                        }}
+                    >
                         <StartTour/>
                     </ShepherdTour>
                 </Col>

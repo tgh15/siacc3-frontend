@@ -1,4 +1,6 @@
 import { useState, Fragment, useEffect } from 'react';
+import { Controller, useForm }           from 'react-hook-form';
+
 import {
     Row,
     Col,
@@ -12,7 +14,7 @@ import {
     ModalHeader,
     ModalFooter,
     CustomInput,
-} from "reactstrap"
+} from "reactstrap";
 
 import Select                            from "react-select";
 import classNames                        from 'classnames';
@@ -24,11 +26,11 @@ import { Check, X }                      from 'react-feather';
 //Component
 import CustomToast                       from "../../../components/widgets/custom-toast";
 
-//URL Api
-import PrivilageRoleApi                  from '../../../services/pages/configuration/privilage-role';
+//Services
+import PrivilageRoleAPI                  from '../../../services/pages/configuration/privilage-role';
 
 
-const ModalForm = props => {
+const ModalForm = (props) => {
     //Props
     const {
         show,
@@ -37,7 +39,9 @@ const ModalForm = props => {
         getData,
         templates,
         setDataSelected
-    } = props
+    } = props;
+
+    const { control, setValue, watch } = useForm({ mode: "onChange" });
 
     //State
     const [name, setName]             = useState('');
@@ -61,8 +65,22 @@ const ModalForm = props => {
             </span>
         </Fragment>
     );
+    
+    // options format template for react select
+    const formatTemplate = (e) => {
+        var options = [];
 
-    const selectTemplate = id => {
+        e.map(item => {
+            options.push({
+                value : item.id,
+                label : item.name,
+            })
+        });
+        return options;
+    };
+
+    // change select template
+    const selectTemplate = (id) => {
         var menus    = [];
         var template = templates.find(template => template.id == id.value);
 
@@ -71,16 +89,15 @@ const ModalForm = props => {
             menu.features.forEach(feature => {
                 feature.is_active = false;
             });
-
-            menus.push(menu)
+            menus.push(menu);
         })
         setMenus(menus);
     };
 
-    const switchMenu = id => {
-        var err_ = { ...inputErr }
-
+    const switchMenu = (id) => {
+        var err_    = { ...inputErr }
         var newMenu = [];
+
         menus.forEach((menu, index) => {
             if (menu.ID == id) {
                 menu.is_active = !menu.is_active;
@@ -100,6 +117,7 @@ const ModalForm = props => {
 
     const switchFeature = (menu_id, e) => {
         var newMenu = [];
+
         menus.forEach((menu, index) => {
             if (menu.ID == menu_id) {
                 menu.features.forEach(feature => {
@@ -146,44 +164,35 @@ const ModalForm = props => {
     };
 
     // change format for react select
-    const formatOptions = e => {
+    const formatOptions = (e) => {
         var options = [];
+
         e.map(item => {
             options.push({
-                value: item.id,
-                label: item.feature.title,
+                value : item.id,
+                label : item.feature.title,
             })
         });
-        return options
+        return options;
     };
 
-    const formatOptionsUpdate = e => {
+    const formatOptionsUpdate = (e) => {
         var options = [];
+
         e.map(item => {
             if(item.is_active === true){
-                console.log(item.feature.title);
                 options.push({
-                    value: item.id,
-                    label: item.feature.title,
+                    value : item.id,
+                    label : item.feature.title,
                 })
             }
         });
-        return options
+        return options;
     };
 
-    const formatTemplate = e => {
-        var options = [];
-        e.map(item => {
-            options.push({
-                value: item.id,
-                label: item.name,
-            })
-        });
-        return options
-    };
-
-    const handleSubmit = e => {
+    const handleSubmit = (e) => {
         e.preventDefault();
+
         // variables
         var menuActivied = menus.filter(menu => menu.is_active == true);
         var requestMenu = [];
@@ -214,7 +223,6 @@ const ModalForm = props => {
             menuActivied.map(menu => {
 
                 var featureActivied = menu.features.filter(feature => feature.is_active == true)
-                console.log(featureActivied);
                 if (!featureActivied.length) {
                     err_.features = [...err_.features, menu.ID]
                     return false
@@ -225,20 +233,20 @@ const ModalForm = props => {
                 var requestFeature = [];
                 featureActivied.map(feature => {
                     requestFeature.push({
-                        feature_id: feature.feature_id,
-                        is_active: feature.is_active,
-                        name: feature.feature.name
+                        feature_id : feature.feature_id,
+                        is_active  : feature.is_active,
+                        name       : feature.feature.name
                     })
                 })
 
                 requestMenu.push({
-                    name: menu.name,
-                    label: menu.label,
-                    icon: menu.icon,
-                    kind: menu.kind,
-                    link: menu.link,
-                    is_active: menu.is_active,
-                    features: requestFeature
+                    name      : menu.name,
+                    label     : menu.label,
+                    icon      : menu.icon,
+                    kind      : menu.kind,
+                    link      : menu.link,
+                    features  : requestFeature,
+                    is_active : menu.is_active,
                 })
             })
         }
@@ -264,36 +272,57 @@ const ModalForm = props => {
             }
             
             if(detailData == null){
-                PrivilageRoleApi.post(formData).then(res => {
-                    onClose();
-                    setIsLoading(false);
-                    CustomToast("success", "Data berhasil disimpan")
-                    getData()
+                PrivilageRoleAPI.createGroups(formData).then(
+                    res => {
+                        if (!res.is_error) {
+                            onClose();
+                            setIsLoading(false);
+                            CustomToast("success", "Data berhasil disimpan");
+                            getData();
+                        }else {
+                            CustomToast("danger", res.message);
+                        }
+                    }, err => {
+                        setIsLoading(false);
+                        CustomToast("danger", err.message);
+                    }
+                )
+            }else {
+                PrivilageRoleAPI.updateGroups(formData).then(
+                    res => {
+                        if (!res.is_error) {
+                            onClose();
+                            setIsLoading(false);
+                            CustomToast("success", "Data berhasil diubah, Harap Login Kembali Untuk Mengaktifkan Role Terbaru");
+                            getData();
+                        }else {
+                            CustomToast("danger", res.message);
+                        }
                 }, err => {
                     setIsLoading(false);
-                })
-            }else{
-                
-                PrivilageRoleApi.update(formData).then(res => {
-                    onClose();
-                    setIsLoading(false);
-                    CustomToast("success", "Data berhasil diubah, Harap Login Kembali Untuk Mengaktifkan Role Terbaru")
-                    getData()
-                }, err => {
-                    setIsLoading(false);
+                    CustomToast("danger", err.message);
                 })
             }
         }
     };
 
+    //Get detail groups
     const getDetail = () => {
-        PrivilageRoleApi.get({id : data.id}).then(res => {
-            setDetailData(res.data);
-            setMenus(res.data.menus);
-            setName(res.data.name);
-        }, err => {
-            console.log(err);
-        })
+        PrivilageRoleAPI.getGroups({id : data.id}).then(
+            res => {
+                if (!res.is_error) {
+                    setDetailData(res.data);
+                    setMenus(res.data.menus);
+                    setName(res.data.name);
+                }else {
+                    CustomToast("danger", res.message);
+                }
+            }
+        ).catch(
+            err => {
+                CustomToast("danger", err.message);
+            }
+        )
     };
 
     useEffect(() => {
@@ -301,6 +330,18 @@ const ModalForm = props => {
             getDetail();
         }
     }, [data]);
+
+    useEffect(() => {
+        if (detailData) {
+            setValue('template_group', detailData.id ? {value: detailData.id, label: detailData.name} : undefined );
+        }
+    });
+
+    useEffect(() => {
+        if (watch('template_group')) {
+            selectTemplate(watch('template_group'));
+        }
+    }, [watch('template_group')]);
 
     return (
         <div className='vertically-centered-modal modal-sm'>
@@ -310,7 +351,8 @@ const ModalForm = props => {
                 toggle         = {() => onClose()} 
                 onClosed       = {() => {
                     setDataSelected(null); 
-                    setDetailData(null); setMenus([])
+                    setDetailData(null); 
+                    setMenus([]);
                 }} 
                 className      = 'modal-dialog' 
                 unmountOnClose = {true} 
@@ -345,30 +387,20 @@ const ModalForm = props => {
                         >
                             <FormGroup>
                                 <Label for='id'>Template</Label>
-                                {/* <Input
-                                    id          = 'select-custom'
-                                    type        = 'select'
-                                    name        = 'position_type'
-                                    onChange    = {(e) => selectTemplate(e.target.value)}
-                                    invalid     = {inputErr.template}
-                                    defaultValue= {detailData != null ? detailData : null}
-                                >
-                                    <option disabled selected value=""> Pilih Template </option>
-                                    {templates && templates.map((data, index) => (
-                                        <option value={data.id}> {data.name} </option>
-                                    ))}
-                                </Input> */}
-                                <Select
-                                    name            = 'position_type'
-                                    theme           = {selectThemeColors}
-                                    value           = {detailData != null ? { label : detailData.name, value: detailData.id } : null}
-                                    options         = {formatTemplate(templates)}
-                                    onChange        = {(e) => { selectTemplate(e) }}
-                                    className       = 'react-select'
-                                    placeholder     = "Pilih Template"
-                                    isDisabled      = {detailData != null ? true : false}
-                                    isClearable
-                                    classNamePrefix = 'select'
+                                <Controller
+                                    name    = "template_group"
+                                    control = {control}
+                                    as      = {
+                                        <Select
+                                            id              = "template_group" 
+                                            theme           = {selectThemeColors}
+                                            options         = {formatTemplate(templates)}
+                                            className       = 'react-select'
+                                            placeholder     = "Pilih Template"
+                                            isDisabled      = {detailData != null ? true : false}
+                                            classNamePrefix = 'select'
+                                        />
+                                    }
                                 />
                                 {
                                     inputErr.template ?
