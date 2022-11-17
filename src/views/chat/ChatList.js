@@ -22,6 +22,7 @@ import {
 import { ChatContext }                  from "../../context/ChatContext";
 import feedsAgentReportAPI              from "../../services/pages/feeds/agent-reports";
 import imgDone                          from '../../assets/icons/done.svg'
+import Helper                           from "../../helpers";
 
 const ChatList = props => {
 
@@ -53,7 +54,7 @@ const ChatList = props => {
     }
 
     // ** User Profile
-    let userUuid = localStorage.getItem('uuid');
+    let userUuid = Helper.getUserData().uuid;
     useEffect(() => {
         if (chat.content_type == "public_report") {
             renderReport(chat.content)

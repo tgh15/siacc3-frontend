@@ -280,7 +280,7 @@ const ModalForm = (props) => {
                         setModalForm(false);
                         CustomToast("success", "Data Berhasil Diubah");
 
-                        if(data.uuid === localStorage.getItem('uuid')){
+                        if(data.uuid === Helper.getUserData().uuid){
                             CustomToast("warning", "Silahkan melakukan login ulang.");
                             setTimeout(() => {
                                 handleLogout();
@@ -301,7 +301,7 @@ const ModalForm = (props) => {
                                     setModalForm(false);
                                     CustomToast("success", "Data Berhasil Diubah");
 
-                                    if(data.uuid === localStorage.getItem('uuid')){
+                                    if(data.uuid === Helper.getUserData().uuid){
                                         CustomToast("warning", "Silahkan melakukan login ulang.");
                                         setTimeout(() => {
                                             handleLogout();

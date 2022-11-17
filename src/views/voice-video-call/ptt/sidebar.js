@@ -75,7 +75,7 @@ const PTTSidebar = (props) => {
 
     const handleOutMember = () => {
         const formData = {
-            member_id : [localStorage.getItem('uuid')]
+            member_id : [Helper.getUserData().uuid]
         }
 
         CommunicationPTT.outMemberFromRoom(selected.id, formData).then(
@@ -227,7 +227,7 @@ const PTTSidebar = (props) => {
                                                     Channel
                                                 </span>
                                                 {
-                                                    (selected != null && selected.admins_id.filter((data) => data === localStorage.getItem('uuid')).length > 0) &&
+                                                    (selected != null && selected.admins_id.filter((data) => data === Helper.getUserData().uuid).length > 0) &&
                                                     <Plus 
                                                         className='cursor-pointer'
                                                         onClick={() => setCreateChannelVisible(true)}

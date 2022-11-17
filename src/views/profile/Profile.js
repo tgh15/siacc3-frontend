@@ -60,7 +60,7 @@ const CardProfile = (props) => {
             {/* QR Code */}
             <IdentificationQrcode
                width       = "140px"
-               uuid_user   = {localStorage.getItem('uuid_user')} 
+               uuid_user   = {Helper.getUserData().uuid} 
             />
             <div className="ant-card ant-card-bordered emp-card-profile">
                <div 

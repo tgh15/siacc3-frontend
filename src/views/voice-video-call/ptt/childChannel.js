@@ -61,7 +61,7 @@ const ChildChannel = (props) => {
         <div className='mb-1'>
             <div 
                 onClick     = {() => {
-                    if(data.roomStreamList != null && member.filter((data) => data.uuid === localStorage.getItem('uuid')).length > 0){
+                    if(data.roomStreamList != null && member.filter((data) => data.uuid === Helper.getUserData().uuid).length > 0){
                         setConfirmJoined(false);
                         setActiveChannel(data);
                         setIsCollapseChild(!isCollapseChild);

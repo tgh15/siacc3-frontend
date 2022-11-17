@@ -12,12 +12,12 @@ const ChatCard = props => {
 
     const { messages, setImageSelected } = props;
 
-    const { dateIndo, fallbackImage_ } = Helper;
+    const { dateIndo, fallbackImage_, getUserData } = Helper;
 
     const [publicReport, setPublicReport] = useState();
 
     // ** User Profile
-    let userUuid = localStorage.getItem('uuid');
+    let userUuid = getUserData().uuids;
     // ** Formats chat data based on sender
     const formattedChatData = () => {
         let chatLog = []

@@ -38,7 +38,7 @@ import ReactDOM from 'react-dom';
 const ChatPopup = () => {
   // ** Props & Custom Hooks
   const { chatPopup, setChatPopup, roomSelected, messages, selectedMessage,  setSelectedMessage, handleRevokeMe, handleRevokeAll, sendMessage } = useContext(ChatContext)
-  const { fallbackImage_, dateIndo } = Helper
+  const { fallbackImage_, dateIndo, getUserData } = Helper
   const [modalForward, setModalForward] = useState(false)
   const [imageSelected, setImageSelected] = useState(null)
   const [inputText, setInputText] = useState("")
@@ -46,7 +46,7 @@ const ChatPopup = () => {
   const chatArea = useRef()
 
   // ** User Profile
-  let userUuid = localStorage.getItem('uuid')
+  let userUuid = getUserData().uuid;
 
   // ** Toggles Compose POPUP
   const togglePopUp = e => {

@@ -11,9 +11,9 @@ const ChatList = props => {
 
     const [content, setContent] = useState(null)
 
-    const { dateIndo } = Helper
+    const { getUserData } = Helper
     // ** User Profile
-    let userUuid = localStorage.getItem('uuid')
+    let userUuid = getUserData().uuid
 
     return (
         <div key={chat.id} className='chat-content'  >

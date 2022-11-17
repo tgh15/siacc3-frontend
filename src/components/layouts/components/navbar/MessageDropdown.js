@@ -38,7 +38,7 @@ const MessageDropdown = () => {
     const [searchTerm, setSearchTerm] = useState("")
     const [groupName, setGroupName] = useState("")
     const { room, totalUnreadMessage, setChatPopup, setRoomSelected, getMessages, chatSocket } = useContext(ChatContext)
-    const { fallbackImage_ } = Helper
+    const { fallbackImage_, getUserData } = Helper
     const history = useHistory()
 
 
@@ -58,7 +58,7 @@ const MessageDropdown = () => {
                 payload: {
                     type: "personal",
                     name: "",
-                    member_id: [id, localStorage.getItem('uuid')]
+                    member_id: [id, getUserData().uuid]
                 }
             };
             chatSocket.send(JSON.stringify(val));
@@ -75,7 +75,7 @@ const MessageDropdown = () => {
         } else {
             if (chatSocket != null) {
 
-                formValues.push(localStorage.getItem('uuid'));
+                formValues.push(getUserData().uuid);
 
                 let val = {
                     type: "communication-room-create",

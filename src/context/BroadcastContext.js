@@ -1,8 +1,9 @@
-import { useEffect, useState } from "react";
-import { createContext } from "react";
-import CustomToast from "../components/widgets/custom-toast";
-import { WebsocketURL } from "../configs/socket";
-import broadcastAPI from "../services/pages/broadcast";
+import { useEffect, useState }          from "react";
+import { createContext }                from "react";
+import CustomToast                      from "../components/widgets/custom-toast";
+import { WebsocketURL }                 from "../configs/socket";
+import broadcastAPI                     from "../services/pages/broadcast";
+import Helper                           from "../helpers";
 
 
 const BroadcastContext = createContext(null)
@@ -16,6 +17,10 @@ const BroadcastProvider = ({ children }) => {
     const [broadcastSelected, setBroadcastSelected]         = useState(null);
     const [modalDetailBroadcast, setModalDetailBroadcast]   = useState(false)
     const [socketBroadcastStatus, setSocketBroadcastStatus] = useState(null);
+
+    const {
+        getUserData
+    }                                                       = Helper;
     
     if (socketBroadcast != null) {
         socketBroadcast.onopen = function (e) {
@@ -80,9 +85,9 @@ const BroadcastProvider = ({ children }) => {
 
     // use Effect
     useEffect(() => {
-        if (localStorage.getItem('uuid')) {
+        if (getUserData().uuid) {
             getBroadcast();
-            const websocket = new WebSocket(WebsocketURL.broadcastSocket(localStorage.getItem('uuid')));
+            const websocket = new WebSocket(WebsocketURL.broadcastSocket(getUserData().uuid));
             setSocketBroadcast(websocket);
         }
 

@@ -22,6 +22,7 @@ import {ChatContext}            from "../../context/ChatContext";
 import {AntmediaContext}        from "../../context/AntmediaContext";
 import { Post }                 from '../../services/core/request';
 import CustomToast              from '../../components/widgets/custom-toast';
+import Helper from '../../helpers';
 
 const VideoCall = (props) => {
 
@@ -152,7 +153,7 @@ const VideoCall = (props) => {
         */
         
         if(privateCallData != null && webRTCAdaptorPeer != null){
-            if(privateCallData.data.UUIDCaller == localStorage.getItem('uuid')){
+            if(privateCallData.data.UUIDCaller == Helper.getUserData().uuid){
                 setTimeout(() => {
                     join();
                 }, 500);

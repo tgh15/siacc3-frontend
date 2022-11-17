@@ -9,6 +9,7 @@ import ListDraft                                from './ListDraft';
 import FormDelete                               from '../../components/widgets/form-delete/FormDelete';
 import CustomToast                              from '../../components/widgets/custom-toast';
 import SubmitDiscussion                         from '../../components/widgets/feeds/submit-discussion';
+import Helper from '../../helpers';
 
 
 const ListDraftAPI = () => {
@@ -41,7 +42,7 @@ const ListDraftAPI = () => {
     const getDraftAPI = (page = 1) => {
 
         const params = {
-            uuid : localStorage.getItem('uuid'),
+            uuid : Helper.getUserData().uuid,
             page : page
         }
         setLoading(true);

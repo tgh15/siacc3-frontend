@@ -20,6 +20,7 @@ import { WebsocketURL } from '../../configs/socket';
 import { ModalBase } from '../../components/widgets/modals-base';
 import { Button, Form, FormGroup, Input, Label } from 'reactstrap';
 import CustomToast from '../../components/widgets/custom-toast';
+import Helper from '../../helpers';
 
 const IndexVoiceVideoCall = () => {
 
@@ -109,7 +110,7 @@ const IndexVoiceVideoCall = () => {
 
             activeChannel.roomStreamList != null &&
                 activeChannel.roomStreamList.map((data) => (
-                    data === localStorage.getItem('uuid') ? 
+                    data === Helper.getUserData().uuid ? 
                         localvideoId.push(`ptt_name_${activeChannel.roomName}_id_`+data)
                     :
                         remoteVideoId.push(`ptt_name_${activeChannel.roomName}_id_`+data)
@@ -125,7 +126,7 @@ const IndexVoiceVideoCall = () => {
             let val = {
                 type : "ptt-talk",
                 payload : {
-                  uuid : localStorage.getItem('uuid'),
+                  uuid : Helper.getUserData().uuid,
                   id : activeChannel.id,
                   push : true, 
                 }
@@ -140,7 +141,7 @@ const IndexVoiceVideoCall = () => {
             let val = {
                 type : "ptt-talk",
                 payload : {
-                  uuid : localStorage.getItem('uuid'),
+                  uuid : Helper.getUserData().uuid,
                   id : activeChannel.id,
                   push : false, 
                 }
@@ -231,7 +232,7 @@ const IndexVoiceVideoCall = () => {
             }else if(callback.info === 'joinedTheRoom'){
 
                 activeChannel.roomStreamList.map((data) => (
-                    data != localStorage.getItem('uuid') && webRTCAdaptorPeer.play(data)
+                    data != Helper.getUserData().uuid && webRTCAdaptorPeer.play(data)
                 ))
 
                 webRTCAdaptorPeer.muteLocalMic();

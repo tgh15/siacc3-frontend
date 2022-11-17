@@ -36,7 +36,7 @@ const SidebarLeft = props => {
   const [modalPersonal, setModalPersonal] = useState(false)
   const [modalGroup, setModalGroup] = useState(false)
   const [groupName, setGroupName] = useState("")
-  const { fallbackImage_, getTimeAgo } = Helper;
+  const { fallbackImage_, getUserData } = Helper;
 
 
 
@@ -69,7 +69,7 @@ const SidebarLeft = props => {
         payload: {
           type: "personal",
           name: "",
-          member_id: [id, localStorage.getItem('uuid')]
+          member_id: [id, getUserData().uuid]
         }
       };
       chatSocket.send(JSON.stringify(val));
@@ -85,7 +85,7 @@ const SidebarLeft = props => {
     }else {
       if (chatSocket != null) {
 
-        formValues.push(localStorage.getItem('uuid'));
+        formValues.push(getUserData().uuid);
 
         let val = {
           type: "communication-room-create",

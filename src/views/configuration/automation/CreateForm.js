@@ -36,6 +36,7 @@ import { EmployeeContext }      from '../../../context/EmployeeContext';
 
 //Url Api
 import AutomationApi            from '../../../services/pages/configuration/automation';
+import Helper from '../../../helpers';
 
 
 const CreateForm = (props) => {
@@ -213,7 +214,7 @@ const CreateForm = (props) => {
                 "till": moment(new Date(period[1])).format('YYYY-MM-DDTH:mm:ssZ'),
                 "model": {
                     "title": dataForm.title,
-                    "uuid": localStorage.getItem('uuid'),
+                    "uuid": Helper.getUserData().uuid,
                     "auto_relations_and": requestRelationAnd,
                     "auto_relations_or": requestRelationOr,
                     "auto_then": [

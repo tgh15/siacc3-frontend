@@ -47,6 +47,7 @@ import * as yup                                                 from "yup";
 import { yupResolver }                                          from '@hookform/resolvers/yup';
 import { useForm, Controller }                                  from "react-hook-form";
 import { NewsPreview }                                          from '../../news-card-widget/preview'
+import Helper                                                   from '../../../../../helpers'
 
 const typeIcon=(type)=>{
     switch(type){
@@ -117,6 +118,10 @@ const schema = yup.object({
 export const AddBeritaFormComponent = (props)=>{
 
     const {
+        getUserData
+    }                       = Helper;
+
+    const {
         onUrl,
         onSave, 
         draftId,
@@ -149,7 +154,6 @@ export const AddBeritaFormComponent = (props)=>{
     ));
 
     const [show,setShow]                  = useState(false);
-    // const [draftId, setDraftId]           = useState(false);
     const [selected, setSelected]         = useState(null);
     const [mediaData,setMediaData]        = useState([]);
     const [modalUrlState,setModalUrl]     = useState(false)
@@ -211,7 +215,7 @@ export const AddBeritaFormComponent = (props)=>{
 
     const createDraft = (e) => {
         let data = getValues();
-        data['uuid'] = localStorage.getItem('uuid');
+        data['uuid'] = getUserData().uuid;
 
         feedsDraftAPI.createDraft(data).then(
             res => {
@@ -234,7 +238,7 @@ export const AddBeritaFormComponent = (props)=>{
         
         if(draftId != null){
             data['id']   = parseInt(draftId);
-            data['uuid'] = localStorage.getItem('uuid');
+            data['uuid'] = getUserData().uuid;
 
             feedsDraftAPI.updateDraft(data).then(
                 res => {
@@ -265,7 +269,7 @@ export const AddBeritaFormComponent = (props)=>{
                 data.id             = draftId
             }
 
-            data.uuid           = localStorage.getItem('uuid');
+            data.uuid           = getUserData().uuid;
             data.hashtag        = data.hashtags.split(" ").map((data) => ({tag : data}));
             data.category       = data.category.map((data) => ({id : parseInt(data.value)}))
         }

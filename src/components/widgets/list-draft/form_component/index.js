@@ -43,6 +43,7 @@ import { NewsPreview }                                          from '../../feed
 import * as yup                                                 from "yup";
 import { yupResolver }                                          from '@hookform/resolvers/yup';
 import { useForm, Controller }                                  from "react-hook-form";
+import Helper                                                   from '../../../../helpers'
 
 const typeIcon=(type)=>{
     switch(type){
@@ -107,6 +108,11 @@ const schema = yup.object({
 }).required();
 
 export const EditDraftComponent = ({getDraftAPI, data, closeModal})=>{
+
+    const {
+        getUserData
+    }                               = Helper;
+
     const { 
         control, 
         register,
@@ -172,7 +178,7 @@ export const EditDraftComponent = ({getDraftAPI, data, closeModal})=>{
 
         if(selected === 'draft'){
             formData.id         = data.id
-            formData.uuid       = localStorage.getItem('uuid');
+            formData.uuid       = getUserData().uuid;
             formData.category   = formData.category.map((data) => ({id: parseInt(data.value)}))
             formData.hashtag    = formData.hashtags.split(" ").map((data) => ({tag : data}));
         }else{

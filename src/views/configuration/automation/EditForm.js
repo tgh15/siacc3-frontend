@@ -31,6 +31,7 @@ import { EmployeeContext } from '../../../context/EmployeeContext';
 import AutomationApi from '../../../services/pages/configuration/automation';
 import CustomToast from '../../../components/widgets/custom-toast';
 import { date } from 'yup';
+import Helper from '../../../helpers';
 
 
 
@@ -288,7 +289,7 @@ const EditForm = (props) => {
                 "till": moment(new Date(period ? period[1] : data.till)).format('YYYY-MM-DDTH:mm:ssZ'),
                 "model": {
                     "title": dataForm.title,
-                    "uuid": localStorage.getItem('uuid'),
+                    "uuid": Helper.getUserData().uuid,
                     "auto_relations_and": requestRelationAnd,
                     "auto_relations_or": requestRelationOr,
                     "auto_then": [

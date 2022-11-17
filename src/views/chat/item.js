@@ -1,31 +1,22 @@
-import classNames from "classnames";
-import { useContext, useEffect, useState } from "react";
-import { CornerUpLeft, CornerUpRight, Download, File, MoreVertical, Trash2, X } from "react-feather";
-import { DropdownItem, DropdownMenu, DropdownToggle, UncontrolledDropdown } from "reactstrap";
-import Avatar from "../../components/widgets/avatar";
-import { ChatContext } from "../../context/ChatContext";
-import Helper from "../../helpers";
-import feedsAgentReportAPI from "../../services/pages/feeds/agent-reports";
-import ChatList from "./ChatList";
+import Avatar           from "../../components/widgets/avatar";
+import Helper           from "../../helpers";
+import ChatList         from "./ChatList";
+import classNames       from "classnames";
 
 
 const Item = props => {
 
-    const { messages,
-        setImageSelected,
+    const {
+        messages,
+        modalForward,
         setModalForward,
-        modalForward } = props;
+        setImageSelected,
+    }                                       = props;
 
-
-
-
-
-    const { dateIndo, fallbackImage_ } = Helper;
-
-    const [publicReport, setPublicReport] = useState();
+    const { dateIndo, fallbackImage_ }      = Helper;
 
     // ** User Profile
-    let userUuid = localStorage.getItem('uuid')
+    let userUuid = Helper.getUserData().uuid;
 
     // ** Formats chat data based on sender
     const formattedChatData = () => {

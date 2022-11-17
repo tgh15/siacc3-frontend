@@ -84,7 +84,7 @@ const ContentCall = (props) => {
                                         />
                                         <h6 className='font-weight-bolder mb-0'>
                                             {
-                                                userCall.UUIDCaller === localStorage.getItem('uuid') ?  
+                                                userCall.UUIDCaller === Helper.getUserData().uuid ?  
                                                     userCall.UUIDReceiverDetail.name
                                                 :
                                                     userCall.UUIDCallerDetail.name
@@ -143,7 +143,7 @@ const ContentCall = (props) => {
                                             userCall.listCall.map((data) => (
                                                 <>
                                                     {
-                                                        data.UUIDReceiver != localStorage.getItem('uuid') ?
+                                                        data.UUIDReceiver != Helper.getUserData().uuid ?
                                                             <Card className='mb-1 p-0' key={data.id}>
                                                                 <CardBody style={{ padding: '12px' }}>
                                                                     <div className='d-flex justify-content-between flex-wrap'>

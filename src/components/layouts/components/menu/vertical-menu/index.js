@@ -2,11 +2,11 @@ import { Fragment, useState, useRef } from 'react';
 // ** React Imports
 
 // ** Vertical Menu Items Array
-import navigation from '@src/components/navigation/vertical';
-import navigationHelpdesk from '@src/components/navigation/helpdesk';
+import navigation                   from '@src/components/navigation/vertical';
+import navigationHelpdesk           from '@src/components/navigation/helpdesk';
 
 // ** Image
-import LogoEvent from '@src/assets/images/logo/event.svg';
+import LogoEvent                    from '@src/assets/images/logo/event.svg';
 
 // ** Third Party Components
 import classnames from 'classnames';
@@ -16,6 +16,8 @@ import PerfectScrollbar from 'react-perfect-scrollbar';
 import VerticalMenuHeader from './VerticalMenuHeader';
 import VerticalNavMenuItems from './VerticalNavMenuItems';
 import { useLocation } from 'react-router-dom';
+
+import Helper                       from '../../../../../helpers';
 
 
 const Sidebar = props => {

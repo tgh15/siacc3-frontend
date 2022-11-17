@@ -159,7 +159,7 @@ const MemberManagement = (props) => {
                                             }
 
                                             {
-                                                selected.admins_id.includes(localStorage.getItem('uuid')) &&
+                                                selected.admins_id.includes(Helper.getUserData().uuid) &&
                                                 <UncontrolledDropdown ref={ref} className="ml-1">
                                                     <DropdownToggle 
                                                         color     = '' 
@@ -182,7 +182,7 @@ const MemberManagement = (props) => {
                                                             </DropdownItem>
                                                         }
                                                         {
-                                                            data.is_admin && localStorage.getItem('uuid') != data.uuid &&
+                                                            data.is_admin && Helper.getUserData().uuid != data.uuid &&
                                                             <DropdownItem  
                                                                 tag     = 'a'
                                                                 onClick = {() => handleRemoveAdmin(data.uuid)}

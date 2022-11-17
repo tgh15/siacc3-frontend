@@ -63,7 +63,7 @@ const DashboardComponent = () => {
     const handleFinish = (data) => {
 
         const formData = {
-            employee_uuid : localStorage.getItem('uuid'),
+            employee_uuid : Helper.getUserData().uuid,
             layout : {
                 col : data
             }
@@ -122,7 +122,7 @@ const DashboardComponent = () => {
 
         const formData = {
             id  : detailLayout.id,
-            employee_uuid : localStorage.getItem('uuid'),
+            employee_uuid : Helper.getUserData().uuid,
                 layout : {
                     col : _layoutCol
             }

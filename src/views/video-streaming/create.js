@@ -12,6 +12,7 @@ import { CategoryContext }                                      from '../../cont
 import { useContext }                                           from "react";
 import VideoStreamingAPI                                        from "../../services/pages/video-streaming";
 import CustomToast from "../../components/widgets/custom-toast";
+import Helper from "../../helpers";
 
 const CreateVideoStreaming = (props) => {
 
@@ -38,14 +39,14 @@ const CreateVideoStreaming = (props) => {
 
     const processSubmit = (data) => {
         const formData = {
-            uuid        : localStorage.getItem('uuid'),
+            uuid        : Helper.getUserData().uuid,
             title       : data.title,
             category    : data.category.value,
             visibility  : data.visibility.value,
         }
 
         if(data.saved.value === '1'){
-            formData.saved_by = [localStorage.getItem('uuid')]
+            formData.saved_by = [Helper.getUserData().uuid]
         }
 
         

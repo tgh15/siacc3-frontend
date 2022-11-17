@@ -151,7 +151,7 @@ const ContentGroup = (props) => {
                             <div style={{overflow: 'auto', height : '10vh', display: 'none'}}>
                                 {
                                     activeChannel != null  && activeChannel.roomStreamList != null ?
-                                        activeChannel.roomStreamList.filter((data) => (data != localStorage.getItem('uuid'))).map((data) => (
+                                        activeChannel.roomStreamList.filter((data) => (data != Helper.getUserData().uuid)).map((data) => (
                                             <audio 
                                                 id              = {`ptt_name_${activeChannel.roomName}_id_`+data}
                                                 height          = {5}

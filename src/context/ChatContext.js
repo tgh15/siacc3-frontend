@@ -4,6 +4,7 @@ import ChatApi                  from "../services/pages/chat"
 import ReactDOM                 from 'react-dom'
 import { WebsocketURL }         from "../configs/socket"
 import { useLocation }          from "react-router-dom"
+import Helper                   from "../helpers"
 
 //Widgets
 import CustomToast              from "../components/widgets/custom-toast"
@@ -34,11 +35,15 @@ const ChatProvider = ({ children }) => {
 
     let location                                        = useLocation();
 
+    const {
+        getUserData
+    }                                                   = Helper;
+
     // ** Refs
     const chatArea = useRef(null)
 
     const connectChatSocket = roomId => {
-        const websocket = new WebSocket(WebsocketURL.chatSocket(roomId ? roomId : localStorage.getItem('uuid')));
+        const websocket = new WebSocket(WebsocketURL.chatSocket(roomId ? roomId : getUserData().uuid));
         setChatSocket(websocket);
     };
 
@@ -167,7 +172,7 @@ const ChatProvider = ({ children }) => {
                         
                         
                         //check is call is incoming or not
-                        if((localStorage.getItem('uuid') != res.data.UUIDCaller) && res.data.onCall === true){
+                        if((getUserData().uuid != res.data.UUIDCaller) && res.data.onCall === true){
                             setIncomingCall(true);
                         }else{
                             setIncomingCall(false);
