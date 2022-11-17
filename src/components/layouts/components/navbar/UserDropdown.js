@@ -67,23 +67,29 @@ const UserDropdown = () => {
   const getData = () => {
     agentProfileAPI.getDownloadData(window.location.protocol+'//'+window.location.hostname+'/mobile/download?type=FULL').then(
         res => {
-            if(res.status === 200 && res.data != null){
-                setDownloadData(res.data);
-                setBasicModal(true);
-                console.log("ada", res.data);
+            if(!res.is_error){
+              if(res.status === 200 && res.data != null){
+                  setDownloadData(res.data);
+                  setBasicModal(true);
+              }
+            }else{
+              CustomToast("danger", res.message)
             }
         },
         err => {
-          CustomToast("danger", err)
+          CustomToast("danger", err.message)
         }
     )
 
     agentProfileAPI.getDownloadData(window.location.protocol+'//'+window.location.hostname+'/mobile/download?type=LITE').then(
         res => {
-            if(res.status === 200 && res.data != null){
-                setDownloadDataLite(res.data);
-                setBasicModal(true);
-                console.log("ada", res.data);
+            if(!res.is_error){
+              if(res.status === 200 && res.data != null){
+                  setDownloadDataLite(res.data);
+                  setBasicModal(true);
+              }
+            }else{
+              CustomToast("danger", res.message)
             }
         },
         err => {
