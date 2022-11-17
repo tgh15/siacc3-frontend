@@ -39,7 +39,12 @@ const Profile = (props) => {
     //Context
     const { 
         setListData, 
-    } = useContext(UserManagementContext);
+    }                                                   = useContext(UserManagementContext);
+
+    const {
+        fallbackImage_,
+        getRoleByMenuStatus
+    }                                                   = Helper;
 
 
     const [modalForm, setModalForm]                     = useState(false);
@@ -77,7 +82,7 @@ const Profile = (props) => {
                                     src     = {Logo}
                                     alt     = {'Profile Pic'} 
                                     style   = {{width: '40%'}}
-                                    onError = {Helper.fallbackImage_}
+                                    onError = {fallbackImage_}
                                     className = "mb-2 mt-1"
                                 />
                             </a>
@@ -107,6 +112,7 @@ const Profile = (props) => {
                                     unmount         = {true}
                                 >
                                     <ModalForm
+                                        getData         = {() => {props.getDetailIdentification(); props.getDetailEmployee()}}
                                         data            = {props.employeeDetailUpdate}
                                         setListData     = {(params) => setListData(params)}
                                         setModalForm    = {(par) => { setShowUpdateForm(par) }} 
@@ -160,6 +166,7 @@ const Profile = (props) => {
                                 <div className="mt-2">
                                     <small>*Berdasarkan lencana yang diperoleh</small>
                                     <Row className="mt-2">
+
                                         {
                                             props.badgeProfile.achievement != null ?
                                             props.badgeProfile.achievement.map((data) => (
@@ -180,12 +187,14 @@ const Profile = (props) => {
                                                                             src         = {data.badge != "" ? data.badge : null}
                                                                             alt         = {'Profile Pic'} 
                                                                             style       = {{width: '65px', height: '65px', borderRadius: '50%'}} 
+                                                                            onError     = {fallbackImage_}
                                                                             className   = "img-fluid"
                                                                         />
                                                                         <img
                                                                             src         = {CheckboxIcon}
                                                                             alt         = "CheckboxIcon"
                                                                             style       = {{position: 'absolute', marginTop: '35px', marginLeft: '-20px', width: '15px'}}
+                                                                            onError     = {fallbackImage_}
                                                                             className   = "img-fluid"
                                                                         />
                                                                     </Fragment>
@@ -194,6 +203,7 @@ const Profile = (props) => {
                                                                         src         = {data.badge != "" ? data.badge : null}
                                                                         alt         = {'Profile Pic'} 
                                                                         style       = {{width: '65px', height: '65px', borderRadius: '50%'}} 
+                                                                        onError     = {fallbackImage_}
                                                                         className   = "img-fluid"
                                                                     />
                                                             }
@@ -256,12 +266,14 @@ const Profile = (props) => {
                                                                         src         = {data.badge != "" ? data.badge : null}
                                                                         alt         = {'Profile Pic'} 
                                                                         style       = {{borderRadius: '100px', objectFit: 'contain'}} 
+                                                                        onError     = {fallbackImage_}
                                                                         className   = "img-fluid"
                                                                     />
                                                                     <img
                                                                         src         = {CheckboxIcon}
                                                                         alt         = "CheckboxIcon"
                                                                         style       = {{position: 'absolute', marginTop: '35px', marginLeft: '-20px', width: '15px'}}
+                                                                        onError     = {fallbackImage_}
                                                                         className   = "img-fluid"
                                                                     />
                                                                 </Fragment> 
@@ -270,10 +282,14 @@ const Profile = (props) => {
                                                                     src         = {data.badge != "" ? data.badge : null}
                                                                     alt         = {'Profile Pic'} 
                                                                     style       = {{borderRadius: '10px', objectFit: 'contain', opacity: '0.4'}} 
+                                                                    onError     = {fallbackImage_}
                                                                     className   = "img-fluid"
                                                                 />
                                                         }
                                                     </div>
+                                                    <small>
+                                                        {data.title}
+                                                    </small>
                                                 </Col>
                                             )) : null
                                         }
@@ -336,9 +352,14 @@ const Profile = (props) => {
                                         props.reportAgent &&
                                         props.reportAgent.map((data) => (
                                             <NewsWidget
-                                                id          = {data.id}
-                                                data        = {data}
-                                                handleStore = {props.handleStore}
+                                                id              = {data.id}
+                                                data            = {data}
+                                                handleStore     = {props.handleStore}
+
+                                                roleLike        = {getRoleByMenuStatus('Beranda', 'like')}
+                                                roleViewer      = {getRoleByMenuStatus('Beranda', 'viewer')}   
+                                                roleDislike     = {getRoleByMenuStatus('Beranda', 'dislike')}
+                                                roleComment     = {getRoleByMenuStatus('Beranda', 'comment')}
                                                 {...data}
                                             />
                                         )) 

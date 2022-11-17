@@ -6,7 +6,7 @@ import { GetWithURL }   from "../../core/request";
 const service = new FetchServices();
 
 
-const getAgentPoints             = (data) => service.post(`${profileURL.feedsPrefix}/${profileURL.agentPointsPrefix}`, data);
+const getAgentPoints             = (data, params) => service.post(`${profileURL.feedsPrefix}/${profileURL.agentPointsPrefix}`, data, params);
 const getAgentByKind             = (data) => service.post(`${profileURL.feedsPrefix}/${profileURL.achievementPrefix}/${profileURL.achievementAgent}/${profileURL.byKind}`, data);
 const getDownloadData            = (url) => GetWithURL(`${url}`);
 const getEmployeeByUuid          = (data) => service.post(`${profileURL.employeePrefix}/${profileURL.employee}/${profileURL.byUuid}`, data);

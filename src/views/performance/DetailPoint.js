@@ -181,11 +181,10 @@ const DetailPoint = () => {
                         Filter
                     </Button>
                 </div>
-
                 {
                     historyPoints != null ? 
                         Array.isArray(historyPoints.data) && historyPoints.data.length > 0 ? 
-                            historyPoints.data.map((data, index) => (
+                            historyPoints.data.map((data) => (
                                 <div 
                                     style       ={{padding: '5px', borderRadius: '7px', border: '1px solid #fff'}}
                                     className   = "mb-2" 

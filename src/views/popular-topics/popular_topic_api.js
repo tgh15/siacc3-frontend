@@ -91,17 +91,21 @@ const PopularTopicAPI = () => {
 
         feedsBerandaAgentReport.getTrendingByType(formData).then(
             res => {
-                const {data} = res;
-                setLoading(false);
-
-                if (data.agent_report === null) {
-                    setReportAgent([]);
+                if(!res.is_error){
+                    const {data} = res;
+                    setLoading(false);
+    
+                    if (data.agent_report === null) {
+                        setReportAgent([]);
+                    }else{
+                        processAgentReports(data.agent_report).then(
+                            res => {
+                                setReportAgent(res);
+                            }
+                        )
+                    }
                 }else{
-                    processAgentReports(data.agent_report).then(
-                        res => {
-                            setReportAgent(res);
-                        }
-                    )
+                    CustomToast('danger', res.message);
                 }
                 
             },

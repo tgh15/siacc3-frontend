@@ -4,7 +4,7 @@ import FetchServices from "../../core/Axios"
 
 const AgentPoints = ({page, formData, onSuccess, onFail }) => {
 
-    const params ={
+    const params = {
         is_paginate :true,
         page : page
     }

@@ -58,6 +58,7 @@ const ModalForm = (props) => {
         setModalForm,
     } = props;
 
+    console.log(props);
     // context
     const { workunitOptions }                       = useContext(PerformanceContext);
 

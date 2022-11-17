@@ -324,6 +324,8 @@ const getLastDateOfCurrentMonth = (month) => {
     return date;
 }
 
+const getUserData = () => JSON.parse(localStorage.getItem('userData'))
+
 const Helper = {
     dayIndo                 : dayIndo,
     dateIndo                : dateIndo,
@@ -350,7 +352,8 @@ const Helper = {
     getYearsBefore          : getYearsBefore,
     getMonthName            : getMonthName,
     getLastDateOfCurrentMonth : getLastDateOfCurrentMonth,
-    getDuration             : getDuration
+    getDuration             : getDuration,
+    getUserData             : getUserData
 }
 
 export default Helper;

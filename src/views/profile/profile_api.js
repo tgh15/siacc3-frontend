@@ -2,23 +2,25 @@ import React, {
     Fragment, 
     useState, 
     useEffect,
-    useContext, 
-} from 'react';
+}                                       from 'react';
 
 //API
-import UrlAPI                   from '../../services/pages/profile/urlApi';
-import { StoreNews }            from '../beranda/beranda_api';
-import agentProfileAPI          from '../../services/pages/profile/url';
+import UrlAPI                           from '../../services/pages/profile/urlApi';
+import { StoreNews }                    from '../beranda/beranda_api';
+import agentProfileAPI                  from '../../services/pages/profile/url';
 
 //Views
-import Profile                  from '.';
+import Profile                          from '.';
 
 //Components
-import CustomToast              from '../../components/widgets/custom-toast';
-import { processAgentReports }  from '../../components/widgets/feeds/news-card-widget/NewsConfig';
-import { UserManagementProvider } from '../../context/UserManagementContext';
-import { PerformanceProvider } from '../../context/PerformanceContext';
-import { BerandaFileProvider } from '../../components/utility/context/pages/beranda';
+import CustomToast                      from '../../components/widgets/custom-toast';
+import { processAgentReports }          from '../../components/widgets/feeds/news-card-widget/NewsConfig';
+import { UserManagementProvider }       from '../../context/UserManagementContext';
+import { PerformanceProvider }          from '../../context/PerformanceContext';
+import { BerandaFileProvider }          from '../../components/utility/context/pages/beranda';
+
+//Helper
+import Helper                           from '../../helpers';
 
 
 const ProfileAPI = () => {
@@ -27,7 +29,7 @@ const ProfileAPI = () => {
     const [reportAgent, setReportAgent]                             = useState(false);
     const [loadingFeeds, setLoadingFeeds]                           = useState(false);
     const [badgeProfile, setbadgeProfile]                           = useState([]);
-    const [historyPoint, setHistoryPoint]                           = useState([]);
+    const [historyPoint, setHistoryPoint]                           = useState(null);
     const [selectedBadge, setSelectedBadge]                         = useState([]);
     const [employeeDetail, setEmployeeDetail]                       = useState([]);
     const [badgeProfileKind, setBadgeProfileKind]                   = useState([]);
@@ -39,14 +41,7 @@ const ProfileAPI = () => {
     //State modal
     const [changeInformation, setChangeInformation]                 = useState(false);
 
-    useEffect(() => {
-        getAgentProfileBadge();
-        getReportAgentProfile();
-        achievementBadgeAgent();
-        getDetailIdentification();
-        getReportAgentsByPosition();
-        getHistoryPoint(localStorage.getItem('uuid'));
-    }, []);
+    const {getUserData}                                             = Helper;
 
     //Stored news
     function handleStore(stored_data,resps) {
@@ -57,9 +52,14 @@ const ProfileAPI = () => {
     const getDetailIdentification = () => {
         UrlAPI.get({
             onSuccess: (res) => {
-                setEmployeeDetail(res.data);
+                if(!res.is_error){
+                    setEmployeeDetail(res.data);
+                }else{
+                    CustomToast('danger', res.message);
+                }
             },
             onFail: (err) => {
+                CustomToast('danger', err.message);
                 console.log(err);
             }
         })
@@ -68,19 +68,23 @@ const ProfileAPI = () => {
     //API get feeds performance agent profile
     const getAgentProfileBadge = () => {
         const formData = {
-            uuid : localStorage.getItem("uuid")
+            uuid : getUserData().uuid
         };
 
         agentProfileAPI.getAgentProfilePerformance(formData).then(
             res => {
-                if (res.status === 200) {
-                    if (res.data != null) {
-                        setbadgeProfile(res.data);
-                        setTotalPoint(res.data.performance.points_total);
-                    }else{
-                        setTotalPoint([]);
-                        setbadgeProfile([]);
+                if(!res.is_error){
+                    if (res.status === 200) {
+                        if (res.data != null) {
+                            setbadgeProfile(res.data);
+                            setTotalPoint(res.data.performance.points_total);
+                        }else{
+                            setTotalPoint([]);
+                            setbadgeProfile([]);
+                        }
                     }
+                }else{
+                    CustomToast('danger', res.message)
                 }
             },
             err => {
@@ -93,18 +97,22 @@ const ProfileAPI = () => {
     const agentProfileByKind = (kind, is_event) => {
         const formData = {
             kind        : kind,
-            uuid        : localStorage.getItem("uuid"), 
+            uuid        : getUserData().uuid, 
             is_event    : is_event
         };
 
         agentProfileAPI.getAgentByKind(formData).then(
             res => {
-                if(res.status === 200){
-                    if (res.data != null) {
-                        setBadgeProfileKind(res.data);
-                    }else{
-                        setBadgeProfileKind([]);
+                if(!res.is_error){
+                    if(res.status === 200){
+                        if (res.data != null) {
+                            setBadgeProfileKind(res.data);
+                        }else{
+                            setBadgeProfileKind([]);
+                        }
                     }
+                }else{
+                    CustomToast('danger', res.message);
                 }
             },
             err => {
@@ -116,17 +124,21 @@ const ProfileAPI = () => {
     //API get achievement agent
     const achievementBadgeAgent = () => {
         const formData = {
-            uuid : localStorage.getItem("uuid")
+            uuid : getUserData().uuid
         };
 
         agentProfileAPI.getAchievementAgent(formData).then(
             res => {
-                if (res.status === 200) {
-                    if (res.data !== null) {
-                        setAchievementAgent(res.data);
-                    }else{
-                        setAchievementAgent([]);
+                if(!res.is_error){
+                    if (res.status === 200) {
+                        if (res.data !== null) {
+                            setAchievementAgent(res.data);
+                        }else{
+                            setAchievementAgent([]);
+                        }
                     }
+                }else{
+                    CustomToast('danger', res.message);
                 }
             },
             err => {
@@ -137,6 +149,7 @@ const ProfileAPI = () => {
 
     //API change achievement agent is active
     const changeProfileAchievement = (values) => {
+        console.log(values, 'test');
         const formData = [];
 
         values.map((data) => (
@@ -148,7 +161,7 @@ const ProfileAPI = () => {
 
         agentProfileAPI.changeAchievementAgent(formData).then(
             res => {
-                if (res.status === 200) {
+                if (!res.is_error) {
                     if (res.data != null) {
                         CustomToast("success", "Data lencana berhasil diubah");
 
@@ -159,6 +172,8 @@ const ProfileAPI = () => {
                     }else{
                         setchangeAchievement([]);
                     }
+                }else{
+                    CustomToast('danger', res.message);
                 }
             },
             err => {
@@ -172,23 +187,25 @@ const ProfileAPI = () => {
         setLoadingFeeds(true);
 
         const formData = {
-            uuid     : localStorage.getItem("uuid"), 
+            uuid     : getUserData().uuid, 
             category : 0
         };
 
         agentProfileAPI.getByEmployeeAgentReport(formData).then(
             res => {
-                const {data} = res;
-
-                if (data.agent_report === null){
-                    setReportAgent([]);
-                }else{
-                    processAgentReports(data.agent_report).then(
-                        res => {
-                            setReportAgent(res);
-                            setLoadingFeeds(false);
-                        }
-                    )
+                if(!res.is_error){
+                    const {data} = res;
+    
+                    if (data.agent_report === null){
+                        setReportAgent([]);
+                    }else{
+                        processAgentReports(data.agent_report).then(
+                            res => {
+                                setReportAgent(res);
+                                setLoadingFeeds(false);
+                            }
+                        )
+                    }
                 }
             },
             err => {
@@ -198,18 +215,24 @@ const ProfileAPI = () => {
     };
 
     //API get agent points (history point)
-    const getHistoryPoint = (uuid, startDate, endDate) => {
+    const getHistoryPoint = (page, uuid, startDate, endDate) => {
         const formData = {
             uuid        : uuid,
             start_date  : startDate,
             end_date    : endDate,
         };
 
-        agentProfileAPI.getAgentPoints(formData).then(
+        const params = {
+            is_paginate : true,
+            page : page,
+        }
+
+        agentProfileAPI.getAgentPoints(formData, params).then(
             res => {
-                if (res.status === 200) {
+                console.log('res', res)
+                if (!res.is_error) {
                     if(res.data != null){
-                        const groups = res.data.reduce((groups, data) => {
+                        const groups = res.data.log_points.reduce((groups, data) => {
                             const date = data.created_at.split('T')[0];
                             if (!groups[date]) {
                                 groups[date] = [];
@@ -225,10 +248,18 @@ const ProfileAPI = () => {
                                 data: groups[date]
                             };
                         });
-                        setHistoryPoint([...groupArrays]);
+                        setHistoryPoint({
+                            data : [...groupArrays],
+                            pagination : res.data.pagination
+                        });
                     }else{
-                        setHistoryPoint([]);
+                        setHistoryPoint({
+                            data : [],
+                            pagination : res.data.pagination
+                        });
                     }
+                }else{
+                    CustomToast('danger', res.message);
                 }
             },
             err => {
@@ -240,12 +271,12 @@ const ProfileAPI = () => {
     //API get employee by-uuid (edit informasi)
     const getDetailEmployee = () => {
         const formData = {
-            uuid : localStorage.getItem("uuid")
+            uuid : getUserData().uuid
         };
 
         agentProfileAPI.getEmployeeByUuid(formData).then(
             res => {
-                if (res.status === 200) {
+                if (!res.is_error) {
                     if (res.data != null) {
                         setEmployeeDetailUpdate(res.data);
                         
@@ -254,6 +285,8 @@ const ProfileAPI = () => {
                     }else{
                         setEmployeeDetailUpdate([]);
                     }
+                }else{
+                    CustomToast('danger', res.message);
                 }
             },
             err => {
@@ -273,17 +306,21 @@ const ProfileAPI = () => {
 
         agentProfileAPI.getByPositionShared(formData).then(
             res => {
-                const {data} = res;
-
-                if (data.agent_report === null){
-                    setReportAgentPositionShared([]);
+                if(!res.is_error){
+                    const {data} = res;
+    
+                    if (data.agent_report === null){
+                        setReportAgentPositionShared([]);
+                    }else{
+                        processAgentReports(data.agent_report).then(
+                            res => {
+                                setReportAgentPositionShared(res);
+                                setLoadingFeeds(false);
+                            }
+                        )
+                    }
                 }else{
-                    processAgentReports(data.agent_report).then(
-                        res => {
-                            setReportAgentPositionShared(res);
-                            setLoadingFeeds(false);
-                        }
-                    )
+                    CustomToast('danger', res.message);
                 }
             },
             err => {
@@ -294,6 +331,12 @@ const ProfileAPI = () => {
 
     useEffect(() => {
         getDetailEmployee();
+        getAgentProfileBadge();
+        getReportAgentProfile();
+        achievementBadgeAgent();
+        getDetailIdentification();
+        getReportAgentsByPosition();
+        getHistoryPoint(1, getUserData().uuid);
     }, []);
 
     return (
@@ -323,6 +366,7 @@ const ProfileAPI = () => {
                             getDetailEmployee           = {getDetailEmployee}
                             agentProfileByKind          = {agentProfileByKind}
                             getReportAgentProfile       = {getReportAgentProfile}
+                            getDetailIdentification     = {getDetailIdentification}
                             changeProfileAchievement    = {changeProfileAchievement}
                         />
                     </Fragment>

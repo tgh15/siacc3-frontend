@@ -16,17 +16,21 @@ import CustomTableBodyEmpty          from '../../components/widgets/custom-table
 import CustomToast                   from '../../components/widgets/custom-toast'
 
 
-import { useForm, Controller }       from "react-hook-form"
+import { useForm }                   from "react-hook-form"
 import Flatpickr                     from 'react-flatpickr'
 import '@styles/react/libs/flatpickr/flatpickr.scss'
 import Helper                        from '../../helpers';
+import CustomTablePaginate from '../../components/widgets/custom-table/CustomTablePaginate';
 
 const HistoryPoint = (props) => {
 
     const { 
-        control, 
         handleSubmit, 
     }                                         = useForm();
+
+    const {
+        getUserData,
+    }                                         = Helper;
 
 
     const [selectedFilter, setSelectedFilter] = useState(1);
@@ -35,17 +39,17 @@ const HistoryPoint = (props) => {
     const [endDate, setEndDate]               = useState(null);
     const [startDate, setStartDate]           = useState(moment().format('DD-MM-YYYY'));
 
-    const handleFilterHistory = (id) => {
+    const handleFilterHistory = (id, page) => {
         setSelectedFilter(id);
         
         if(id === 1){
-            props.getHistoryPoint(localStorage.getItem('uuid'), "", "");
+            props.getHistoryPoint(page, getUserData().uuid, "", "");
         }else if(id === 2){   
-            props.getHistoryPoint(localStorage.getItem('uuid'), moment().format('YYYY-MM-DD'), moment().format('YYYY-MM-DD'));
+            props.getHistoryPoint(page, getUserData().uuid, moment().format('YYYY-MM-DD'), moment().format('YYYY-MM-DD'));
         }else if(id === 3){
-            props.getHistoryPoint(localStorage.getItem('uuid'), moment().subtract(7,'d').format('YYYY-MM-DD'), moment().format('YYYY-MM-DD'));
+            props.getHistoryPoint(page, getUserData().uuid, moment().subtract(7,'d').format('YYYY-MM-DD'), moment().format('YYYY-MM-DD'));
         }else if(id === 4){
-            props.getHistoryPoint(localStorage.getItem('uuid'), moment().subtract(30,'d').format('YYYY-MM-DD'), moment().format('YYYY-MM-DD'));
+            props.getHistoryPoint(page, getUserData().uuid, moment().subtract(30,'d').format('YYYY-MM-DD'), moment().format('YYYY-MM-DD'));
         }else if(id === 5){
             setShowFilterDate(true);
         }
@@ -57,7 +61,7 @@ const HistoryPoint = (props) => {
         }else if(endDate == null){
             CustomToast('warning', 'Tanggal selesai belum terisi');
         }else{
-            props.getHistoryPoint(localStorage.getItem('uuid'), moment(startDate, 'DD-MM-YYYY').format('YYYY-MM-DD'), moment(endDate, 'DD-MM-YYYY').format('YYYY-MM-DD'));
+            props.getHistoryPoint(1, getUserData().uuid, moment(startDate, 'DD-MM-YYYY').format('YYYY-MM-DD'), moment(endDate, 'DD-MM-YYYY').format('YYYY-MM-DD'));
             setShowFilterDate(false);
         }
     }
@@ -140,6 +144,16 @@ const HistoryPoint = (props) => {
                     </b>
                 </p>
 
+                <div>
+                    <CustomTablePaginate
+                        size            = {12}
+                        length          = {10}
+                        getData         = {(val) => handleFilterHistory(selectedFilter, val.page)}
+                        pagination      = {props.historyPoint != null ? props.historyPoint.pagination : null} 
+                        offsetSearch    = {0} 
+                    />
+                </div>
+
                 <div className="d-flex demo-inline-spacing mb-2">
                 <Button
                         key     = "filter_all"
@@ -177,10 +191,9 @@ const HistoryPoint = (props) => {
                         Filter
                     </Button>
                 </div>
-
                 {
-                    props.historyPoint.length > 0 ?
-                    props.historyPoint.map((data) => (
+                    props.historyPoint != null && props.historyPoint.data.length > 0 ?
+                    props.historyPoint.data.map((data) => (
                         <div 
                             style       ={{padding: '5px', borderRadius: '7px', border: '1px solid #fff'}}
                             className   = "mb-2" 

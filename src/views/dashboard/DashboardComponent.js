@@ -29,24 +29,33 @@ const DashboardComponent = () => {
     const [selectedDataSource, setSelectedDataSource]           = useState(null);
     const [isUpdateLayoutVisible, setIsUpdateLayoutVisible]     = useState(false);
 
-    const {getRoleByMenuStatus}                                 = Helper;
+    const {
+        getUserData,
+        getRoleByMenuStatus
+    }                                                           = Helper;
+
+
 
     const getDashboardLayout = () => {
-        
         const formData = {
-            uuid : localStorage.getItem('uuid')
+            uuid : getUserData().uuid
         };
 
         dashboardAPI.getUserLayout(formData).then(
             res => {
-                if(res.status === 200 && res.data.layouts != null){
-                    setDashboardLayout([...res.data.layouts]);
+                if(!res.is_error){
+                    if(res.status === 200 && res.data.layouts != null){
+                        setDashboardLayout([...res.data.layouts]);
+                    }else{
+                        setDashboardLayout([]);
+                    }
                 }else{
-                    setDashboardLayout([]);
+                    CustomToast('danger', res.message);
                 }
             },  
             err => {
                 console.log(err);
+                CustomToast('danger', err.message);
             }
         );
     };

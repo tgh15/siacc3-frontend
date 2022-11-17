@@ -13,13 +13,17 @@ import {
 import {ModalBase}                      from '../../components/widgets/modals-base';
 import SubmitButton                     from '../../components/widgets/submit-button';
 import CustomTableBodyEmpty             from '../../components/widgets/custom-table/CustomTableBodyEmpty';
+import Helper                           from '../../helpers';
 
 
 const ChangeBadge = (props) => {
+
+    const {fallbackImage_}          = Helper;
+
     const handleFinish = (values) => {
-        console.log(values);
-        props.setSelectedBadge(values.selected_badge);
-        props.changeProfileAchievement(values.selected_badge);
+        console.log(values.selected_badge);
+        // props.setSelectedBadge(values.selected_badge);
+        // props.changeProfileAchievement(values.selected_badge);
     };
 
     useEffect(() => {
@@ -75,6 +79,7 @@ const ChangeBadge = (props) => {
                                                 alt         = {'Profile Pic'} 
                                                 style       = {{width: '80px', height: '77px', marginTop: '7px', borderRadius: '10px'}} 
                                                 className   = "img-fluid"
+                                                onError     = {fallbackImage_}
                                             />
                                             <p style={{fontSize: '12px'}}>
                                                 {data.title}

@@ -4,7 +4,7 @@ import { Col }                       from "reactstrap";
 
 
 const CustomTablePaginate = (props) => {
-
+console.log(props, 'pagination')
     const {
         pagination,
         offsetSearch,

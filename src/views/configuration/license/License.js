@@ -395,7 +395,7 @@ const License = () => {
                             </tr>
                             <tr>
                                 <td className="text-center">11</td>
-                                <td>Video Streaming</td>
+                                <td>Voice & Video Call</td>
                                 <td className="text-center">TACTMOS</td>
                                 <td className="text-center">TC-VV0115E</td>
                                 <td>
