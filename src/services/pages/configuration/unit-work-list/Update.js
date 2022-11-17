@@ -1,3 +1,4 @@
+import Helper from "../../../../helpers";
 import FetchServices from "../../../core/Axios"
 
 const Update = ({ id, logo_id, logo, logo_name, data, onSuccess, onFail }) => {
@@ -21,7 +22,7 @@ const Update = ({ id, logo_id, logo, logo_name, data, onSuccess, onFail }) => {
 
     dataPhoto.append("workunit_id", id);
     dataPhoto.append("old_logo_id", logo_id);
-    dataPhoto.append("uuid", localStorage.getItem("uuid"));
+    dataPhoto.append("uuid", Helper.getUserData().uuid);
     dataPhoto.append("logo[]", data.photo[0]);
 
     if (data.photo[0] === undefined) {

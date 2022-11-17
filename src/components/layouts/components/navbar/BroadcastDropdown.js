@@ -295,7 +295,7 @@ const BroadcastDropdown = () => {
                 </InputGroup>
 
                 <PerfectScrollbar style={{ maxHeight: "300px" }}>
-                    {employees.length > 0 && employees.filter((e) => e.uuid != localStorage.getItem("uuid")).filter((val) => {
+                    {employees.length > 0 && employees.filter((e) => e.uuid != Helper.getUserData().uuid).filter((val) => {
                         if (seachTerm == "") {
                             return val
                         } else if (val.name.toLowerCase().includes(seachTerm.toLowerCase())) {

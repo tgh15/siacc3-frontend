@@ -26,7 +26,7 @@ const SelectSingleUser = props => {
         return (
             <PerfectScrollbar style={{ maxHeight: "300px" }}>
                 <ListGroup>
-                    {employees.filter(opt => opt.uuid != localStorage.getItem("uuid")).filter((val) => {
+                    {employees.filter(opt => opt.uuid != Helper.getUserData().uuid).filter((val) => {
                         if (searchUser == "") {
                             return val
                         } else if (val.name.toLowerCase().includes(searchUser.toLowerCase())) {

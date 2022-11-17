@@ -16,7 +16,7 @@ const ChatCard = props => {
     const { dateIndo, fallbackImage_ } = Helper;
     const [updateData, setUpdateData] = useState(false);
 
-    const userUuid = localStorage.getItem("uuid");
+    const userUuid = Helper.getUserData().uuid;
 
     useEffect(() => {
         if (!updateData) {

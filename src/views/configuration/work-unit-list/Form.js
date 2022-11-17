@@ -28,6 +28,7 @@ import { PerformanceContext }                           from "../../../context/P
 //API
 import positionAPI                                      from "../../../services/pages/configuration/position";
 import workunitListAPI                                  from "../../../services/pages/configuration/unit-work-list/WorkunitList";
+import Helper from "../../../helpers";
 
 
 const ModalForm = (props) => {
@@ -119,7 +120,7 @@ const ModalForm = (props) => {
 
                         dataPhoto.append("logo[]", logoFile);
                         dataPhoto.append("workunit_id", res.data.id);
-                        dataPhoto.append("uuid", localStorage.getItem("uuid"));
+                        dataPhoto.append("uuid", Helper.getUserData().uuid);
 
                         workunitListAPI.uploadLogo(dataPhoto).then(
                             res => {

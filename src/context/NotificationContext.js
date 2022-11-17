@@ -4,6 +4,7 @@ import NotificationAPI from "../services/pages/notification"
 //Firebase
 import { getMessaging, getToken, onMessage } from "firebase/messaging";
 import { initializeApp } from "firebase/app";
+import Helper from "../helpers";
 
 const NotificationContext = createContext(null)
 
@@ -34,12 +35,12 @@ const NotificationProvider = (props) => {
 
     if (Array.isArray(id)) {
       formData = {
-        uuid: localStorage.getItem("uuid"),
+        uuid: Helper.getUserData().uuid,
         notification_id: 0
       }
     } else {
       formData = {
-        uuid: localStorage.getItem("uuid"),
+        uuid: Helper.getUserData().uuid,
         notification_id: id
       }
     }

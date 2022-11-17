@@ -81,7 +81,7 @@ const ShareOnFullScreen = (props) => {
 
     const onSubmit = () => {
         let request = {};
-        request["owner_id"] = localStorage.getItem("uuid")
+        request["owner_id"] = Helper.getUserData().uuid
         request["object_id"] = dataSelected.id
         request["recipients"] = userShare
         request["is_private"] = true

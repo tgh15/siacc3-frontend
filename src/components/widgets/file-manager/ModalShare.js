@@ -220,7 +220,7 @@ const ModalShare = ({ isShow, setShow }) => {
     const { users, dataSelected, getData, apiActive, shareSelected } = useContext(FileManagerContext)
 
     const [request, setRequest] = useState({
-        owner_id: localStorage.getItem("uuid"),
+        owner_id: Helper.getUserData().uuid,
         is_limit: false,
         limit: 0,
         is_private :true,

@@ -1,10 +1,11 @@
+import Helper from "../../../helpers";
 import FetchServices from "../../core/Axios";
 
 const TagDelete = ({  id,onSuccess, onFail }) => {
     const service = new FetchServices();
 
     let data = {
-        user_id : localStorage.getItem("uuid"),
+        user_id : Helper.getUserData().uuid,
         tag_id : id
     };
 

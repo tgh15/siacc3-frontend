@@ -147,14 +147,14 @@ const GroupInformationSidebar = props => {
             </div>
           </div>
           <div style={{ margin: "auto 0px" }}>
-          {checkAdmin(localStorage.getItem("uuid")) ?
+          {checkAdmin(Helper.getUserData().uuid) ?
             <UncontrolledDropdown >
               <DropdownToggle tag='div' className="cursor-pointer" onClick={e => e.preventDefault()}>
                 <MoreVertical size={20} />
               </DropdownToggle>
               <DropdownMenu right >
 
-                {!checkAdmin(member.uuid) && checkAdmin(localStorage.getItem("uuid")) ?
+                {!checkAdmin(member.uuid) && checkAdmin(Helper.getUserData().uuid) ?
                   <DropdownItem style={{ width: "100%" }} onClick={() => { ChangeAdmin(member.uuid, "add") }}>
                     <UserCheck size={18} /> {' '} Jadikan Admin
                   </DropdownItem>

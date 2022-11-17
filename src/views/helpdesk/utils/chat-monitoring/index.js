@@ -52,7 +52,7 @@ const ChatMonitoring = ({ data }) => {
     let formData = {
       content: msg,
       chat_bot_id: parseInt(data?.id),
-      sender_id: localStorage.getItem("uuid")
+      sender_id: Helper.getUserData().uuid
     }
 
     createData(formData)
@@ -63,7 +63,7 @@ const ChatMonitoring = ({ data }) => {
     let formData = new FormData();
     formData.append("files[]", e.target.files[0]);
     formData.append("chat_bot_id", data?.id);
-    formData.append("sender_id", localStorage.getItem("uuid"));
+    formData.append("sender_id", Helper.getUserData().uuid);
 
     createData(formData)
   }

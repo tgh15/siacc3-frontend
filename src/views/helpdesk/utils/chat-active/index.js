@@ -49,7 +49,7 @@ const ChatActive = ({ data }) => {
     let formData = {
       content: msg,
       ticket_id: parseInt(data?.id),
-      sender_id: localStorage.getItem("uuid")
+      sender_id: Helper.getUserData().uuid
     }
 
     createData(formData)
@@ -60,7 +60,7 @@ const ChatActive = ({ data }) => {
     let formData = new FormData();
     formData.append("files[]", e.target.files[0]);
     formData.append("ticket_id", data?.id);
-    formData.append("sender_id", localStorage.getItem("uuid"));
+    formData.append("sender_id", Helper.getUserData().uuid);
 
     createData(formData)
   }

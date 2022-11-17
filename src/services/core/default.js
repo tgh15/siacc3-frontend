@@ -1,4 +1,6 @@
-export const defaultUid      = window.localStorage.getItem("uuid");
+import Helper from "../../helpers";
+
+export const defaultUid      = Helper.getUserData().uuid;
 
 export const MAPBOX_SKIN     = "mapbox://styles/zephyrfn/ckra22zgd4uh517m5plawan4p"
 export const API_MAPBOX      = "pk.eyJ1IjoiemVwaHlyZm4iLCJhIjoiY2trNzI5bWN1MDlubDJ1cW94Z3hicm9qdCJ9.HPNjaaL1I5rkMdSg1AJf5g"

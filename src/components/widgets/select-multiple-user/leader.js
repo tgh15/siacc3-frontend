@@ -51,7 +51,7 @@ const SelectMultipleLeader = props => {
             <PerfectScrollbar  style={{ maxHeight: "300px" }}>
                 <ListGroup>
                     {
-                    leader != null && leader.filter(opt => opt.uuid != localStorage.getItem("uuid")).filter((val) => {
+                    leader != null && leader.filter(opt => opt.uuid != Helper.getUserData().uuid).filter((val) => {
                         if (searchUser == "") {
                             return val
                         } else if (val.name.toLowerCase().includes(searchUser.toLowerCase())) {

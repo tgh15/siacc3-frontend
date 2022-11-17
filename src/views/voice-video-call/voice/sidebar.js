@@ -81,7 +81,7 @@ const VoiceSidebar = (props) => {
                                 <div className='chat-info flex-grow-1'>
                                     <h6 className='font-weight-bolder mb-0'>
                                         {
-                                            data.UUIDCaller === localStorage.getItem("uuid")  ? data.UUIDReceiverDetail.name : data.UUIDCallerDetail.name
+                                            data.UUIDCaller === Helper.getUserData().uuid ? data.UUIDReceiverDetail.name : data.UUIDCallerDetail.name
                                         }
                                     </h6>
                                     <CardText
@@ -89,7 +89,7 @@ const VoiceSidebar = (props) => {
                                         className='text-truncate'
                                     >
                                         {
-                                            data.UUIDCaller === localStorage.getItem("uuid")  ? data.UUIDReceiverDetail.origin : data.UUIDCallerDetail.origin
+                                            data.UUIDCaller === Helper.getUserData().uuid ? data.UUIDReceiverDetail.origin : data.UUIDCallerDetail.origin
                                         }                                                          
                                     </CardText>
                                 </div>
