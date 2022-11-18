@@ -1,7 +1,7 @@
-import React,{Fragment, useEffect}         from 'react'
+import React, {Fragment}        from 'react'
+import Select                   from 'react-select'
 import { FormGroup, Label }     from 'reactstrap'
 import { CustomSelect }         from '../custom-select'
-import Select                   from 'react-select'
 
 export const DatasourceDetailChart = (props)=>{
 
@@ -31,29 +31,42 @@ export const DatasourceDetailChart = (props)=>{
         ]
     }
 
-
     return(
         <Fragment>
             <FormGroup>
                 <Label>Sumber Data</Label>                                
                 <Select 
                     multi       = {false} 
-                    options     = {props.chartSource} 
-                    onChange    = {(e)=>{
-                        props.setSelectedDataSource(e)
-                    }}
                     value       = {props.selectedDataSource}
+                    options     = {props.chartSource} 
+                    onChange    = {(e)=>{props.setSelectedDataSource(e)}}
+                />
+            </FormGroup>
+            <FormGroup>
+                <Label>Tingkat Satuan Kerja</Label>                                
+                <Select 
+                    multi       = {false} 
+                    value       = {props.selectedDataSource}
+                    options     = {props.chartSource} 
+                    onChange    = {(e)=>{props.setSelectedDataSource(e)}}
+                />
+            </FormGroup>
+            <FormGroup>
+                <Label>Satuan Kerja</Label>                                
+                <Select 
+                    multi       = {false} 
+                    value       = {props.selectedDataSource}
+                    options     = {props.chartSource} 
+                    onChange    = {(e)=>{props.setSelectedDataSource(e)}}
                 />
             </FormGroup>
             <FormGroup>
                 <Label>Ukuran Chart</Label>                                
                 <CustomSelect 
                     multi       = {false} 
-                    dataSource  = {ds.chartSize} 
-                    onChange    = {(e)=>{
-                        props.widthSet(e)
-                    }}
                     value       = {props.width}
+                    onChange    = {(e)=> {props.widthSet(e)}}
+                    dataSource  = {ds.chartSize} 
                 />
             </FormGroup>
         </Fragment>
