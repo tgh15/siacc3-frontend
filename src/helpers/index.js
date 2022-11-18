@@ -324,7 +324,13 @@ const getLastDateOfCurrentMonth = (month) => {
     return date;
 }
 
-const getUserData = () => JSON.parse(localStorage.getItem('userData'))
+const getUserData = () => {
+    if(localStorage.getItem('userData')){
+        return JSON.parse(localStorage.getItem('userData'))
+    }else{
+        return { uuid : "0" }
+    }
+}
 
 const Helper = {
     dayIndo                 : dayIndo,

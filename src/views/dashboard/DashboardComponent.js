@@ -323,19 +323,19 @@ const DashboardComponent = () => {
                     downloadLoading = {downloadLoading}
                 />
                 
-                {
+                {/* {
                     getRoleByMenuStatus('Dashboard', 'List') ? 
                         <BodyDashboardComponent 
                             rows            = {dashboardLayout}
                             chartRef        = {ref}     
-                            handleDelete    = {handleDelete}
+                            handleDelete    = {handleDelet e}
                             handleUpdate    = {handleUpdate}
 
                             printToPdf      = {printToPdf}
                         />
                     :
                         <CustomTableNotAuthorized/>
-                }
+                } */}
             </ContainerFluid>
 
             <ModalBase
