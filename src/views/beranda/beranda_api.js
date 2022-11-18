@@ -2,12 +2,12 @@
 // import CategoriesApi                                    from "../../services/pages/feeds/categories"
 import { feedsCategoryAPI }                             from "../../services/pages/feeds/categories"
 import AgentReportAPI                                   from "../../services/pages/feeds/agent-reports"
-import { defaultUid }                                   from "../../services/core/default"
 
 //Component
 import { newsByStatus }                                 from "../../components/widgets/feeds/news-card-widget/NewsConfig"
 import { getAgentReportFilter, getAgentReportLists }    from "../../components/widgets/feeds/news-card-widget/NewsConfig"
 import CustomToast from "../../components/widgets/custom-toast"
+import Helper from "../../helpers"
 
 export function getCategories(){
     const promise = new Promise((resolve,reject)=>{
@@ -47,7 +47,7 @@ export function filterAgentReport(page,options){
 export function StoreNews(id,isSaved){
     
     const param_post = {
-        uuid            : defaultUid,
+        uuid            : Helper.getUserData().uuid,
         agent_report_id : id,
     }
 
