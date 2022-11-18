@@ -7,6 +7,17 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="theme-color" content="#000000" />
   <meta http-equiv='cache-control' content='no-cache'>
+
+  <meta http-equiv='Content-Security-Policy' content="
+    default-src 'self' ws: wss: 'unsafe-inline' 'unsafe-eval'; 
+    img-src 'self' data: http: https:; 
+    font-src 'self' data: https: http:; 
+    worker-src 'self' data: 'unsafe-inline' 'unsafe-eval' http: https: 'unsafe-inline' blob: gap:; 
+    connect-src http: https: data: blob: ws: wss:; 
+    media-src https: http: blob: data:; 
+    manifest-src 'self' https: http: blob: data:;
+    object-src 'none'
+  ">
   <meta http-equiv='expires' content='0'>
   <meta http-equiv='pragma' content='no-cache'>
   <meta name="description" content="Sistem Informasi Adhyaksa Command Center" />
