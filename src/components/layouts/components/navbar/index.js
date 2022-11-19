@@ -8,32 +8,17 @@ import NotificationDropdown         from './NotificationDropdown';
 import BroadcastDropdown            from './BroadcastDropdown';
 import MessageDropdown              from './MessageDropdown';
 import FaqDropdown                  from './FaqDropdown';
-import { Menu, Home }               from 'react-feather';
-import { Button, NavItem, NavLink } from 'reactstrap';
-import { useLocation, matchPath }   from 'react-router-dom';
-import { ModalBase }                from '../../../widgets/modals-base';
+import { Home }               		from 'react-feather';
+import { Button } 					from 'reactstrap';
 
 // ** Context
-import { ChatContext } 				from '../../../../context/ChatContext';
 import IncomingCall from './IncomingCall';
 
-const ThemeNavbar = props => {
-	// ** Props
-	const { setMenuVisibility } 				= props
+const ThemeNavbar = () => {
 	
 	return (
 		<Fragment>
 			<div className='bookmark-wrapper d-flex align-items-center'>
-				<ul className='navbar-nav align-items-center'>
-					<NavItem className='mobile-menu mr-auto'>
-						<NavLink 
-							onClick		= {() => setMenuVisibility(true)}
-							className	= 'nav-menu-main menu-toggle hidden-xs is-active' 
-						>
-							<Menu className='ficon ' />
-						</NavLink>
-					</NavItem>
-				</ul>
 
 				{
 					location.pathname == '/profile' ?

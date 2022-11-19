@@ -55,7 +55,7 @@ const DashboardComponent = () => {
 
         const formData = {
             employee_uuid : localStorage.getItem('uuid'),
-            layout : {
+            layout  : {
                 col : data
             }
         };
