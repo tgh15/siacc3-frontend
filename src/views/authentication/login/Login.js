@@ -111,7 +111,6 @@ const Login = (props) => {
                         localStorage.setItem("username", res.data.username);
     
                         if (!process.env.NODE_ENV || process.env.NODE_ENV === 'production') {
-                            localStorage.setItem("token", res.data.token);
                         } else {
                             localStorage.setItem("token", res.data.token);
                         }

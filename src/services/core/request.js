@@ -1,11 +1,17 @@
 import axios                                from 'axios';
 
-const rootPath       = process.env.REACT_APP_API_GATEWAY
+const rootPath       = !process.env.NODE_ENV || process.env.NODE_ENV === 'production' ? window._env_.REACT_APP_API_GATEWAY : process.env.REACT_APP_API_GATEWAY
 
-const configHeaders  = {
+const configHeaders  = !process.env.NODE_ENV || process.env.NODE_ENV === 'production' ? {
+    "Content-Type"                  : "application/json",
+    "Access-Control-Allow-Origin"   : window._env_.REACT_APP_CORS_ORIGIN,
+    'Cache-Control'                 : 'no-cache',
+    'Pragma'                        : 'no-cache',
+    'Expires'                       : '0',
+} : {
     "Content-Type"                  : "application/json",   
     "Authorization"                 : "Bearer " + localStorage.getItem("token"), 
-    "Access-Control-Allow-Origin"   : ".underdev.team, .siaccinfo.id, localhost:3000, localhost:3001, .mapbox.com, .test-siaccinfo.id, .siaccinfo.my.id, .arcgis.com",
+    "Access-Control-Allow-Origin"   : ".underdev.team, .siaccinfo.id, localhost:3000, localhost:3001, .mapbox.com, .test-siaccinfo.id, .siaccinfo.my.id, .underdev.team, .arcgis.com",
     'Cache-Control'                 : 'no-cache',
     'Pragma'                        : 'no-cache',
     'Expires'                       : '0',

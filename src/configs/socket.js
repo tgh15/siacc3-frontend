@@ -1,4 +1,4 @@
-export const socketPath = process.env.REACT_APP_SOCKET_URL
+export const socketPath = !process.env.NODE_ENV || process.env.NODE_ENV === 'production' ? window._env_.REACT_APP_SOCKET_URL : process.env.REACT_APP_SOCKET_URL
 
 const feedsSocket = (roomId) => {
     return `${socketPath}/ws/${roomId}/feeds`;
