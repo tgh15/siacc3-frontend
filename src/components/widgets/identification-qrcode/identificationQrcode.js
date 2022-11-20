@@ -54,7 +54,7 @@ const IdentificationQrcode = props => {
                     } else {
                         // alert('QR Code telah berubah.');
                     }
-                    QRCode.toDataURL(`${!process.env.NODE_ENV || process.env.NODE_ENV === 'production' ? window._env_.REACT_APP_DIGITAL_IDENTIFICATION : process.env.REACT_APP_DIGITAL_IDENTIFICATION}`+'/'+res.encrypted_text, { errorCorrectionLevel: 'H' }, function (err, url) {
+                    QRCode.toDataURL(`${process.env.REACT_APP_DIGITAL_IDENTIFICATION}`+'/'+res.encrypted_text, { errorCorrectionLevel: 'H' }, function (err, url) {
                         setEncryptedText(url);
                     });
                 }

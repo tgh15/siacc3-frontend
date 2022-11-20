@@ -41,19 +41,9 @@ const VideoPlayer = (props) => {
                         {
                             data.broadcast.status === 'finished' ? 
                                 <video 
-                                    src             = {
-                                        !process.env.NODE_ENV || process.env.NODE_ENV === 'production' ? 
-                                            `https://stream.siaccinfo.id/WebRTCAppEE/${data.vod.filePath}`
-                                        :
-                                            `https://antmedia.underdev.team/WebRTCAppEE/${data.vod.filePath}`
-                                    }
+                                    src             = {`https://antmedia.underdev.team/WebRTCAppEE/${data.vod.filePath}`}
                                     style           = {detail ? {borderRadius: '10px', width: '70%'} : {borderRadius: '10px', maxHeight: '25vh', width: '80%'}}
-                                    poster          = {
-                                        !process.env.NODE_ENV || process.env.NODE_ENV === 'production' ? 
-                                            `https://stream.siaccinfo.id/WebRTCAppEE/previews/${data.vod.streamId}.png`
-                                        :   
-                                            `https://antmedia.underdev.team/WebRTCAppEE/previews/${data.vod.streamId}_finished.png`
-                                    }
+                                    poster          = {`https://antmedia.underdev.team/WebRTCAppEE/previews/${data.vod.streamId}_finished.png`}
                                     controls 
                                     className       = 'img-fluid img-video'
                                 />

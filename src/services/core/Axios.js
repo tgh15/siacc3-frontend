@@ -9,7 +9,7 @@ export default class FetchServices {
 
     constructor(_token) {
         this.axiosService = axios
-        this.baseUrl = !process.env.NODE_ENV || process.env.NODE_ENV === "production" ? window._env_.REACT_APP_API_GATEWAY : process.env.REACT_APP_API_GATEWAY
+        this.baseUrl = process.env.REACT_APP_API_GATEWAY
 
         if (_token == undefined || _token == null) {
             this.token = "Bearer " + window.localStorage.getItem("token")
@@ -22,14 +22,7 @@ export default class FetchServices {
     defaultHeader() {
         const accessControlOrigin = ".underdev.team, .siaccinfo.id, localhost:3000, localhost:3001, .mapbox.com, .test-siaccinfo.id, .siaccinfo.my.id "
 
-        const headers = !process.env.NODE_ENV || process.env.NODE_ENV === 'production' ? {
-            "Content-Type": "application/json;charset=utf-8",
-            "Accept": "*/*",
-            "Access-Control-Allow-Origin": accessControlOrigin,
-            "Cache-Control": "no-cache",
-            "Pragma": "no-cache",
-            "Expires": "0"
-        } : {
+        const headers = {
             "Content-Type": "application/json;charset=utf-8",
             "Accept": "*/*",
             "Access-Control-Allow-Origin": accessControlOrigin,
@@ -233,7 +226,7 @@ export default class FetchServices {
 
     mapboxGeo = (query, accessToken) => {
 
-        const url = !process.env.NODE_ENV || process.env.NODE_ENV == "production" ? "https://api.mapbox.com/" + getTemplateArea(query, accessToken) : "https://api.mapbox.com/" + getTemplateArea(query, accessToken);
+        const url = "https://api.mapbox.com/" + getTemplateArea(query, accessToken);
         const promise = new Promise((resolve, reject) => {
             axios.get(url, { withCredentials: false }).then(e => {
                 resolve(e)
