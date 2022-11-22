@@ -128,8 +128,7 @@ const ReportAPI = () => {
     //delete report
     const onDelete = () => {
         setLoading(true);
-
-        feedsReportAPI.deleteReport('asd').then(
+        feedsReportAPI.deleteReport(idSelected).then(
             res => {
                 if (res.is_error == false) {
                     

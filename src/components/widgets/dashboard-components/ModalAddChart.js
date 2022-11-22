@@ -6,7 +6,7 @@ import SelectGrid                                       from './SelectGrid'
 
 export const ModalAddChart = (props) =>{ 
 
-    const {handleFinish}                        = props;
+    const {handleFinish, chartSourceList}                        = props;
 
     const [gridItem, setGridItem]               = useState([]);
     const [isGridSelected, setIsGridSelected]   = useState(false);

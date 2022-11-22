@@ -32,7 +32,7 @@ const WorkUnitLevelSelect = ({ isRtl, onSelect, getAllData,setListData }) => {
             onSuccess: (res) => {
                 let data_;
 
-                if(localStorage.getItem('role') === 'Verifikator Daerah' || localStorage.getItem('role') === 'Admin Daerah'){
+                if(localStorage.getItem('role') === 'Verifikator Daerah' || localStorage.getItem('role') === 'Admin Daerah' || localStorage.getItem('role') === 'Agen'){
                     data_ = res.data.data.workunit_level.filter((data) => (
                         data.name !== 'KEJAKSAAN AGUNG'
                     ))

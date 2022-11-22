@@ -119,8 +119,15 @@ export const ModalDetailChart = (props)=>{
     const {
         namechart,
         chartSource,
+        chartSourceList,
         selectedDataSource,
-        setSelectedDataSource
+        setSelectedDataSource,
+        selectedWorkunit,
+        setSelectedWorkunit,
+        selectedWorkunitLevel,
+        setSelectedWorkunitLevel,
+        selectedPeriod,
+        setSelectedPeriod
     }                                       = props
     
     const [legend,setLegend]                = useState(false)
@@ -129,8 +136,8 @@ export const ModalDetailChart = (props)=>{
     const [titleChart,setTitleChart]        = useState("")
 
     const [chartWidth,setChartWidth]        = useState({
-            values  : "md",
-            label   : "Cukup Besar"
+        values  : "md",
+        label   : "Cukup Besar"
     });
 
     const [chartXOption,setChartXOption]    = useState({
@@ -177,12 +184,13 @@ export const ModalDetailChart = (props)=>{
             <Row>
                 <Col>
                     <Charts 
-                        name        = {namechart} 
-                        title       = {titleChart} 
-                        legend      = {legend} 
-                        tooltips    = {tooltips} 
-                        xOptions    = {chartXOption} 
-                        yOptions    = {chartYOption}
+                        name                     = {namechart} 
+                        title                    = {titleChart} 
+                        legend                   = {legend} 
+                        tooltips                 = {tooltips} 
+                        xOptions                 = {chartXOption} 
+                        yOptions                 = {chartYOption}
+
                     />
                 </Col>
                 <Col>
@@ -214,10 +222,17 @@ export const ModalDetailChart = (props)=>{
                     </Nav>
                     <TabContent activeTab={active}>
                         <TabPane tabId="1">
-                            <DatasourceDetailChart 
-                                widthSet                = {(param) => {setChartWidth(param)}}
-                                chartSource             = {chartSource}
-                                setSelectedDataSource   = {setSelectedDataSource}
+                            <DatasourceDetailChart
+                                widthSet                 = {(param) => {setChartWidth(param)}}
+                                nameChart                = {namechart}
+                                chartSource              = {chartSource}
+                                selectedPeriod           = {selectedPeriod}
+                                selectedWorkunit         = {selectedWorkunit}
+                                setSelectedPeriod        = {setSelectedPeriod}
+                                setSelectedWorkunit      = {setSelectedWorkunit}
+                                setSelectedDataSource    = {setSelectedDataSource}
+                                selectedWorkunitLevel    = {selectedWorkunitLevel}
+                                setSelectedWorkunitLevel = {setSelectedWorkunitLevel}
                             />
                         </TabPane>
                         <TabPane tabId="2">
@@ -257,35 +272,95 @@ export const ModalDetailChart = (props)=>{
                 <Button 
                     color   = "primary" 
                     onClick = {() => {
-                        let options = {
-                            name   : titleChart,
-                            width  : parseInt(chartWidth.value),
-                            chart  : namechart,
-                            source : selectedDataSource.value,
-                            options : {
-                                maintainAspectRatio: false,
-                                responsive: true,
-                                plugins: {
-                                    legend: {
-                                        display     : legend,
-                                        position    : 'top',
-                                    },
-                                    tooltip: {
-                                        enabled     : tooltips, 
-                                    },
-                                    datalabels: {
-                                        align       : 'center',
-                                        color       : 'black',
-                                        anchor      : 'center',
-                                        display     : true,
-                                    },
+                        let options
+                        
+                        let data_ = chartSourceList.filter((data) => (
+                            data.name === namechart
+                        ))
+
+                        if(namechart === 'line'){
+                            options = {
+                                name   : titleChart,
+                                width  : parseInt(chartWidth.value),
+                                chart  : namechart,
+                                source : {
+                                    url : data_[0].apis[0].url,
+                                    method : "POST",
+                                    body : {
+                                        type             : selectedDataSource.value,
+                                        chart            : namechart,
+                                        period           : selectedPeriod,
+                                        period_type      : selectedPeriod.value,
+                                        workunit         : selectedWorkunit,
+                                        workunit_level   : selectedWorkunitLevel,
+                                        workunit_id_list : selectedWorkunit.map((data) => data.value),
+                                        point_radius     : 1
+                                    }
                                 },
-                                scales: {
-                                    x: {...chartXOption},
-                                    y: {...chartYOption}
+                                options : {
+                                    maintainAspectRatio: false,
+                                    responsive: true,
+                                    plugins: {
+                                        legend: {
+                                            display     : legend,
+                                            position    : 'top',
+                                        },
+                                        tooltip: {
+                                            enabled     : tooltips, 
+                                        },
+                                        datalabels: {
+                                            align       : 'center',
+                                            color       : 'black',
+                                            anchor      : 'center',
+                                            display     : true,
+                                        },
+                                    },
+                                    scales: {
+                                        x: {...chartXOption},
+                                        y: {...chartYOption}
+                                    }
                                 }
+                                
                             }
-                            
+                        }else{
+                            options = {
+                                name   : titleChart,
+                                width  : parseInt(chartWidth.value),
+                                chart  : namechart,
+                                source : {
+                                    url : data_[0].apis[0].url,
+                                    method : "POST",
+                                    body : {
+                                        type             : selectedDataSource.value,
+                                        chart            : namechart,
+                                        point_radius     : 1
+                                    }
+                                },
+                                options : {
+                                    maintainAspectRatio: false,
+                                    responsive: true,
+                                    plugins: {
+                                        legend: {
+                                            display     : legend,
+                                            position    : 'top',
+                                        },
+                                        tooltip: {
+                                            enabled     : tooltips, 
+                                        },
+                                        datalabels: {
+                                            align       : 'center',
+                                            color       : 'black',
+                                            anchor      : 'center',
+                                            display     : true,
+                                        },
+                                    },
+                                    scales: {
+                                        x: {...chartXOption},
+                                        y: {...chartYOption}
+                                    }
+                                }
+                                
+                            }
                         }
                         props.setList(options)
                         props.closeModal()

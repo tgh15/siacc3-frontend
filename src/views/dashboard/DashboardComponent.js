@@ -23,6 +23,7 @@ const DashboardComponent = () => {
     const [chartSource, setChartSource]                         = useState(null);
     const [detailLayout, setDetailLayout]                       = useState(null);
     const [selectedIndex, setSelectedIndex]                     = useState(null);
+    const [chartSourceList, setChartSourceList]                 = useState(null);
     const [downloadLoading, setDownloadLoading]                 = useState(false);
     const [dashboardLayout, setDashboardLayout]                 = useState([]);
     const [detailLayoutCol, setDetailLayoutCol]                 = useState(null);
@@ -62,16 +63,17 @@ const DashboardComponent = () => {
 
         dashboardAPI.createUserLayout(formData).then(
             res => {
-                if(res.status === 201){
-
+                if(!res.is_error){
                     CustomToast("success", "Dashboard berhasil ditambahkan.");
                     setModalShow(false);
                     getDashboardLayout();
+                }else{
+                    CustomToast('danger', res.message)
                 }
             },
             err => {
                 console.log(err, 'create dashboard');                
-                // error_handler(err);
+                CustomToast('danger', err.message);
             }
         );
     };
@@ -86,7 +88,6 @@ const DashboardComponent = () => {
         dashboardAPI.getLayout(formData).then(
             res => {
                 if (res.status === 200){
-                    console.log(res.data, 'disini');
                     if(res.data.layout != null){
                         setDetailLayout(res.data);
                         setDetailLayoutCol(res.data.layout.col[index]);
@@ -154,19 +155,20 @@ const DashboardComponent = () => {
                     let _data = res.data.filter((data) => (
                         data.name === chartName
                     ))
-                    
+
                     let _restructur = [];
                     
                     _data[0].apis.map((data) => (
                         _restructur.push({
                             label : data.name,
-                            value : data.url
+                            value : data.type
                         })
                     ))
-
                     setChartSource(_restructur);
+                    setChartSourceList(res.data);
                 }else{
                     setChartSource(null);
+                    setChartSourceList(null);
                 }
             },
             err => {
@@ -341,6 +343,7 @@ const DashboardComponent = () => {
                         namechart               = {detailLayoutCol.chart}
                         closeModal              = {() => setIsUpdateLayoutVisible(false)}
                         chartSource             = {chartSource}
+                        chartSourceList         = {chartSourceList}
                         detailLayoutCol         = {detailLayoutCol}
                         selectedDataSource      = {selectedDataSource}
                         setSelectedDataSource   = {setSelectedDataSource}
