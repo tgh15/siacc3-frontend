@@ -12,13 +12,15 @@ const SelectChart = ({gridItem,unSelected,handleFinish}) => {
     const [toast,setToast]                                  = useState(null);
     const [lists,setLists]                                  = useState([]);
     const [modal,setModal]                                  = useState(false);
+    const [isNews, setIsNews]                               = useState(false);
     const [chartName,setChartName]                          = useState("");
     const [chartSource, setChartSource]                     = useState(null);
     const [selectedPeriod, setSelectedPeriod]               = useState(null);
+    const [chartSourceList, setChartSourceList]             = useState(null);
     const [selectedWorkunit, setSelectedWorkunit]           = useState([]);
     const [selectedDataSource, setSelectedDataSource]       = useState(null);
     const [selectedWorkunitLevel, setSelectedWorkunitLevel] = useState(null);
-    const [chartSourceList, setChartSourceList]             = useState(null);
+
 
     
     const toggleModal   = ()=>{
@@ -98,6 +100,8 @@ const SelectChart = ({gridItem,unSelected,handleFinish}) => {
                     list.push(param)
                     setLists(list)
                 }}
+                isNews                   = {isNews}
+                setIsNews                = {setIsNews}
                 selectedPeriod           = {selectedPeriod}
                 selectedWorkunit         = {selectedWorkunit}
                 setSelectedPeriod        = {setSelectedPeriod}

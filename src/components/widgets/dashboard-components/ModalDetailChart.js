@@ -117,17 +117,19 @@ const Charts = (props)=>{
 
 export const ModalDetailChart = (props)=>{
     const {
+        isNews,
+        setIsNews,
         namechart,
         chartSource,
+        selectedPeriod,
         chartSourceList,
-        selectedDataSource,
-        setSelectedDataSource,
         selectedWorkunit,
+        setSelectedPeriod,
+        selectedDataSource,
         setSelectedWorkunit,
+        setSelectedDataSource,
         selectedWorkunitLevel,
         setSelectedWorkunitLevel,
-        selectedPeriod,
-        setSelectedPeriod
     }                                       = props
     
     const [legend,setLegend]                = useState(false)
@@ -223,9 +225,12 @@ export const ModalDetailChart = (props)=>{
                     <TabContent activeTab={active}>
                         <TabPane tabId="1">
                             <DatasourceDetailChart
+                                isNews                   = {isNews}
                                 widthSet                 = {(param) => {setChartWidth(param)}}
+                                setIsNews                = {setIsNews}
                                 nameChart                = {namechart}
                                 chartSource              = {chartSource}
+                                chartSourceList          = {chartSourceList}
                                 selectedPeriod           = {selectedPeriod}
                                 selectedWorkunit         = {selectedWorkunit}
                                 setSelectedPeriod        = {setSelectedPeriod}
@@ -278,7 +283,7 @@ export const ModalDetailChart = (props)=>{
                             data.name === namechart
                         ))
 
-                        if(namechart === 'line'){
+                        if(isNews){
                             options = {
                                 name   : titleChart,
                                 width  : parseInt(chartWidth.value),
@@ -293,7 +298,7 @@ export const ModalDetailChart = (props)=>{
                                         period_type      : selectedPeriod.value,
                                         workunit         : selectedWorkunit,
                                         workunit_level   : selectedWorkunitLevel,
-                                        workunit_id_list : selectedWorkunit.map((data) => data.value),
+                                        workunit_id_list : selectedWorkunitLevel.value === 0 ? [] : selectedWorkunit.map((data) => data.value), 
                                         point_radius     : 1
                                     }
                                 },

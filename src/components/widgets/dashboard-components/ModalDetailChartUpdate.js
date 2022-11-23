@@ -118,6 +118,8 @@ const Charts = (props)=>{
 
 export const ModalDetailChartUpdate = (props)=>{
     const {
+        isNews,
+        setIsNews,
         namechart,
         chartSource,
         chartSourceList,
@@ -179,7 +181,6 @@ export const ModalDetailChartUpdate = (props)=>{
     };
 
     useEffect(() => {
-        console.log('chartsorce', chartSource)
         if(detailLayoutCol != undefined && detailLayoutCol != null && chartSource != null){
             setTitleChart(detailLayoutCol.name);
 
@@ -272,6 +273,8 @@ export const ModalDetailChartUpdate = (props)=>{
                     <TabContent activeTab={active}>
                         <TabPane tabId="1">
                             <DatasourceDetailChart
+                                isNews                  = {isNews}
+                                setIsNews               = {setIsNews}
                                 width                   = {chartWidth}
                                 widthSet                = {(param) => {setChartWidth(param)}}
                                 nameChart               = {namechart}
@@ -337,6 +340,10 @@ export const ModalDetailChartUpdate = (props)=>{
                     onClick = {() => {
                         let options; 
                         
+                        let data_ = chartSourceList.filter((data) => (
+                            data.name === namechart
+                        ))
+
                         if(namechart === 'line'){
                             options = {
                                 name   : titleChart,
@@ -352,7 +359,7 @@ export const ModalDetailChartUpdate = (props)=>{
                                         period_type      : selectedPeriod.value,
                                         workunit         : selectedWorkunit,
                                         workunit_level   : selectedWorkunitLevel,
-                                        workunit_id_list : selectedWorkunit.map((data) => data.value),
+                                        workunit_id_list : selectedWorkunitLevel.value === 0 ? [] : selectedWorkunit.map((data) => data.value),
                                         point_radius     : 1
                                     }
                                 },

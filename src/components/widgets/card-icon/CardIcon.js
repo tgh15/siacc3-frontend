@@ -1,6 +1,6 @@
 
 import React, {useEffect, useState}         from 'react'
-import { ArrowDown, ArrowUp }               from 'react-feather'
+import { ArrowDown, ArrowUp, User }               from 'react-feather'
 import {
         Col,
         Row,
@@ -50,7 +50,7 @@ export const CardIcon = (props)=>{
         dashboardAPI.getChartData(data.url, formData).then(
             res => {
                 if(res.status === 200 && res.data != null){
-                    setChartData(res.data);
+                    setChartData(res);
                 }else{
                     setChartData(null);
                 }
@@ -99,7 +99,7 @@ export const CardIcon = (props)=>{
 
             {
                 data != undefined ?
-                    chartData != null ? 
+                    (chartData != null && chartData.data === 'object' && "detail" in chartData.data) ? 
                         <div>
                             <UncontrolledButtonDropdown>
                                 <Button 
@@ -133,31 +133,37 @@ export const CardIcon = (props)=>{
                 <Row>
                     <Col sm={12} md={12}>
                         {
-                            chartData != null && chartData.type === "berita_belum_disetujui" ? 
+                            chartData != null && chartData.code === "berita_belum_disetujui" ? 
                                 NewsIcon.local
                             :
                                 null
                         }
                         {
-                            chartData != null && (chartData.type === "berita_dapat_dibaca_semua" || chartData.type === "berita_populer" || chartData.type === "jumlah_berita_populer")  ? 
+                            chartData != null && (chartData.code === "berita_dapat_dibaca_semua" || chartData.code === "berita_populer" || chartData.code === "jumlah_berita_populer")  ? 
                                 NewsIcon.popular
                             :
                                 null
                         }
                         {
-                            chartData != null && chartData.type === "berita_nasional" ? 
+                            chartData != null && (chartData.code === "berita_nasional" || chartData.code === "jumlah_berita_dipublikasi" || chartData.code === "jumlah_berita_nasional" || chartData.code === "jumlah_berita_lokal" || chartData.code === 'jumlah_berita_belum_diverifikasi')? 
                                 NewsIcon.national
                             :
                                 null
                         }
                         {
-                            chartData != null && chartData.type === "berita_lokal" ? 
+                            chartData != null && chartData.code === "berita_lokal" ? 
                                 NewsIcon.local
                             :
                                 null
                         }
                         {
-                            chartData != null && (chartData.type === "jumlah_berita" || chartData.type === "total_berita" || chartData.type === "jumlah_berita_diteruskan_ke_pimpinan" || chartData.type === "penonton" || chartData.type === "suka" || chartData.type === "komentar" || chartData.type === "dibagikan" || chartData.type === "jumlah_lencana" || chartData.type === "jumlah_event_Yang_diikuti" || chartData.type === "user_online" || chartData.type === "all_user_online")  ? 
+                            chartData != null && chartData.code === "feeds_dashboard_user_login" ? 
+                                <User size={140}/>
+                            :
+                                null
+                        }
+                        {
+                            chartData != null && (chartData.code === "jumlah_berita" || chartData.code === "total_berita" || chartData.code === "jumlah_berita_diteruskan_ke_pimpinan" || chartData.code === "penonton" || chartData.code === "suka" || chartData.code === "komentar" || chartData.code === "dibagikan" || chartData.code === "jumlah_lencana" || chartData.code === "jumlah_event_Yang_diikuti" || chartData.code === "user_online" || chartData.code === "all_user_online")  ? 
                                 NewsIcon.popular
                             :
                                 null
@@ -166,9 +172,17 @@ export const CardIcon = (props)=>{
                     </Col>
                     <Col>
                         <div style={{fontSize:"4em"}}>
-                            {chartData == null ? 10 : chartData.value}
+                            {
+                                chartData != null ? 
+                                    chartData.code === "feeds_dashboard_user_login" ?
+                                        chartData.data.value
+                                    :
+                                        chartData.data
+                                :
+                                    0
+                            }       
                         </div>
-                        {
+                        {/* {
                             chartData == null ? 
                                 <ArrowUp className="text-success"/>
                             :
@@ -177,10 +191,8 @@ export const CardIcon = (props)=>{
                                 :
                                     <ArrowUp className="text-success"/>
                                 
-                        }
-                        <div>
-                            {chartData == null ? "naik 10% dari minggu lalu" : chartData.text }
-                        </div>
+                        } */}
+                            {/* {chartData == null ? "naik 10% dari minggu lalu" : chartData.text } */}
                     </Col>
                 </Row>
             </ContainerFluid>

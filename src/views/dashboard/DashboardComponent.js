@@ -29,6 +29,7 @@ const DashboardComponent = () => {
     const [detailLayoutCol, setDetailLayoutCol]                 = useState(null);
     const [selectedDataSource, setSelectedDataSource]           = useState(null);
     const [isUpdateLayoutVisible, setIsUpdateLayoutVisible]     = useState(false);
+    const [isNews, setIsNews]                                   = useState(false);
 
     const {getRoleByMenuStatus}                                 = Helper;
 
@@ -97,7 +98,7 @@ const DashboardComponent = () => {
                 }
             },
             err => {
-                error_handler(err, 'get layout')
+                console.log(err);
             }
         );
     };
@@ -137,7 +138,7 @@ const DashboardComponent = () => {
     const handleDelete = (id) => {
         dashboardAPI.deleteLayout(id).then(
             res => {
-                if(res.status === 201){
+                if(res.status === 200){
                     CustomToast("success", 'Layout berhasil dihapus');
                     getDashboardLayout();
                 }
@@ -340,6 +341,8 @@ const DashboardComponent = () => {
                 {
                     detailLayoutCol != null  &&
                     <ModalDetailChartUpdate
+                        isNews                  = {isNews}
+                        setIsNews               = {setIsNews}
                         namechart               = {detailLayoutCol.chart}
                         closeModal              = {() => setIsUpdateLayoutVisible(false)}
                         chartSource             = {chartSource}

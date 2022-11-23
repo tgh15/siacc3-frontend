@@ -314,8 +314,8 @@ const WorkUnitList = (props) => {
                                     <div className="d-flex flex-column align-items-center py-0">
                                         <div>
                                             <ImageRounded
-                                                src={selectedMarker.logo}
-                                                width={40}
+                                                src     = {selectedMarker.logo}
+                                                width   = {40}
                                             />
                                         </div>
                                         <p

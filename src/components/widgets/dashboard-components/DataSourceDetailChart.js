@@ -1,21 +1,29 @@
-import React, {Fragment, useContext, useState}      from 'react'
+import React, {Fragment, useContext, useEffect}                from 'react'
 import { FormGroup, Label }                         from 'reactstrap'
 import { CustomSelect }                             from '../custom-select'
 import Select                                       from 'react-select'
 import { PerformanceContext }                       from '../../../context/PerformanceContext'
 import { selectThemeColors }                        from '@utils'
+import { useState } from 'react'
 
 
 export const DatasourceDetailChart = (props)=>{
-
-
     const {
-        selectedWorkunit,
-        setSelectedWorkunit     ,
-        selectedWorkunitLevel   ,
-        setSelectedWorkunitLevel,
+        width,
+        isNews,
+        widthSet,
+        setIsNews,
+        nameChart,
+        chartSource,
         selectedPeriod,
-        setSelectedPeriod
+        chartSourceList,
+        selectedWorkunit,
+        setSelectedPeriod,
+        selectedDataSource,
+        setSelectedWorkunit,
+        setSelectedDataSource,
+        selectedWorkunitLevel,
+        setSelectedWorkunitLevel,
     }                       = props
 
     const ds = {
@@ -51,28 +59,50 @@ export const DatasourceDetailChart = (props)=>{
         workunitLevel4 
     }                                                       = useContext(PerformanceContext);
 
+
+    const checkSource = (val) => {
+        let data_ = chartSourceList.filter((data) => (
+            data.name === nameChart
+        ))
+
+        let selected = data_[0].apis.filter((data) => data.type === val.value);
+        if(selected[0].kind === "berita"){
+            setIsNews(true);
+        }else{
+            setIsNews(false);
+        }
+    }
+
+    useEffect(() => {
+        if(selectedDataSource != null){
+            checkSource(selectedDataSource);
+        }
+        console.log(selectedDataSource)
+    }, [selectedDataSource]);
+
     return(
         <Fragment>
             <FormGroup>
                 <Label>Sumber Data</Label>                                
                 <Select 
                     multi            = {false} 
-                    value            = {props.selectedDataSource}
+                    value            = {selectedDataSource}
                     theme            = {selectThemeColors}
-                    options          = {props.chartSource} 
-                    onChange         = {(e) => {props.setSelectedDataSource(e)}}
+                    options          = {chartSource} 
+                    onChange         = {(e) => {setSelectedDataSource(e); checkSource(e)}}
                     className        = 'react-select'
                     classNamePrefix  = 'select'
                 />
             </FormGroup>
             {
-                (props.nameChart && props.nameChart === 'line') &&
+                (isNews) &&
                     <>
                         <FormGroup>
                             <Label>Tingkat Satuan Kerja</Label>                                
                             <Select 
                                 multi       = {false} 
                                 options     = {[
+                                    {value: 0   , label : 'Semua Satuan Kerja'},
                                     {value: 1   , label : 'Kejaksaan Agung'},
                                     {value: 2   , label : 'Kejaksaan Tinggi'},
                                     {value: 3   , label : 'Kejaksaan Negeri'},
@@ -86,7 +116,7 @@ export const DatasourceDetailChart = (props)=>{
                             />
                         </FormGroup>
                         {
-                            selectedWorkunitLevel != null &&
+                            (selectedWorkunitLevel != null && selectedWorkunitLevel.value != 0) &&
                             <FormGroup>
                                 <Label>Satuan Kerja</Label>                                
                                 <Select 
@@ -98,20 +128,23 @@ export const DatasourceDetailChart = (props)=>{
                                             selectedWorkunitLevel.value === 2 ?
                                                 workunitLevel2
                                             :
-                                                selectedWorkunitLevel.value === 3 ?
+                                                selectedWorkunitLevel.value === 3?
                                                     workunitLevel3
                                                 :
                                                     selectedWorkunitLevel.value === 4 ?
                                                         workunitLevel4
                                                     :
                                                         null
+                                                      
                                     } 
-                                    onChange            = {(e)=>{setSelectedWorkunit(e);}}
-                                    isOptionDisabled    = {() => selectedWorkunit.length > 4} 
+                                    onChange            = {(e)=>{
+                                        setSelectedWorkunit(e);
+                                    }}
+                                    isOptionDisabled    = {() => { return nameChart === 'map' ? selectedWorkunit.length > 40 : selectedWorkunit.length > 4}} 
                                     theme               = {selectThemeColors}
                                     className           = 'react-select'
                                     classNamePrefix     = 'select'
-                                    closeMenuOnSelecte  = {false}
+                                    closeMenuOnSelect   = {false}
                                     value               = {selectedWorkunit}
                                 />
                             </FormGroup>
@@ -141,9 +174,9 @@ export const DatasourceDetailChart = (props)=>{
                     multi       = {false} 
                     dataSource  = {ds.chartSize} 
                     onChange    = {(e)=>{
-                        props.widthSet(e)
+                        widthSet(e)
                     }}
-                    value       = {props.width}
+                    value       = {width}
                 />
             </FormGroup>
         </Fragment>
