@@ -252,11 +252,11 @@ export const FeedsCategoriesFilterModal = (props) => {
                                 <Select
                                     id              = "workunit" 
                                     theme           = {selectThemeColors}
+                                    isMulti
                                     options         = {workunitOptions}
                                     className       = 'react-select'
                                     placeholder     = "Pilih Satker"
                                     isClearable
-                                    isMulti
                                     classNamePrefix = 'select'
                                 />
                             }
@@ -265,7 +265,6 @@ export const FeedsCategoriesFilterModal = (props) => {
 
                     <FormGroup className="d-flex justify-content-between">
                         
-
                         <Button 
                             type    = "submit"
                             color   = "primary" 
@@ -273,7 +272,7 @@ export const FeedsCategoriesFilterModal = (props) => {
                         >
                             Export Laporan
                         </Button>
-                        
+
                         <div>
                             <Button 
                                 type    = "reset" 
