@@ -39,14 +39,15 @@ export const FeedsCategoriesFilterModal = (props) => {
         reset,
         control,
         handleSubmit,
-    }                                   = useForm();
+    }                                           = useForm();
 
-    const { workunitOptions }           = useContext(PerformanceContext);
+    const { workunitOptions }                   = useContext(PerformanceContext);
 
-    const [kind, setKind]               = useState(2);
-    const [orderBy, setOrderBy]         = useState('latest');
-    const [exportData, setExportData]   = useState(null);
-    const [publishType, setPublishType] = useState('national');
+    const [kind, setKind]                       = useState(2);
+    const [orderBy, setOrderBy]                 = useState('latest');
+    const [isExport, setIsExport]               = useState(false);
+    const [exportData, setExportData]           = useState(null);
+    const [publishType, setPublishType]         = useState('national');
     const [isExportVisible, setIsExportVisible] = useState(false);
 
 
@@ -78,12 +79,14 @@ export const FeedsCategoriesFilterModal = (props) => {
             formData.end_date = moment(data.end_date[0]).format('YYYY-MM-DD')
         }
 
-
-        setExportData(formData);
-
         setShow(false);
-        setIsExportVisible(true)
-        // onFilter(formData);
+
+        if(isExport){
+            setExportData(formData);
+            setIsExportVisible(true)
+        }else{
+            onFilter(formData);
+        }
     };
 
     const handleReset   = () => {
@@ -260,16 +263,35 @@ export const FeedsCategoriesFilterModal = (props) => {
                         />
                     </FormGroup>
 
-                    <FormGroup className="text-center">
+                    <FormGroup className="d-flex justify-content-between">
+                        
+
                         <Button 
-                            type    = "reset" 
-                            outline 
+                            type    = "submit"
                             color   = "primary" 
-                            onClick = {() => { handleReset() }}
+                            onClick = {() => {setIsExport(true)}}
                         >
-                            Reset
-                        </Button>&nbsp;
-                        <Button color="primary" type="submit">Terapkan</Button>
+                            Export Laporan
+                        </Button>
+                        
+                        <div>
+                            <Button 
+                                type    = "reset" 
+                                color   = "primary" 
+                                outline 
+                                onClick = {() => { handleReset() }}
+                            >
+                                Reset
+                            </Button>
+                            &nbsp;
+                            <Button 
+                                type    = "submit"
+                                color   = "primary" 
+                                onClick = {() => {setIsExport(false)}}
+                            >
+                                Terapkan
+                            </Button>
+                        </div>
                     </FormGroup>
                 </Form>
 
