@@ -143,16 +143,19 @@ const ChildChannel = (props) => {
                             </div>
                         ))
                 }
-                <Button
-                    size    = "sm"
-                    color   = "primary"
-                    block
-                    outline
-                    className = "mt-1"
-                    onClick = {() => setIsAddUserChannelVisible(true)}
-                >
-                    TAMBAH ANGGOTA
-                </Button>
+                {
+                    (selected != null && selected.admins_id.includes(localStorage.getItem('uuid'))) &&
+                    <Button
+                        size    = "sm"
+                        color   = "primary"
+                        block
+                        outline
+                        className = "mt-1"
+                        onClick = {() => setIsAddUserChannelVisible(true)}
+                    >
+                        TAMBAH ANGGOTA
+                    </Button>
+                }
             </Collapse>
         </div>
     )
