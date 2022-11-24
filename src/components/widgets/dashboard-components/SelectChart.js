@@ -9,12 +9,19 @@ import gaugeChart                                               from '../../../a
 
 const SelectChart = ({gridItem,unSelected,handleFinish}) => {
 
-    const [toast,setToast]                              = useState(null);
-    const [lists,setLists]                              = useState([]);
-    const [modal,setModal]                              = useState(false);
-    const [chartName,setChartName]                      = useState("");
-    const [chartSource, setChartSource]                 = useState(null);
-    const [selectedDataSource, setSelectedDataSource]   = useState(null);
+    const [toast,setToast]                                  = useState(null);
+    const [lists,setLists]                                  = useState([]);
+    const [modal,setModal]                                  = useState(false);
+    const [isNews, setIsNews]                               = useState(false);
+    const [chartName,setChartName]                          = useState("");
+    const [chartSource, setChartSource]                     = useState(null);
+    const [selectedPeriod, setSelectedPeriod]               = useState(null);
+    const [chartSourceList, setChartSourceList]             = useState(null);
+    const [selectedWorkunit, setSelectedWorkunit]           = useState([]);
+    const [selectedDataSource, setSelectedDataSource]       = useState(null);
+    const [selectedWorkunitLevel, setSelectedWorkunitLevel] = useState(null);
+
+
     
     const toggleModal   = ()=>{
         setModal(!modal)
@@ -42,13 +49,15 @@ const SelectChart = ({gridItem,unSelected,handleFinish}) => {
                     _data[0].apis.map((data) => (
                         _restructur.push({
                             label : data.name,
-                            value : data.url
+                            value : data.type
                         })
                     ))
 
                     setChartSource(_restructur);
+                    setChartSourceList(res.data);
                 }else{
                     setChartSource(null);
+                    setChartSourceList(null);
                 }
             },
             err => {
@@ -91,8 +100,17 @@ const SelectChart = ({gridItem,unSelected,handleFinish}) => {
                     list.push(param)
                     setLists(list)
                 }}
-                selectedDataSource      = {selectedDataSource}
-                setSelectedDataSource   = {setSelectedDataSource}
+                isNews                   = {isNews}
+                setIsNews                = {setIsNews}
+                selectedPeriod           = {selectedPeriod}
+                selectedWorkunit         = {selectedWorkunit}
+                setSelectedPeriod        = {setSelectedPeriod}
+                selectedDataSource       = {selectedDataSource}
+                setSelectedWorkunit      = {setSelectedWorkunit}
+                setSelectedDataSource    = {setSelectedDataSource}
+                selectedWorkunitLevel    = {selectedWorkunitLevel}
+                setSelectedWorkunitLevel = {setSelectedWorkunitLevel}
+                chartSourceList          = {chartSourceList}
             />
         </ModalBase>
 

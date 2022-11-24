@@ -60,7 +60,6 @@ const AdvancedSearch = () => {
     const [showDetailAgentReport, setShowDetailAgentReport]         = useState(false);
 
     const getElasticSearchAPI = (kind) => {
-        console.log(kind);
         if(kind === null){
             setLoading(true);
         }else{
@@ -68,7 +67,7 @@ const AdvancedSearch = () => {
         }
 
         const params = {
-            q    : query.get("keyword"),
+            q    : encodeURIComponent(query.get("keyword")),
             page : page
         }
 

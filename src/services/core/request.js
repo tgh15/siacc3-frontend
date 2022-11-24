@@ -18,7 +18,8 @@ const configHeaders  = !process.env.NODE_ENV || process.env.NODE_ENV === 'produc
 };
 
 const redirectlogout = (err) => {
-    if (err.response.status == 410) {
+
+    if (err.response.status == 401) {
         // Redirect them to the /login page, but save the current location they were
         // trying to go to when they were redirected. This allows us to send them
         // along to that page after they login, which is a nicer user experience
@@ -81,12 +82,13 @@ export const GetWithURL = (path) => {
     return promise;
 };
 
-export const GetDashboardData = (path) => {
+export const GetDashboardData = (path, formData) => {
     const promise = new Promise((resolve, reject) => {
         axios({
-            method          : 'get',
+            method          : 'post',
             url             : `${path}`,
             headers         : configHeaders,
+            data            : formData,
         }).then(
             res => {
                 resolve(res.data);
@@ -94,7 +96,6 @@ export const GetDashboardData = (path) => {
         ).catch(
             err => {
                 if(err.response){
-                    redirectlogout(err)
                     reject(err.response);
                 }else if(err.request) {
                     reject(err.request);

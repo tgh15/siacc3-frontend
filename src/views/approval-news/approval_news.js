@@ -1,4 +1,4 @@
-import React, { Fragment, useState, useContext }    from 'react';
+import React, { Fragment, useState }    from 'react';
 import { 
     Row, 
     Col, 
@@ -11,8 +11,6 @@ import {
     CardBody, 
     TabContent,
 } from 'reactstrap';
-
-import InfiniteScroll                   from "react-infinite-scroll-component";
 
 //Components
 import { NewsWidget }                   from '../../components/widgets/feeds/news-card-widget';

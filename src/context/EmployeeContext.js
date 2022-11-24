@@ -13,6 +13,7 @@ const EmployeeProvider = ({ children }) => {
     const getEmployees = () => {
         UserManagementApi.list({
             onSuccess: (res) => {
+
                 setEmployees(res)
 
                 let data_ = [];

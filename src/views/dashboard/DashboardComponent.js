@@ -20,13 +20,16 @@ const DashboardComponent = () => {
     const ref                                                   = useRef();
 
     const [modalShow,setModalShow]                              = useState(false);
-    const [chartSource, setChartSource]                         = useState(null)
+    const [chartSource, setChartSource]                         = useState(null);
     const [detailLayout, setDetailLayout]                       = useState(null);
     const [selectedIndex, setSelectedIndex]                     = useState(null);
+    const [chartSourceList, setChartSourceList]                 = useState(null);
+    const [downloadLoading, setDownloadLoading]                 = useState(false);
     const [dashboardLayout, setDashboardLayout]                 = useState([]);
     const [detailLayoutCol, setDetailLayoutCol]                 = useState(null);
-    const [isUpdateLayoutVisible, setIsUpdateLayoutVisible]     = useState(false);
     const [selectedDataSource, setSelectedDataSource]           = useState(null);
+    const [isUpdateLayoutVisible, setIsUpdateLayoutVisible]     = useState(false);
+    const [isNews, setIsNews]                                   = useState(false);
 
     const {getRoleByMenuStatus}                                 = Helper;
 
@@ -54,23 +57,24 @@ const DashboardComponent = () => {
 
         const formData = {
             employee_uuid : localStorage.getItem('uuid'),
-            layout : {
+            layout  : {
                 col : data
             }
         };
 
         dashboardAPI.createUserLayout(formData).then(
             res => {
-                if(res.status === 201){
-
+                if(!res.is_error){
                     CustomToast("success", "Dashboard berhasil ditambahkan.");
                     setModalShow(false);
                     getDashboardLayout();
+                }else{
+                    CustomToast('danger', res.message)
                 }
             },
             err => {
                 console.log(err, 'create dashboard');                
-                // error_handler(err);
+                CustomToast('danger', err.message);
             }
         );
     };
@@ -85,7 +89,6 @@ const DashboardComponent = () => {
         dashboardAPI.getLayout(formData).then(
             res => {
                 if (res.status === 200){
-                    console.log(res.data, 'disini');
                     if(res.data.layout != null){
                         setDetailLayout(res.data);
                         setDetailLayoutCol(res.data.layout.col[index]);
@@ -95,7 +98,7 @@ const DashboardComponent = () => {
                 }
             },
             err => {
-                error_handler(err, 'get layout')
+                console.log(err);
             }
         );
     };
@@ -135,7 +138,7 @@ const DashboardComponent = () => {
     const handleDelete = (id) => {
         dashboardAPI.deleteLayout(id).then(
             res => {
-                if(res.status === 201){
+                if(res.status === 200){
                     CustomToast("success", 'Layout berhasil dihapus');
                     getDashboardLayout();
                 }
@@ -153,19 +156,20 @@ const DashboardComponent = () => {
                     let _data = res.data.filter((data) => (
                         data.name === chartName
                     ))
-                    
+
                     let _restructur = [];
                     
                     _data[0].apis.map((data) => (
                         _restructur.push({
                             label : data.name,
-                            value : data.url
+                            value : data.type
                         })
                     ))
-
                     setChartSource(_restructur);
+                    setChartSourceList(res.data);
                 }else{
                     setChartSource(null);
+                    setChartSourceList(null);
                 }
             },
             err => {
@@ -192,12 +196,16 @@ const DashboardComponent = () => {
             return
         }
 
+        setDownloadLoading(true);
+
         toJpeg(ref.current, { cacheBust: true, backgroundColor: 'white' , style: { padding: '5px' }})
             .then((dataUrl) => {
                 const link      = document.createElement('a')
                 link.download   = 'dashboar-export.jpeg'
                 link.href       = dataUrl
                 link.click()
+
+                setDownloadLoading(false);
             })
             .catch((err) => {
                 error_handler(err, 'export to jpg');
@@ -208,6 +216,7 @@ const DashboardComponent = () => {
         if (ref.current === null) {
             return
         }
+        setDownloadLoading(true);
 
         toJpeg(ref.current, { cacheBust: true, style: { padding: '5px' }})
             .then((dataUrl) => {
@@ -215,6 +224,8 @@ const DashboardComponent = () => {
                 link.download   = 'dashboard-export.png'
                 link.href       = dataUrl
                 link.click()
+
+                setDownloadLoading(false);
             })
             .catch((err) => {
                 error_handler(err, 'export to png');
@@ -234,10 +245,14 @@ const DashboardComponent = () => {
             return
         }
 
+        setDownloadLoading(true);
+
         toPng(ref.current, { cacheBust: true, style: { padding: '5px' }})
             .then((dataUrl) => {
                 doc.addImage(dataUrl,'PNG',1,1, width-10, height-110);
                 doc.save(`export-dashboard.pdf`);
+
+                setDownloadLoading(false);
             })
             .catch((err) => {
                 error_handler(err, 'export to pdf');
@@ -257,13 +272,16 @@ const DashboardComponent = () => {
             return
         }
 
+        setDownloadLoading(true);
+
         toPng(ref.current, { cacheBust: true, style: { padding: '5px' }})
             .then((dataUrl) => {
                 doc.addImage(dataUrl, 'PNG',1,1, width-10, height-110);
                 
                 let print = window.open(doc.output('bloburl'), '_blank');
                 print.print();
-
+                
+                setDownloadLoading(false);
                 return doc;
             })
             .catch((err) => {
@@ -296,6 +314,7 @@ const DashboardComponent = () => {
                     exportToJpg     = {exportToJpg}
                     exportToPng     = {exportToPng}
                     exportToPdf     = {exportToPdf}
+                    downloadLoading = {downloadLoading}
                 />
                 
                 {
@@ -322,9 +341,12 @@ const DashboardComponent = () => {
                 {
                     detailLayoutCol != null  &&
                     <ModalDetailChartUpdate
+                        isNews                  = {isNews}
+                        setIsNews               = {setIsNews}
                         namechart               = {detailLayoutCol.chart}
                         closeModal              = {() => setIsUpdateLayoutVisible(false)}
                         chartSource             = {chartSource}
+                        chartSourceList         = {chartSourceList}
                         detailLayoutCol         = {detailLayoutCol}
                         selectedDataSource      = {selectedDataSource}
                         setSelectedDataSource   = {setSelectedDataSource}

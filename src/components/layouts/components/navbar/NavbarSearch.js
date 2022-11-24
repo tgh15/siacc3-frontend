@@ -54,7 +54,8 @@ const NavbarSearch = () => {
   // ** Function to close search on ESC & ENTER Click
   const onKeyDown = e => {
     if (e.keyCode === 13) {
-      window.location.href = `/advanced-search?keyword=${e.target.value}`
+
+      window.location.href = `/advanced-search?keyword=${encodeURIComponent(e.target.value)}`
     }
   }
 

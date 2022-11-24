@@ -6,12 +6,11 @@ import {
     Minimize, 
     Plus 
 }                                       from 'react-feather'
-import {Row,Col, Button, UncontrolledButtonDropdown, DropdownToggle, DropdownMenu, DropdownItem}                from 'reactstrap'
+import {Row,Col, Button, UncontrolledButtonDropdown, DropdownToggle, DropdownMenu, DropdownItem, Spinner}                from 'reactstrap'
 import { ModalBase }                    from '../modals-base'
 import { ModalAddChart }                from './ModalAddChart'
 
 const TopWidgetDashboard = (props) => {
-
     const {
         modalShow, 
         setModalShow,
@@ -21,6 +20,7 @@ const TopWidgetDashboard = (props) => {
         roleLink, 
         roleExport,
         getShareLink,
+        downloadLoading,
 
         //print
         exportToJpg,     
@@ -133,12 +133,18 @@ const TopWidgetDashboard = (props) => {
                     roleExport ? 
                         <UncontrolledButtonDropdown>
                             <DropdownToggle caret color="primary">
-                                <CornerUpRight size={14}/>
+                                {
+                                    downloadLoading ?
+                                        <Spinner size="sm"/>
+                                    :
+                                        <CornerUpRight size={14}/>
+
+                                }
                             </DropdownToggle>
                             <DropdownMenu>
-                                <DropdownItem tag='button' onClick={() => {exportToJpg()}}>Ekspor ke jpg</DropdownItem>
-                                <DropdownItem tag='button' onClick={() => {exportToPng()}}>Ekspor ke png</DropdownItem>
-                                <DropdownItem tag='button' onClick={() => {exportToPdf()}}>Ekspor ke pdf</DropdownItem>
+                                <DropdownItem tag='a' onClick={() => {exportToJpg()}}>Ekspor ke jpg</DropdownItem>
+                                <DropdownItem tag='a' onClick={() => {exportToPng()}}>Ekspor ke png</DropdownItem>
+                                <DropdownItem tag='a' onClick={() => {exportToPdf()}}>Ekspor ke pdf</DropdownItem>
                             </DropdownMenu>
                         </UncontrolledButtonDropdown>
                     :

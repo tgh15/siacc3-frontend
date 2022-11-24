@@ -281,24 +281,28 @@ const ModalShare = ({ isShow, setShow }) => {
                     removeUserShare(data)
                 }} />
 
-            <ModalChild show={modalChildShow} setShow={toggleModalChild} request={request} setRequest={(par => { setRequest(par) })} />
+            <ModalChild 
+                show        = {modalChildShow} 
+                setShow     = {toggleModalChild} 
+                request     = {request} 
+                setRequest  = {(par => { setRequest(par) })} 
+            />
 
             <FormGroup>
                 <Select
-                    theme={selectThemeColors}
-                    className='react-select'
-                    classNamePrefix='select'
-                    placeholder="Pilih User"
-                    options={users}
-                    isClearable={false}
+                    theme           = {selectThemeColors}
                     isMulti
-                    onChange={(e) => {
+                    options         = {users}
+                    className       = 'react-select'
+                    placeholder     = "Pilih User"
+                    isClearable     = {false}
+                    classNamePrefix = 'select'
+                    onChange        = {(e) => {
                         let tb = e.map(evalue => {
                             return {
-
-                                name: evalue.label,
-                                user_uuid: evalue.value,
-                                role: 1
+                                name        : evalue.label,
+                                user_uuid   : evalue.value,
+                                role        : 1
                             }
                         })
                         setUserShare(tb)
@@ -306,7 +310,14 @@ const ModalShare = ({ isShow, setShow }) => {
                 />
             </FormGroup>
             <FormGroup>
-                <Button block color="primary" size="sm" disabled={shareSelected ? false : true} onClick={onCopyClipboard}><Clipboard size={16} /> Salin Tautan</Button>
+                <Button 
+                    block 
+                    color="primary" 
+                    size="sm" 
+                    disabled={shareSelected ? false : true} 
+                    onClick={onCopyClipboard}>
+                        <Clipboard size={16} /> Salin Tautan
+                </Button>
             </FormGroup>
             <FormGroup>
                 <Button block color="primary" onClick={() => {
