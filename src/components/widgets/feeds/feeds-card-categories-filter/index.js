@@ -24,6 +24,7 @@ import { selectThemeColors }                    from '@utils'
 import { useForm, Controller }                  from "react-hook-form";
 
 import { PerformanceContext }                   from '../../../../context/PerformanceContext'
+import ExportFeeds from '../../../../views/beranda/export_beranda'
 
 export const FeedsCategoriesFilterModal = (props) => {
 
@@ -44,7 +45,10 @@ export const FeedsCategoriesFilterModal = (props) => {
 
     const [kind, setKind]               = useState(2);
     const [orderBy, setOrderBy]         = useState('latest');
+    const [exportData, setExportData]   = useState(null);
     const [publishType, setPublishType] = useState('national');
+    const [isExportVisible, setIsExportVisible] = useState(false);
+
 
 
     const handleSubmit_ = (data) => {
@@ -74,8 +78,12 @@ export const FeedsCategoriesFilterModal = (props) => {
             formData.end_date = moment(data.end_date[0]).format('YYYY-MM-DD')
         }
 
-        onFilter(formData);
+
+        setExportData(formData);
+
         setShow(false);
+        setIsExportVisible(true)
+        // onFilter(formData);
     };
 
     const handleReset   = () => {
@@ -95,6 +103,11 @@ export const FeedsCategoriesFilterModal = (props) => {
 
     return(
         <>
+            <ExportFeeds
+                exportData          = {exportData}
+                isExportVisible     = {isExportVisible}
+                setIsExportVisible  = {setIsExportVisible}
+            />
             <ModalBase 
                 size        = "lg"
                 show        = {showing}

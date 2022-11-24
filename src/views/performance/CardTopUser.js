@@ -55,7 +55,7 @@ const CardTopUser = (props) => {
                     {data.name}
                 </h5>
                 <p style={{ fontSize: "11px" }}>
-                    {data.workunit_level} - {data.workunit}
+                    {data.workunit_level} {data.workunit}
                 </p>
                 <p className="mt-1 text-left" style={{ fontSize: "10px" }}>
                     Aktivitas Berita (7 Hari Terakhir)
