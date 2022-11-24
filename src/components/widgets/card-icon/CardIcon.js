@@ -157,7 +157,7 @@ export const CardIcon = (props)=>{
                                 null
                         }
                         {
-                            chartData != null && chartData.code === "feeds_dashboard_user_login" ? 
+                            chartData != null && (chartData.code === "feeds_dashboard_user_login" || chartData.code === "feeds_dashboard_pengguna_keseluruhan") ? 
                                 <User size={140}/>
                             :
                                 null

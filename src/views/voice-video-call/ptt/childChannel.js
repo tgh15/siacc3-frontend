@@ -1,6 +1,7 @@
 
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import {
+    Plus,
     Volume2
 }                   from 'react-feather';
 
@@ -12,6 +13,8 @@ import {
 }                   from 'reactstrap';
 
 import Avatar       from '../../../components/widgets/avatar';
+import CustomToast from '../../../components/widgets/custom-toast';
+import { AntmediaContext } from '../../../context/AntmediaContext';
 
 //utils
 import Helper       from '../../../helpers';
@@ -24,28 +27,34 @@ const ChildChannel = (props) => {
         selected,
         setActiveChannel,
         setSelectedChannelID,
+        handleSelfJoinChannel,  
+        setIsAddUserChannelVisible,
         setIsConfirmPasswordVisible,
-        handleSelfJoinChannel  
     }                                           = props;
 
     const [member, setMember]                   = useState(null);
     const [confirmJoined, setConfirmJoined]     = useState(false);
     const [isCollapseChild, setIsCollapseChild] = useState(false);
 
+    const {
+        webRTCAdaptorPeer,
+    }                                           = useContext(AntmediaContext);
+
     const checkIsChannelPrivate = () => {
-        if(data.is_private === true){
-            setSelectedChannelID(data.id);
-            setIsConfirmPasswordVisible(true);
-        }else{
-            handleSelfJoinChannel(data.id);
-            setIsCollapseChild(!isCollapseChild);
-        }
+            if(data.is_private === true){
+                setSelectedChannelID(data.id);
+                setIsConfirmPasswordVisible(true);
+            }else{
+                handleSelfJoinChannel(data.id);
+                setIsCollapseChild(!isCollapseChild);
+            }
     };
     
     const checkMemberInclude = () => {
 
         let newMember = [];
         selected.member.map((val) => (
+            data.roomStreamList != null &&
             data.roomStreamList.includes(val.uuid) && newMember.push(val)
         ));
 
@@ -61,13 +70,17 @@ const ChildChannel = (props) => {
         <div className='mb-1'>
             <div 
                 onClick     = {() => {
-                    if(data.roomStreamList != null && member.filter((data) => data.uuid === localStorage.getItem('uuid')).length > 0){
-                        setConfirmJoined(false);
-                        setActiveChannel(data);
-                        setIsCollapseChild(!isCollapseChild);
+                    if(webRTCAdaptorPeer == null){
+                        if(data.roomStreamList != null && member.filter((data) => data.uuid === localStorage.getItem('uuid')).length > 0){
+                            setConfirmJoined(false);
+                            setActiveChannel(data);
+                            setIsCollapseChild(!isCollapseChild);
+                        }else{
+                            setConfirmJoined(true);
+                            setIsCollapseChild(!isCollapseChild);
+                        }
                     }else{
-                        setConfirmJoined(true);
-                        setIsCollapseChild(!isCollapseChild);
+                        CustomToast('warning', 'Channel Aktif Sedang Berlangsung!');
                     }
                 }}
                 className   = 'cursor-pointer' 
@@ -130,6 +143,16 @@ const ChildChannel = (props) => {
                             </div>
                         ))
                 }
+                <Button
+                    size    = "sm"
+                    color   = "primary"
+                    block
+                    outline
+                    className = "mt-1"
+                    onClick = {() => setIsAddUserChannelVisible(true)}
+                >
+                    TAMBAH ANGGOTA
+                </Button>
             </Collapse>
         </div>
     )

@@ -207,8 +207,10 @@ const IndexVoiceVideoCall = () => {
         //for incoming call
         if(isCallAnswer){
             if(privateCallData != null){
-                setUserCall(privateCallData.data);
                 setType(privateCallData.data.type);
+                setTimeout(() => {
+                    setUserCall(privateCallData.data);
+                }, 1000)
             }
         }
     },[isCallAnswer, type])
@@ -229,54 +231,54 @@ const IndexVoiceVideoCall = () => {
             if(callback.info === 'initialized'){
                 webRTCAdaptorPeer.joinRoom(activeChannel.roomId, tokenRoom[0].streamId)
             }else if(callback.info === 'joinedTheRoom'){
-
                 activeChannel.roomStreamList.map((data) => (
                     data != localStorage.getItem('uuid') && webRTCAdaptorPeer.play(data)
                 ))
 
-                webRTCAdaptorPeer.muteLocalMic();
                 webRTCAdaptorPeer.publish(tokenRoom[0].streamId, tokenRoom[0].tokenId)
-
+                
             }else if(callback.info === 'publish_started'){
+                webRTCAdaptorPeer.muteLocalMic();
                 webRTCAdaptorPeer.getRoomInfo(activeChannel.roomId, tokenRoom[0].streamId);
             }
             else if(callback.info === 'roomInformation'){
-                // if(callback.obj.streamList.length > 0){
-                // }
+
+                console.log(callback, 'roominformation')
+
+                if(callback.obj.streams.length > 0){
+                    callback.obj.streams.map((data) => (
+                        webRTCAdaptorPeer.play(data)
+                    ))
+                }
             }
             else if(callback.info === 'pong'){
-                webRTCAdaptorPeer.getRoomInfo(activeChannel.roomId, tokenRoom[0].streamId);
+                if(webRTCAdaptorPeer != null){
+                    webRTCAdaptorPeer.getRoomInfo(activeChannel.roomId, tokenRoom[0].streamId);
+                }
             }
         }
     }, [callback, tokenRoom]);
 
-    useEffect(() => {
+    if(PTTWebsocket != null){
 
-        if(PTTWebsocket != null){
+        PTTWebsocket.onmessage = (event) => {
+            let res = JSON.parse(event.data);
 
-            PTTWebsocket.onmessage = (event) => {
-                let res = JSON.parse(event.data);
-    
-                let val     = selected;
-                let activeMember = val.member;
+            let val     = selected;
+            let activeMember = val.member;
 
-                if(res.type === "ptt-talk"){
-                    activeMember.map((data) => (
-                        res.payload.uuid === data.uuid && res.payload.push === true?
-                            data.isTalk = true
-                        :
-                            data.isTalk = false
-                    ))
-                    selected.member = activeMember;
-                    setSelected(selected)
-                }
-                
+            if(res.type === "ptt-talk"){
+                activeMember.map((data) => (
+                    res.payload.uuid === data.uuid && res.payload.push ?
+                        data.isTalk = true
+                    :
+                        data.isTalk = false
+                ))
+                val.member = activeMember;
+                setSelected(val)
             }
-    
         }
-
-    });
-
+    }
 
     //join room akan trigger callback joinedtheroom, joinedtheroom menampilkan isi room.
     //untuk mendapatkan informasi room yang terupdate, kita pake getRoomInfo.

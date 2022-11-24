@@ -124,7 +124,6 @@ const GeneralInformation = (props) => {
             setValue('name', selected.name)
             setPhoto(selected.logo)
         }
-        console.log(selected);
     },[selected]);
 
     return (
