@@ -109,7 +109,7 @@ export const Linechart = (props) => {
             type              : data.body.type,
             chart             : data.body.chart,
             point_radius      : 1,
-        }
+        } 
         
         if("period_type" in data.body){
             formData.period_type      = data.body.period_type;

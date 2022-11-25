@@ -125,9 +125,10 @@ const IndexVoiceVideoCall = () => {
             let val = {
                 type : "ptt-talk",
                 payload : {
-                  uuid : localStorage.getItem('uuid'),
-                  id : activeChannel.id,
-                  push : true, 
+                  uuid  : localStorage.getItem('uuid'),
+                  id    : activeChannel.id,
+                  push  : true, 
+                  roomName : activeChannel.roomName
                 }
             }
 
@@ -143,6 +144,8 @@ const IndexVoiceVideoCall = () => {
                   uuid : localStorage.getItem('uuid'),
                   id : activeChannel.id,
                   push : false, 
+                  roomName : activeChannel.roomName
+
                 }
             }
 
@@ -203,6 +206,35 @@ const IndexVoiceVideoCall = () => {
         )
     };
 
+    if(PTTWebsocket != null){
+
+        PTTWebsocket.onmessage = (event) => {
+            let res = JSON.parse(event.data);
+
+            if(activeChannel != null){
+                if(res.type === "ptt-talk" && res.payload.roomName === activeChannel.roomName){
+                    let val          = activeChannel;
+                    let val_         = val.roomStreamList
+                    let active       = [];
+                    console.log(val_, 'active3')
+                    val_.map((data) => (
+                        res.payload.uuid === data && res.payload.push === true?
+                            active.push(true)
+                        :
+                            active.push(false)
+                    ))
+
+                    
+                    console.log(val, 'active val');
+                    console.log(active, 'active active')
+                    setActiveChannel({...activeChannel, isSpeak : active});
+                }
+            }
+            
+        }
+
+    }
+
     useEffect(() => {
         //for incoming call
         if(isCallAnswer){
@@ -259,27 +291,6 @@ const IndexVoiceVideoCall = () => {
         }
     }, [callback, tokenRoom]);
 
-    if(PTTWebsocket != null){
-
-        PTTWebsocket.onmessage = (event) => {
-            let res = JSON.parse(event.data);
-
-            let val     = selected;
-            let activeMember = val.member;
-
-            if(res.type === "ptt-talk"){
-                activeMember.map((data) => (
-                    res.payload.uuid === data.uuid && res.payload.push ?
-                        data.isTalk = true
-                    :
-                        data.isTalk = false
-                ))
-                val.member = activeMember;
-                setSelected(val)
-            }
-        }
-    }
-
     //join room akan trigger callback joinedtheroom, joinedtheroom menampilkan isi room.
     //untuk mendapatkan informasi room yang terupdate, kita pake getRoomInfo.
     //untuk kita yang jadi orang pertama join di room itu, 
@@ -329,6 +340,7 @@ const IndexVoiceVideoCall = () => {
                 setServer                   = {setServer}
                 pttActive                   = {pttActive}
                 startPTT                    = {startPTT}
+                PTTWebsocket                = {PTTWebsocket}
                 getServer                   = {getServer}
                 setSelected                 = {setSelected}
                 setPttActive                = {setPttActive}

@@ -40,6 +40,7 @@ const PTTSidebar = (props) => {
         isCollapse,
         setSelected,
         setPttActive,
+        PTTWebsocket,
         setIsCollapse,
         activeChannel,
         createVisible,
@@ -278,12 +279,14 @@ const PTTSidebar = (props) => {
                                                 >
                                                     {
                                                         selected != null && selected.channels != null ? 
-                                                            selected.channels.map((data) => (
+                                                            selected.channels.map((data,index) => (
                                                                 <ChildChannel 
-                                                                    data                        = {data}
+                                                                    childData                   = {data}
                                                                     selected                    = {selected}
                                                                     activeChannel               = {activeChannel}
-                                                                    setActiveChannel            = {setActiveChannel}    
+                                                                    setActiveChannel            = {setActiveChannel}
+                                                                    setSelected                 = {setSelected}
+                                                                    PTTWebsocket                = {PTTWebsocket}
                                                                     setSelectedChannelID        = {setSelectedChannelID}
                                                                     setIsConfirmPasswordVisible = {setIsConfirmPasswordVisible}
                                                                     setIsAddUserChannelVisible  = {setIsAddUserChannelVisible}

@@ -268,8 +268,8 @@ const FormReport = (props) => {
                 formData.title          = `${`Data Berita ${workunitKind === 1 ? 'Kejagung' : workunitKind === 2 ? 'Kejati' : workunitKind === 3 ? 'Kejari' : 'Cabjari'} ${data.quarter_type.length > 3 || data.quarter_type.filter((data) => parseInt(data.value) === 0).length > 0 ?'Triwulan I (Januari - Maret) - Triwulan IV (Oktober - Desember)':data.quarter_type.length > 1 ?`${(data.quarter_type.filter((data_) => parseInt(data_.value) === (Math.min.apply(Math, data.quarter_type.map((data) => (parseInt(data.value)))))))[0].label} ${data.quarter_type.length > 2 ? '-' : '&'} ${(data.quarter_type.filter((data_) => parseInt(data_.value) === (Math.max.apply(Math, data.quarter_type.map((data) => (parseInt(data.value)))))))[0].label }` : data.quarter_type[0].label} Tahun ${data.year.value}`}`
                 formData.contents_id    = [parseInt(data.report_body.value)];
                 formData.report_type    = 'quarterly'
-    
-                if(data.quarter_type.filter(data => data.value === 0 ).length > 0){
+                console.log(data)
+                if(data.quarter_type.filter(data => parseInt(data.value) === 0 ).length > 0){
                     formData.quarterly = [
                         { id : 1 },
                         { id : 2 },
@@ -307,7 +307,6 @@ const FormReport = (props) => {
                 formData.work_unit_id           = data.workunit_level_4.map((data) => data.value).toString();
                 formData.work_unit_parent_id    = data.workunit_level_3.value;
             }
-
             onSubmit({model : formData});
         }else{
             if(data.content != null && data.content.filter(e => parseInt(e.value) === 1).length > 0){
@@ -437,7 +436,6 @@ const FormReport = (props) => {
                             is_formatted : false
                         }
                     }
-
                     props.onSubmit(formData);
                 }else{
                     CustomToast('warning', 'Jika memilih Jumlah Agen, maka harus memilih Satuan Kerja');

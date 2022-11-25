@@ -11,6 +11,7 @@ import {
     Collapse,
     Row
 }                   from 'reactstrap';
+import { active } from 'sortablejs';
 
 import Avatar       from '../../../components/widgets/avatar';
 import CustomToast from '../../../components/widgets/custom-toast';
@@ -23,8 +24,11 @@ import Helper       from '../../../helpers';
 const ChildChannel = (props) => {
 
     const {
-        data,
+        childData,
         selected,
+        setSelected,
+        PTTWebsocket,
+        activeChannel,
         setActiveChannel,
         setSelectedChannelID,
         handleSelfJoinChannel,  
@@ -41,11 +45,11 @@ const ChildChannel = (props) => {
     }                                           = useContext(AntmediaContext);
 
     const checkIsChannelPrivate = () => {
-            if(data.is_private === true){
-                setSelectedChannelID(data.id);
+            if(childData.is_private === true){
+                setSelectedChannelID(childData.id);
                 setIsConfirmPasswordVisible(true);
             }else{
-                handleSelfJoinChannel(data.id);
+                handleSelfJoinChannel(childData.id);
                 setIsCollapseChild(!isCollapseChild);
             }
     };
@@ -54,26 +58,27 @@ const ChildChannel = (props) => {
 
         let newMember = [];
         selected.member.map((val) => (
-            data.roomStreamList != null &&
-            data.roomStreamList.includes(val.uuid) && newMember.push(val)
+            (childData.roomStreamList != null && childData.roomStreamList.includes(val.uuid)) && newMember.push(val)
         ));
 
-        setMember(newMember)
+        setMember(newMember);
     };
 
     useEffect(() => {
-        data != undefined && checkMemberInclude();
-    }, [selected, data]);
+        childData != undefined && checkMemberInclude();
+    }, [selected]);
 
     return (
         
-        <div className='mb-1'>
+        <div className='mb-1' 
+            key         ={`channel-${childData.roomName}-${childData.id}`}
+        >
             <div 
                 onClick     = {() => {
                     if(webRTCAdaptorPeer == null){
-                        if(data.roomStreamList != null && member.filter((data) => data.uuid === localStorage.getItem('uuid')).length > 0){
+                        if(childData.roomStreamList != null && member.filter((data) => data.uuid === localStorage.getItem('uuid')).length > 0){
                             setConfirmJoined(false);
-                            setActiveChannel(data);
+                            setActiveChannel(childData);
                             setIsCollapseChild(!isCollapseChild);
                         }else{
                             setConfirmJoined(true);
@@ -91,7 +96,7 @@ const ChildChannel = (props) => {
                     </Col>
                     <Col md={9}>
                         <span className='ml-1'>
-                            {data.roomName}
+                            {childData.roomName}
                         </span>
                     </Col>
                 </Row>
@@ -115,9 +120,10 @@ const ChildChannel = (props) => {
                             </Button>
                         </div>
                     :
-                        member != null && member.map((data_) => (
+                        member != null && member.map((data_, index) => (
                             <div 
                                 className   ='mb-1'
+                                key         ={`channel-member-${childData.roomName}-${childData.id}`}
                             >
                                 {
                                     data_.avatar == "" ?
@@ -133,10 +139,9 @@ const ChildChannel = (props) => {
                                         />
                                 }
                                 <span className='ml-2'>{data_.name}</span>
-
                                 {
-                                data_?.isTalk == true ?
-                                        <Volume2/>
+                                    activeChannel != null && "isSpeak" in activeChannel ?
+                                        activeChannel.isSpeak[index] === true && <Volume2/>
                                     :
                                         null 
                                 }
