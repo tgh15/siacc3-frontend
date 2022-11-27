@@ -41,6 +41,7 @@ const ContentGroup = (props) => {
         setPttActive,
         activeChannel,
         handlePTTActive,
+        setActiveChannel,
         pttActiveContent,
         handlePTTNotActive,
         setPttActiveContent
@@ -54,7 +55,15 @@ const ContentGroup = (props) => {
     const handleLeaveRoom =() => {
         webRTCAdaptorPeer.leaveFromRoom(activeChannel.roomId);
         setWebRtcAdaptorPeer(null);
-        // location.reload();
+
+        (activeChannel.roomStreamList.sort((a,b) => {return a.localeCompare(b)})).map((data, index) => (
+            data === localStorage.getItem('uuid') ? 
+                activeChannel.isOnline[index] = false
+            :
+                null
+        ))
+
+        setActiveChannel({...activeChannel}); 
     }
 
     const handleDeleteChannel = () => {
@@ -111,7 +120,6 @@ const ContentGroup = (props) => {
                                                     className   = "mr-1 cursor-pointer"
                                                 />
                                             }
-                                            
                                             <ButtonDropdown 
                                                 isOpen = {dropdownOpen} 
                                                 toggle = {toggleDropdown}

@@ -7,7 +7,6 @@ import '../../components/scss/base/pages/app-chat.scss';
 import '../../components/scss/base/pages/app-chat-list.scss';
 
 //Component
-import { active }           from 'sortablejs';
 import SidebarLeft          from './sidebarLeft';
 import ContentCall          from './voice/contentCall';
 import ContentGroup         from './ptt/contentGroup';
@@ -144,8 +143,6 @@ const IndexVoiceVideoCall = () => {
                   uuid : localStorage.getItem('uuid'),
                   id : activeChannel.id,
                   push : false, 
-                  roomName : activeChannel.roomName
-
                 }
             }
 
@@ -212,22 +209,30 @@ const IndexVoiceVideoCall = () => {
             let res = JSON.parse(event.data);
 
             if(activeChannel != null){
-                if(res.type === "ptt-talk" && res.payload.roomName === activeChannel.roomName){
-                    let val          = activeChannel;
-                    let val_         = val.roomStreamList
+                let val          = activeChannel;
+                let val_         = val.roomStreamList
+
+                if(res.type === "ptt-talk" && res.payload.id === activeChannel.id){
                     let active       = [];
-                    console.log(val_, 'active3')
-                    val_.map((data) => (
+                    (val_.sort((a,b) => {return a.localeCompare(b)})).map((data) => (
                         res.payload.uuid === data && res.payload.push === true?
                             active.push(true)
                         :
                             active.push(false)
                     ))
-
                     
-                    console.log(val, 'active val');
-                    console.log(active, 'active active')
                     setActiveChannel({...activeChannel, isSpeak : active});
+                }else if(res.type === 'online-user'){
+                    let online      = [];
+
+                    (val_.sort((a,b) => {return a.localeCompare(b)})).map((data) => (
+                        res.payload.online.includes(data) ?
+                            online.push(true)
+                        :
+                            online.push(false)
+                    ))
+
+                    setActiveChannel({...activeChannel, isOnline : online}); 
                 }
             }
             

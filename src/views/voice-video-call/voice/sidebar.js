@@ -73,7 +73,6 @@ const VoiceSidebar = (props) => {
                             <li className='chat' onClick={()=>setDataPrivate(data)}>
                                 <Avatar
                                     img={LogoProfile}
-                                    status="online"
                                     imgWidth='42'
                                     imgHeight='42'
                                     className='avatar-border'

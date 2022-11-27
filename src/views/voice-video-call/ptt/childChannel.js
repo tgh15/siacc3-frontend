@@ -55,19 +55,23 @@ const ChildChannel = (props) => {
     };
     
     const checkMemberInclude = () => {
-
         let newMember = [];
+
         selected.member.map((val) => (
-            (childData.roomStreamList != null && childData.roomStreamList.includes(val.uuid)) && newMember.push(val)
+            childData.roomStreamList != null ? childData.roomStreamList.includes(val.uuid) && newMember.push(val) : null
         ));
 
-        setMember(newMember);
+        let sort_ = newMember.sort((a,b) => {return a.uuid.localeCompare(b.uuid)})
+        setMember([...sort_]);
     };
 
     useEffect(() => {
         childData != undefined && checkMemberInclude();
-    }, [selected]);
+    }, [childData]);
 
+    useEffect(() => {
+        console.log(activeChannel)
+    }, [activeChannel])
     return (
         
         <div className='mb-1' 
@@ -76,14 +80,20 @@ const ChildChannel = (props) => {
             <div 
                 onClick     = {() => {
                     if(webRTCAdaptorPeer == null){
-                        if(childData.roomStreamList != null && member.filter((data) => data.uuid === localStorage.getItem('uuid')).length > 0){
-                            setConfirmJoined(false);
+
+                        if(activeChannel === null){
                             setActiveChannel(childData);
                             setIsCollapseChild(!isCollapseChild);
                         }else{
-                            setConfirmJoined(true);
-                            setIsCollapseChild(!isCollapseChild);
+                            if(childData.roomStreamList != null && member != null && member.filter((data) => data.uuid === localStorage.getItem('uuid')).length > 0){
+                                setConfirmJoined(false);
+                                setIsCollapseChild(!isCollapseChild);
+                            }else{
+                                setConfirmJoined(true);
+                                setIsCollapseChild(!isCollapseChild);
+                            }
                         }
+
                     }else{
                         CustomToast('warning', 'Channel Aktif Sedang Berlangsung!');
                     }
@@ -103,6 +113,7 @@ const ChildChannel = (props) => {
             </div>
 
             <Collapse className="ml-3" isOpen={isCollapseChild}>
+                {console.log('member', member)}
                 {
                     confirmJoined ? 
                         <div>
@@ -126,17 +137,13 @@ const ChildChannel = (props) => {
                                 key         ={`channel-member-${childData.roomName}-${childData.id}`}
                             >
                                 {
-                                    data_.avatar == "" ?
-                                        <Avatar
-                                            content     = {data_.name} 
-                                            initials 
-                                            className   = 'avatar-border'
-                                        />
-                                    :
-                                        <Avatar 
-                                            img     = {data_.avatar} 
-                                            onError = {Helper.fallbackImage_} 
-                                        />
+                                    <Avatar
+                                        status      = {(activeChannel != null && "isOnline" in activeChannel && activeChannel.isOnline[index] === true) ? 'online' : 'offline'}
+                                        content     = {data_.name} 
+                                        onError     = {Helper.fallbackImage_} 
+                                        initials
+                                        className   = 'avatar-border'
+                                    />
                                 }
                                 <span className='ml-2'>{data_.name}</span>
                                 {
