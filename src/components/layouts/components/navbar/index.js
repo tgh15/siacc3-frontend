@@ -8,14 +8,37 @@ import NotificationDropdown         from './NotificationDropdown';
 import BroadcastDropdown            from './BroadcastDropdown';
 import MessageDropdown              from './MessageDropdown';
 import FaqDropdown                  from './FaqDropdown';
-import { Home }               		from 'react-feather';
-import { Button } 					from 'reactstrap';
+import { Home, Disc, Circle, Menu }               		from 'react-feather';
+import { Button, NavItem } 					from 'reactstrap';
 
 // ** Context
 import IncomingCall from './IncomingCall';
+import { NavLink } from 'react-router-dom';
 
-const ThemeNavbar = () => {
+const ThemeNavbar = ({setMenuVisibility, skin, setSkin,menuCollapsed, setMenuCollapsed}) => {
 	
+	const Toggler = () => {
+		if (!menuCollapsed) {
+		  return (
+			<Disc
+			  size={20}
+			  data-tour='toggle-icon'
+			  className='text-primary toggle-icon d-block d-xl-none'
+			  onClick={() => setMenuCollapsed(true)}
+			/>
+		  )
+		} else {
+		  return (
+			<Circle
+			  size={20}
+			  data-tour='toggle-icon'
+			  className='text-primary toggle-icon d-block d-xl-none'
+			  onClick={() => setMenuCollapsed(false)}
+			/>
+		  )
+		}
+	  }
+
 	return (
 		<Fragment>
 			<div className='bookmark-wrapper d-flex align-items-center'>
@@ -29,8 +52,16 @@ const ThemeNavbar = () => {
 						null
 				}
 
+				<Menu className='ficon menu-toggle hidden-xs is-active'onClick={() => setMenuVisibility(true)} />
+
 				{/* <NavbarBookmarks setMenuVisibility={setMenuVisibility} /> */}
-				<NavbarSearch />
+				<NavbarSearch 
+					setMenuVisibility={setMenuVisibility}
+					skin={skin}
+					setSkin={setSkin}
+					menuCollapsed={menuCollapsed}
+					setMenuCollapsed={setMenuCollapsed}
+				/>
 			</div>
 			<ul className='nav navbar-nav align-items-center ml-auto'>
 				{

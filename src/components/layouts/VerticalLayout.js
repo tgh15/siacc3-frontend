@@ -233,6 +233,9 @@ const VerticalLayout = (props) => {
                                 setMenuVisibility={setMenuVisibility}
                                 skin={skin}
                                 setSkin={setSkin}
+                                menuCollapsed={menuCollapsed}
+                                setMenuCollapsed={setMenuCollapsed}
+    
                               />
                             )}
                           </div>

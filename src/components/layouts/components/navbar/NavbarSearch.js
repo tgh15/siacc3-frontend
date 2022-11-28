@@ -15,7 +15,7 @@ import { useDispatch } from 'react-redux'
 // ** Custom Components
 import Autocomplete from '@components/autocomplete'
 
-const NavbarSearch = () => {
+const NavbarSearch = ({setMenuVisibility, skin, setSkin,menuCollapsed, setMenuCollapsed}) => {
   // ** Store Vars
   // const dispatch = useDispatch()
 
@@ -54,7 +54,6 @@ const NavbarSearch = () => {
   // ** Function to close search on ESC & ENTER Click
   const onKeyDown = e => {
     if (e.keyCode === 13) {
-
       window.location.href = `/advanced-search?keyword=${encodeURIComponent(e.target.value)}`
     }
   }
@@ -74,8 +73,11 @@ const NavbarSearch = () => {
     // handleClearQueryInStore()
   }
 
+
+
   return (
     <NavItem className='nav-search' onClick={() => setNavbarSearch(true)}>
+
       <NavLink className='nav-link-search'>
         <Icon.Search className='ficon' />
       </NavLink>
