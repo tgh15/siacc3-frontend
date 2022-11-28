@@ -21,7 +21,7 @@ export const SelectWilayah  = ({data,show,setShow,onSubmit, index, statePosition
     const [type,setType]                            = useState("");
     const [categories,setCategories]                = useState(null);
     const [submitLoading, setSubmitLoading]         = useState(false);
-    const [activeCategories,setActiveCategories]    = useState(null);
+    const [activeCategories,setActiveCategories]    = useState([]);
 
     const { workunitOptions,workunitOptionsApproval }                       = useContext(PerformanceContext);   
     const selector = useSelector(status=>{
@@ -157,6 +157,7 @@ export const SelectWilayah  = ({data,show,setShow,onSubmit, index, statePosition
             if(categories==null){
                 handlerCategoriesGet().then(resp=>{
                     const cats = CategoriesHelper.toSelectVal(resp)
+                    console.log(cats, 'test')
                     setCategories(cats)
                 })
             }
@@ -182,14 +183,15 @@ export const SelectWilayah  = ({data,show,setShow,onSubmit, index, statePosition
                 agent_report_id : data.id
             };
 
-            feedsAgentReportAPI.detailAgentReport(formData).then(response_detail=>{
-                if(response_detail.data.category==undefined||response_detail.data.category==null){
+            feedsAgentReportAPI.detailAgentReport(formData).then(response_detail => {
+                if(response_detail.data.category==undefined || response_detail.data.category==null){
                     setActiveCategories([])
                 }else{
                     const cats = CategoriesHelper.toSelectVal(response_detail.data.category)
 
                     let xdata = []
-                    cats.map(v=>{
+                    cats.map(
+                        v => {
                         xdata.push(v.value)
                     })
                     
