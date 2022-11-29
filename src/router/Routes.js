@@ -217,6 +217,7 @@ const Router = () => {
   // });
 
   // const messaging = getMessaging(app);
+  const messaging = null;
   
   // useEffect(() => {
   //   getToken(messaging, { vapidKey: 'BIYjq7LUVJR6mlYYvCm0kvn60LnGcCSw5sOwoIBZoLHuczoecwdB9sVxNmVeG_aMek35n8n1Kz1nWl5hyM_RD_8' })
