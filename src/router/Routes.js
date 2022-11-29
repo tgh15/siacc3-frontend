@@ -206,37 +206,37 @@ const Router = () => {
     })
   }
 
-  const app = initializeApp({
-    apiKey: "AIzaSyCxCBi_8CjvbsOiC0wU0eV315E_xtUl6jI",
-    authDomain: "siacc-b1d0d.firebaseapp.com",
-    projectId: "siacc-b1d0d",
-    storageBucket: "siacc-b1d0d.appspot.com",
-    messagingSenderId: "528209304237",
-    appId: "1:528209304237:web:01c1e8640212b2c91dc424",
-    measurementId: "G-QC01TY60B9"
-  });
+  // const app = initializeApp({
+  //   apiKey: "AIzaSyCxCBi_8CjvbsOiC0wU0eV315E_xtUl6jI",
+  //   authDomain: "siacc-b1d0d.firebaseapp.com",
+  //   projectId: "siacc-b1d0d",
+  //   storageBucket: "siacc-b1d0d.appspot.com",
+  //   messagingSenderId: "528209304237",
+  //   appId: "1:528209304237:web:01c1e8640212b2c91dc424",
+  //   measurementId: "G-QC01TY60B9"
+  // });
 
-  const messaging = getMessaging(app);
+  // const messaging = getMessaging(app);
   
-  useEffect(() => {
-    getToken(messaging, { vapidKey: 'BIYjq7LUVJR6mlYYvCm0kvn60LnGcCSw5sOwoIBZoLHuczoecwdB9sVxNmVeG_aMek35n8n1Kz1nWl5hyM_RD_8' })
-      .then((currentToken) => {
-        if (currentToken) {
+  // useEffect(() => {
+  //   getToken(messaging, { vapidKey: 'BIYjq7LUVJR6mlYYvCm0kvn60LnGcCSw5sOwoIBZoLHuczoecwdB9sVxNmVeG_aMek35n8n1Kz1nWl5hyM_RD_8' })
+  //     .then((currentToken) => {
+  //       if (currentToken) {
 
-          setFcmToken(currentToken);
-          // Send the token to your server and update the UI if necessary
-          // ...
-        } else {
-          // Show permission request UI
-          console.log('No registration token available. Request permission to generate one.');
-          // ...
-        }
-      })
-      .catch((err) => {
-        console.log('An error occurred while retrieving token. ', err);
-        // ...
-      });
-  }, [])
+  //         setFcmToken(currentToken);
+  //         // Send the token to your server and update the UI if necessary
+  //         // ...
+  //       } else {
+  //         // Show permission request UI
+  //         console.log('No registration token available. Request permission to generate one.');
+  //         // ...
+  //       }
+  //     })
+  //     .catch((err) => {
+  //       console.log('An error occurred while retrieving token. ', err);
+  //       // ...
+  //     });
+  // }, [])
   
   return (
     <AppRouter basename={process.env.REACT_APP_BASENAME}>
