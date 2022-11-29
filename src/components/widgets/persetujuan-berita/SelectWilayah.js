@@ -21,7 +21,7 @@ export const SelectWilayah  = ({data,show,setShow,onSubmit, index, statePosition
     const [type,setType]                                = useState("");
     const [categories,setCategories]                    = useState(null);
     const [submitLoading, setSubmitLoading]             = useState(false);
-    const [activeCategories,setActiveCategories]        = useState(null);
+    const [activeCategories,setActiveCategories]        = useState([]);
 
     const { workunitOptions,workunitOptionsApproval }   = useContext(PerformanceContext);  
 
@@ -178,7 +178,7 @@ export const SelectWilayah  = ({data,show,setShow,onSubmit, index, statePosition
     },[show,unit])
 
     useEffect(()=>{
-        if(show && activeCategories==null){
+        if(show && activeCategories.length == 0){
 
             const formData = {
                 agent_report_id : data.id
