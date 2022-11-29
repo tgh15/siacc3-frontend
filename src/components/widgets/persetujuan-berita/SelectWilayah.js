@@ -1,29 +1,30 @@
 import React, { useContext, useEffect, useState }       from 'react'
-import { Globe, MapPin }                    from 'react-feather'
-import { Button, FormGroup, Label, Spinner }         from 'reactstrap'
-import { ModalBase }                        from '../modals-base'
-import { selectThemeColors }                from '@utils'
+import { Globe, MapPin }                        from 'react-feather'
+import { Button, FormGroup, Label, Spinner }    from 'reactstrap'
+import { ModalBase }                            from '../modals-base'
+import { selectThemeColors }                    from '@utils'
 
-import Select                               from 'react-select'
-import { useSelector }                      from 'react-redux'
+import Select                                   from 'react-select'
+import { useSelector }                          from 'react-redux'
 
-import WorkunitHelper                       from '../../../helpers/WorkunitHelper';
-import UnitWorkListApi                      from '../../../services/pages/configuration/unit-work-list';
-import CategoriesHelper                     from '../../../helpers/CategoriesHelper';
-import { feedsCategoryAPI }                 from '../../../services/pages/feeds/categories';
-import feedsAgentReportAPI                  from '../../../services/pages/feeds/agent-reports';       
-import CustomToast                          from '../custom-toast'
-import { PerformanceContext }               from '../../../context/PerformanceContext'
+import WorkunitHelper                           from '../../../helpers/WorkunitHelper';
+import UnitWorkListApi                          from '../../../services/pages/configuration/unit-work-list';
+import CategoriesHelper                         from '../../../helpers/CategoriesHelper';
+import { feedsCategoryAPI }                     from '../../../services/pages/feeds/categories';
+import feedsAgentReportAPI                      from '../../../services/pages/feeds/agent-reports';       
+import CustomToast                              from '../custom-toast'
+import { PerformanceContext }                   from '../../../context/PerformanceContext'
 
 export const SelectWilayah  = ({data,show,setShow,onSubmit, index, statePosition}) => {
 
-    const [unit,setUnit]                            = useState(null);
-    const [type,setType]                            = useState("");
-    const [categories,setCategories]                = useState(null);
-    const [submitLoading, setSubmitLoading]         = useState(false);
-    const [activeCategories,setActiveCategories]    = useState([]);
+    const [unit,setUnit]                                = useState(null);
+    const [type,setType]                                = useState("");
+    const [categories,setCategories]                    = useState(null);
+    const [submitLoading, setSubmitLoading]             = useState(false);
+    const [activeCategories,setActiveCategories]        = useState([]);
 
-    const { workunitOptions,workunitOptionsApproval }                       = useContext(PerformanceContext);   
+    const { workunitOptions,workunitOptionsApproval }   = useContext(PerformanceContext);  
+
     const selector = useSelector(status=>{
         return status
     });
