@@ -21,7 +21,7 @@ export const SelectWilayah  = ({data,show,setShow,onSubmit, index, statePosition
     const [type,setType]                                = useState("");
     const [categories,setCategories]                    = useState(null);
     const [submitLoading, setSubmitLoading]             = useState(false);
-    const [activeCategories,setActiveCategories]        = useState([]);
+    const [activeCategories,setActiveCategories]        = useState(null);
 
     const { workunitOptions,workunitOptionsApproval }   = useContext(PerformanceContext);  
 
