@@ -178,7 +178,7 @@ export const SelectWilayah  = ({data,show,setShow,onSubmit, index, statePosition
     },[show,unit])
 
     useEffect(()=>{
-        if(show && activeCategories.length == 0){
+        if(show && activeCategories==null){
 
             const formData = {
                 agent_report_id : data.id
