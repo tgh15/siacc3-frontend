@@ -21,7 +21,7 @@ export const SelectWilayah  = ({data,show,setShow,onSubmit, index, statePosition
     const [type,setType]                                = useState("");
     const [categories,setCategories]                    = useState(null);
     const [submitLoading, setSubmitLoading]             = useState(false);
-    const [activeCategories,setActiveCategories]        = useState(null);
+    const [activeCategories,setActiveCategories]        = useState([]);
 
     const { workunitOptions,workunitOptionsApproval }   = useContext(PerformanceContext);  
 
@@ -178,7 +178,7 @@ export const SelectWilayah  = ({data,show,setShow,onSubmit, index, statePosition
     },[show,unit])
 
     useEffect(()=>{
-        if(show && activeCategories==null){
+        if(show && activeCategories.length == 0 ){
 
             const formData = {
                 agent_report_id : data.id
@@ -259,31 +259,29 @@ export const SelectWilayah  = ({data,show,setShow,onSubmit, index, statePosition
                     null
             }
             <FormGroup>
-                    <Label>Kategori Berita</Label>
-                    {activeCategories==null?null:(
-                        <Select
-                            name            = 'colors'
-                            theme           = {selectThemeColors}
-                            isMulti
-                            options         = {categories==null?[]:categories}
-                            className       = 'react-select'
-                            isClearable     = {false}
-                            defaultValue    = {activeCategories}
-                            classNamePrefix = 'select'
-                            onChange        = {(data)=>{
-                                let xdata = []
-                                data.map(v=>{
-                                    xdata.push(v.value)
-                                })
-                                
-                                setAgentUpdate({
-                                    ...agentUpdate,
-                                    category_id:xdata
-                                })
-                                
-                            }}
-                        />
-                    )}
+                <Label>Kategori Berita</Label>
+                <Select
+                    name            = 'colors'
+                    theme           = {selectThemeColors}
+                    isMulti
+                    options         = {categories==null?[]:categories}
+                    className       = 'react-select'
+                    isClearable     = {false}
+                    defaultValue    = {activeCategories == null ? [] : activeCategories}
+                    classNamePrefix = 'select'
+                    onChange        = {(data)=>{
+                        let xdata = []
+                        data.map(v=>{
+                            xdata.push(v.value)
+                        })
+                        
+                        setAgentUpdate({
+                            ...agentUpdate,
+                            category_id:xdata
+                        })
+                        
+                    }}
+                />
             </FormGroup>
             {
                 localStorage.getItem('role') == "Verifikator Pusat" ?
