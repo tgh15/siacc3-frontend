@@ -102,8 +102,6 @@ const FormReport = (props) => {
     const [inputCreateDate, setInputCreateDate]         = useState(false);
     const [isHelpModalVisible, setIsHelpModalVisible]   = useState(false);
 
-
-
     const [workunitLevel2_, setWorkunitLevel2_]         = useState(null);
     const [workunitLevel3, setWorkunitLevel3]           = useState(null);
     const [workunitLevel4, setWorkunitLevel4]           = useState(null);
@@ -254,21 +252,23 @@ const FormReport = (props) => {
                 by_work_unit   : true,
                 is_aggregation : true,
             }
-    
+
+            console.log(data,'data')
+
             if(reportKind === 'monthly'){
-                formData.year           = data.year.value;
-                formData.month          = data.month.value;
+                formData.year           = parseInt(data.year.value);
+                formData.month          = parseInt(data.month.value);
                 formData.title          = `Data Berita ${workunitKind === 1 ? 'Kejagung' : workunitKind === 2 ? 'Kejati' : workunitKind === 3 ? 'Kejari' : 'Cabjari'} ${`Bulan ${data.month.label} Tahun ${data.year.value}`}
                 `
                 formData.contents_id    = [parseInt(data.report_body.value)];
                 formData.report_type    = 'monthly'
     
             }else if(reportKind === 'quarterly'){
-                formData.year           = data.year.value;
+                formData.year           = parseInt(data.year.value);
                 formData.title          = `${`Data Berita ${workunitKind === 1 ? 'Kejagung' : workunitKind === 2 ? 'Kejati' : workunitKind === 3 ? 'Kejari' : 'Cabjari'} ${data.quarter_type.length > 3 || data.quarter_type.filter((data) => parseInt(data.value) === 0).length > 0 ?'Triwulan I (Januari - Maret) - Triwulan IV (Oktober - Desember)':data.quarter_type.length > 1 ?`${(data.quarter_type.filter((data_) => parseInt(data_.value) === (Math.min.apply(Math, data.quarter_type.map((data) => (parseInt(data.value)))))))[0].label} ${data.quarter_type.length > 2 ? '-' : '&'} ${(data.quarter_type.filter((data_) => parseInt(data_.value) === (Math.max.apply(Math, data.quarter_type.map((data) => (parseInt(data.value)))))))[0].label }` : data.quarter_type[0].label} Tahun ${data.year.value}`}`
                 formData.contents_id    = [parseInt(data.report_body.value)];
                 formData.report_type    = 'quarterly'
-                console.log(data)
+
                 if(data.quarter_type.filter(data => parseInt(data.value) === 0 ).length > 0){
                     formData.quarterly = [
                         { id : 1 },
@@ -283,10 +283,11 @@ const FormReport = (props) => {
                 }
     
             }else if(reportKind === 'yearly'){
-                formData.year           = data.year.value;
+                formData.year           = parseInt(data.year.value);
                 formData.title          = `Data Berita ${workunitKind === 1 ? 'Kejagung' : workunitKind === 2 ? 'Kejati' : workunitKind === 3 ? 'Kejari' : 'Cabjari'} Tahun ${data.year.value}`;
                 formData.report_type    = 'yearly'
                 formData.contents_id    = [parseInt(data.report_body.value)];
+
             }else if(reportKind === 'periodic'){
                 formData.end            = moment(data.end_date[0]).format('YYYY-MM-DDT23:59:59Z');
                 formData.start          = moment(data.start_date[0]).format('YYYY-MM-DDT00:00:01Z');
@@ -294,19 +295,29 @@ const FormReport = (props) => {
                 formData.report_type    = 'periodically';
                 formData.contents_id    = data.report_body.map((data) => parseInt(data.value));
             }
-    
+            
             if(workunitKind === 2){
                 formData.is_kejati              = true;
                 formData.work_unit_id           = data.workunit_level_2.map((data) => data.value).toString();
+                if(data.with_child.value === 'true'){
+                    formData.with_kejari  = true; 
+                    formData.with_cabjari = true; 
+                }
             }else if (workunitKind === 3){
                 formData.is_kejari              = true;
                 formData.work_unit_id           = data.workunit_level_3.map((data) => data.value).toString();
                 formData.work_unit_parent_id    = data.workunit_level_2.value;
+
+                if(data.with_child.value === true){
+                    formData.with_cabjari = true; 
+                }
+
             }else if (workunitKind === 4 ){
                 formData.is_cabjari             = true,
                 formData.work_unit_id           = data.workunit_level_4.map((data) => data.value).toString();
                 formData.work_unit_parent_id    = data.workunit_level_3.value;
             }
+
             onSubmit({model : formData});
         }else{
             if(data.content != null && data.content.filter(e => parseInt(e.value) === 1).length > 0){
@@ -566,7 +577,8 @@ const FormReport = (props) => {
             workunit_level_2.unshift({label : 'SEMUA KEJAKSAAN TINGGI', value : (workunitLevel2.map((data) => (data.value))).toString()})
         }
         setWorkunitLevel2_(workunit_level_2);
-    }, []);
+
+    }, [workunitLevel2]);
 
     useEffect(() => {
         if(watch('workunit_level_2')){
@@ -801,7 +813,30 @@ const FormReport = (props) => {
                                                     placeholder     = "Pilih Satuan Kerja"
                                                     classNamePrefix = 'select'
                                                 />
+                                                
                                                 {errors && errors.workunit_kind && <Label className="text-danger">{errors?.workunit_kind?.label?.message}</Label>}
+                                            </FormGroup>
+                                        </Col>
+                                        <Col md={6}>
+                                            <FormGroup>
+                                                <Label for='judul'>Dengan Satuan Kerja Dibawahnya</Label>
+                                                <Controller
+                                                    name    = "with_child"
+                                                    control = {control}
+                                                    as      = {
+                                                        <Select
+                                                            theme           = {selectThemeColors}
+                                                            options         = {[
+                                                                {value: true   , label : 'Ya'},
+                                                                {value: false  , label : 'Tidak'},
+                                                            ]}
+                                                            className       = 'react-select'
+                                                            placeholder     = "Pilih Salah Satu"
+                                                            classNamePrefix = 'select'
+                                                        />
+                                                    }
+                                                />
+                                                {errors && errors.with_child && <Label className="text-danger">{errors?.with_child?.label?.message}</Label>}
                                             </FormGroup>
                                         </Col>
                                     </Row>

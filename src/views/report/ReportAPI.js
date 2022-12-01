@@ -141,10 +141,10 @@ const ReportAPI = () => {
                     CustomToast('danger', 'Terjadi Kesalahan.');
                 }
 
-                setLoading(true);
+                setLoading(false);
             },
             err => {
-                setLoading(true);
+                setLoading(false);
                 CustomToast('danger', err.message);
 
             }
