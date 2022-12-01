@@ -14,8 +14,11 @@ export const WidgetNewsCardHeader = (props) => {
         preview,
         division,
         subTitle,
+        division_id,
         defaultNews,
         selectedCheck,
+        division_level,
+        division_level_id,
     }   = props;
 
     return(
@@ -33,9 +36,12 @@ export const WidgetNewsCardHeader = (props) => {
                                     preview ? JSON.parse(localStorage.getItem('userData')).name : parse(title)
                                 }
                                 &nbsp; - &nbsp;
-                                <span className="text-primary">
-                                    {division != undefined ? parse(division) : null}
-                                </span>
+
+                                <a href={`/configuration/work-unit-list/${division_id}?level=${division_level_id}`} className="cursor-pointer">
+                                    <span className="text-primary">
+                                        {division_level != undefined ? parse(division_level) : null} {division != undefined ? parse(division) : null}
+                                    </span>
+                                </a>
                             </h6>
                             <small className="text-muted">
                                 {subTitle}

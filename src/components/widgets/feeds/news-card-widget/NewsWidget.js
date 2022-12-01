@@ -69,6 +69,7 @@ export const NewsWidget = (props) => {
         archived,
         subTitle, 
         division, 
+        division_id,
         newsType,
         publish_date, 
         publish_type,
@@ -77,6 +78,8 @@ export const NewsWidget = (props) => {
         bodyText, 
         imgAvatar, 
         feedsTitle, 
+        division_level,
+        division_level_id,
         ratings_check,
         selected_check,
         self_selected_check,
@@ -1049,6 +1052,9 @@ export const NewsWidget = (props) => {
                         title                   = {title} 
                         avatar                  = {imgAvatar} 
                         division                = {division} 
+                        division_id             = {division_id} 
+                        division_level          = {division_level}
+                        division_level_id       = {division_level_id}
                         subTitle                = {`${subTitle} - ${location}`} 
                         defaultNews             = {dropdownWidget} 
                         selectedCheck           = {selectedCheck}
