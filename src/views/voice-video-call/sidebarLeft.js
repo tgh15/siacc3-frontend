@@ -123,6 +123,7 @@ const SidebarLeft = (props) => {
                 setShow     = {(par) => setCreateChannelVisible(par)}
                 selected    = {selected}
                 getServer   = {getServer}
+                unmount     = {true}
             />
 
             <div className='sidebar-left'>

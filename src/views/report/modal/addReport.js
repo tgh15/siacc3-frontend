@@ -287,6 +287,8 @@ const FormReport = (props) => {
                 formData.title          = `Data Berita ${workunitKind === 1 ? 'Kejagung' : workunitKind === 2 ? 'Kejati' : workunitKind === 3 ? 'Kejari' : 'Cabjari'} Tahun ${data.year.value}`;
                 formData.report_type    = 'yearly'
                 formData.contents_id    = [parseInt(data.report_body.value)];
+                formData.with_kejari    = true;
+                formData.with_cabjari   = true;
             }else if(reportKind === 'periodic'){
                 formData.end            = moment(data.end_date[0]).format('YYYY-MM-DDT23:59:59Z');
                 formData.start          = moment(data.start_date[0]).format('YYYY-MM-DDT00:00:01Z');

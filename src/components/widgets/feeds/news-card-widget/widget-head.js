@@ -34,7 +34,6 @@ export const WidgetNewsCardHeader = (props) => {
                                 }
                                 &nbsp; - &nbsp;
                                 <span className="text-primary">
-
                                     {division != undefined ? parse(division) : null}
                                 </span>
                             </h6>
