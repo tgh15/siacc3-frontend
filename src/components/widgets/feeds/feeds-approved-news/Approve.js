@@ -16,10 +16,10 @@ import moment                                   from 'moment';
 import { NewsApprovedHeadChildCard }            from './ChildCard';
 import { SelectWilayah,SelectLeader }           from '../../persetujuan-berita';
 import CarouselAttachment                       from '../../card-carousel';
-import CardVideo                                from '../../card-video';
-import CardAudio                                from '../../card-audio';
 import CardUrl                                  from '../../card-url/CardUrl';
 import CardFile                                 from '../../card-file/CardFile';
+import CardVideo                                from '../../card-video';
+import CardAudio                                from '../../card-audio';
 
 import getAttachments                           from '../../../../services/pages/feeds/agent-reports/getAttachments';
 
@@ -55,16 +55,19 @@ export const ApprovedNewsWidget = (props) => {
         let attachment_ = [];
 
         if (data != null && data.length > 0) {
-            attachment_ = data.filter((data) => (
-                data.type === type
+            data.map((data) => (
+                data.type === type && attachment_.push(data)
             ))
         }
+
+        console.log(attachment_, `type attachment ${type}`)
 
         return attachment_;
     };
 
     const getAttach = async() => {
         let attach = await getAttachments(agent_report.id);
+        console.log(attach, 'get attach data');
         setAttachment(attach.data);
     }
 
@@ -155,6 +158,22 @@ export const ApprovedNewsWidget = (props) => {
                         />
                     : null
                 }
+
+                    <div style={{wordBreak: 'break-word'}}>
+                        <p>
+
+                        {
+                            agent_report.hashtag != undefined ? 
+                                agent_report.hashtag.map((data) => (
+                                    <a href={`/advanced-search?keyword=${data.tag.replace('#',"")}`}><span className="mr-1">{data.tag}</span></a>
+                                ))
+                            :
+                                null
+                        }
+                        </p>
+
+                    </div>
+
             </FormGroup>
             
             {

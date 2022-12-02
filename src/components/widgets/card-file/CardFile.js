@@ -7,9 +7,12 @@ const CardFile = ({item}) => {
     return(
         <Fragment>
             <FormGroup>
-                <p style={{ fontWeight: 'bold', margin: '0px', textAlign: 'left' }}>
-                    Dokumen:
-                </p>
+                {
+                    Array.isArray(item) && item.length > 0 &&
+                    <p style={{ fontWeight: 'bold', margin: '0px', textAlign: 'left' }}>
+                        Dokumen:
+                    </p>
+                }
                 {
                     Array.isArray(item) ? item.map((v) => {
                         return (

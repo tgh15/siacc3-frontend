@@ -308,7 +308,7 @@ const FormReport = (props) => {
                 formData.work_unit_id           = data.workunit_level_3.map((data) => data.value).toString();
                 formData.work_unit_parent_id    = data.workunit_level_2.value;
 
-                if(data.with_child.value === true){
+                if(data.with_child.value === 'true'){
                     formData.with_cabjari = true; 
                 }
 
