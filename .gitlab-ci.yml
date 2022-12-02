@@ -24,11 +24,12 @@ deliver:
     - when: never
   variables:
     DEV_SERVER: "siacc-dev"
+    BETA_SERVER: "cp-siacc-beta"
     DEV_TARGET_NAME: "siaccred_ui"
     DEV_ORCESTRATORS: "docker-compose"
     BETA_SERVER: "cp-siacc-beta"
     BETA_TARGET_NAME: "frontend_siacc"
-    BETA_ORCESTRATORS: "docker-compose"
+    ORCESTRATORS_BETA: "docker-compose"
   when: on_success
 
 push-to-prod:
@@ -44,6 +45,3 @@ push-to-prod:
     PRODUCTION_REPO: "5a1d82cc6821588af2f0fa110bf71946"
     BRANCH: "prod"
     TARGET_BRANCH: "main"
-  before_script:
-    - git config --global user.name "a3infiniti"
-    - git config --global user.email "dev.a3infiniti@outlook.com"
