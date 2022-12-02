@@ -45,6 +45,3 @@ push-to-prod:
     PRODUCTION_REPO: "5a1d82cc6821588af2f0fa110bf71946"
     BRANCH: "prod"
     TARGET_BRANCH: "main"
-  before_script:
-    - git config --global user.name "a3infiniti"
-    - git config --global user.email "dev.a3infiniti@outlook.com"
