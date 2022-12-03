@@ -60,14 +60,11 @@ export const ApprovedNewsWidget = (props) => {
             ))
         }
 
-        console.log(attachment_, `type attachment ${type}`)
-
         return attachment_;
     };
 
     const getAttach = async() => {
         let attach = await getAttachments(agent_report.id);
-        console.log(attach, 'get attach data');
         setAttachment(attach.data);
     }
 

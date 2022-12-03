@@ -13,7 +13,6 @@ import {
 import ContainerFluid                       from '../fluid';
 
 const CardAudio = ({item}) => {
-    console.log(item, 'audio attachment')
     const [animating, setAnimating]         = useState(0);
     const [activeIndex, setActiveIndex]     = useState(0);
 
