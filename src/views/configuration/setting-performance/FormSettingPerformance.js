@@ -104,20 +104,15 @@ const FormSettingPerformance = (props) => {
 
     const onSubmit = dataForm => {
 
-        console.log(inputRangeDate);
         dataForm["badge"]       = badgeDefault;
         dataForm["is_event"]    = isEvent;
         dataForm["badge_id"]    = badgeId;
         dataForm["badge_name"]  = badgeName;
 
         if(picker){
-            dataForm["start_date"]  = moment(inputRangeDate[0]).format("YYYY-MM-DD")
             dataForm["end_date"]    = moment(inputRangeDate[1]).format("YYYY-MM-DD")  
+            dataForm["start_date"]  = moment(inputRangeDate[0]).format("YYYY-MM-DD")
         }
-
-        console.log(dataForm)
-
-        // setLoading(true);
 
         if(!data){
             SettingPerformanceApi.create({
@@ -201,22 +196,24 @@ const FormSettingPerformance = (props) => {
                 </Row>
                 <PerfectScrollbar style={{ maxHeight: "350px" }}>
                     <Row className="mt-2">
-                        {staticBadge.map((data, i) => (
-                            <Col md="3" key={i}>
-                                <Avatar 
-                                    img         = {data.url} 
-                                    imgHeight   = {90} 
-                                    imgWidth    = {90} 
-                                    className   = "mb-1" 
-                                    onClick     = {() => { 
-                                        setBadgeId(data.id); 
-                                        setBadgeName(data.name); 
-                                        setBadgeDefault(data.url); 
-                                        setFormImage(false) 
-                                    }}
-                                />
-                            </Col>
-                        ))}
+                        {
+                            staticBadge != null && staticBadge.map((data, i) => (
+                                <Col md="3" key={i}>
+                                    <Avatar 
+                                        img         = {data.url} 
+                                        imgHeight   = {90} 
+                                        imgWidth    = {90} 
+                                        className   = "mb-1" 
+                                        onClick     = {() => { 
+                                            setBadgeId(data.id); 
+                                            setBadgeName(data.name); 
+                                            setBadgeDefault(data.url); 
+                                            setFormImage(false) 
+                                        }}
+                                    />
+                                </Col>
+                            ))
+                        }
                     </Row>
                 </PerfectScrollbar>
 

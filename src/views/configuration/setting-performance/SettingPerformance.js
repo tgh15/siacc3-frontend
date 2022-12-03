@@ -287,19 +287,19 @@ const SettingPerformance = () => {
 
             {/* Modal Form */}
             <ModalBase
-                show={showForm}
-                size="lg"
-                title={`${dataSelected ? "Ubah" : "Tambah"} Pengaturan Penilaian`}
-                setShow={(par) => { setShowForm(par) }}
+                show    = {showForm}
+                size    = "lg"
+                title   = {`${dataSelected ? "Ubah" : "Tambah"} Pengaturan Penilaian`}
+                setShow = {(par) => { setShowForm(par) }}
             >
                 <FormSettingPerformance
-                    data={dataSelected}
-                    isEvent={isEvent}
-                    onCancel={() => setShowForm(!showForm)}
-                    staticBadge={staticBadge}
-                    refreshData={() => { getData({ is_event: isEvent }) }}
-                    workunitOption={workunitOption}
-                    kindAchievementOption={kindAchievementOption}
+                    data                    = {dataSelected}
+                    isEvent                 = {isEvent}
+                    onCancel                = {() => setShowForm(!showForm)}
+                    staticBadge             = {staticBadge}
+                    refreshData             = {() => { getData(isEvent) }}
+                    workunitOption          = {workunitOption}
+                    kindAchievementOption   = {kindAchievementOption}
                 />
             </ModalBase>
 
