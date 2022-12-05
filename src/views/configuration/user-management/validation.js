@@ -12,7 +12,7 @@ export const schema = yup.object().shape({
     position_id     : yup.object().shape({ value : yup.string().required('Kolom jabatan belum terisi'), label : yup.string().required('Kolom jabatan belum terisi')}),
     user_group      : yup.object().shape({ value : yup.string().required('Kolom privilage belum terisi'), label : yup.string().required('Kolom privilage belum terisi')}).required('Kolom privilage belum terisi'),
 
-    username        : yup.string().required('Kolom username belum terisi'),
+    username        : yup.string().matches('^[A-Za-z0-9._]*$', 'Username hanya bisa menggunakan huruf, angka, titik(.), garis bawah(_) dan tidak boleh menggunakan spasi').required('Kolom username belum terisi'),
     password        : yup.string().required('Kolom password belum terisi').min(8, 'Minimal 8 karakter'),
     repeat_password : yup.string().required('Kolom ulangi password belum terisi').min(8, 'Minimal 8 karakter').oneOf([yup.ref('password')], 'Password tidak sesuai')
 

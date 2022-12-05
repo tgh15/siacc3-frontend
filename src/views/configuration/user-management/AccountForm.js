@@ -19,6 +19,7 @@ const AccountForm = (props) => {
     return (
         <Fragment>
             <Row>
+                {console.log(errors)}
                 <Col md={12}>
                     <FormGroup>
                         <Label>Nama Pengguna</Label>
