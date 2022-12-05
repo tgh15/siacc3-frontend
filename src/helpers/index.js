@@ -324,6 +324,14 @@ const getLastDateOfCurrentMonth = (month) => {
     return date;
 }
 
+const capitalizeFirstLetter = (string) => {
+    return string.replace(/\b\w+/g, function(txt) {
+            return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+        }
+    ); 
+}
+  
+
 const Helper = {
     dayIndo                 : dayIndo,
     dateIndo                : dateIndo,
@@ -350,7 +358,8 @@ const Helper = {
     getYearsBefore          : getYearsBefore,
     getMonthName            : getMonthName,
     getLastDateOfCurrentMonth : getLastDateOfCurrentMonth,
-    getDuration             : getDuration
+    getDuration             : getDuration,
+    capitalizeFirstLetter   : capitalizeFirstLetter
 }
 
 export default Helper;

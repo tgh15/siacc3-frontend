@@ -64,9 +64,10 @@ const TableBody = props => {
     };
 
     const onDelete = () => {
+        console.log('disini', dataSelected);
         UserManagementApi.delete({
-            id: dataSelected.id,
-            photo_id: dataSelected.photo_id,
+            id       : dataSelected.id,
+            photo_id : dataSelected.photo_id,
 
             onSuccess: (res) => {
                 setListData(false);

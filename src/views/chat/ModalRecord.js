@@ -82,11 +82,6 @@ const ModalRecord = props => {
         });
     }
 
-    useEffect(() => {
-        console.log('terbatas', audioDetails)
-    }, [audioDetails]);
-
-
     return (
         <ModalBase 
             show    = {show} 

@@ -14,7 +14,6 @@ export const CategoryProvider   = ({ children }) => {
         feedsCategoryAPI.getCategory().then(
             res => {                    
                 if("category" in res.data && res.data.category != null){
-                    console.log(res.data.category);
                     //Add all category to list
                     res.data.category.unshift(
                         {

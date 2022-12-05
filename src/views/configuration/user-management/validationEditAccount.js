@@ -9,6 +9,7 @@ export const schemaEdit = yup.object().shape({
     address         : yup.string().required('Kolom alamat belum terisi'),
     sector_id       : yup.object().shape({ value : yup.string().required('Kolom struktur/bidang belum terisi'), label : yup.string().required('Kolom struktur/bidang belum terisi')}),
     workunit_id     : yup.object().shape({ value : yup.string().required('Kolom satuan kerja belum terisi'), label : yup.string().required('Kolom satuan kerja belum terisi')}),
+    username        : yup.string().matches('^[A-Za-z0-9._]*$', 'Username hanya bisa menggunakan huruf, angka, titik(.), garis bawah(_) dan tidak boleh menggunakan spasi').required('Kolom username belum terisi'),
     position_id     : yup.object().shape({ value : yup.string().required('Kolom jabatan belum terisi'), label : yup.string().required('Kolom jabatan belum terisi')}),
     user_group      : yup.object().shape({ value : yup.string().required('Kolom privilage belum terisi'), label : yup.string().required('Kolom privilage belum terisi')}),
     old_password           : yup.string()
@@ -33,6 +34,7 @@ export const schemaEditAdmin = yup.object().shape({
     ktp             : yup.number().typeError('Hanya bisa memasukkan angka').integer().min(10, 'Jumlah minimal karakter adalah 10!').required(),
     phone_number    : yup.number().typeError('Hanya bisa memasukkan angka').integer().min(10, 'Jumlah minimal karakter adalah 10!').required(),
     email           : yup.string().matches('^[A-Za-z0-9._%+-]+@kejaksaan\.go.id$', 'Silahkan menggunakan email kejaksaan.').required(),
+    username        : yup.string().matches('^[A-Za-z0-9._]*$', 'Username hanya bisa menggunakan huruf, angka, titik(.), garis bawah(_) dan tidak boleh menggunakan spasi').required('Kolom username belum terisi'),
     address         : yup.string().required('Kolom alamat belum terisi'),
     sector_id       : yup.object().shape({ value : yup.string().required('Kolom struktur/bidang belum terisi'), label : yup.string().required('Kolom struktur/bidang belum terisi')}),
     workunit_id     : yup.object().shape({ value : yup.string().required('Kolom satuan kerja belum terisi'), label : yup.string().required('Kolom satuan kerja belum terisi')}),
