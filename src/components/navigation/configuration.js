@@ -10,7 +10,8 @@ import {
         Settings, 
         UserCheck, 
         Briefcase, 
-        GitPullRequest, 
+        GitPullRequest,
+        XOctagon, 
     }                                   from "react-feather";
 
 import Virus                            from '../../assets/icons/virus.svg';
@@ -170,6 +171,17 @@ configuration != null && configuration.length > 0 && configuration[0].children !
                 title : 'Proteksi',
                 icon : <img src={Virus} width="12" height="12" style={{marginRight: '1.1rem'}}/>,
                 navLink : '/configuration/proteksi'
+            }
+        );
+    }
+
+    if(data.label === "Restrict IP"  && data.is_active === true){
+        children_.push(
+            {
+                id : 'restrict_ip',
+                title : 'Restrict IP',
+                icon : <XOctagon/>,
+                navLink : '/configuration/restriction'
             }
         );
     }

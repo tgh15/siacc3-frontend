@@ -103,6 +103,7 @@ const Restrict = () => {
                                 setDataForm(null); 
                                 setModalForm(!modalForm) 
                             }}
+                roleAdd     = {true}
             >   
                 <div id="restrict-table">
                     {
