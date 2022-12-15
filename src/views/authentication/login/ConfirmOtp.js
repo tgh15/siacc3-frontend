@@ -67,11 +67,7 @@ const ConfirmOtp = ({ email, username, password, fcmToken }) => {
                 localStorage.setItem("workunit", res.data.biodata.workunit);
                 localStorage.setItem("menu", JSON.stringify(res.data.menu));
 
-                if(res.data.biodata.user_group[0].name != 'Helpdesk'){
-                    window.location.href = "/beranda";
-                }else{
-                    window.location.href = "/helpdesk/home";
-                }
+                window.location.href = '/landing-page';
             },
             onFail: (err) => {
                 setLoading(false);

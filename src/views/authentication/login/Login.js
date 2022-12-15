@@ -119,11 +119,9 @@ const Login = props => {
                         localStorage.setItem("token", res.data.token);
                     }
 
-                    if (localStorage.getItem('role') === 'Helpdesk') {
-                        window.location.href = "/helpdesk/home";
-                    } else {
-                        window.location.href = "/beranda";
-                    }
+                    window.location.href = "/landing-page"
+
+
                 }
             },
 
