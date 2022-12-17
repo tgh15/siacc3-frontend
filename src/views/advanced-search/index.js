@@ -1,7 +1,6 @@
 import {useEffect, useState, Fragment}      from 'react';
-import { Link, useLocation }                      from "react-router-dom";
+import { Link, useLocation }                from "react-router-dom";
 import parse                                from 'html-react-parser';
-
 
 import {
         Col,
@@ -33,6 +32,7 @@ import CustomTablePaginate from '../../components/widgets/custom-table/CustomTab
 const useQuery = () => {
     return new URLSearchParams(useLocation().search);
 }
+
 
 const AdvancedSearch = () => {
     let query                                                       = useQuery();

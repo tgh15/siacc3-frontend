@@ -426,7 +426,6 @@ const StartTour = ({ showAction }) => {
                 <p 
                     id      = 'positionLeft' 
                     ref     = {buttonRef}
-                    // style   = {{ zIndex: '3', position: 'absolute', margin: '440px 160px 0 0' }}
                     onClick = {tour.start}
                 >
                     {

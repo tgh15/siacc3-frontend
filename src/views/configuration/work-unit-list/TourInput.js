@@ -687,10 +687,11 @@ const TourInput = (props) => {
                     md = '12' 
                     sm = '12'
                 >
-                    <ShepherdTour steps={
+                    <ShepherdTour 
+                        steps       = {
                             props.data === false ? 
                                 stepsCreate 
-                            : 
+                            :
                                 stepsUpdate
                         }
 
