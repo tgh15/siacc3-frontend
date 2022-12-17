@@ -54,7 +54,7 @@ const CardUser = (props) => {
                             <Col md="5" className="d-flex align-items-center">
                                 <Media>
                                     <Media left href='#'>
-                                        <Avatar onError={Helper.fallbackImage_} img={getImage()} imgHeight='40' imgWidth='40' status='online' />
+                                        <Avatar img={getImage()} imgHeight='40' imgWidth='40' status='online' />
                                     </Media>
                                     <Media body>
                                         <Media className="mb-0 ml-1">{data.name}</Media>

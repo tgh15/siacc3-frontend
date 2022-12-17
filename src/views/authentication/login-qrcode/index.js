@@ -98,11 +98,7 @@ const LoginQrcode = (props) => {
                         loginQrSocket.close();
                     }
     
-                    if(res.data.biodata.user_group[0].name != 'Helpdesk'){
-                        window.location.href = "/beranda";
-                    } else {
-                        window.location.href = "/helpdesk/home";
-                    }
+                    window.location.href = "/landing-page"
                 } else {
                     CustomToast("danger", res.code);
                 }

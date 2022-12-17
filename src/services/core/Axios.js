@@ -233,7 +233,8 @@ export default class FetchServices {
 
     mapboxGeo = (query, accessToken) => {
 
-        const url = !process.env.NODE_ENV || process.env.NODE_ENV == "production" ? "https://api.mapbox.com/" + getTemplateArea(query, accessToken) : "https://api.mapbox.com/" + getTemplateArea(query, accessToken);
+        // const url = !process.env.NODE_ENV || process.env.NODE_ENV == "production" ? "https://api.mapbox.com/" + getTemplateArea(query, accessToken) : getTemplateArea(query, accessToken);
+        const url = "https://api.mapbox.com/" + getTemplateArea(query, accessToken);
         const promise = new Promise((resolve, reject) => {
             axios.get(url, { withCredentials: false }).then(e => {
                 resolve(e)

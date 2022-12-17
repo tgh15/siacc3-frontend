@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useState }            from 'react'
+import React, { Fragment, useContext, useEffect, useState }            from 'react'
 
 import { 
     TabPane, 
@@ -24,6 +24,7 @@ import { CardMap }                              from '../card-maps/CardMap'
 import { GroupBarCard }                         from '../card-group-bar/GroupBar'
 import { CardIcon }                             from '../card-icon/CardIcon'
 import { _GaugeChart }                          from '../gauge-chart'
+import { PerformanceContext } from '../../../context/PerformanceContext'
 
 const Charts = (props)=>{
 
@@ -117,18 +118,24 @@ const Charts = (props)=>{
 
 export const ModalDetailChartUpdate = (props)=>{
     const {
+        isNews,
+        setIsNews,
         namechart,
         chartSource,
+        chartSourceList,
         detailLayoutCol,
         selectedDataSource,
         setSelectedDataSource
     }                                       = props
 
-    const [node, setNode]                   = useState(false);
     const [legend,setLegend]                = useState(false);
     const [active, setActive]               = useState('1')
     const [tooltips,settooltips]            = useState(false);
     const [titleChart,setTitleChart]        = useState("")
+
+    const [selectedWorkunit, setSelectedWorkunit]           = useState([]);
+    const [selectedWorkunitLevel, setSelectedWorkunitLevel] = useState(null);
+    const [selectedPeriod, setSelectedPeriod]               = useState(null);
 
     const [chartWidth,setChartWidth]        = useState({
         values  : "6",
@@ -181,7 +188,7 @@ export const ModalDetailChartUpdate = (props)=>{
             settooltips(detailLayoutCol.options.plugins.tooltip.enabled);
 
             chartSource.map((data) => (
-                data.value === detailLayoutCol.source &&
+                data.value === detailLayoutCol.source.body.type &&
                     setSelectedDataSource({
                         value : data.value,
                         label : data.label
@@ -216,9 +223,11 @@ export const ModalDetailChartUpdate = (props)=>{
                 })
             }
 
-            
+            setSelectedPeriod(detailLayoutCol.source.body.period);
+            setSelectedWorkunit(detailLayoutCol.source.body.workunit);
+            setSelectedWorkunitLevel(detailLayoutCol.source.body.workunit_level);
         }
-    }, []);
+    }, [chartSource]);
 
     return(
     <Fragment>
@@ -264,11 +273,21 @@ export const ModalDetailChartUpdate = (props)=>{
                     <TabContent activeTab={active}>
                         <TabPane tabId="1">
                             <DatasourceDetailChart
+                                isNews                  = {isNews}
+                                setIsNews               = {setIsNews}
                                 width                   = {chartWidth}
                                 widthSet                = {(param) => {setChartWidth(param)}}
+                                nameChart               = {namechart}
                                 chartSource             = {chartSource}
+                                chartSourceList         = {chartSourceList}
                                 selectedDataSource      = {selectedDataSource}
                                 setSelectedDataSource   = {setSelectedDataSource}
+                                selectedWorkunit        = {selectedWorkunit}
+                                setSelectedWorkunit     = {setSelectedWorkunit}
+                                selectedWorkunitLevel   = {selectedWorkunitLevel}
+                                setSelectedWorkunitLevel= {setSelectedWorkunitLevel} 
+                                selectedPeriod          = {selectedPeriod}
+                                setSelectedPeriod       = {setSelectedPeriod}
                             />
                         </TabPane>
                         <TabPane tabId="2">
@@ -319,36 +338,96 @@ export const ModalDetailChartUpdate = (props)=>{
                 <Button 
                     color   = "primary" 
                     onClick = {() => {
-                        let options = {
-                            name   : titleChart,
-                            width  : parseInt(chartWidth.value),
-                            chart  : namechart,
-                            source : selectedDataSource.value,
-                            options : {
-                                maintainAspectRatio: false,
-                                responsive: true,
-                                plugins: {
-                                    legend: {
-                                        display     : legend,
-                                        position    : 'top',
-                                    },
-                                    tooltip: {
-                                        enabled     : tooltips, 
-                                    },
-                                    datalabels: {
-                                        align       : 'center',
-                                        color       : 'black',
-                                        anchor      : 'center',
-                                        display     : true,
-                                    },
+                        let options; 
+                        
+                        let data_ = chartSourceList.filter((data) => (
+                            data.name === namechart
+                        ))
+
+                        if(namechart === 'line'){
+                            options = {
+                                name   : titleChart,
+                                width  : parseInt(chartWidth.value),
+                                chart  : namechart,
+                                source : {
+                                    url : data_[0].apis[0].url,
+                                    method : "POST",
+                                    body : {
+                                        type             : selectedDataSource.value,
+                                        chart            : namechart,
+                                        period           : selectedPeriod,
+                                        period_type      : selectedPeriod.value,
+                                        workunit         : selectedWorkunit,
+                                        workunit_level   : selectedWorkunitLevel,
+                                        workunit_id_list : selectedWorkunitLevel.value === 0 ? [] : selectedWorkunit.map((data) => data.value),
+                                        point_radius     : 1
+                                    }
                                 },
-                                scales: {
-                                    x: {...chartXOption},
-                                    y: {...chartYOption}
+                                options : {
+                                    maintainAspectRatio: false,
+                                    responsive: true,
+                                    plugins: {
+                                        legend: {
+                                            display     : legend,
+                                            position    : 'top',
+                                        },
+                                        tooltip: {
+                                            enabled     : tooltips, 
+                                        },
+                                        datalabels: {
+                                            align       : 'center',
+                                            color       : 'black',
+                                            anchor      : 'center',
+                                            display     : true,
+                                        },
+                                    },
+                                    scales: {
+                                        x: {...chartXOption},
+                                        y: {...chartYOption}
+                                    }
                                 }
                             }
-                            
+                        }else{
+                            options = {
+                                name   : titleChart,
+                                width  : parseInt(chartWidth.value),
+                                chart  : namechart,
+                                source : {
+                                    url : data_[0].apis[0].url,
+                                    method : "POST",
+                                    body : {
+                                        type             : selectedDataSource.value,
+                                        chart            : namechart,
+                                        point_radius     : 1
+                                    }
+                                },
+                                options : {
+                                    maintainAspectRatio: false,
+                                    responsive: true,
+                                    plugins: {
+                                        legend: {
+                                            display     : legend,
+                                            position    : 'top',
+                                        },
+                                        tooltip: {
+                                            enabled     : tooltips, 
+                                        },
+                                        datalabels: {
+                                            align       : 'center',
+                                            color       : 'black',
+                                            anchor      : 'center',
+                                            display     : true,
+                                        },
+                                    },
+                                    scales: {
+                                        x: {...chartXOption},
+                                        y: {...chartYOption}
+                                    }
+                                }
+                            }
                         }
+
+
                         props.handleUpdateAction(options);
                         props.closeModal()
                     }}

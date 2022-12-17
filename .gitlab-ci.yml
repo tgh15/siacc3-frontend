@@ -27,9 +27,9 @@ deliver:
     BETA_SERVER: "cp-siacc-beta"
     DEV_TARGET_NAME: "siaccred_ui"
     DEV_ORCESTRATORS: "docker-compose"
-    BETA_SERVER: "cp-siacc-beta"
-    BETA_TARGET_NAME: "frontend_siacc"
-    ORCESTRATORS_BETA: "docker-compose"
+    BETA_SERVER: "siacc-beta"
+    BETA_TARGET_NAME: "siaccred_ui"
+    BETA_ORCESTRATORS: "docker-compose"
   when: on_success
 
 push-to-prod:

@@ -69,11 +69,7 @@ const ConfirmOtp = ({ email, username, password, fcmToken }) => {
                     localStorage.setItem("menu", JSON.stringify(res.data.menu));
                     localStorage.setItem("token", res.data.token);
 
-                    if (res.data.biodata.user_group[0].name != 'Helpdesk') {
-                        window.location.href = "/beranda";
-                    } else {
-                        window.location.href = "/helpdesk/home";
-                    }
+                    window.location.href = '/landing-page';
                 } else {
                     CustomToast("danger", "Kode OTP tidak sesuai");
                 }

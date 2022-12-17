@@ -301,13 +301,13 @@ const SettingPerformance = () => {
                 setShow = {(par) => { setShowForm(par) }}
             >
                 <FormSettingPerformance
-                    data                  = {dataSelected}
-                    isEvent               = {isEvent}
-                    onCancel              = {() => setShowForm(!showForm)}
-                    staticBadge           = {staticBadge}
-                    refreshData           = {() => { getData({ is_event: isEvent }) }}
-                    workunitOption        = {workunitOption}
-                    kindAchievementOption = {kindAchievementOption}
+                    data                    = {dataSelected}
+                    isEvent                 = {isEvent}
+                    onCancel                = {() => setShowForm(!showForm)}
+                    staticBadge             = {staticBadge}
+                    refreshData             = {() => { getData(isEvent) }}
+                    workunitOption          = {workunitOption}
+                    kindAchievementOption   = {kindAchievementOption}
                 />
             </ModalBase>
 

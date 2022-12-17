@@ -104,7 +104,19 @@ export const Linechart = (props) => {
     };
 
     const getChartData = () => {
-        dashboardAPI.getChartData(data).then(
+
+        const formData = {
+            type              : data.body.type,
+            chart             : data.body.chart,
+            point_radius      : 1,
+        } 
+        
+        if("period_type" in data.body){
+            formData.period_type      = data.body.period_type;
+            formData.workunit_id_list = data.body.workunit_id_list;
+        }
+
+        dashboardAPI.getChartData(data.url, formData).then(
             res => {
                 if(res.status === 200 && res.data != null){
 
@@ -118,22 +130,20 @@ export const Linechart = (props) => {
                     setChartData(res.data);
                 }else{
                     setChartData({
-                        labels: [0, 10, 20, 30, 40, 50, 60, 70, 80],
-                        datasets: [
-                            {
-                                data: [80, 20, 40, 50, 80, 74, 90, 85, 100],
-                                fill: false,
-                                tension: 0.5,
-                                pointRadius: 1,
-                                label: 'Europe',
-                                pointHoverRadius: 5,
-                                pointStyle: 'circle',
-                                pointHoverBorderWidth: 5,
-                                borderColor: '#28dac6',
-                                backgroundColor: '#28dac6',
-                                pointBorderColor: 'transparent',
-                            }
-                        ]
+                        labels      : [0, 10, 20, 30, 40, 50, 60, 70, 80],
+                        datasets    : [{
+                            data                    : [80, 20, 40, 50, 80, 74, 90, 85, 100],
+                            fill                    : false,
+                            label                   : 'Europe',
+                            tension                 : 0.5,
+                            pointStyle              : 'circle',
+                            pointRadius             : 1,
+                            borderColor             : '#28dac6',
+                            backgroundColor         : '#28dac6',
+                            pointHoverRadius        : 5,
+                            pointBorderColor        : 'transparent',
+                            pointHoverBorderWidth   : 5,
+                        }]
                     });
                 }
             },

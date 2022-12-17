@@ -26,6 +26,8 @@ import SelectMultipleUser       from '../../../components/widgets/select-multipl
 import { useEffect, useState }             from 'react';
 import CommunicationPTT         from '../../../services/pages/chat/PushToTalk';
 import CustomToast              from '../../../components/widgets/custom-toast';
+import { active } from 'sortablejs';
+import SelectMultipleUserPTT from '../../../components/widgets/select-multiple-user-ptt';
 
 
 const PTTSidebar = (props) => {
@@ -38,6 +40,7 @@ const PTTSidebar = (props) => {
         isCollapse,
         setSelected,
         setPttActive,
+        PTTWebsocket,
         setIsCollapse,
         activeChannel,
         createVisible,
@@ -50,7 +53,8 @@ const PTTSidebar = (props) => {
         handleSelfJoinChannel
     }                                                   = props;
 
-    const [isAddUserVisible, setIsAddUserVisible]       = useState(false);
+    const [isAddUserVisible, setIsAddUserVisible]               = useState(false);
+    const [isAddUserChannelVisible, setIsAddUserChannelVisible] = useState(false);
 
     const handleAddUser = (member) => {
 
@@ -69,6 +73,29 @@ const PTTSidebar = (props) => {
             },
             err => {
                 console.log(err);
+            }
+        )
+    }
+
+    const handleAddUserChannel = (member) => {
+        const params = {
+            mode    : 'channel',
+            id      : activeChannel.id,
+            action  : 'member-add'
+        };
+
+        const formData = {
+            roomStreamList : member
+        }
+
+        CommunicationPTT.addChannelToSever(formData, params).then(
+            res => {
+                if(res.status === 200){
+                    CustomToast('success', 'Member berhasil ditambahkan.');
+                    setIsAddUserChannelVisible(false);
+
+                    getServer(selected.id);
+                }
             }
         )
     }
@@ -118,6 +145,17 @@ const PTTSidebar = (props) => {
                     title       = "Buat Group"
                     setShow     = {(par) => setIsAddUserVisible(par)}
                     onSelect    = {(par) => { handleAddUser(par)}}
+                    titleButton = "Selesai"
+                />
+
+                {/* handle add user to channel */}
+                <SelectMultipleUserPTT
+                    show        = {isAddUserChannelVisible}
+                    title       = "Buat Group"
+                    setShow     = {(par) => setIsAddUserChannelVisible(par)}
+                    onSelect    = {(par) => { handleAddUserChannel(par)}}
+                    userData    = {selected != null && selected.member}
+                    userExist   = {activeChannel != null && activeChannel.roomStreamList}
                     titleButton = "Selesai"
                 />
 
@@ -241,14 +279,18 @@ const PTTSidebar = (props) => {
                                                 >
                                                     {
                                                         selected != null && selected.channels != null ? 
-                                                            selected.channels.map((data) => (
+                                                            selected.channels.map((data,index) => (
                                                                 <ChildChannel 
-                                                                    data                        = {data}
+                                                                    childData                   = {data}
                                                                     selected                    = {selected}
                                                                     activeChannel               = {activeChannel}
-                                                                    setActiveChannel            = {setActiveChannel}    
+                                                                    setActiveChannel            = {setActiveChannel}
+                                                                    setSelected                 = {setSelected}
+                                                                    PTTWebsocket                = {PTTWebsocket}
                                                                     setSelectedChannelID        = {setSelectedChannelID}
                                                                     setIsConfirmPasswordVisible = {setIsConfirmPasswordVisible}
+                                                                    setIsAddUserChannelVisible  = {setIsAddUserChannelVisible}
+                                                                    handleAddUserChannel        = {handleAddUserChannel}
                                                                     handleSelfJoinChannel       = {handleSelfJoinChannel}
                                                                 />
                                                             ))

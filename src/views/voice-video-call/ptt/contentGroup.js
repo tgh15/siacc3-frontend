@@ -1,7 +1,6 @@
 import React, { 
     Fragment, 
     useState, 
-    useEffect, 
     useContext 
 }                                               from 'react';
 import PerfectScrollbar                         from 'react-perfect-scrollbar';
@@ -20,7 +19,8 @@ import {
     Trash, 
     ArrowRight, 
     MoreVertical,
-    X, 
+    X,
+    PhoneMissed, 
 }                                               from 'react-feather';
 
 import { AntmediaContext }                      from '../../../context/AntmediaContext';
@@ -28,6 +28,8 @@ import { AntmediaContext }                      from '../../../context/AntmediaC
 import GeneralInformation                       from './settings/generalInformation';
 import MemberManagement                         from './settings/memberManagement';
 import Helper                                   from '../../../helpers';
+import CommunicationPTT                         from '../../../services/pages/chat/PushToTalk';
+import CustomToast                              from '../../../components/widgets/custom-toast';
 
 const ContentGroup = (props) => {
 
@@ -39,19 +41,53 @@ const ContentGroup = (props) => {
         setPttActive,
         activeChannel,
         handlePTTActive,
+        setActiveChannel,
         pttActiveContent,
         handlePTTNotActive,
         setPttActiveContent
     }                                     = props;
 
     const {
-        webRTCAdaptorPeer
+        webRTCAdaptorPeer,
+        setWebRtcAdaptorPeer,
     }                                     = useContext(AntmediaContext);
 
     const handleLeaveRoom =() => {
         webRTCAdaptorPeer.leaveFromRoom(activeChannel.roomId);
-        // location.reload();
+        setWebRtcAdaptorPeer(null);
+
+        (activeChannel.roomStreamList.sort((a,b) => {return a.localeCompare(b)})).map((data, index) => (
+            data === localStorage.getItem('uuid') ? 
+                activeChannel.isOnline[index] = false
+            :
+                null
+        ))
+
+        setActiveChannel({...activeChannel}); 
     }
+
+    const handleDeleteChannel = () => {
+        const params = {
+            mode      : 'channel',
+            id        : activeChannel.id,
+            server_id : selected.id
+        }
+
+        CommunicationPTT.deleteChannel(params).then(
+            res => {
+                if(!res.is_error){
+                    CustomToast('success', 'Berhasil hapus channel');
+                    getServer()
+                }else{
+                    CustomToast('danger',res.message)
+                }
+                console.log(res, 'delete channel ppt')
+            },
+            err => {
+                console.log(err, 'delete channel ppt')
+            }
+        )
+    }   
 
     //State
     const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -76,6 +112,14 @@ const ContentGroup = (props) => {
                                             </h5>
                                         </div>
                                         <div className='d-flex align-items-center'>
+                                            {
+                                                (pttActiveContent == 'ptt' && webRTCAdaptorPeer != null) &&
+                                                <PhoneMissed 
+                                                    size        = {20} 
+                                                    onClick     = {() => {handleLeaveRoom()}}
+                                                    className   = "mr-1 cursor-pointer"
+                                                />
+                                            }
                                             <ButtonDropdown 
                                                 isOpen = {dropdownOpen} 
                                                 toggle = {toggleDropdown}
@@ -87,20 +131,23 @@ const ContentGroup = (props) => {
                                                     <MoreVertical size={20}/>
                                                 </DropdownToggle>
                                                 <DropdownMenu className='mr-3'>
-                                                    <DropdownItem 
-                                                        // href = '/' 
-                                                        tag  = 'a'
-                                                    >
-                                                        <Trash 
-                                                            size  = {20}
-                                                            style = {{ marginRight: '9px' }}
-                                                        />
-                                                        Hapus Channel
-                                                    </DropdownItem>
                                                     {
-                                                        pttActiveContent == 'ptt' &&
+                                                        (selected != null && selected.admins_id.includes(localStorage.getItem('uuid'))) &&
                                                         <DropdownItem 
-                                                            onClick     = {() => {handleLeaveRoom()}}
+                                                            onClick = {() => {handleDeleteChannel()}}
+                                                            tag  = 'a'
+                                                        >
+                                                            <Trash 
+                                                                size  = {20}
+                                                                style = {{ marginRight: '9px' }}
+                                                            />
+                                                            Hapus Channel
+                                                        </DropdownItem>
+                                                    }
+                                                    {
+                                                        (pttActiveContent == 'ptt' && webRTCAdaptorPeer != null) &&
+                                                        <DropdownItem 
+                                                            tag         = 'a'
                                                         >
                                                             <X
                                                                 size  = {20}

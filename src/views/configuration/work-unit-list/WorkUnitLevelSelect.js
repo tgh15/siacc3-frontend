@@ -35,6 +35,16 @@ const WorkUnitLevelSelect = ({ isRtl, onSelect, getAllData, setListData }) => {
         workunitListAPI.getWorkunitLevel().then(
             res => {
                 if (!res.is_error) {
+                    let data_;
+
+                    if(localStorage.getItem('role') === 'Verifikator Daerah' || localStorage.getItem('role') === 'Admin Daerah' || localStorage.getItem('role') === 'Agen'){
+                        data_ = res.data.data.workunit_level.filter((data) => (
+                            data.name !== 'KEJAKSAAN AGUNG'
+                        ))
+                    }else{
+                        data_ = res.data.data.workunit_level
+                    }
+                    setLevel(data_);
                     setLevel(res.data.workunit_level);
                 } else {
                     CustomToast("danger", res.message);

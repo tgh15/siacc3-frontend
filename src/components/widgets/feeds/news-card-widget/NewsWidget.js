@@ -69,6 +69,7 @@ export const NewsWidget = (props) => {
         archived,
         subTitle, 
         division, 
+        division_id,
         newsType,
         publish_date, 
         publish_type,
@@ -77,6 +78,8 @@ export const NewsWidget = (props) => {
         bodyText, 
         imgAvatar, 
         feedsTitle, 
+        division_level,
+        division_level_id,
         ratings_check,
         selected_check,
         self_selected_check,
@@ -114,27 +117,27 @@ export const NewsWidget = (props) => {
         setValue,
         handleSubmit,
         formState   : { errors }
-    }                                                       = useForm();
+    }                                                           = useForm();
 
-    const [parentID]                                        = useState(0);
-    const [attach,setAttach]                                = useState(null);
-    const [savedBerita, setSaved]                           = useState(false);
-    const [agent_id,set_agent_id]                           = useState(0);   
-    const [showAnalog,setShowAnalog]                        = useState(1);
-    const [showViewForm, setShowViewForm]                   = useState(false);
-    const [detailRating, setDetailRating]                   = useState(null);
-    const [analogComment, setAnalogComment]                 = useState(1);
-    const [showTrophyForm, setShowTrophyForm]               = useState(false);
-    const [showRatingForm, setShowRatingForm]               = useState(false);
-    const [commentLoading, setCommentLoading]               = useState(false);
-    const [showHashtagForm, setShowHashtagForm]             = useState(false);
+    const [parentID]                                            = useState(0);
+    const [attach,setAttach]                                    = useState(null);
+    const [savedBerita, setSaved]                               = useState(false);
+    const [agent_id,set_agent_id]                               = useState(0);   
+    const [showAnalog,setShowAnalog]                            = useState(1);
+    const [showViewForm, setShowViewForm]                       = useState(false);
+    const [detailRating, setDetailRating]                       = useState(null);
+    const [analogComment, setAnalogComment]                     = useState(1);
+    const [showTrophyForm, setShowTrophyForm]                   = useState(false);
+    const [showRatingForm, setShowRatingForm]                   = useState(false);
+    const [commentLoading, setCommentLoading]                   = useState(false);
+    const [showHashtagForm, setShowHashtagForm]                 = useState(false);
 
     //Comment
-    const [comments,setComments]                            = useState(xcomments);
-    const [countComment, setCountComment]                   = useState(commentCount);
-    const [currentCount, setCurrentCount]                   = useState(0);
-    const [socketStatus, setSocketStatus]                   = useState(false);
-    const [commentSocket, setCommentSocket]                 = useState(null);
+    const [comments,setComments]                                = useState(xcomments);
+    const [countComment, setCountComment]                       = useState(commentCount);
+    const [currentCount, setCurrentCount]                       = useState(0);
+    const [socketStatus, setSocketStatus]                       = useState(false);
+    const [commentSocket, setCommentSocket]                     = useState(null);
 
     const [trophy, setTrophy]                                   = useState(trophyData);
     const [viewList, setViewList]                               = useState(null);
@@ -1049,6 +1052,9 @@ export const NewsWidget = (props) => {
                         title                   = {title} 
                         avatar                  = {imgAvatar} 
                         division                = {division} 
+                        division_id             = {division_id} 
+                        division_level          = {division_level}
+                        division_level_id       = {division_level_id}
                         subTitle                = {`${subTitle} - ${location}`} 
                         defaultNews             = {dropdownWidget} 
                         selectedCheck           = {selectedCheck}
@@ -1057,11 +1063,13 @@ export const NewsWidget = (props) => {
 
                     {/* Title */}
                     <FormGroup>
-                        <h4>
-                            {
-                                feedsTitle == undefined || feedsTitle == null ? null : parse(feedsTitle)
-                            }
-                        </h4>
+                        <a href={`/beranda/detail/${id}`}>
+                            <h4>
+                                {
+                                    feedsTitle == undefined || feedsTitle == null ? null : parse(feedsTitle)
+                                }
+                            </h4>
+                        </a>
                     </FormGroup>
 
                     {/* Content */}
