@@ -128,8 +128,7 @@ const ReportAPI = () => {
     //delete report
     const onDelete = () => {
         setLoading(true);
-
-        feedsReportAPI.deleteReport('asd').then(
+        feedsReportAPI.deleteReport(idSelected).then(
             res => {
                 if (res.is_error == false) {
                     
@@ -142,10 +141,10 @@ const ReportAPI = () => {
                     CustomToast('danger', 'Terjadi Kesalahan.');
                 }
 
-                setLoading(true);
+                setLoading(false);
             },
             err => {
-                setLoading(true);
+                setLoading(false);
                 CustomToast('danger', err.message);
 
             }

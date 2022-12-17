@@ -1,3 +1,4 @@
+
 export default [
     {
         title: "Tanggal",
@@ -5,10 +6,22 @@ export default [
     },
     {
         title: "Pengguna",
-        size: 5
+        size: 3
     },
     {
         title: "Aktivitas",
-        size: 4
+        size: 3
     },
+    {
+        title : "Info Perangkat",
+        size : 2
+    },
+    {
+        title : "Status",
+        size : 1
+    },
+    {
+        title : "Aksi",
+        size : 1
+    }
 ]

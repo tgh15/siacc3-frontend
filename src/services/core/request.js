@@ -84,12 +84,13 @@ export const GetWithURL = (path) => {
     return promise;
 };
 
-export const GetDashboardData = (path) => {
+export const GetDashboardData = (path, formData) => {
     const promise = new Promise((resolve, reject) => {
         axios({
-            method          : 'get',
+            method          : 'post',
             url             : `${path}`,
             headers         : configHeaders,
+            data            : formData,
         }).then(
             res => {
                 resolve(res.data);
@@ -97,7 +98,6 @@ export const GetDashboardData = (path) => {
         ).catch(
             err => {
                 if(err.response){
-                    redirectlogout(err)
                     reject(err.response);
                 }else if(err.request) {
                     reject(err.request);

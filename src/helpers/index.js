@@ -331,6 +331,13 @@ const getUserData = () => {
         return { uuid : "0" }
     }
 }
+const capitalizeFirstLetter = (string) => {
+    return string.replace(/\b\w+/g, function(txt) {
+            return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+        }
+    ); 
+}
+  
 
 const Helper = {
     dayIndo                 : dayIndo,
@@ -359,7 +366,8 @@ const Helper = {
     getMonthName            : getMonthName,
     getLastDateOfCurrentMonth : getLastDateOfCurrentMonth,
     getDuration             : getDuration,
-    getUserData             : getUserData
+    getUserData             : getUserData,
+    capitalizeFirstLetter   : capitalizeFirstLetter
 }
 
 export default Helper;

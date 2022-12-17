@@ -1,7 +1,6 @@
 import {useEffect, useState, Fragment}      from 'react';
-import { Link, useLocation }                      from "react-router-dom";
+import { Link, useLocation }                from "react-router-dom";
 import parse                                from 'html-react-parser';
-
 
 import {
         Col,
@@ -34,6 +33,7 @@ const useQuery = () => {
     return new URLSearchParams(useLocation().search);
 }
 
+
 const AdvancedSearch = () => {
     let query                                                       = useQuery();
 
@@ -60,7 +60,6 @@ const AdvancedSearch = () => {
     const [showDetailAgentReport, setShowDetailAgentReport]         = useState(false);
 
     const getElasticSearchAPI = (kind) => {
-        console.log(kind);
         if(kind === null){
             setLoading(true);
         }else{
@@ -68,7 +67,7 @@ const AdvancedSearch = () => {
         }
 
         const params = {
-            q    : query.get("keyword"),
+            q    : encodeURIComponent(query.get("keyword")),
             page : page
         }
 

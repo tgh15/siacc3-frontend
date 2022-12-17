@@ -64,8 +64,6 @@ const VerticalLayout = (props) => {
   // ** Props
   const { children, navbar, footer, menu, routerProps, currentActiveItem } = props;
 
- 
-
   // ** Hooks
   const [skin, setSkin] = useSkin();
   const [isRtl, setIsRtl] = useRTL();
@@ -233,6 +231,9 @@ const VerticalLayout = (props) => {
                                 setMenuVisibility={setMenuVisibility}
                                 skin={skin}
                                 setSkin={setSkin}
+                                menuCollapsed={menuCollapsed}
+                                setMenuCollapsed={setMenuCollapsed}
+    
                               />
                             )}
                           </div>

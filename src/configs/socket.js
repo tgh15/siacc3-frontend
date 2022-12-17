@@ -22,7 +22,7 @@ const LoginQrSocket = (qrToken) => {
 };
 
 const PTTSocket = (id) => {
-    return `${socketPath}/ws/${id}/ptt`;
+    return `${socketPath}/ws/${id}/ptt?uuid=${localStorage.getItem('uuid')}`;
 }
 
 export const WebsocketURL = {

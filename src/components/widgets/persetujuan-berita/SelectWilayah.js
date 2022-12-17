@@ -1,29 +1,30 @@
 import React, { useContext, useEffect, useState }       from 'react'
-import { Globe, MapPin }                    from 'react-feather'
-import { Button, FormGroup, Label, Spinner }         from 'reactstrap'
-import { ModalBase }                        from '../modals-base'
-import { selectThemeColors }                from '@utils'
+import { Globe, MapPin }                        from 'react-feather'
+import { Button, FormGroup, Label, Spinner }    from 'reactstrap'
+import { ModalBase }                            from '../modals-base'
+import { selectThemeColors }                    from '@utils'
 
-import Select                               from 'react-select'
-import { useSelector }                      from 'react-redux'
+import Select                                   from 'react-select'
+import { useSelector }                          from 'react-redux'
 
-import WorkunitHelper                       from '../../../helpers/WorkunitHelper';
-import UnitWorkListApi                      from '../../../services/pages/configuration/unit-work-list';
-import CategoriesHelper                     from '../../../helpers/CategoriesHelper';
-import { feedsCategoryAPI }                 from '../../../services/pages/feeds/categories';
-import feedsAgentReportAPI                  from '../../../services/pages/feeds/agent-reports';       
-import CustomToast                          from '../custom-toast'
-import { PerformanceContext }               from '../../../context/PerformanceContext'
+import WorkunitHelper                           from '../../../helpers/WorkunitHelper';
+import UnitWorkListApi                          from '../../../services/pages/configuration/unit-work-list';
+import CategoriesHelper                         from '../../../helpers/CategoriesHelper';
+import { feedsCategoryAPI }                     from '../../../services/pages/feeds/categories';
+import feedsAgentReportAPI                      from '../../../services/pages/feeds/agent-reports';       
+import CustomToast                              from '../custom-toast'
+import { PerformanceContext }                   from '../../../context/PerformanceContext'
 
 export const SelectWilayah  = ({data,show,setShow,onSubmit, index, statePosition}) => {
 
-    const [unit,setUnit]                            = useState(null);
-    const [type,setType]                            = useState("");
-    const [categories,setCategories]                = useState(null);
-    const [submitLoading, setSubmitLoading]         = useState(false);
-    const [activeCategories,setActiveCategories]    = useState(null);
+    const [unit,setUnit]                                = useState(null);
+    const [type,setType]                                = useState("");
+    const [categories,setCategories]                    = useState(null);
+    const [submitLoading, setSubmitLoading]             = useState(false);
+    const [activeCategories,setActiveCategories]        = useState([]);
 
-    const { workunitOptions,workunitOptionsApproval }                       = useContext(PerformanceContext);   
+    const { workunitOptions,workunitOptionsApproval }   = useContext(PerformanceContext);  
+
     const selector = useSelector(status=>{
         return status
     });
@@ -157,6 +158,7 @@ export const SelectWilayah  = ({data,show,setShow,onSubmit, index, statePosition
             if(categories==null){
                 handlerCategoriesGet().then(resp=>{
                     const cats = CategoriesHelper.toSelectVal(resp)
+                    console.log(cats, 'test')
                     setCategories(cats)
                 })
             }
@@ -176,20 +178,21 @@ export const SelectWilayah  = ({data,show,setShow,onSubmit, index, statePosition
     },[show,unit])
 
     useEffect(()=>{
-        if(show && activeCategories==null){
+        if(show && activeCategories.length == 0 ){
 
             const formData = {
                 agent_report_id : data.id
             };
 
-            feedsAgentReportAPI.detailAgentReport(formData).then(response_detail=>{
-                if(response_detail.data.category==undefined||response_detail.data.category==null){
+            feedsAgentReportAPI.detailAgentReport(formData).then(response_detail => {
+                if(response_detail.data.category==undefined || response_detail.data.category==null){
                     setActiveCategories([])
                 }else{
                     const cats = CategoriesHelper.toSelectVal(response_detail.data.category)
 
                     let xdata = []
-                    cats.map(v=>{
+                    cats.map(
+                        v => {
                         xdata.push(v.value)
                     })
                     
@@ -256,31 +259,29 @@ export const SelectWilayah  = ({data,show,setShow,onSubmit, index, statePosition
                     null
             }
             <FormGroup>
-                    <Label>Kategori Berita</Label>
-                    {activeCategories==null?null:(
-                        <Select
-                            name            = 'colors'
-                            theme           = {selectThemeColors}
-                            isMulti
-                            options         = {categories==null?[]:categories}
-                            className       = 'react-select'
-                            isClearable     = {false}
-                            defaultValue    = {activeCategories}
-                            classNamePrefix = 'select'
-                            onChange        = {(data)=>{
-                                let xdata = []
-                                data.map(v=>{
-                                    xdata.push(v.value)
-                                })
-                                
-                                setAgentUpdate({
-                                    ...agentUpdate,
-                                    category_id:xdata
-                                })
-                                
-                            }}
-                        />
-                    )}
+                <Label>Kategori Berita</Label>
+                <Select
+                    name            = 'colors'
+                    theme           = {selectThemeColors}
+                    isMulti
+                    options         = {categories==null?[]:categories}
+                    className       = 'react-select'
+                    isClearable     = {false}
+                    defaultValue    = {activeCategories == null ? [] : activeCategories}
+                    classNamePrefix = 'select'
+                    onChange        = {(data)=>{
+                        let xdata = []
+                        data.map(v=>{
+                            xdata.push(v.value)
+                        })
+                        
+                        setAgentUpdate({
+                            ...agentUpdate,
+                            category_id:xdata
+                        })
+                        
+                    }}
+                />
             </FormGroup>
             {
                 localStorage.getItem('role') == "Verifikator Pusat" ?

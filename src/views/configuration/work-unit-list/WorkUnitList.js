@@ -251,7 +251,7 @@ const WorkUnitList = (props) => {
             />
 
             <Row>
-                <Col md="1">
+                <Col md="1"  className="pr-0">
                     <Button.Ripple
                         size    = "sm"
                         color   = "primary"

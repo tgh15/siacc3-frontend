@@ -74,6 +74,11 @@ const Routes = [
     component: lazy(() => import('../../views/list-draft/TourListDraft')),
   },
   {
+    path: '/landing-page',
+    layout: 'BlankLayout',
+    component: lazy(() => import('../../views/landing-page')),
+  },
+  {
     path: '/login',
     component: lazy(() => import('../../views/authentication/login/Login')),
     layout: 'BlankLayout',

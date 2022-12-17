@@ -1,6 +1,7 @@
 
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import {
+    Plus,
     Volume2
 }                   from 'react-feather';
 
@@ -10,8 +11,11 @@ import {
     Collapse,
     Row
 }                   from 'reactstrap';
+import { active } from 'sortablejs';
 
 import Avatar       from '../../../components/widgets/avatar';
+import CustomToast from '../../../components/widgets/custom-toast';
+import { AntmediaContext } from '../../../context/AntmediaContext';
 
 //utils
 import Helper       from '../../../helpers';
@@ -20,54 +24,78 @@ import Helper       from '../../../helpers';
 const ChildChannel = (props) => {
 
     const {
-        data,
+        childData,
         selected,
+        setSelected,
+        PTTWebsocket,
+        activeChannel,
         setActiveChannel,
         setSelectedChannelID,
+        handleSelfJoinChannel,  
+        setIsAddUserChannelVisible,
         setIsConfirmPasswordVisible,
-        handleSelfJoinChannel  
     }                                           = props;
 
     const [member, setMember]                   = useState(null);
     const [confirmJoined, setConfirmJoined]     = useState(false);
     const [isCollapseChild, setIsCollapseChild] = useState(false);
 
+    const {
+        webRTCAdaptorPeer,
+    }                                           = useContext(AntmediaContext);
+
     const checkIsChannelPrivate = () => {
-        if(data.is_private === true){
-            setSelectedChannelID(data.id);
-            setIsConfirmPasswordVisible(true);
-        }else{
-            handleSelfJoinChannel(data.id);
-            setIsCollapseChild(!isCollapseChild);
-        }
+            if(childData.is_private === true){
+                setSelectedChannelID(childData.id);
+                setIsConfirmPasswordVisible(true);
+            }else{
+                handleSelfJoinChannel(childData.id);
+                setIsCollapseChild(!isCollapseChild);
+            }
     };
     
     const checkMemberInclude = () => {
-
         let newMember = [];
+
         selected.member.map((val) => (
-            data.roomStreamList.includes(val.uuid) && newMember.push(val)
+            childData.roomStreamList != null ? childData.roomStreamList.includes(val.uuid) && newMember.push(val) : null
         ));
 
-        setMember(newMember)
+        let sort_ = newMember.sort((a,b) => {return a.uuid.localeCompare(b.uuid)})
+        setMember([...sort_]);
     };
 
     useEffect(() => {
-        data != undefined && checkMemberInclude();
-    }, [selected, data]);
+        childData != undefined && checkMemberInclude();
+    }, [childData]);
 
+    useEffect(() => {
+        console.log(activeChannel)
+    }, [activeChannel])
     return (
         
-        <div className='mb-1'>
+        <div className='mb-1' 
+            key         ={`channel-${childData.roomName}-${childData.id}`}
+        >
             <div 
                 onClick     = {() => {
-                    if(data.roomStreamList != null && member.filter((data) => data.uuid === Helper.getUserData().uuid).length > 0){
-                        setConfirmJoined(false);
-                        setActiveChannel(data);
-                        setIsCollapseChild(!isCollapseChild);
+                    if(webRTCAdaptorPeer == null){
+
+                        if(activeChannel === null){
+                            setActiveChannel(childData);
+                            setIsCollapseChild(!isCollapseChild);
+                        }else{
+                            if(childData.roomStreamList != null && member != null && member.filter((data) => data.uuid === localStorage.getItem('uuid')).length > 0){
+                                setConfirmJoined(false);
+                                setIsCollapseChild(!isCollapseChild);
+                            }else{
+                                setConfirmJoined(true);
+                                setIsCollapseChild(!isCollapseChild);
+                            }
+                        }
+
                     }else{
-                        setConfirmJoined(true);
-                        setIsCollapseChild(!isCollapseChild);
+                        CustomToast('warning', 'Channel Aktif Sedang Berlangsung!');
                     }
                 }}
                 className   = 'cursor-pointer' 
@@ -78,13 +106,14 @@ const ChildChannel = (props) => {
                     </Col>
                     <Col md={9}>
                         <span className='ml-1'>
-                            {data.roomName}
+                            {childData.roomName}
                         </span>
                     </Col>
                 </Row>
             </div>
 
             <Collapse className="ml-3" isOpen={isCollapseChild}>
+                {console.log('member', member)}
                 {
                     confirmJoined ? 
                         <div>
@@ -102,33 +131,42 @@ const ChildChannel = (props) => {
                             </Button>
                         </div>
                     :
-                        member != null && member.map((data_) => (
+                        member != null && member.map((data_, index) => (
                             <div 
                                 className   ='mb-1'
+                                key         ={`channel-member-${childData.roomName}-${childData.id}`}
                             >
                                 {
-                                    data_.avatar == "" ?
-                                        <Avatar
-                                            content     = {data_.name} 
-                                            initials 
-                                            className   = 'avatar-border'
-                                        />
-                                    :
-                                        <Avatar 
-                                            img     = {data_.avatar} 
-                                            onError = {Helper.fallbackImage_} 
-                                        />
+                                    <Avatar
+                                        status      = {(activeChannel != null && "isOnline" in activeChannel && activeChannel.isOnline[index] === true) ? 'online' : 'offline'}
+                                        content     = {data_.name} 
+                                        onError     = {Helper.fallbackImage_} 
+                                        initials
+                                        className   = 'avatar-border'
+                                    />
                                 }
                                 <span className='ml-2'>{data_.name}</span>
-
                                 {
-                                data_?.isTalk == true ?
-                                        <Volume2/>
+                                    activeChannel != null && "isSpeak" in activeChannel ?
+                                        activeChannel.isSpeak[index] === true && <Volume2/>
                                     :
                                         null 
                                 }
                             </div>
                         ))
+                }
+                {
+                    (selected != null && selected.admins_id.includes(localStorage.getItem('uuid'))) &&
+                    <Button
+                        size    = "sm"
+                        color   = "primary"
+                        block
+                        outline
+                        className = "mt-1"
+                        onClick = {() => setIsAddUserChannelVisible(true)}
+                    >
+                        TAMBAH ANGGOTA
+                    </Button>
                 }
             </Collapse>
         </div>

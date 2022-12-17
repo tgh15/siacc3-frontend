@@ -115,13 +115,10 @@ const Login = (props) => {
                             localStorage.setItem("token", res.data.token);
                         }
     
-                        if (localStorage.getItem('role') === 'Helpdesk') {
-                            window.location.href = "/helpdesk/home";
-                        } else {
-                            window.location.href = "/beranda";
-                        }
+                        window.location.href = "/landing-page"
                     }
                 } else {
+
                     if (res.code === "auth_login_error_password_not_match") {
                         clearInterval(intervalRef.current);
                         CustomToast("danger", "Username atau password yang dimasukkan salah.");

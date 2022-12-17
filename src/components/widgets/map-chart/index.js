@@ -17,6 +17,8 @@ import {
 }                                       from "reactstrap"
 import Helper                           from "../../../helpers"
 import dashboardAPI                     from '../../../services/pages/dashboard'
+import ImageRounded from '../image-rounded';
+import { Link } from 'react-router-dom';
 mapboxgl.workerClass = require('worker-loader!mapbox-gl/dist/mapbox-gl-csp-worker').default;
 
 export const MapChart = (props) => { 
@@ -48,7 +50,19 @@ export const MapChart = (props) => {
 
 
     const getChartData = () => {
-        dashboardAPI.getChartData(data).then(
+
+        const formData = {
+            type              : data.body.type,
+            chart             : data.body.chart,
+            point_radius      : 1,
+        }
+        
+        if("period_type" in data.body){
+            formData.period_type      = data.body.period_type;
+            formData.workunit_id_list = data.body.workunit_id_list;
+        }
+
+        dashboardAPI.getChartData(data.url, formData).then(
             res => {
                 if(res.status === 200 && res.data != null){
                     setChartData(res.data);
@@ -142,14 +156,14 @@ export const MapChart = (props) => {
                                 chartData.map((data,index) => (
                                     <Marker
                                         key         = {"marker_"+index} 
-                                        latitude    = {data.geo.latitude}
-                                        longitude   = {data.geo.longitude} 
+                                        latitude    = {data.latitude}
+                                        longitude   = {data.longitude} 
                                     >
                                         <div 
-                                            style   = {{ background: 'blue', height: size, width: size, borderRadius: '50%', textAlign:'center', color: 'white', transform: `translate(${-size / 2}px,${-size}px)`, cursor: 'pointer'}}
+                                            style   = {{ background: 'blue', height: size, width: size, borderRadius: '50%', textAlign:'center', color: 'white', transform: `translate(${-size / 1.5}px,${-size}px)`, cursor: 'pointer'}}
                                             onClick = {() => setPopupInfo(data)}
                                         >
-                                            <span style={{fontWeight:'600'}}>{data.agent_report_count}</span>
+                                            <span style={{fontWeight:'600'}}>{data.count}</span>
                                         </div>
                                         {/* <img
                                             onClick = {() => setPopupInfo(data)}
@@ -164,30 +178,24 @@ export const MapChart = (props) => {
                         {
                             popupInfo && (
                                 <Popup
-                                    anchor       = "top"
-                                    tipSize      = {5}
                                     onClose      = {setPopupInfo}
-                                    latitude     = {popupInfo.geo.latitude}
-                                    longitude    = {popupInfo.geo.longitude}
-                                    closeOnClick = {false}
+                                    latitude     = {popupInfo.latitude}
+                                    longitude    = {popupInfo.longitude}
                                 >
-                                    <div
-                                        style = {{ textAlign: 'center' }}
-                                    >
-                                        {/* <Image
-                                            fallback= {noImageAvailable}
-                                            src     = {popupInfo.logo}
-                                            style   = {{ width: '50px', height: '50px', marginTop: '15px' }}
-                                        /> */}
-
-                                        <p style = {{ marginTop: '10px' }}>
+                                    <div className="d-flex flex-column align-items-center mx-2 mt-1">
+                                        <div>
+                                            <ImageRounded
+                                                src     = {popupInfo.logo}
+                                                width   = {50}
+                                            />
+                                        </div>
+                                        <h4
+                                            style={{ color: "black", fontSize: "12px" }}
+                                            className="font-weight-bolder mt-1"
+                                        >
                                             {popupInfo.name}
-                                        </p>
-
-                                        <a href={`/configuration/work-unit-list/${popupInfo.workunit_id}?level=${popupInfo.workunit_level}`} style = {{ marginTop: '10px' }}>
-                                            Detail
-                                        </a>
-
+                                        </h4>
+                                        <Link to={`/configuration/work-unit-list/${popupInfo.id}`} > Detail </Link>
                                     </div>
                                     
                                 </Popup>

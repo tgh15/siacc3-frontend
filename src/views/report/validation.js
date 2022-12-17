@@ -35,12 +35,14 @@ export const schemaNoFormatWithSchedule = yup.object().shape({
 export const schemaFormatMonthlyLevel1 = yup.object().shape({
     year             : yup.object().shape({ value : yup.string().required('Kolom tahun belum terisi'), label : yup.string().required('Kolom tahun belum terisi')}),
     month            : yup.object().shape({ value : yup.string().required('Kolom bulan belum terisi'), label : yup.string().required('Kolom bulan belum terisi')}),
+    with_child       : yup.object().shape({ value : yup.string().required('Kolom ini belum terisi'), label : yup.string().required('Kolom ini belum terisi')}),
     report_body      : yup.object().shape({ value : yup.string().required('Kolom isi laporan belum terisi'), label : yup.string().required('Kolom isi laporan belum terisi')}),
 }).required();
 
 export const schemaFormatMonthlyLevel2 = yup.object().shape({
     year             : yup.object().shape({ value : yup.string().required('Kolom tahun belum terisi'), label : yup.string().required('Kolom tahun belum terisi')}),
     month            : yup.object().shape({ value : yup.string().required('Kolom bulan belum terisi'), label : yup.string().required('Kolom bulan belum terisi')}),
+    with_child       : yup.object().shape({ value : yup.string().required('Kolom ini belum terisi'), label : yup.string().required('Kolom ini belum terisi')}),
     report_body      : yup.object().shape({ value : yup.string().required('Kolom isi laporan belum terisi'), label : yup.string().required('Kolom isi laporan belum terisi')}),
     workunit_level_2 : yup.array().of(yup.object().shape({ value : yup.string(), label : yup.string()})).min(1, 'Kolom kejaksaan tinggi belum terisi').required('Kolom kejaksaan tinggi belum terisi'),
 }).required();
@@ -48,6 +50,7 @@ export const schemaFormatMonthlyLevel2 = yup.object().shape({
 export const schemaFormatMonthlyLevel3 = yup.object().shape({
     year             : yup.object().shape({ value : yup.string().required('Kolom tahun belum terisi'), label : yup.string().required('Kolom tahun belum terisi')}),
     month            : yup.object().shape({ value : yup.string().required('Kolom bulan belum terisi'), label : yup.string().required('Kolom bulan belum terisi')}),
+    with_child       : yup.object().shape({ value : yup.string().required('Kolom ini belum terisi'), label : yup.string().required('Kolom ini belum terisi')}),
     report_body      : yup.object().shape({ value : yup.string().required('Kolom isi laporan belum terisi'), label : yup.string().required('Kolom isi laporan belum terisi')}),
     workunit_level_2 : yup.object().shape({ value : yup.string().required('Kolom kejaksaan tinggi belum terisi'), label : yup.string().required('Kolom kejaksaan tinggi belum terisi')}),
     workunit_level_3 : yup.array().of(yup.object().shape({ value : yup.string(), label : yup.string()})).min(1, 'Kolom kejaksaan negeri belum terisi').required('Kolom kejaksaan negeri belum terisi'),
@@ -56,6 +59,7 @@ export const schemaFormatMonthlyLevel3 = yup.object().shape({
 export const schemaFormatMonthlyLevel4 = yup.object().shape({
     year             : yup.object().shape({ value : yup.string().required('Kolom tahun belum terisi'), label : yup.string().required('Kolom tahun belum terisi')}),
     month            : yup.object().shape({ value : yup.string().required('Kolom bulan belum terisi'), label : yup.string().required('Kolom bulan belum terisi')}),
+    with_child       : yup.object().shape({ value : yup.string().required('Kolom ini belum terisi'), label : yup.string().required('Kolom ini belum terisi')}),
     report_body      : yup.object().shape({ value : yup.string().required('Kolom isi laporan belum terisi'), label : yup.string().required('Kolom isi laporan belum terisi')}),
     workunit_level_2 : yup.object().shape({ value : yup.string().required('Kolom kejaksaan tinggi belum terisi'), label : yup.string().required('Kolom kejaksaan tinggi belum terisi')}),
     workunit_level_3 : yup.object().shape({ value : yup.string().required('Kolom kejaksaan negeri belum terisi'), label : yup.string().required('Kolom kejaksaan negeri belum terisi')}),
@@ -65,12 +69,14 @@ export const schemaFormatMonthlyLevel4 = yup.object().shape({
 //quarterly validation
 export const schemaFormatQuarterlyLevel1 = yup.object().shape({
     year             : yup.object().shape({ value : yup.string().required('Kolom tahun belum terisi'), label : yup.string().required('Kolom tahun belum terisi')}),
+    with_child       : yup.object().shape({ value : yup.string().required('Kolom ini belum terisi'), label : yup.string().required('Kolom ini belum terisi')}),
     report_body      : yup.object().shape({ value : yup.string().required('Kolom isi laporan belum terisi'), label : yup.string().required('Kolom isi laporan belum terisi')}),
     quarter_type     : yup.array().of(yup.object().shape({ value : yup.string(), label : yup.string()})).min(1, 'Kolom triwulan belum terisi').required('Kolom triwulan belum terisi'),
 }).required();
 
 export const schemaFormatQuarterlyLevel2 = yup.object().shape({
     year             : yup.object().shape({ value : yup.string().required('Kolom tahun belum terisi'), label : yup.string().required('Kolom tahun belum terisi')}),
+    with_child       : yup.object().shape({ value : yup.string().required('Kolom ini belum terisi'), label : yup.string().required('Kolom ini belum terisi')}),
     report_body      : yup.object().shape({ value : yup.string().required('Kolom isi laporan belum terisi'), label : yup.string().required('Kolom isi laporan belum terisi')}),
     quarter_type     : yup.array().of(yup.object().shape({ value : yup.string(), label : yup.string()})).min(1, 'Kolom triwulan belum terisi').required('Kolom triwulan belum terisi'),
     workunit_level_2 : yup.array().of(yup.object().shape({ value : yup.string(), label : yup.string()})).min(1, 'Kolom kejaksaan tinggi belum terisi').required('Kolom kejaksaan tinggi belum terisi'),
@@ -78,6 +84,7 @@ export const schemaFormatQuarterlyLevel2 = yup.object().shape({
 
 export const schemaFormatQuarterlyLevel3 = yup.object().shape({
     year             : yup.object().shape({ value : yup.string().required('Kolom tahun belum terisi'), label : yup.string().required('Kolom tahun belum terisi')}),
+    with_child       : yup.object().shape({ value : yup.string().required('Kolom ini belum terisi'), label : yup.string().required('Kolom ini belum terisi')}),
     report_body      : yup.object().shape({ value : yup.string().required('Kolom isi laporan belum terisi'), label : yup.string().required('Kolom isi laporan belum terisi')}),
     quarter_type     : yup.array().of(yup.object().shape({ value : yup.string(), label : yup.string()})).min(1, 'Kolom triwulan belum terisi').required('Kolom triwulan belum terisi'),
     workunit_level_2 : yup.object().shape({ value : yup.string().required('Kolom kejaksaan tinggi belum terisi'), label : yup.string().required('Kolom kejaksaan tinggi belum terisi')}),
@@ -86,6 +93,7 @@ export const schemaFormatQuarterlyLevel3 = yup.object().shape({
 
 export const schemaFormatQuarterlyLevel4 = yup.object().shape({
     year             : yup.object().shape({ value : yup.string().required('Kolom tahun belum terisi'), label : yup.string().required('Kolom tahun belum terisi')}),
+    with_child       : yup.object().shape({ value : yup.string().required('Kolom ini belum terisi'), label : yup.string().required('Kolom ini belum terisi')}),
     report_body      : yup.object().shape({ value : yup.string().required('Kolom isi laporan belum terisi'), label : yup.string().required('Kolom isi laporan belum terisi')}),
     quarter_type     : yup.array().of(yup.object().shape({ value : yup.string(), label : yup.string()})).min(1, 'Kolom triwulan belum terisi').required('Kolom triwulan belum terisi'),
     workunit_level_2 : yup.object().shape({ value : yup.string().required('Kolom kejaksaan tinggi belum terisi'), label : yup.string().required('Kolom kejaksaan tinggi belum terisi')}),
@@ -96,17 +104,20 @@ export const schemaFormatQuarterlyLevel4 = yup.object().shape({
 //yearly validation
 export const schemaFormatYearlylyLevel1 = yup.object().shape({
     year             : yup.object().shape({ value : yup.string().required('Kolom tahun belum terisi'), label : yup.string().required('Kolom tahun belum terisi')}),
+    with_child       : yup.object().shape({ value : yup.string().required('Kolom ini belum terisi'), label : yup.string().required('Kolom ini belum terisi')}),
     report_body      : yup.object().shape({ value : yup.string().required('Kolom isi laporan belum terisi'), label : yup.string().required('Kolom isi laporan belum terisi')}),
 }).required();
 
 export const schemaFormatYearlylyLevel2 = yup.object().shape({
     year             : yup.object().shape({ value : yup.string().required('Kolom tahun belum terisi'), label : yup.string().required('Kolom tahun belum terisi')}),
+    with_child       : yup.object().shape({ value : yup.string().required('Kolom ini belum terisi'), label : yup.string().required('Kolom ini belum terisi')}),
     report_body      : yup.object().shape({ value : yup.string().required('Kolom isi laporan belum terisi'), label : yup.string().required('Kolom isi laporan belum terisi')}),
     workunit_level_2 : yup.array().of(yup.object().shape({ value : yup.string(), label : yup.string()})).min(1, 'Kolom kejaksaan tinggi belum terisi').required('Kolom kejaksaan tinggi belum terisi'),
 }).required();
 
 export const schemaFormatYearlylyLevel3 = yup.object().shape({
     year             : yup.object().shape({ value : yup.string().required('Kolom tahun belum terisi'), label : yup.string().required('Kolom tahun belum terisi')}),
+    with_child       : yup.object().shape({ value : yup.string().required('Kolom ini belum terisi'), label : yup.string().required('Kolom ini belum terisi')}),
     report_body      : yup.object().shape({ value : yup.string().required('Kolom isi laporan belum terisi'), label : yup.string().required('Kolom isi laporan belum terisi')}),
     workunit_level_2 : yup.object().shape({ value : yup.string().required('Kolom kejaksaan tinggi belum terisi'), label : yup.string().required('Kolom kejaksaan tinggi belum terisi')}),
     workunit_level_3 : yup.array().of(yup.object().shape({ value : yup.string(), label : yup.string()})).min(1, 'Kolom kejaksaan negeri belum terisi').required('Kolom kejaksaan negeri belum terisi'),
@@ -114,6 +125,7 @@ export const schemaFormatYearlylyLevel3 = yup.object().shape({
 
 export const schemaFormatYearlylyLevel4 = yup.object().shape({
     year             : yup.object().shape({ value : yup.string().required('Kolom tahun belum terisi'), label : yup.string().required('Kolom tahun belum terisi')}),
+    with_child       : yup.object().shape({ value : yup.string().required('Kolom ini belum terisi'), label : yup.string().required('Kolom ini belum terisi')}),
     report_body      : yup.object().shape({ value : yup.string().required('Kolom isi laporan belum terisi'), label : yup.string().required('Kolom isi laporan belum terisi')}),
     workunit_level_2 : yup.object().shape({ value : yup.string().required('Kolom kejaksaan tinggi belum terisi'), label : yup.string().required('Kolom kejaksaan tinggi belum terisi')}),
     workunit_level_3 : yup.object().shape({ value : yup.string().required('Kolom kejaksaan negeri belum terisi'), label : yup.string().required('Kolom kejaksaan negeri belum terisi')}),
@@ -123,12 +135,14 @@ export const schemaFormatYearlylyLevel4 = yup.object().shape({
 //periodically validation
 export const schemaFormatPeriodicallyLevel1 = yup.object().shape({
     end_date         : yup.array().min(1, 'Kolom tanggal selesai belum terisi').required('Kolom tanggal selesai belum terisi'),
+    with_child       : yup.object().shape({ value : yup.string().required('Kolom ini belum terisi'), label : yup.string().required('Kolom ini belum terisi')}),
     start_date       : yup.array().min(1, 'Kolom tanggal awal belum terisi').required('Kolom tanggal awal belum terisi'),
     report_body      : yup.array().of(yup.object().shape({ value : yup.string(), label : yup.string()})).min(1, 'Kolom isi laporan belum terisi').required('Kolom isi laporan belum terisi'),
 }).required();
 
 export const schemaFormatPeriodicallyLevel2 = yup.object().shape({
     end_date         : yup.array().min(1, 'Kolom tanggal selesai belum terisi').required('Kolom tanggal selesai belum terisi'),
+    with_child       : yup.object().shape({ value : yup.string().required('Kolom ini belum terisi'), label : yup.string().required('Kolom ini belum terisi')}),
     start_date       : yup.array().min(1, 'Kolom tanggal awal belum terisi').required('Kolom tanggal awal belum terisi'),
     report_body      : yup.array().of(yup.object().shape({ value : yup.string(), label : yup.string()})).min(1, 'Kolom isi laporan belum terisi').required('Kolom isi laporan belum terisi'),
     workunit_level_2 : yup.array().of(yup.object().shape({ value : yup.string(), label : yup.string()})).min(1, 'Kolom kejaksaan tinggi belum terisi').required('Kolom kejaksaan tinggi belum terisi'),
@@ -136,6 +150,7 @@ export const schemaFormatPeriodicallyLevel2 = yup.object().shape({
 
 export const schemaFormatPeriodicallyLevel3 = yup.object().shape({
     end_date         : yup.array().min(1, 'Kolom tanggal selesai belum terisi').required('Kolom tanggal selesai belum terisi'),
+    with_child       : yup.object().shape({ value : yup.string().required('Kolom ini belum terisi'), label : yup.string().required('Kolom ini belum terisi')}),
     start_date       : yup.array().min(1, 'Kolom tanggal awal belum terisi').required('Kolom tanggal awal belum terisi'),
     report_body      : yup.array().of(yup.object().shape({ value : yup.string(), label : yup.string()})).min(1, 'Kolom isi laporan belum terisi').required('Kolom isi laporan belum terisi'),
     workunit_level_2 : yup.object().shape({ value : yup.string().required('Kolom kejaksaan tinggi belum terisi'), label : yup.string().required('Kolom kejaksaan tinggi belum terisi')}),
@@ -144,6 +159,7 @@ export const schemaFormatPeriodicallyLevel3 = yup.object().shape({
 
 export const schemaFormatPeriodicallyLevel4 = yup.object().shape({
     end_date         : yup.array().min(1, 'Kolom tanggal selesai belum terisi').required('Kolom tanggal selesai belum terisi'),
+    with_child       : yup.object().shape({ value : yup.string().required('Kolom ini belum terisi'), label : yup.string().required('Kolom ini belum terisi')}),
     start_date       : yup.array().min(1, 'Kolom tanggal awal belum terisi').required('Kolom tanggal awal belum terisi'),
     report_body      : yup.array().of(yup.object().shape({ value : yup.string(), label : yup.string()})).min(1, 'Kolom isi laporan belum terisi').required('Kolom isi laporan belum terisi'),
     workunit_level_2 : yup.object().shape({ value : yup.string().required('Kolom kejaksaan tinggi belum terisi'), label : yup.string().required('Kolom kejaksaan tinggi belum terisi')}),

@@ -5,6 +5,7 @@ import { forwardRef } from 'react'
 import Proptypes from 'prop-types'
 import { Badge } from 'reactstrap'
 import classnames from 'classnames'
+import Helper from '../../../helpers'
 
 const Avatar = forwardRef((props, ref) => {
   // ** Props
@@ -73,6 +74,7 @@ const Avatar = forwardRef((props, ref) => {
           alt='avatarImg'
           height={imgHeight && !size ? imgHeight : 32}
           width={imgWidth && !size ? imgWidth : 32}
+          onError={Helper.fallbackImage_}
         />
       )}
       {status ? (

@@ -13,7 +13,6 @@ import {
 import ContainerFluid                       from '../fluid';
 
 const CardAudio = ({item}) => {
-
     const [animating, setAnimating]         = useState(0);
     const [activeIndex, setActiveIndex]     = useState(0);
 

@@ -11,7 +11,6 @@ import { ModalBase }                    from '../modals-base'
 import { ModalAddChart }                from './ModalAddChart'
 
 const TopWidgetDashboard = (props) => {
-
     const {
         modalShow, 
         setModalShow,

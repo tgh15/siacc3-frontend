@@ -46,7 +46,6 @@ const CreateChannel = (props) => {
 
     const { 
         register,
-        getValues, 
         handleSubmit, 
         formState   : { errors }
     }                                           = useForm({resolver: yupResolver(schema)});
@@ -67,6 +66,7 @@ const CreateChannel = (props) => {
                 if(res.status === 200){
                     CustomToast("success", 'Channel berhasil dibuat.');
                     setShow(false);
+                    setIsPrivate(false);
 
                     getServer(selected.id);
                 }

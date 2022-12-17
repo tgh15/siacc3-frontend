@@ -21,7 +21,7 @@ const removeMemberFromRoom  = (id, data) => Put(`${CommunicationURL.communicatio
 
 //DELETE
 const deleteServer          = (id) => Delete(`${CommunicationURL.communicationPrefix}/${CommunicationURL.rtc}/${CommunicationURL.server}?id=${id}`);
-
+const deleteChannel         = (param) => Delete(`${CommunicationURL.communicationPrefix}/rtc/server`, '', param);
 
 const CommunicationPTT = {
     getServer,
@@ -39,6 +39,7 @@ const CommunicationPTT = {
     removeMemberFromRoom,
 
     deleteServer,
+    deleteChannel
 };
 
 export default CommunicationPTT;

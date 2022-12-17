@@ -7,7 +7,6 @@ import '../../components/scss/base/pages/app-chat.scss';
 import '../../components/scss/base/pages/app-chat-list.scss';
 
 //Component
-import { active }           from 'sortablejs';
 import SidebarLeft          from './sidebarLeft';
 import ContentCall          from './voice/contentCall';
 import ContentGroup         from './ptt/contentGroup';
@@ -204,12 +203,51 @@ const IndexVoiceVideoCall = () => {
         )
     };
 
+    if(PTTWebsocket != null){
+
+        PTTWebsocket.onmessage = (event) => {
+            let res = JSON.parse(event.data);
+
+            if(activeChannel != null){
+                let val          = activeChannel;
+                let val_         = val.roomStreamList
+
+                if(res.type === "ptt-talk" && res.payload.id === activeChannel.id){
+                    let active       = [];
+                    (val_.sort((a,b) => {return a.localeCompare(b)})).map((data) => (
+                        res.payload.uuid === data && res.payload.push === true?
+                            active.push(true)
+                        :
+                            active.push(false)
+                    ))
+                    
+                    setActiveChannel({...activeChannel, isSpeak : active});
+                }else if(res.type === 'online-user'){
+                    let online      = [];
+
+                    (val_.sort((a,b) => {return a.localeCompare(b)})).map((data) => (
+                        res.payload.online.includes(data) ?
+                            online.push(true)
+                        :
+                            online.push(false)
+                    ))
+
+                    setActiveChannel({...activeChannel, isOnline : online}); 
+                }
+            }
+            
+        }
+
+    }
+
     useEffect(() => {
         //for incoming call
         if(isCallAnswer){
             if(privateCallData != null){
-                setUserCall(privateCallData.data);
                 setType(privateCallData.data.type);
+                setTimeout(() => {
+                    setUserCall(privateCallData.data);
+                }, 1000)
             }
         }
     },[isCallAnswer, type])
@@ -230,54 +268,33 @@ const IndexVoiceVideoCall = () => {
             if(callback.info === 'initialized'){
                 webRTCAdaptorPeer.joinRoom(activeChannel.roomId, tokenRoom[0].streamId)
             }else if(callback.info === 'joinedTheRoom'){
-
                 activeChannel.roomStreamList.map((data) => (
                     data != Helper.getUserData().uuid && webRTCAdaptorPeer.play(data)
                 ))
 
-                webRTCAdaptorPeer.muteLocalMic();
                 webRTCAdaptorPeer.publish(tokenRoom[0].streamId, tokenRoom[0].tokenId)
-
+                
             }else if(callback.info === 'publish_started'){
+                webRTCAdaptorPeer.muteLocalMic();
                 webRTCAdaptorPeer.getRoomInfo(activeChannel.roomId, tokenRoom[0].streamId);
             }
             else if(callback.info === 'roomInformation'){
-                // if(callback.obj.streamList.length > 0){
-                // }
+
+                console.log(callback, 'roominformation')
+
+                if(callback.obj.streams.length > 0){
+                    callback.obj.streams.map((data) => (
+                        webRTCAdaptorPeer.play(data)
+                    ))
+                }
             }
             else if(callback.info === 'pong'){
-                webRTCAdaptorPeer.getRoomInfo(activeChannel.roomId, tokenRoom[0].streamId);
+                if(webRTCAdaptorPeer != null){
+                    webRTCAdaptorPeer.getRoomInfo(activeChannel.roomId, tokenRoom[0].streamId);
+                }
             }
         }
     }, [callback, tokenRoom]);
-
-    useEffect(() => {
-
-        if(PTTWebsocket != null){
-
-            PTTWebsocket.onmessage = (event) => {
-                let res = JSON.parse(event.data);
-    
-                let val     = selected;
-                let activeMember = val.member;
-
-                if(res.type === "ptt-talk"){
-                    activeMember.map((data) => (
-                        res.payload.uuid === data.uuid && res.payload.push === true?
-                            data.isTalk = true
-                        :
-                            data.isTalk = false
-                    ))
-                    selected.member = activeMember;
-                    setSelected(selected)
-                }
-                
-            }
-    
-        }
-
-    });
-
 
     //join room akan trigger callback joinedtheroom, joinedtheroom menampilkan isi room.
     //untuk mendapatkan informasi room yang terupdate, kita pake getRoomInfo.
@@ -328,6 +345,7 @@ const IndexVoiceVideoCall = () => {
                 setServer                   = {setServer}
                 pttActive                   = {pttActive}
                 startPTT                    = {startPTT}
+                PTTWebsocket                = {PTTWebsocket}
                 getServer                   = {getServer}
                 setSelected                 = {setSelected}
                 setPttActive                = {setPttActive}

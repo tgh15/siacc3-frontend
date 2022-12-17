@@ -37,6 +37,7 @@ const SidebarLeft = (props) => {
         getServer,
         pttActive,
         setSelected,
+        PTTWebsocket,
         setPttActive,
         activeChannel,       
         setActiveChannel,
@@ -122,6 +123,7 @@ const SidebarLeft = (props) => {
                 setShow     = {(par) => setCreateChannelVisible(par)}
                 selected    = {selected}
                 getServer   = {getServer}
+                unmount     = {true}
             />
 
             <div className='sidebar-left'>
@@ -178,6 +180,7 @@ const SidebarLeft = (props) => {
                                     setSelected                 = {setSelected}
                                     setPttActive                = {setPttActive}
                                     setIsCollapse               = {setIsCollapse}
+                                    PTTWebsocket                = {PTTWebsocket}
                                     activeChannel               = {activeChannel}
                                     setActiveChannel            = {setActiveChannel}
                                     createRoomVisible           = {createRoomVisible}

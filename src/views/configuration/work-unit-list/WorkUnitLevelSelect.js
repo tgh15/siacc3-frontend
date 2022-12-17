@@ -6,7 +6,7 @@ import { Card, CardBody }       from 'reactstrap';
 import "./WorkUnitLevelSelect.scss";
 
 //Services
-import workunitListAPI          from '../../../services/pages/configuration/unit-work-list/WorkunitList';
+import WorkUnitLevelApi         from '../../../services/pages/employee/workunit';
 
 //Components
 import CustomToast              from '../../../components/widgets/custom-toast';
@@ -14,42 +14,46 @@ import CustomToast              from '../../../components/widgets/custom-toast';
 
 const WorkUnitLevelSelect = ({ isRtl, onSelect, getAllData, setListData }) => {
     //State
-    const [level, setLevel] = useState(false)
+    const [level, setLevel] = useState(false);
 
     const params = {
         className           : 'swiper-centered-slides',
         navigation          : true,
         spaceBetween        : 13,
-        slidesPerView       : 20,
+        slidesPerView       : 19,
         centeredSlides      : true,
         slideToClickedSlide : true,
-    };
-
-    useEffect(() => {
-        getData();
-    }, []);
-
-    const getData = () => { 
-        setListData(false);
-
-        workunitListAPI.getWorkunitLevel().then(
-            res => {
-                if (!res.is_error) {
-                    setLevel(res.data.workunit_level);
-                } else {
-                    CustomToast("danger", res.message);
-                }
-            }
-        ).catch(
-            err => {
-                CustomToast("danger", err.message);
-            }
-        )
-    };
+    }
 
     const refreshTable = (workunit_level_id) => {
         onSelect(workunit_level_id);
     };
+
+    const getData = () => {
+        setListData(false);
+        
+        WorkUnitLevelApi({
+            onSuccess: (res) => {
+                let data_;
+
+                if(localStorage.getItem('role') === 'Verifikator Daerah' || localStorage.getItem('role') === 'Admin Daerah'){
+                    data_ = res.data.data.workunit_level.filter((data) => (
+                        data.name !== 'KEJAKSAAN AGUNG'
+                    ))
+                }else{
+                    data_ = res.data.data.workunit_level
+                }
+                setLevel(data_);
+            },
+            onFail: (err) => {
+                CustomToast("danger", err.message);
+            }
+        })
+    };
+
+    useEffect(() => {
+        getData()
+    }, []);
 
     return (
         <Card

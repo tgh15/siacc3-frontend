@@ -491,7 +491,10 @@ export const processAgentReports = async(agentReports, commentsPage) => {
                 employee        : {
                     name     : title,
                     workunit : division2,
-                    photo    : work_photo
+                    workunit_id : division_id,
+                    photo    : work_photo,
+                    workunit_level : division_level,
+                    workunit_level_id : division_level_id
                 },
                 title           : feedsTitle,
                 location_name   : location,
@@ -593,6 +596,9 @@ export const processAgentReports = async(agentReports, commentsPage) => {
                 archived        : is_archive,
                 bodyText        : bodyText,
                 division        : `${division2}`,
+                division_id     : division_id,
+                division_level  : division_level,
+                division_level_id : division_level_id,
                 subTitle        : momen,
                 location        : location,
                 newsType        : newsType == 2 ? "nasional" : "lokal",

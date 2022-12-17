@@ -24,6 +24,8 @@ import { selectThemeColors }                    from '@utils'
 import { useForm, Controller }                  from "react-hook-form";
 
 import { PerformanceContext }                   from '../../../../context/PerformanceContext'
+import ExportFeeds from '../../../../views/beranda/export_beranda'
+import CustomToast from '../../custom-toast'
 
 export const FeedsCategoriesFilterModal = (props) => {
 
@@ -38,13 +40,17 @@ export const FeedsCategoriesFilterModal = (props) => {
         reset,
         control,
         handleSubmit,
-    }                                   = useForm();
+    }                                           = useForm();
 
-    const { workunitOptions }           = useContext(PerformanceContext);
+    const { workunitOptions }                   = useContext(PerformanceContext);
 
-    const [kind, setKind]               = useState(2);
-    const [orderBy, setOrderBy]         = useState('latest');
-    const [publishType, setPublishType] = useState('national');
+    const [kind, setKind]                       = useState(2);
+    const [orderBy, setOrderBy]                 = useState('latest');
+    const [isExport, setIsExport]               = useState(false);
+    const [exportData, setExportData]           = useState(null);
+    const [publishType, setPublishType]         = useState('national');
+    const [isExportVisible, setIsExportVisible] = useState(false);
+
 
 
     const handleSubmit_ = (data) => {
@@ -74,8 +80,20 @@ export const FeedsCategoriesFilterModal = (props) => {
             formData.end_date = moment(data.end_date[0]).format('YYYY-MM-DD')
         }
 
-        onFilter(formData);
-        setShow(false);
+
+        if(isExport){
+            let duration = moment.duration(moment(data.end_date[0]).diff(moment(data.start_date[0])));
+            if(duration.days() > 1){
+                CustomToast('warning','Maksimal Rentang Waktu Berita Adalah 1 Hari.')
+            }else{
+                setExportData(formData);
+                setIsExportVisible(true)
+                setShow(false);
+            }
+        }else{
+            setShow(false);
+            onFilter(formData);
+        }
     };
 
     const handleReset   = () => {
@@ -95,6 +113,11 @@ export const FeedsCategoriesFilterModal = (props) => {
 
     return(
         <>
+            <ExportFeeds
+                exportData          = {exportData}
+                isExportVisible     = {isExportVisible}
+                setIsExportVisible  = {setIsExportVisible}
+            />
             <ModalBase 
                 size        = "lg"
                 show        = {showing}
@@ -236,27 +259,45 @@ export const FeedsCategoriesFilterModal = (props) => {
                                 <Select
                                     id              = "workunit" 
                                     theme           = {selectThemeColors}
+                                    isMulti
                                     options         = {workunitOptions}
                                     className       = 'react-select'
                                     placeholder     = "Pilih Satker"
                                     isClearable
-                                    isMulti
                                     classNamePrefix = 'select'
                                 />
                             }
                         />
                     </FormGroup>
 
-                    <FormGroup className="text-center">
+                    <FormGroup className="d-flex justify-content-between">
+                        
                         <Button 
-                            type    = "reset" 
-                            outline 
+                            type    = "submit"
                             color   = "primary" 
-                            onClick = {() => { handleReset() }}
+                            onClick = {() => {setIsExport(true)}}
                         >
-                            Reset
-                        </Button>&nbsp;
-                        <Button color="primary" type="submit">Terapkan</Button>
+                            Export Laporan
+                        </Button>
+
+                        <div>
+                            <Button 
+                                type    = "reset" 
+                                color   = "primary" 
+                                outline 
+                                onClick = {() => { handleReset() }}
+                            >
+                                Reset
+                            </Button>
+                            &nbsp;
+                            <Button 
+                                type    = "submit"
+                                color   = "primary" 
+                                onClick = {() => {setIsExport(false)}}
+                            >
+                                Terapkan
+                            </Button>
+                        </div>
                     </FormGroup>
                 </Form>
 
