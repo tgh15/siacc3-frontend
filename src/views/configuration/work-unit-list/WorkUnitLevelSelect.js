@@ -6,11 +6,7 @@ import { Card, CardBody }       from 'reactstrap';
 import "./WorkUnitLevelSelect.scss";
 
 //Services
-<<<<<<< HEAD
-import workunitListAPI          from '../../../services/pages/configuration/unit-work-list/WorkunitList';
-=======
 import WorkUnitLevelApi         from '../../../services/pages/employee/workunit';
->>>>>>> amate
 
 //Components
 import CustomToast              from '../../../components/widgets/custom-toast';

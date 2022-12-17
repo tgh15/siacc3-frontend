@@ -136,6 +136,14 @@ const StartTour = () => {
 };
 
 const TourFilter = (props) => {
+
+    const {
+        setFilterType,
+        selectedDetail,
+        setFilterValue,
+        setFilterModal,
+    }                       = props;
+
     return (
         <Fragment>
             <Row>
@@ -143,12 +151,7 @@ const TourFilter = (props) => {
                     md = '12' 
                     sm = '12'
                 >
-                    <ShepherdTour 
-                        steps       = {stepsFilter}
-                        tourOptions = {{ 
-                            useModalOverlay: true
-                        }}
-                    >
+                    <ShepherdTour steps={stepsFilter}>
                         <StartTour/>
                     </ShepherdTour>
                 </Col>
@@ -157,11 +160,10 @@ const TourFilter = (props) => {
                     sm = '12'
                 >
                     <ModalFilter
-                        onReset         = {props.onReset}
-                        onFilter        = {props.onFilter}
-                        setFilter       = {props.setFilter}
-                        setPageActive   = {props.setPageActive}
-                        setSearchTerm   = {props.setSearchTerm}
+                        setFilterType  = {setFilterType}
+                        selectedDetail = {selectedDetail}
+                        setFilterValue = {setFilterValue}
+                        setFilterModal = {setFilterModal}
                     />
                 </Col>
             </Row>

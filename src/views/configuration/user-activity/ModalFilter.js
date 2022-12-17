@@ -1,117 +1,153 @@
+import { 
+    Fragment,
+    useContext
+}                                           from "react";
+
 import {
+    Form,
     Label,
     Button,
     FormGroup,
+    CustomInput,
     ModalFooter,
-} from "reactstrap";
-
-// React
-import { Fragment, useContext, useEffect, useState }    from "react";
+}                                           from "reactstrap";
 import moment                               from "moment";
 import Flatpickr                            from 'react-flatpickr';
-import Select                               from 'react-select';
-import { selectThemeColors }                from '@utils';
+import Select                               from 'react-select'
+import { useForm, Controller }              from "react-hook-form";
+import { selectThemeColors }                from '@utils'
+import { PerformanceContext }               from '../../../context/PerformanceContext'
 
 //Css
 import '@styles/react/libs/flatpickr/flatpickr.scss';
 
-import { PerformanceContext }               from "../../../context/PerformanceContext";
+const ModalFilter = (props) => {
 
+    const {
+        setFilterType,
+        selectedDetail,
+        setFilterValue,
+        setFilterModal,
+    }                                           = props;
 
-
-const ModalFilter = ({ setPageActive, setFilter, onReset, setSearchTerm, onFilter }) => {
-
-
-    const { workunitOptions }                   = useContext(PerformanceContext);       
-    const [picker, setPicker]                   = useState(null);
-    const [workunit, setWorkunit]               = useState(false);
-    const [filterType, setFilterType]           = useState(null);
+    const { workunitOptions }                   = useContext(PerformanceContext);
 
     const onClickReset = () => {
-        setPageActive(1);
-        setFilter("all");
-        setSearchTerm(null);
-        onReset();
+        setFilterType(null);
+        setFilterValue(null);
+        setFilterModal(false);
     };
 
-    const onSubmit = () => {
-        setPageActive(1);
-        setFilter(filterType == "time" ? "time" : "origin");
-        setSearchTerm((filterType == "origin") ? workunit : moment(new Date(picker)).format("YYYY-MM-DD") );
-        onFilter();
+    const onSubmit = (data) => {
+        console.log(data);
+        if(!selectedDetail){
+            setFilterType('workunit');
+            setFilterValue(data.workunit.label);
+        }else{
+            setFilterType('date');
+            setFilterValue({
+                from : moment(data.from[0]).format('YYYY-MM-DD'),
+                to   : moment(data.to[0]).format('YYYY-MM-DD')
+            })
+        }
+
+        setFilterModal(false);
     };
+
+    const { 
+        control, 
+        handleSubmit, 
+    }                           = useForm();
 
     return (
         <Fragment>
-            <FormGroup>
-                <Label for='id'>Filter</Label>
-                <div id="activity-filter">
-                    <Select
-                        name            = 'sector_id'
-                        theme           = {selectThemeColors}
-                        options         = {typeOptions}
-                        onChange        = {(e) => { setFilterType(e.value)}}
-                        className       = 'react-select'
-                        placeholder     = "Pilih Filter"
-                        classNamePrefix = 'select'
-                    />
-                </div>
-            </FormGroup>
-            {
-                filterType == "time" ?
-                    <Fragment>
-                        <FormGroup>
-                            <Label>Tanggal</Label>
-                            <Flatpickr 
-                                id              = 'default-picker'
-                                onChange        = {date => setPicker(date)} 
-                                className       = 'form-control' 
-                                defaultValue    = {picker} 
-                            />
-                        </FormGroup>
-                    </Fragment>
-                : null
-            }
+            <Form onSubmit={handleSubmit(onSubmit)}>
+                {
+                    selectedDetail ?
+                        <>
+                            <FormGroup>
+                                <Label>Tanggal Mulai</Label>
+                                <Controller
+                                    as      = {
+                                        <Flatpickr 
+                                            id          = 'from' 
+                                            options     = {{ dateFormat: "d-m-Y"}}
+                                            className   = 'form-control' 
+                                            placeholder = {moment().format('D-M-YYYY')}
+                                        />
+                                    }
+                                    name    = "from"
+                                    rules   = {{required: true}}
+                                    control = {control}
+                                />
+                            </FormGroup>
 
-            {
-                filterType == "origin" ?
-                    <Fragment>
+                            <FormGroup>
+                                <Label>Tanggal Selesai</Label>
+                                <Controller
+                                    as      = {
+                                        <Flatpickr 
+                                            id          = 'to' 
+                                            options     = {{ dateFormat: "d-m-Y"}}
+                                            className   = 'form-control' 
+                                            placeholder = {moment().format('D-M-YYYY')}
+                                        />
+                                    }
+                                    name    = "to"
+                                    rules   = {{required: true}}
+                                    control = {control}
+
+                                />
+                            </FormGroup>
+                        </>
+                    : 
+                        null
+                }
+
+                {
+                    !selectedDetail ?
                         <FormGroup>
                             <Label for='id'>Satuan Kerja</Label>
-                            <Select
-                                id              = "workunit" 
-                                theme           = {selectThemeColors}
-                                options         = {workunitOptions}
-                                className       = 'react-select'
-                                placeholder     = "Pilih Satker"
-                                onChange        = {(data) => setWorkunit(data.value)}
-                                isClearable
-                                classNamePrefix = 'select'
+                            <Controller
+                                name    = "workunit"
+                                control = {control}
+                                as      = {
+                                    <Select
+                                        id              = "workunit" 
+                                        theme           = {selectThemeColors}
+                                        options         = {workunitOptions}
+                                        className       = 'react-select'
+                                        placeholder     = "Pilih Satker"
+                                        isClearable
+                                        classNamePrefix = 'select'
+                                    />
+                                }
                             />
                         </FormGroup>
-                    </Fragment>
-                : null
-            }
+                    : 
+                        null
+                }
 
-            <ModalFooter className="d-flex justify-content-center">
-                <div id="activity-reset">
-                    <Button.Ripple 
-                        color   = 'primary' 
-                        outline 
-                        onClick = {() => { onClickReset() }}
-                    >
-                        Reset
-                    </Button.Ripple>
-                </div>
-                <div id="activity-apply">
-                    <Button.Ripple 
-                        color   = 'primary' 
-                        onClick = {() => { onSubmit() }}
-                    >
-                        Terapkan
-                    </Button.Ripple>
-                </div>
-            </ModalFooter>
+                <ModalFooter className="d-flex justify-content-center">
+                    <div id="activity-reset">
+                        <Button.Ripple 
+                            color   = 'primary' 
+                            outline 
+                            onClick = {() => { onClickReset() }}
+                        >
+                            Reset
+                        </Button.Ripple>
+                    </div>
+                    <div id="activity-apply">
+                        <Button
+                            color   = 'primary'
+                            type    = "submit"
+                        >
+                            Terapkan
+                        </Button>
+                    </div>
+                </ModalFooter>
+            </Form>
         </Fragment>
     );
 };

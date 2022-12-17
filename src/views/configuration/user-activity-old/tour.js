@@ -22,7 +22,9 @@ import UserActivity                          from './UserActivity';
 //Helper
 import Helper                                from '../../../helpers';
 
-const backBtnClass  = 'btn btn-sm btn-outline-primary', nextBtnClass = 'btn btn-sm btn-primary btn-next'
+
+const backBtnClass  = 'btn btn-sm btn-outline-primary',
+nextBtnClass        = 'btn btn-sm btn-primary btn-next'
 let instance        = null;
 
 
@@ -167,11 +169,10 @@ const StartTour = ({ showAction }) => {
 
     return (
         <Fragment>
-            <div style={{ cursor: 'pointer' }}>
+            <div style={{ cursor: 'pointer', float: 'right' }}>
                 <p 
                     id      = 'positionRight' 
                     ref     = {buttonRef}
-                    style   = {{ zIndex: '3' }}
                     onClick = {tour.start}
                 >
                     {
@@ -204,7 +205,6 @@ const TourComponent = () => {
                 <Col 
                     md = '12' 
                     sm = '12'
-                    className = "d-flex justify-content-end"
                 >
                     <ShepherdTour
                         steps={
@@ -216,6 +216,10 @@ const TourComponent = () => {
                                 :
                                     stepsIndex
                         }
+
+                        tourOptions = {{ 
+                            useModalOverlay: true
+                        }}
                     >
                         <StartTour showAction={showAction}/>
                     </ShepherdTour>

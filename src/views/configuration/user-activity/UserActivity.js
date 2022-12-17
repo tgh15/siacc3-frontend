@@ -2,48 +2,121 @@ import {
     useRef, 
     Fragment, 
     useState, 
-} from 'react';
-import { Col, Media }       from 'reactstrap';
-import Skeleton             from 'react-loading-skeleton';
+    useEffect, 
+}                                       from 'react';
+import { Col, Media, Row }              from 'reactstrap';
 
-//Image
-import Avatar               from '@components/avatar';
-
-//Helper
-import Helper               from '../../../helpers';
-
-//Services
-import activityAPI          from '../../../services/pages/configuration/user-activity';
+import Avatar                           from '@components/avatar';
+import Skeleton                         from 'react-loading-skeleton';
 
 //Components
-import TourFilter           from './TourFilter';
-import headerTable          from './headerTable';
-import CustomTable          from '../../../components/widgets/custom-table';
-import CustomToast          from '../../../components/widgets/custom-toast';
-import SearchTable          from '../../../components/widgets/custom-table/SearchTable';
-import ButtonFilter         from '../../../components/widgets/custom-table/ButtonFilter';
-import { ModalBase }        from '../../../components/widgets/modals-base';
-import CustomTableBody      from '../../../components/widgets/custom-table/CustomTableBody';
-import CustomTablePaginate  from '../../../components/widgets/custom-table/CustomTablePaginate';
-import CustomTableBodyEmpty from '../../../components/widgets/custom-table/CustomTableBodyEmpty';
+import Helper                           from '../../../helpers';
+import TourFilter                       from './TourFilter';
+import headerTable                      from './headerTable';
+import CustomTable                      from '../../../components/widgets/custom-table';
+import CustomToast                      from '../../../components/widgets/custom-toast';
+import SearchTable                      from '../../../components/widgets/custom-table/SearchTable';
+import ButtonFilter                     from '../../../components/widgets/custom-table/ButtonFilter';
+import { ModalBase }                    from '../../../components/widgets/modals-base';
+import CustomTableBody                  from '../../../components/widgets/custom-table/CustomTableBody';
+import UserActivityAPI                  from '../../../services/pages/configuration/user-activity';
+import CustomTablePaginate              from '../../../components/widgets/custom-table/CustomTablePaginateV2';
+import CustomTableBodyEmpty             from '../../../components/widgets/custom-table/CustomTableBodyEmpty';
+import { Eye } from 'react-feather';
+import DetailUserActivity from './DetailUserActivity';
+import activityAPI from '../../../services/pages/configuration/user-activity';
 
 
 const UserActivity = (props) => {
     //Props
-    const {setShowAction}               = props;
+    const {setShowAction}                                       = props;
 
-    const {fallbackImage_, useQuery}    = Helper;
-    let query                           = useQuery();
-
-    //Ref
-    const filter                        = useRef("all");
-    const searchTerm                    = useRef(null);
-    const pageActive                    = useRef(1);
+    const {fallbackImage_, useQuery}                            = Helper;
+    let query                                                   = useQuery();
 
     //State
-    const [listData, setListData]       = useState(false);
-    const [pagination, setPagination]   = useState(false);
-    const [filterModal, setFilterModal] = useState(false);
+    const [search, setSearch]                                   = useState(null);
+    const [listData, setListData]                               = useState(null);
+    const [pagination, setPagination]                           = useState(false);
+    const [filterType, setFilterType]                           = useState(null);
+    const [filterModal, setFilterModal]                         = useState(false);
+    const [filterValue, setFilterValue]                         = useState(null);
+    const [selectedDetail, setSelectedDetail]                   = useState(null);
+    const [detailListData, setDetailListData]                   = useState(null);
+    const [paginationDetail, setPaginationDetail]               = useState(false);
+    const [isDetailActivityVisible, setIsDetailActivityVisible] = useState(false);
+
+    const handleDetail = (data) => {
+        setSelectedDetail(data);
+        setIsDetailActivityVisible(true);
+    };
+
+    const getUserActivity = (page = 1) => {
+
+        if(selectedDetail == null){
+            setListData(null);
+        }else{
+            setDetailListData(null);
+        }
+
+        const param = {
+            page : page,
+        }
+
+        if(selectedDetail != null){
+            param.uuid = selectedDetail.uuid
+        }else{
+            param.list = true
+        }
+
+        if(search != null){
+            param.keyword = search
+        }
+
+        if(filterType === 'workunit'){
+            param.origin = filterValue;
+        }else if(filterType === 'date'){
+            param.start_date = filterValue.from,
+            param.end_date   = filterValue.to
+        }
+
+        activityAPI.getActivity(param).then(
+            res => {
+
+                if(!res.is_error){
+                    if(res.data.result != null){
+
+                        if(selectedDetail == null){
+                            setListData(res.data.result);
+                            setPagination(res.data.pagination);
+                        }else{
+                            setDetailListData(res.data.result)
+                            setPaginationDetail(res.data.pagination);
+                        }
+
+                    }else{
+                        if(selectedDetail == null){
+                            setListData([]);
+                            setPagination(res.data.pagination);
+                        }else{
+                            setDetailListData([]);
+                            setPaginationDetail(res.data.pagination);
+                        }
+                    }
+                }else{
+                    CustomToast("danger", res.code);
+                }
+                
+            },
+            err => { 
+                CustomToast("danger", err.code);
+            }
+        )
+    }
+
+    useEffect(() => {
+        getUserActivity();
+    }, [selectedDetail, search, filterValue]);
 
     useEffect(() => {
         if (query.get('action') === 'get'){
@@ -55,116 +128,111 @@ const UserActivity = (props) => {
         }
     }, []);
 
-    useEffect(() => {
-        getData();
-    }, []);
-
-    const getData = () => {
-        setListData(false);
-
-        let params = {
-            page    : pageActive.current,
-            filter  : filter.current,
-            keyword : searchTerm.current
-        }
-
-        activityAPI.getActivity(params).then(
-            res => {
-                if (!res.is_error) {
-                    setListData(res.data.result);
-                    setPagination(res.data.pagination);
-                }else {
-                    CustomToast("danger", res.message);
-                }
-            }
-        ).catch(
-            err => {
-                CustomToast("danger", err.message);
-            }
-        )
-    };
-
     return (
         <Fragment>
+            {/* Modal Tour */}
             <ModalBase
                 size    = "sm"
                 show    = {filterModal}
                 title   = "Filter"
                 setShow = {(par) => { setFilterModal(par) }}
+                center  = {true}
             >
                 <TourFilter
-                    onReset         = {() => { getData(); setFilterModal(!filterModal);}}
-                    onFilter        = {() => { getData(); setFilterModal(!filterModal);}}
-                    setFilter       = {(par) => {filter.current = par}}
-                    setPageActive   = {(par) => {pageActive.current = par}}
-                    setSearchTerm   = {(par) => {searchTerm.current = par}}
+                    setFilterType  = {setFilterType}
+                    selectedDetail = {selectedDetail}
+                    setFilterValue = {setFilterValue}
+                    setFilterModal = {setFilterModal}
                 />
             </ModalBase>
 
-            {/* filter and search */}
-            <div className='d-flex justify-content-between'>
-                <div id="filter-data">
+            {/* Modal Detail Log */}
+            <DetailUserActivity
+                setSearch                   = {setSearch}
+                pagination                  = {paginationDetail}
+                filterModal                 = {filterModal}
+                setFilterType               = {setFilterType}
+                setFilterValue              = {setFilterValue}
+                setFilterModal              = {setFilterModal}
+                detailListData              = {detailListData}
+                selectedDetail              = {selectedDetail}
+                getUserActivity             = {getUserActivity}
+                setSelectedDetail           = {setSelectedDetail}
+                isDetailActivityVisible     = {isDetailActivityVisible}
+                setIsDetailActivityVisible  = {setIsDetailActivityVisible}
+            />
+
+            <Row className="mr-0">
+                <Col md={3}>
                     <ButtonFilter onClick={() => {setFilterModal(!filterModal)}}/>
-                </div>
-                <div style={{ width: '350px' }}>
-                    <SearchTable 
-                        onSearch = {(par) => {
-                            filter.current     = "all"; 
-                            pageActive.current = 1; 
-                            searchTerm.current = par; 
-                            getData(); 
-                        }}
-                    />
-                </div>
-            </div>
+                </Col>
+                <Col 
+                    md          = {{size : 4, offset : 5}}
+                    id          = "search-data"
+                    className   = "d-flex justify-content-end px-0"
+                >
+                    <SearchTable onSearch= {(par) => {setSearch(par)}}/>
+                </Col>
+            </Row>
 
             {/* pagination */}
-            <div style={{ marginBottom: '20px', marginRight: '-20px' }}>
-                <CustomTablePaginate 
-                    onNext          = {() => {
-                        pageActive.current = pagination.current_page+1; 
-                        getData();
-                    }} 
-                    onPrev          = {() => {
-                        pageActive.current = pagination.current_page-1;
-                        getData();
-                    }}
-                    pagination      = {pagination}  
-                    offsetSearch    = {10} 
-                />
-            </div>
+            <CustomTablePaginate 
+                getData         = {(params) => { getUserActivity(params.page)}}
+                pagination      = {pagination}  
+                placeholder     = "Cari Aktifitas Pengguna"
+                offsetSearch    = {10} 
+            />
             
             {/* table */}
-            <CustomTable header={headerTable}>
+            <CustomTable
+                header      = {headerTable} 
+                placeholder = "Cari Aktifitas Pengguna..."
+            >
                 {
                     listData && listData.map((data, i) => (
                         <div 
-                            id  = "activity-table"
-                            key = {i}
+                            id          = "activity-table" 
                         >
-                            <CustomTableBody>
-                                <Col md="2">
+                            <CustomTableBody key={i}>
+                                <Col md="2" className="d-flex align-items-center">
                                     {Helper.dateIndo(data.time)}
                                 </Col>
-                                <Col md="5">
-                                <Media>
-                                    <Media left href='#'>
-                                        <Avatar 
-                                            img         = {data.avatar} 
-                                            status      = 'online'
-                                            onError     = {fallbackImage_}
-                                            imgWidth    = '40' 
-                                            imgHeight   = '40' 
-                                        />
-                                    </Media>
-                                    <Media body>
-                                        <Media className="mb-0 ml-1">{data.name}</Media>
-                                            <h6 className="text-muted ml-1 mt-0">{data.origin}</h6>
+                                <Col md="3" className='d-flex align-items-center'>
+                                    <div className='d-flex align-items-center'>
+
+                                        <Media left href='#'>
+                                            <Avatar 
+                                                img         = {data.avatar} 
+                                                onError     = {fallbackImage_}
+                                                imgWidth    = '40' 
+                                                imgHeight   = '40' 
+                                            />
                                         </Media>
-                                    </Media>
+                                        <div>
+                                            <Media className="mb-0 ml-1">{data.name}</Media>
+                                            <h6 className="text-muted ml-1 mt-0">{data.origin} </h6>
+                                        </div>
+                                    </div>
                                 </Col>
-                                <Col md="4">
-                                    {data.activity}
+                                <Col md="3" className=" d-flex align-items-center">
+                                    {data.message}
+                                </Col>
+                                <Col md="2" className='d-flex align-items-center'>
+                                    <div>
+                                        <Media className="mb-0">{data.device}</Media>
+                                        <h5 className="text-muted mt-0">IP : {data.ip} </h5>
+                                    </div>
+                                </Col>
+                                <Col md="1" className='d-flex align-items-center'>
+                                    <Media className="mb-0">{data.status === 200 ? 'Sukses' : 'Gagal'}</Media>
+                                </Col>
+                                <Col md="1" className='d-flex align-items-center'>
+                                    <Eye 
+                                        size    = {20}
+                                        onClick = {() => {handleDetail(data)}}
+                                        className   = {'cursor-pointer'}
+
+                                    />
                                 </Col>
                             </CustomTableBody>
                         </div>
