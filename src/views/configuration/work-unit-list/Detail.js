@@ -178,7 +178,7 @@ const Detail = ({ match }) => {
     };
 
     //Get agent report by workunit
-    const getAgentReportByWorkunit = () => {
+    const getAgentReportByWorkunit = (page) => {
         const formData = {
             page        : page,
             workunit_id : parseInt(match.params.id)

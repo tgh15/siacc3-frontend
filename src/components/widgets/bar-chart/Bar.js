@@ -121,8 +121,9 @@ export const Barchart = ({id, handleDelete, data, title,legend,tooltips,xOptions
     }
 
     const handleClick = () => {
-        if("detail" in chartData){
-            detailChartAction(chartData.detail, title);
+        console.log(chartData);
+        if("details" in chartData){
+            detailChartAction(chartData.details, title);
         }else{
             let redirect = Helper.getParemeterFromString(chartData, "type");
 

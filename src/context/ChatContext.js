@@ -94,7 +94,9 @@ const ChatProvider = ({ children }) => {
     // ** Scroll to chat bottom
     const scrollToBottom = () => {
         const chatContainer = ReactDOM.findDOMNode(chatArea.current)
-        chatContainer.scrollTop = Number.MAX_SAFE_INTEGER
+        if(chatContainer != null){
+            chatContainer.scrollTop = Number.MAX_SAFE_INTEGER
+        }
     }
 
     if (chatSocket != null) {

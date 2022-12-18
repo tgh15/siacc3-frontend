@@ -12,7 +12,7 @@ import ButtonFilter                     from '../../../components/widgets/custom
 
 import CustomTableBodyEmpty from "../../../components/widgets/custom-table/CustomTableBodyEmpty";
 import CustomTableBody from "../../../components/widgets/custom-table/CustomTableBody";
-import CustomTablePaginate from "../../../components/widgets/custom-table/CustomTablePaginateV2";
+import CustomTablePaginate from "../../../components/widgets/custom-table/CustomTablePaginate";
 import SearchTable from "../../../components/widgets/custom-table/SearchTable";
 import TourFilter                       from './TourFilter';
 
@@ -103,7 +103,7 @@ const DetailUserActivity = (props) => {
                     placeholder = "Cari Aktifitas Pengguna..."
                 >
                     {
-                        detailListData && detailListData?.data.map((data, i) => (
+                        detailListData && detailListData?.map((data, i) => (
                             <div 
                                 id          = "activity-table" 
                             >

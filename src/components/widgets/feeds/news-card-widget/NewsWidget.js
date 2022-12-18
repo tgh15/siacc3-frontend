@@ -435,16 +435,21 @@ export const NewsWidget = (props) => {
     
         feedsAgentReportAPI.addTrophy(formData).then(
             res => {
-                if(res.status === 201){
-                    CustomToast('success', 'Trophy berhasil diberikan.');
-                    setShowTrophyForm(false);
-                    if(res.data != null){
-                        setTrophy([res.data]);
+                if(!res.is_error){
+                    if(res.status === 200){
+                        CustomToast('success', 'Trophy berhasil diberikan.');
+                        setShowTrophyForm(false);
+                        if(res.data != null){
+                            setTrophy([res.data]);
+                        }
                     }
+                }else{
+                    CustomToast('danger', res.message);
                 }
             },
             err => {
                 console.log(err, 'add trophy');
+                CustomToast('danger', res.message);
             }
         )
     }

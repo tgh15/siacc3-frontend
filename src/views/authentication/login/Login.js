@@ -118,14 +118,17 @@ const Login = (props) => {
                         window.location.href = "/landing-page"
                     }
                 } else {
-
                     if (res.code === "auth_login_error_password_not_match") {
                         clearInterval(intervalRef.current);
                         CustomToast("danger", "Username atau password yang dimasukkan salah.");
                     } else if (res.code === "auth_login_error_freeze_login") {
                         setPending(true);
                         intervalRef.current = setInterval(decreasePendingTime, 1000);
-                    }else{
+                    } else if (res.code === "auth_login_error_user_not_active"){
+                        clearInterval(intervalRef.current);
+                        CustomToast("danger", "Akun Pengguna Tidak Aktif.");
+                    }
+                    else{
                         CustomToast("danger", "Data akun tidak ditemukan.");
                     }
                 }

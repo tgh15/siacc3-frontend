@@ -19,7 +19,6 @@ import {
     waropen,
     supiori,
     kota_jayapura,
-
 } from './boundary'
 
 const data = {

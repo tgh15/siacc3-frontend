@@ -126,7 +126,7 @@ const ModalForm = (props) => {
                     setModalForm(false);
                     CustomToast("success", "Data Berhasil Disimpan");
                     
-                    if(params == undefined) {
+                    if(query.get("mode") === "tour") {
                         getData({tutorial:true});
                     }else {
                         getData();
@@ -168,7 +168,7 @@ const ModalForm = (props) => {
                     setModalForm(false);
                     CustomToast("success", "Data Berhasil DiUbah");
 
-                    if(params == undefined){
+                    if(query.get("mode") === "tour"){
                         getData({tutorial:true});
                     }else{
                         getData();

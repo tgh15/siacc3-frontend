@@ -20,7 +20,7 @@ import ButtonFilter                     from '../../../components/widgets/custom
 import { ModalBase }                    from '../../../components/widgets/modals-base';
 import CustomTableBody                  from '../../../components/widgets/custom-table/CustomTableBody';
 import UserActivityAPI                  from '../../../services/pages/configuration/user-activity';
-import CustomTablePaginate              from '../../../components/widgets/custom-table/CustomTablePaginateV2';
+import CustomTablePaginate              from '../../../components/widgets/custom-table/CustomTablePaginate';
 import CustomTableBodyEmpty             from '../../../components/widgets/custom-table/CustomTableBodyEmpty';
 import { Eye } from 'react-feather';
 import DetailUserActivity from './DetailUserActivity';
