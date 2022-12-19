@@ -66,7 +66,7 @@ const CardDetails = (props) => {
                             {dataSelected.name}
                         </h5>
                         <p>
-                            {dataSelected.workunit}
+                        {dataSelected.workunit_level} {dataSelected.workunit}
                         </p>
                     </div>
 

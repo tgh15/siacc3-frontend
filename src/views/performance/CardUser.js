@@ -58,7 +58,7 @@ const CardUser = (props) => {
                                     </Media>
                                     <Media body>
                                         <Media className="mb-0 ml-1">{data.name}</Media>
-                                        <small className="text-muted ml-1 mt-0">{data.workunit} </small>
+                                        <small className="text-muted ml-1 mt-0">{data.workunit_level} {data.workunit} </small>
                                     </Media>
                                 </Media>
                             </Col>

@@ -18,7 +18,7 @@ const DescriptionDetailAgent = () => {
             </tr>
             <tr>
                 <td className="title">
-                    {dataDetail && dataDetail.workunit}
+                    {dataDetail && dataDetail.workunit_level} {dataDetail && dataDetail.workunit}
                 </td>
                 <td className="ranking">
                     Peringkat {dataDetail && Helper.rankingText(dataDetail.local_ranking)}
