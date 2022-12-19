@@ -32,7 +32,7 @@ configuration != null && configuration.length > 0 && configuration[0].children !
         );
     }
 
-    if(data.label === "Aktivitas Pengguna"  && data.is_active === true){
+    if((data.label === "Aktivitas Pengguna" || data.label === "Aktivitas Pengguna V2") && data.is_active === true){
         children_.push(
             {
                 id : 'userActivity',
