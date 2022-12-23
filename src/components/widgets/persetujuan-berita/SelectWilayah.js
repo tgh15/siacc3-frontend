@@ -184,26 +184,28 @@ export const SelectWilayah  = ({data,show,setShow,onSubmit, index, statePosition
                 agent_report_id : data.id
             };
 
-            feedsAgentReportAPI.detailAgentReport(formData).then(response_detail => {
-                if(response_detail.data.category==undefined || response_detail.data.category==null){
-                    setActiveCategories([])
-                }else{
-                    const cats = CategoriesHelper.toSelectVal(response_detail.data.category)
+            feedsAgentReportAPI.detailAgentReport(formData).then(
+                response_detail => {
+                    if(response_detail.data == null || (response_detail.data.category==undefined || response_detail.data.category==null)){
+                        setActiveCategories([])
+                    }else{
+                        const cats = CategoriesHelper.toSelectVal(response_detail.data.category)
+                        console.log(cats, 'category')
+                        let xdata = []
+                        cats.map(
+                            v => {
+                            xdata.push(v.value)
+                        })
+                        
+                        setAgentUpdate({
+                            ...agentUpdate,
+                            category_id:xdata
+                        })
 
-                    let xdata = []
-                    cats.map(
-                        v => {
-                        xdata.push(v.value)
-                    })
-                    
-                    setAgentUpdate({
-                        ...agentUpdate,
-                        category_id:xdata
-                    })
-
-                    setActiveCategories(cats)
+                        setActiveCategories(cats)
+                    }
                 }
-            })
+            )
 
             // AgentReportApi.detail(data.id).then(response_detail=>{
             //     if(response_detail.data.category==undefined||response_detail.data.category==null){
@@ -215,6 +217,10 @@ export const SelectWilayah  = ({data,show,setShow,onSubmit, index, statePosition
             // })
         }
     },[show])
+
+    useEffect(() => {
+        console.log(activeCategories)
+    },[activeCategories])
 
     
     return(
@@ -267,7 +273,7 @@ export const SelectWilayah  = ({data,show,setShow,onSubmit, index, statePosition
                     options         = {categories==null?[]:categories}
                     className       = 'react-select'
                     isClearable     = {false}
-                    defaultValue    = {activeCategories == null ? [] : activeCategories}
+                    defaultValue    = {activeCategories != null && activeCategories}
                     classNamePrefix = 'select'
                     onChange        = {(data)=>{
                         let xdata = []
@@ -281,6 +287,7 @@ export const SelectWilayah  = ({data,show,setShow,onSubmit, index, statePosition
                         })
                         
                     }}
+                    value           = {activeCategories != null && activeCategories}
                 />
             </FormGroup>
             {

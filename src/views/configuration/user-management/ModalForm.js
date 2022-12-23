@@ -242,9 +242,11 @@ const ModalForm = (props) => {
                         )
                     }
                 }else {
-                    if (err.status === 400) {
+                    if (err.is_error) {
                         if (err.message === "Error While Insert Employee ! Email Has Been Used") {
-                            CustomToast("danger", "Email Telah Digunakan");
+                            CustomToast("danger", "Email Telah Digunakan.");
+                        }else{
+                            CustomToast("danger", err.message);
                         }
                     }
                 }
