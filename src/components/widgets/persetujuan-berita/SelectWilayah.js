@@ -285,9 +285,10 @@ export const SelectWilayah  = ({data,show,setShow,onSubmit, index, statePosition
                             ...agentUpdate,
                             category_id:xdata
                         })
-                        
+                        setActiveCategories(data);
                     }}
                     value           = {activeCategories != null && activeCategories}
+
                 />
             </FormGroup>
             {
