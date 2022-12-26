@@ -14,8 +14,15 @@ import { agentReportChangeToArchive, StoreNews }    from '../beranda/beranda_api
 import { CategoryProvider }                         from '../../context/CategoryContext';
 import employeeAPI                                  from '../../services/pages/employee';
 
+//Helper
+import Helper                                       from '../../helpers';
+
 
 const ApprovalNewsAPI = () => {
+
+    //Helper
+    const {getUserData}                                             = Helper
+
     //State
     const selector                                                  = useSelector(state => {return state});
     
@@ -310,7 +317,7 @@ const ApprovalNewsAPI = () => {
     const getWorkunitChild = () => {
         const formData = {
             condition_by  : "by_parent_list",
-            parent_id     : parseInt(localStorage.getItem('workunit_id'))
+            parent_id     : parseInt(getUserData().workunit_id)
         }
 
         employeeAPI.getChild(formData).then(

@@ -30,6 +30,8 @@ import ModalOpenMap                      from "./modalOpenMap";
 import ModalDeleteAll                    from "./modalDeleteAll";
 import CustomTableBodyEmpty              from "../../../components/widgets/custom-table/CustomTableBodyEmpty";
 import CustomTablePaginate from "../../../components/widgets/custom-table/CustomTablePaginate";
+import CustomToast from "../../../components/widgets/custom-toast";
+import { responseURL } from "../../../services";
 
 
 const LinkAccount = (props) => {
@@ -37,7 +39,7 @@ const LinkAccount = (props) => {
     const {setShowAction}                             = props;
 
     // Helper
-    const { dateIndo, useQuery }                      = Helpers;
+    const { dateIndo, useQuery, getUserData }         = Helpers;
 
     let query                                         = useQuery();
     
@@ -67,16 +69,33 @@ const LinkAccount = (props) => {
 
     const getData = (page=1) => {
         setIsLoading(true);
+
+        const params = {
+            page : page,
+            uuid : getUserData().uuid
+        }
         
-        LinkedAccountApi.get(page).then(res => {
-            setAvaiableDeleteAll(false)
-            setLinkeds(res.data.linked_device);
-            setHistories(res.data.histories.result);
-            setPagination(res.data.histories.pagination);
-            setIsLoading(false);
+        LinkedAccountApi.get(params).then(res => {
+            if(!res.is_error){
+                setIsLoading(false);
+                setAvaiableDeleteAll(false)
+
+                if(res.data.linked_device != null && res.data.linked_device.length > 0){
+                    setLinkeds(res.data.linked_device);
+                    setHistories(res.data.histories.result);
+                    setPagination(res.data.histories.pagination);
+                }else{
+                    setLinkeds([]);
+                    setHistories([]);
+                    setPagination([]);
+                }
+                    
+            }else{
+                CustomToast('danger', res.message)
+            }
 
         }, err => {
-            console.log(err);
+            CustomToast('danger', err.message);
         })
     };
 

@@ -29,7 +29,7 @@ const PerformanceProvider = ({ children }) => {
     const [workunitOptions          , setWorkunitOptions]         = useState(null)
     const [workunitOptionsApproval  , setWorkunitOptionsApproval] = useState(null);
 
-    const {useQuery}                                              = Helper;
+    const {useQuery, getUserData}                                 = Helper;
 
     let query           = useQuery();
 
@@ -45,7 +45,7 @@ const PerformanceProvider = ({ children }) => {
         if(localStorage.getItem('role') === "Agen" || localStorage.getItem('role') === "Verifikator Daerah" || localStorage.getItem('role') === "Admin Daerah"){
             const formData = {
                 condition_by : localStorage.getItem('role') === "Agen" ? "parent_list" : "child_list",
-                parent_id    : parseInt(localStorage.getItem('workunit_id'))
+                parent_id    : parseInt(getUserData().workunit_id)
             }
 
             workunitAPI.getWorkunitFilter(formData).then(
@@ -141,7 +141,7 @@ const PerformanceProvider = ({ children }) => {
                                 res.data.map((data) => (
                                     
                                     localStorage.getItem('role') === 'Verifikator Daerah' || localStorage.getItem('role') === 'Admin Daerah' ?
-                                        parseInt(localStorage.getItem('workunit_id')) === data.id &&
+                                        parseInt(getUserData().workunit_id) === data.id &&
                                         level_2.push({
                                             label : 'KEJAKSAAN TINGGI ' + data.name,
                                             value : data.id
@@ -170,7 +170,7 @@ const PerformanceProvider = ({ children }) => {
                                         res.data.map((data) => (
     
                                             localStorage.getItem('role') === 'Verifikator Daerah' || localStorage.getItem('role') === 'Admin Daerah' ?
-                                                parseInt(localStorage.getItem('workunit_id')) === data.parent_id &&
+                                                parseInt(getUserData().workunit_id) === data.parent_id &&
                                                 level_3.push({
                                                     label : 'KEJAKSAAN NEGERI ' + data.name,
                                                     value : data.id

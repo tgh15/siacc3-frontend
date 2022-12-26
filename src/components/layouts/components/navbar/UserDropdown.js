@@ -49,17 +49,15 @@ const UserDropdown = () => {
 
   const handleLogout = () => {
     AuthService.logout({
-      token : localStorage.getItem("token"),
-      onSuccess : (data) => {
+      token     : localStorage.getItem("token"),
+      onSuccess : () => {
         localStorage.clear()
-
         history.push("/login");
       },
-      onFail : (err) => {
+      onFail    : () => {
         localStorage.clear()
 
         history.push("/login");
-        // CustomToast("danger", err)
       }
     });
   }
