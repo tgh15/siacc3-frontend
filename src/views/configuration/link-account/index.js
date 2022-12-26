@@ -72,7 +72,7 @@ const LinkAccount = (props) => {
 
         const params = {
             page : page,
-            uuid : getUserData().uuid
+            uuid : getUserData().uuid_user
         }
         
         LinkedAccountApi.get(params).then(res => {
