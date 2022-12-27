@@ -52,12 +52,16 @@ const ContentGroup = (props) => {
         setWebRtcAdaptorPeer,
     }                                     = useContext(AntmediaContext);
 
+    const {
+        getUserData
+    }                                     = Helper;
+
     const handleLeaveRoom =() => {
         webRTCAdaptorPeer.leaveFromRoom(activeChannel.roomId);
         setWebRtcAdaptorPeer(null);
 
         (activeChannel.roomStreamList.sort((a,b) => {return a.localeCompare(b)})).map((data, index) => (
-            data === localStorage.getItem('uuid') ? 
+            data === getUserData().uuid ? 
                 activeChannel.isOnline[index] = false
             :
                 null
@@ -132,7 +136,7 @@ const ContentGroup = (props) => {
                                                 </DropdownToggle>
                                                 <DropdownMenu className='mr-3'>
                                                     {
-                                                        (selected != null && selected.admins_id.includes(localStorage.getItem('uuid'))) &&
+                                                        (selected != null && selected.admins_id.includes(getUserData().uuid)) &&
                                                         <DropdownItem 
                                                             onClick = {() => {handleDeleteChannel()}}
                                                             tag  = 'a'

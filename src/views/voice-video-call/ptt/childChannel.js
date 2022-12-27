@@ -44,6 +44,10 @@ const ChildChannel = (props) => {
         webRTCAdaptorPeer,
     }                                           = useContext(AntmediaContext);
 
+    const {
+        getUserData
+    }                                           = Helper;
+
     const checkIsChannelPrivate = () => {
             if(childData.is_private === true){
                 setSelectedChannelID(childData.id);
@@ -85,7 +89,7 @@ const ChildChannel = (props) => {
                             setActiveChannel(childData);
                             setIsCollapseChild(!isCollapseChild);
                         }else{
-                            if(childData.roomStreamList != null && member != null && member.filter((data) => data.uuid === localStorage.getItem('uuid')).length > 0){
+                            if(childData.roomStreamList != null && member != null && member.filter((data) => data.uuid === getUserData().uuid).length > 0){
                                 setConfirmJoined(false);
                                 setIsCollapseChild(!isCollapseChild);
                             }else{
@@ -156,7 +160,7 @@ const ChildChannel = (props) => {
                         ))
                 }
                 {
-                    (selected != null && selected.admins_id.includes(localStorage.getItem('uuid'))) &&
+                    (selected != null && selected.admins_id.includes(getUserData().uuid)) &&
                     <Button
                         size    = "sm"
                         color   = "primary"

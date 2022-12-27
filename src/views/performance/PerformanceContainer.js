@@ -143,7 +143,7 @@ const PerformanceContainer = () => {
                                 <Row className="mt-1 ">
                                     {listData.slice(0, 3).map((data, i) => (
                                         <Col key={i} md="4" className="d-flex justify-content-stretch">
-                                            <CardTopUser data={data} index={i}/>
+                                            <CardTopUser data={data} index={i} />
                                         </Col>
                                     ))}
                                 </Row>

@@ -106,13 +106,12 @@ const VerticalLayout = (props) => {
 
   const handleLogout = () => {
       AuthService.logout({
-          token : localStorage.getItem("token"),
-          onSuccess : (data) => {
-          localStorage.clear()
-
-          history.push("/login");
+          token     : localStorage.getItem("token"),
+          onSuccess : () => {
+            localStorage.clear()
+            history.push("/login");
           },
-          onFail : (err) => {
+          onFail    : () => {
           localStorage.clear()
 
           history.push("/login");

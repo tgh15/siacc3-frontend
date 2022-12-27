@@ -1,3 +1,5 @@
+import Helper from "../helpers";
+
 export const socketPath = !process.env.NODE_ENV || process.env.NODE_ENV === 'production' ? window._env_.REACT_APP_SOCKET_URL : process.env.REACT_APP_SOCKET_URL
 
 const feedsSocket = (roomId) => {
@@ -22,7 +24,7 @@ const LoginQrSocket = (qrToken) => {
 };
 
 const PTTSocket = (id) => {
-    return `${socketPath}/ws/${id}/ptt?uuid=${localStorage.getItem('uuid')}`;
+    return `${socketPath}/ws/${id}/ptt?uuid=${Helper.getUserData().uuid}`;
 }
 
 export const WebsocketURL = {

@@ -3,6 +3,7 @@ import { Media }                    from 'reactstrap';
 import { CheckSquare }              from 'react-feather';
 import RowAvatarWidget              from '../../rw-avatar';
 import parse                        from 'html-react-parser';
+import Helper                       from '../../../../helpers';
 
 
 export const WidgetNewsCardHeader = (props) => {
@@ -21,6 +22,10 @@ export const WidgetNewsCardHeader = (props) => {
         division_level_id,
     }   = props;
 
+    const {
+        getUserData
+    }   = Helper;
+
     return(
         <Fragment>
             <div className="d-flex justify-content-between align-items-center mb-1">
@@ -33,7 +38,7 @@ export const WidgetNewsCardHeader = (props) => {
                         <div className="media-body">
                             <h6 className="mb-0">
                                 {
-                                    preview ? JSON.parse(localStorage.getItem('userData')).name : parse(title)
+                                    preview ? getUserData().name : parse(title)
                                 }
                                 &nbsp; - &nbsp;
 

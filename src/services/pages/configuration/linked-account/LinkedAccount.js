@@ -4,7 +4,7 @@ import { LinkedAccountURL } from ".";
 import { Delete, Get } from "../../../core/request"
 import { authURL } from "../../authentication"
 
-const get               = (page = 1) => Get(`${authURL.authPrefix}/${LinkedAccountURL.prefix}?uuid=${localStorage.getItem("uuid_user")}&page=${page}`);
+const get               = (params) => Get(`${authURL.authPrefix}/${LinkedAccountURL.prefix}`,params);
 
 // Delete
 const deleteLinked      = (id) => Delete(`${authURL.authPrefix}/${LinkedAccountURL.prefix}?id=${id}`);

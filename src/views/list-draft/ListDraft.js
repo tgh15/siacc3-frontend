@@ -211,6 +211,14 @@ const ListDraft = (props) => {
                                                 : null
                                             }
 
+{
+                                                data.attachment.length > 0 ?
+                                                    <CardFile
+                                                        item = {props.processAttachment(data.attachment, "Other")}
+                                                    />
+                                                : null
+                                            }
+
                                             {/* footer */}
                                             <Row>
                                                 <Col 

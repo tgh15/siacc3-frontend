@@ -16,6 +16,9 @@ import Helper                       from '../../../../helpers';
 
 
 export const NewsPreview = (props) => {
+
+    const { getUserData }       = Helper;
+
     const { 
         video, 
         audio,
@@ -34,9 +37,9 @@ export const NewsPreview = (props) => {
                     {/* Header */}
                     <WidgetNewsCardHeader
                         title                   = {dataNews.title} 
-                        avatar                  = {localStorage.getItem('userData').photo} 
+                        avatar                  = {getUserData().photo} 
                         preview                 = {true}
-                        division                = {localStorage.getItem('workunit')} 
+                        division                = {getUserData().workunit} 
                         subTitle                = {`beberapa detik yang lalu - ${location}`} 
                     />
 
