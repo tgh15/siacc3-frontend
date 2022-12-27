@@ -61,13 +61,13 @@ const ForgotPassword = () => {
                     setLoading(false);
                     setCenteredModal(true);
                 } else {
-                    CustomToast("danger", err.code);
+                    CustomToast("danger", err.message);
                 }
             }
         ).catch(
             err => {
                 setLoading(false);
-                CustomToast("danger", err.code);
+                CustomToast("danger", err.message);
             }
         )
     }

@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState }     from "react";
 import { useForm }                          from "react-hook-form";
 import { Link, useHistory, useLocation }    from "react-router-dom";
 import { yupResolver }                      from '@hookform/resolvers/yup';
+import InputPasswordToggle                  from '@src/components/widgets/input-password-toggle';
 import * as yup                             from "yup";
 
 //Validasi data
@@ -64,12 +65,14 @@ const NewPassword = () => {
                     if(res.status === 403){
                         CustomToast("danger", "Tautan Kadaluarsa.");
                         history.push('/login');
+                    }else{
+                        CustomToast("danger", res.message)
                     }
                 }
             }
         ).catch(
             err => {
-                CustomToast("danger", err.code);
+                CustomToast("danger", err.message);
             }
         )
     }
@@ -85,18 +88,23 @@ const NewPassword = () => {
 
         authURL.changePassword(formData).then(
             res => {
+                setIsLoading(false);
                 if (!res.is_error) {
-                    setIsLoading(false);
                     CustomToast("success", "Password berhasil diperbaharui.");
                     history.push("/login");
                 } else {
-                    CustomToast("danger", err.code);
+                    CustomToast("danger", res.message);
                 }
+            },
+            err => {
+                setIsLoading(false);
+                CustomToast("danger", err.message);
+
             }
         ).catch(
             err => {
                 setIsLoading(false);
-                CustomToast("danger", err.code);
+                CustomToast("danger", err);
             }
         )
     }
@@ -127,39 +135,39 @@ const NewPassword = () => {
                         >
                             <FormGroup>
                                 <Label  
-                                    for       = 'login-username'
+                                    for       = 'new-password'
                                     className = 'form-label'    
                                 >
                                     Password Baru
                                 </Label>
-                                <Input
-                                    id          = 'new-password'
-                                    type        = 'password'
+
+                                <InputPasswordToggle
+                                    id          = 'new-password' 
                                     name        = "password"
                                     invalid     = {(errors.password) ? true : false}
-                                    innerRef    = {register()}
-                                    placeholder = 'Password Baru'
+                                    innerRef    = {register({ required: true })}
+                                    className   = 'input-group-merge'
+                                    placeholder = "Masukkan Password Baru"
                                 />
-
-                                {errors && errors.password && <FormFeedback>{errors.password.message}</FormFeedback>}
+                                {errors && errors.password && <Label className="text-danger">{errors.password.message}</Label>}
                             </FormGroup>
                             <FormGroup className="pb-2">
                                 <Label 
-                                    for       = 'login-username'
+                                    for       = 'repeat-password'
                                     className = 'form-label' 
                                 >
                                     Ulangi Password
                                 </Label>
-                                <Input
-                                    id          = 'repeat-password'
-                                    type        = 'password'
+                                <InputPasswordToggle
+                                    id          = 'repeat-password' 
                                     name        = "repeat_password"
                                     invalid     = {(errors.repeat_password) ? true : false}
-                                    innerRef    = {register()}
-                                    placeholder = 'Ulangi Password'
+                                    innerRef    = {register({ required: true })}
+                                    className   = 'input-group-merge'
+                                    placeholder = "Ulangi Password Baru"
                                 />
-
-                                {errors && errors.repeat_password && <FormFeedback>{errors.repeat_password.message}</FormFeedback>}
+                                {console.log(errors)}
+                                {errors && errors.repeat_password && <Label className="text-danger">{errors.repeat_password.message}</Label>}
                             </FormGroup>
                             <SubmitButton 
                                 size      = "sm" 
