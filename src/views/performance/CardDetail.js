@@ -61,7 +61,19 @@ const CardDetails = (props) => {
                     <div className="text-center">
                         <h5>Peringkat {Helper.rankingText(active == "agent" ? dataSelected.ranking : typeof dataSelected.ranking === 'string' ? parseInt(dataSelected.ranking.substring(0, 2)) : dataSelected.ranking)}</h5>
 
-                        <AvatarPerformance img={getImage()} imgHeight={80} imgWidth={80} className="mt-1" />
+                        {
+                            active === 'agent' ?
+                                <AvatarPerformance 
+                                    img         = {getImage()} 
+                                    imgWidth    = {80} 
+                                    imgHeight   = {80} 
+                                    className   = "mt-1" 
+                                />
+                            :
+                                <img src={getImage()} height={80} width={80} className="mt-1" />
+                        }
+
+
                         <h5 className="mt-1 mb-0">
                             {dataSelected.name}
                         </h5>
@@ -80,8 +92,8 @@ const CardDetails = (props) => {
                     </Row>
                     <Row>
                         {dataSelected.achievement ? dataSelected.achievement.map((achievement, index) => (
-                            <Col md={4} className="text-center mt-1">
-                                <ImageRounded src={achievement.badge} width={67} />
+                            <Col md={4} className="text-center my-1">
+                                <ImageRounded src={achievement.oldBadge} width={50} />
                             </Col>
                         )) : <div style={{ height:"50px"}}></div>}
                     </Row>
