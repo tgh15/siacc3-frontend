@@ -45,7 +45,6 @@ const ChatPopup = () => {
   const [modalRecord, setModalRecord] = useState(false)
   const chatArea = useRef()
 
-  console.log('ter')
   // ** User Profile
   let userUuid = 0;
 

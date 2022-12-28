@@ -200,10 +200,19 @@ export const EditDraftComponent = ({getDraftAPI, data, closeModal})=>{
                         }
 
                         //move attachment draft
-                        feedsDraftAPI.getDraft(data.id, res.data.id);
+                        feedsDraftAPI.getDraft(data.id, res.data.id).then(
+                            () => {
+                                //Delete existing draft attachment if exist
+                                if(deleteDraft.length > 0){
+                                    deleteDraft.map((data) => (
+                                        feedsAgentReportAPI.deleteAgentReportAttachment({attachment_id : data})
+                                    ))
+                                }
 
-                        //delete draft
-                        feedsDraftAPI.deleteListDraft(data.id);
+                                //delete draft
+                                feedsDraftAPI.deleteListDraft(data.id);
+                            }
+                        )
 
                         if( attachments.length > 0){
                             //upload attachment
