@@ -44,23 +44,23 @@ import { PerformanceContext }                           from "../../../context/P
 
 import Helper                                           from "../../../helpers/index";
 import {
-    schemaNoFormatNoSchedule,
-    schemaNoFormatWithSchedule,
-    schemaFormatMonthlyLevel1,
-    schemaFormatMonthlyLevel2,
-    schemaFormatMonthlyLevel3,
     schema,
     schema2,
     schema3,
+    schemaNoFormatNoSchedule,
+    schemaFormatMonthlyLevel1,
+    schemaFormatMonthlyLevel2,
+    schemaFormatMonthlyLevel3,
     schemaFormatMonthlyLevel4,
-    schemaFormatQuarterlyLevel1,
-    schemaFormatQuarterlyLevel2,
-    schemaFormatQuarterlyLevel3,
-    schemaFormatQuarterlyLevel4,
     schemaFormatYearlylyLevel1,
     schemaFormatYearlylyLevel2,
     schemaFormatYearlylyLevel3,
     schemaFormatYearlylyLevel4,
+    schemaNoFormatWithSchedule,
+    schemaFormatQuarterlyLevel1,
+    schemaFormatQuarterlyLevel2,
+    schemaFormatQuarterlyLevel3,
+    schemaFormatQuarterlyLevel4,
     schemaFormatPeriodicallyLevel1,
     schemaFormatPeriodicallyLevel2,
     schemaFormatPeriodicallyLevel3,
@@ -74,14 +74,14 @@ const FormReport = (props) => {
     //Props
     const {
         onSubmit,
+        isFormat,
+        reportKind,
+        setIsFormat,
+        workunitKind,
+        setReportKind,
+        setWorkunitKind,
         isAddFormVisible,
         setIsAddFormVisible,
-        isFormat,
-        setIsFormat,
-        reportKind,
-        setReportKind,
-        workunitKind,
-        setWorkunitKind,
     }                                  = props;
 
     //Context

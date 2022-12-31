@@ -39,10 +39,10 @@ export const WidgetCardNewsBottom = (props)=>{
         ratings,
         newsType,
         viewList,
-        viewListCombine,
         viewCounts,
         commentCounts,
         setShowViewForm,
+        viewListCombine,
 
         //Role
         roleLike,    

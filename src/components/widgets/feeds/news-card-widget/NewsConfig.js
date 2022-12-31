@@ -489,12 +489,12 @@ export const processAgentReports = async(agentReports, commentsPage) => {
             const {
                 id              : ar_id,
                 employee        : {
-                    name     : title,
-                    workunit : division2,
-                    workunit_id : division_id,
-                    photo    : work_photo,
-                    workunit_level : division_level,
-                    workunit_level_id : division_level_id
+                    name                : title,
+                    photo               : work_photo,
+                    workunit            : division2,
+                    workunit_id         : division_id,
+                    workunit_level      : division_level,
+                    workunit_level_id   : division_level_id
                 },
                 title           : feedsTitle,
                 location_name   : location,

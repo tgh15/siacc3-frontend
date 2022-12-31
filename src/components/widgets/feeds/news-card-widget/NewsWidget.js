@@ -574,17 +574,23 @@ export const NewsWidget = (props) => {
 
     useEffect(() => {
         setSaved(isSaved);
+
+        return () => {setSaved(false)}
     },[isSaved]);
 
     useEffect(() => {
         set_agent_id(id);
         setAttach(attdata);
+
+        return () => {}
     },[attach]);
 
     useEffect(() => {
         connectFeedsSocket();
         getViewerByAgentReport();
         getRatingByAgentReport();
+
+        return () => {}
     }, []);
 
     return (
