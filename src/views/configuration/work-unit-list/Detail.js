@@ -31,6 +31,7 @@ import CardPerformance                   from "./CardPerformance";
 import ModalPerformance                  from "./ModalPerformance";
 import CustomTableBodyEmpty              from "../../../components/widgets/custom-table/CustomTableBodyEmpty";
 import { processAgentReports }           from "../../../components/widgets/feeds/news-card-widget/NewsConfig";
+import CustomTablePaginate from "../../../components/widgets/custom-table/CustomTablePaginate";
 
 
 const CardData = (props) => {
@@ -58,6 +59,7 @@ const Detail = ({ match }) => {
     const [leftState, setLeftState]                     = useState([]);
     const [rightState, setRightState]                   = useState([]);
     const [dataDetail, setDataDetail]                   = useState(null);
+    const [pagination, setPagination]                   = useState(null);
     const [defaultDataMap, setDefaultDataMap]           = useState({});
     const [selectedMarker, setSelectedMarker]           = useState(null);
 
@@ -191,12 +193,16 @@ const Detail = ({ match }) => {
                         setLeftState([]);
                         setRightState([]);
                     }else {
+                        //set pagination
+                        setPagination(res.data.pagination);
+                        
                         processAgentReports(res.data.agent_report).then(
                             res => {
                                 let arrLength = res.length;
 
                                 //search half array length value
                                 let getDivision = Math.round(arrLength / 2);
+
 
                                 //get first half array
                                 setLeftState([...res.splice(0, getDivision)]);
@@ -537,6 +543,14 @@ const Detail = ({ match }) => {
                         </Col>
                     :
                         <Fragment>
+                            <Col md={12}>
+                                <CustomTablePaginate
+                                    getData         = {(params) => { getAgentReportByWorkunit(params.page)}}
+                                    pagination      = {pagination} 
+                                    offsetSearch    = {10} 
+                                />
+                            </Col>
+
                             <Col 
                                 md = '6' 
                                 sm = '12'

@@ -28,7 +28,7 @@ import { PerformanceContext }                           from "../../../context/P
 //API
 import positionAPI                                      from "../../../services/pages/configuration/position";
 import workunitListAPI                                  from "../../../services/pages/configuration/unit-work-list/WorkunitList";
-import Helper from "../../../helpers";
+import Helper                                           from "../../../helpers";
 
 
 const ModalForm = (props) => {
@@ -74,13 +74,25 @@ const ModalForm = (props) => {
             res => {
                 if (!res.is_error) {
                     let newData = [];
+                    console.log(res.data.workunit_level, 'workunite level options');
+
+                    let userRole = localStorage.getItem('role');
 
                     res.data.workunit_level.map((data, i) => (
-                        newData.push({
-                            key   : i,
-                            value : data.id,
-                            label : data.name
-                        })
+                        (userRole === "Admin Daerah" || userRole === "Verifikator Daerah") ? 
+                            (data.name != "KEJAKSAAN AGUNG" && data.name != "KEJAKSAAN TINGGI") &&
+                            newData.push({
+                                key   : i,
+                                value : data.id,
+                                label : data.name
+                            })
+                        :
+                            newData.push({
+                                key   : i,
+                                value : data.id,
+                                label : data.name
+                            })
+                            
                     ))
 
                     setWorkUnitLevelOptions(newData);
