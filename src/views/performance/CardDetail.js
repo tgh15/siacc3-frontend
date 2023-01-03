@@ -14,7 +14,12 @@ import FormDeduction                                from "./FormDeduction"
 
 const CardDetails = (props) => {
 
-    const { dataSelected, active, dataDetail } = useContext(PerformanceContext)
+    const { 
+        active, 
+        dataDetail,
+        dataSelected, 
+        setIsAchievementVisible
+    }                                          = useContext(PerformanceContext)
 
     const {getRoleByMenuStatus}                = Helper;
 
@@ -98,7 +103,11 @@ const CardDetails = (props) => {
                         {
                             dataSelected.achievement ? 
                                 dataSelected.achievement.map((achievement, index) => (
-                                    <Col md={4} className="text-center my-1">
+                                    <Col 
+                                        md          = {4} 
+                                        onClick     = {() => {(index === 0 && active === 'agent') && setIsAchievementVisible(true)}}
+                                        className   = "text-center my-1 cursor-pointer"
+                                    >
                                         <ImageRounded src={achievement.oldBadge} width={50} />
                                     </Col>
                                 )) 
@@ -108,7 +117,10 @@ const CardDetails = (props) => {
                     </Row>
 
                     <Row className="text-center" >
-                        <Col>
+                        <Col
+                            onClick     = {() => {active === 'agent' && setIsAchievementVisible(true)}}
+                            className   = "cursor-pointer" 
+                        >
                             <p className="mb-0">
                                 {dataSelected.performance.total_report}
                             </p>
