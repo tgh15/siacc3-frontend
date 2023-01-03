@@ -110,7 +110,7 @@ const Map = (props) => {
                                         longitude = {data.longitude}
                                     >
                                         <button
-                                            style   = {{ background: 'none', border: 'none', height: size+15, width: size+15, borderRadius: '50%', textAlign:'center', color: 'white', transform: `translate(${-size / 1.5}px,${-size}px)`, cursor: 'pointer'}}
+                                        style   = {{ background: 'none', border: 'none', height: size + 10, width: size + 10, borderRadius: '50%', textAlign: 'center', color: 'white', transform: `translate(${-size / 1.5}px,${-size}px)`, cursor: 'pointer' }}
                                             onClick = {(e) => { setSelectedMarker(data) }}
                                         >
                                             <ImageRounded

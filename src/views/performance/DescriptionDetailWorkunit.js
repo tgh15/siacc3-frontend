@@ -25,7 +25,15 @@ const DescriptionDetailWorkunit = () => {
             </tr>
             <tr>
                 <td className="title">
-                    Total Point
+                    Total Point {dataDetail && dataDetail.name}
+                </td>
+                <td className="ranking">
+                    {dataDetail && dataDetail.performance.individual_points_total} Poin
+                </td>
+            </tr>
+            <tr>
+                <td className="title">
+                    Total Point Keseluruhan
                 </td>
                 <td className="ranking">
                     {dataDetail && dataDetail.performance.points_total} Poin

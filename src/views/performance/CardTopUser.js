@@ -18,7 +18,14 @@ const CardTopUser = (props) => {
         index,
     } = props
 
-    const { dataSelected, setDataSelected, getAgentDetail, active, getWorkunitDetail } = useContext(PerformanceContext)
+    const { 
+        active, 
+        dataSelected, 
+        getAgentDetail, 
+        setDataSelected, 
+        getWorkunitDetail,
+        setIsAchievementVisible,
+    }                                            = useContext(PerformanceContext)
 
     const getImage = () => {
         if (data.photo) {
@@ -81,7 +88,7 @@ const CardTopUser = (props) => {
                 <Row>
                     <ChartArea dataChart={data.last_activity} height={80} />
                 </Row>
-                <Row>
+                <Row onClick={() => active == 'agent' && setIsAchievementVisible(true)}>
                     {data.achievement ? data.achievement.map((achievement, index) => (
                         <Col md={4} key={index}>
                             <img 
@@ -96,8 +103,7 @@ const CardTopUser = (props) => {
                     )) : <div style={{ height:"50px"}}></div> }
                 </Row>
                 <Row className="text-center">
-                    <Col >
-
+                    <Col>
                         <small className="mb-0 mt-1">
                             {data.performance.total_report}
                         </small><br />

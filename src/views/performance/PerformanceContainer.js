@@ -32,6 +32,7 @@ import CategoryWorkunit                     from "./CategoryWorkunit";
 import NavbarPerformance                    from "./NavbarPerformance";
 import CustomTableBodyEmpty                 from "../../components/widgets/custom-table/CustomTableBodyEmpty";
 import CustomTableNotAuthorized             from "../../components/widgets/custom-table/CustomTableNotAuthorized";
+import AchievementBadge from "./AchivementBadge";
 
 const useQuery = () => {
     return new URLSearchParams(useLocation().search);
@@ -90,6 +91,10 @@ const PerformanceContainer = () => {
 
     return (
         <Fragment>
+            {/* Modal Badge */}
+            <AchievementBadge/>
+
+            
             {
                 getRoleByMenuStatus('Performance', 'performance_list') ?
                     <Row>

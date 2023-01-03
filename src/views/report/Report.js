@@ -415,7 +415,11 @@ const Report = (props) => {
 
         doc.text(props.selectedReport.title, 145, 15, null, null, "center");
         doc.setFontSize(12);
-        doc.text('Tanggal: '+Helper.dateIndo1(props.selectedReport.created_at), 145, 22, null, null, "center");
+        
+        doc.text('Tanggal Buat Laporan: '+Helper.dateIndo1(props.selectedReport.created_at), 15, 23, null, null, "left");
+        doc.text('Periode Laporan: '+Helper.dateIndo1(props.selectedReport.start), 173, 23, null, null, "left");
+        doc.text('-', 243, 23, null, null, "center");
+        doc.text(Helper.dateIndo1(props.selectedReport.end), 245, 23, null, null, "left");
         doc.autoTable({
             startY          : 30,
             head            : [header],
@@ -429,14 +433,14 @@ const Report = (props) => {
         });
 
         let finalY = doc.lastAutoTable.finalY;
-        doc.text('Kesimpulan: ', 15, finalY+12, );
+        // doc.text('Kesimpulan: ', 15, finalY+12, );
 
-        if(detailReport.length > 0){      
-            doc.text(`Dari data diatas menunjukan rata-rata perbedaan jumlah berita disetiap satuan kerja adalah ${Math.round(detailResults.conclusion.average_difference.percentage)} %`,15, finalY+20);
-            doc.text(`Satuan kerja terbaik dengan jumlah rata-rata adalah ${ detailResults.conclusion.best_work_unit != null ? detailResults.conclusion.best_work_unit.name : ""} `,15, finalY+26);
-            doc.text(`Kategori dengan berita terbanyak adalah ${ detailResults.conclusion.most_report_categories != null ? detailResults.conclusion.most_report_categories.name : ""}`, 15, finalY+32);
-            doc.text(`Jumlah berita dari tanggal ${detailResults.conclusion.total_report != null ? formatDate(detailResults.conclusion.total_report.from_date) : ""} s/d ${ detailResults.conclusion.total_report != null ? formatDate(detailResults.conclusion.total_report.till_date) : ""} adalah ${detailResults.conclusion.total_report != null ? detailResults.conclusion.total_report.total : "" }`, 15, finalY+38);
-        }
+        // if(detailReport.length > 0){      
+        //     doc.text(`Dari data diatas menunjukan rata-rata perbedaan jumlah berita disetiap satuan kerja adalah ${Math.round(detailResults.conclusion.average_difference.percentage)} %`,15, finalY+20);
+        //     doc.text(`Satuan kerja terbaik dengan jumlah rata-rata adalah ${ detailResults.conclusion.best_work_unit != null ? detailResults.conclusion.best_work_unit.name : ""} `,15, finalY+26);
+        //     doc.text(`Kategori dengan berita terbanyak adalah ${ detailResults.conclusion.most_report_categories != null ? detailResults.conclusion.most_report_categories.name : ""}`, 15, finalY+32);
+        //     doc.text(`Jumlah berita dari tanggal ${detailResults.conclusion.total_report != null ? formatDate(detailResults.conclusion.total_report.from_date) : ""} s/d ${ detailResults.conclusion.total_report != null ? formatDate(detailResults.conclusion.total_report.till_date) : ""} adalah ${detailResults.conclusion.total_report != null ? detailResults.conclusion.total_report.total : "" }`, 15, finalY+38);
+        // }
         doc = addWatermark(doc);
         let print = window.open(doc.output('bloburl'), '_blank');
         print.print();

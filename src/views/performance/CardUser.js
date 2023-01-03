@@ -13,7 +13,14 @@ const CardUser = (props) => {
         index,
     } = props
 
-    const { dataSelected, setDataSelected, active, getAgentDetail, getWorkunitDetail } = useContext(PerformanceContext)
+    const { 
+        active, 
+        dataSelected, 
+        getAgentDetail, 
+        setDataSelected, 
+        getWorkunitDetail,
+        setIsAchievementVisible
+    } = useContext(PerformanceContext)
 
 
     const selected = () => {
@@ -66,7 +73,12 @@ const CardUser = (props) => {
                             <Col md="3" className="d-flex align-items-center">
                                 <ChartArea dataChart={data.last_activity} height={90}/>
                             </Col>
-                            <Col md="1" className="d-flex align-items-center" style={{ fontSize: "11px" }}>
+                            <Col 
+                                md          = "1" 
+                                style       = {{ fontSize: "11px" }}
+                                onClick     = {() => {active === 'agent' && setIsAchievementVisible(true)}}
+                                className   = "d-flex align-items-center" 
+                            >
                                 <div className="text-center">
                                     <span style={{ fontWeight: "bold" }}>{data.performance.total_report}</span>
                                     <br />

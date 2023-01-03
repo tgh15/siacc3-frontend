@@ -54,6 +54,9 @@ const Detail = ({ match }) => {
     //Query
     let query = useQuery();
 
+    //
+    const size                                          = 20;
+
     //State
     const [data, setData]                               = useState(false);
     const [leftState, setLeftState]                     = useState([]);
@@ -248,7 +251,7 @@ const Detail = ({ match }) => {
                     longitude = {data.longitude}
                 >
                     <button 
-                        style   = {{ border: "none", background: "none" }} 
+                        style   = {{ background: 'none', border: 'none', height: size + 10, width: size + 10, borderRadius: '50%', textAlign: 'center', color: 'white', transform: `translate(${-size / 1.5}px,${-size}px)`, cursor: 'pointer' }}
                         onClick = {(e) => { setSelectedMarker(data) }}
                     >
                         <ImageRounded 

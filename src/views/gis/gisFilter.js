@@ -62,7 +62,7 @@ const GisFilter = ({setGisFilter, chartByPeriod}) => {
 
     useEffect(() => {
 
-        if(chartByPeriod != null){
+        if(chartByPeriod != null && chartByPeriod.value != null){
 
             let data_ = [];
 

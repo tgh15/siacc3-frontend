@@ -27,7 +27,9 @@ const PerformanceProvider = ({ children }) => {
     const [workunitLevel3           , setWorkunitLevel3]          = useState(null);
     const [workunitLevel4           , setWorkunitLevel4]          = useState(null);
     const [workunitOptions          , setWorkunitOptions]         = useState(null)
+    const [isAchievementVisible     , setIsAchievementVisible]    = useState(false);
     const [workunitOptionsApproval  , setWorkunitOptionsApproval] = useState(null);
+
 
     const {useQuery, getUserData}                                 = Helper;
 
@@ -397,6 +399,8 @@ const PerformanceProvider = ({ children }) => {
             setWorkunitOptions,
             workunitLevel,
             setWorkunitLevel,
+            isAchievementVisible,
+            setIsAchievementVisible,
             getDataAgent,
             getDataWorkunit,
             getAgentDetail,
@@ -413,7 +417,7 @@ const PerformanceProvider = ({ children }) => {
             workunitLevel3,
             workunitLevel4,
 
-            workunitOptionsApproval
+            workunitOptionsApproval,
 
         }} > {children}</PerformanceContext.Provider>
 }

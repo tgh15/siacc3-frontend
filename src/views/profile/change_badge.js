@@ -21,9 +21,8 @@ const ChangeBadge = (props) => {
     const {fallbackImage_}          = Helper;
 
     const handleFinish = (values) => {
-        console.log(values.selected_badge);
-        // props.setSelectedBadge(values.selected_badge);
-        // props.changeProfileAchievement(values.selected_badge);
+        props.setSelectedBadge(values.selected_badge);
+        props.changeProfileAchievement(values.selected_badge);
     };
 
     useEffect(() => {
@@ -75,7 +74,7 @@ const ChangeBadge = (props) => {
                                         </div>
                                         <div className="box-badge">
                                             <img 
-                                                src         = {data.badge != "" ? data.badge : null}
+                                                src         = {data.oldBadge != "" ? data.oldBadge : null}
                                                 alt         = {'Profile Pic'} 
                                                 style       = {{width: '80px', height: '77px', marginTop: '7px', borderRadius: '10px'}} 
                                                 className   = "img-fluid"

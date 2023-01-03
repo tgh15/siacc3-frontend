@@ -73,7 +73,6 @@ const CardDetails = (props) => {
                                 <img src={getImage()} height={80} width={80} className="mt-1" />
                         }
 
-
                         <h5 className="mt-1 mb-0">
                             {dataSelected.name}
                         </h5>
@@ -82,7 +81,12 @@ const CardDetails = (props) => {
                         </p>
                     </div>
 
-                    {active == "agent" ? <DescriptionDetailAgent /> : <DescriptionDetailWorkunit />}
+                    {
+                        active == "agent" ? 
+                            <DescriptionDetailAgent /> 
+                        : 
+                            <DescriptionDetailWorkunit/>
+                    }
 
                     <p className="mt-2">
                         Aktivitas Berita (7 Hari Terakhir)
@@ -91,11 +95,16 @@ const CardDetails = (props) => {
                         <ChartArea dataChart={dataSelected.last_activity} height={70} />
                     </Row>
                     <Row>
-                        {dataSelected.achievement ? dataSelected.achievement.map((achievement, index) => (
-                            <Col md={4} className="text-center my-1">
-                                <ImageRounded src={achievement.oldBadge} width={50} />
-                            </Col>
-                        )) : <div style={{ height:"50px"}}></div>}
+                        {
+                            dataSelected.achievement ? 
+                                dataSelected.achievement.map((achievement, index) => (
+                                    <Col md={4} className="text-center my-1">
+                                        <ImageRounded src={achievement.oldBadge} width={50} />
+                                    </Col>
+                                )) 
+                            : 
+                                <div style={{ height:"50px"}}/>
+                        }
                     </Row>
 
                     <Row className="text-center" >
