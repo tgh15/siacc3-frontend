@@ -224,7 +224,6 @@ const FormReport = (props) => {
                 value : data.uuid
             }
         ))
-        console.log(employees, 'employee')
         setEmployeeFilter(data_);
     };
 
