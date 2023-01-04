@@ -88,7 +88,7 @@ const FormReport = (props) => {
     const { category }                                  = useContext(CategoryContext);
     const { 
         workunitLevel2,
-        workunitOptionsApproval 
+        workunitOptions
     }                                                   = useContext(PerformanceContext);
     const { employees }                                 = useContext(EmployeeContext);
     const { 
@@ -218,13 +218,13 @@ const FormReport = (props) => {
 
     //Workunit filter select options
     const Employee = () => {
-        let data_ = employees.map((data ) => (
+        let data_ = employees.map((data) => (
             {
                 label : data.name,
                 value : data.uuid
             }
         ))
-
+        console.log(employees, 'employee')
         setEmployeeFilter(data_);
     };
 
@@ -1432,6 +1432,7 @@ const FormReport = (props) => {
                                                         </Col>
                                                         <Col md="10">
                                                             <div id="select-workunit">
+                                                                {console.log(workunitOptions, 'workunit options approval')}
                                                                 <Controller
                                                                     name    = "filter_workunit"
                                                                     control = {control}
@@ -1440,7 +1441,7 @@ const FormReport = (props) => {
                                                                             id                  = "filter_workunit" 
                                                                             theme               = {selectThemeColors}
                                                                             isMulti
-                                                                            options             = {watch('filter_workunit') ? watch('filter_workunit').filter(val => val.value === 0).length > 0 ? [] : workunitOptionsApproval : workunitOptionsApproval}
+                                                                            options             = {watch('filter_workunit') ? watch('filter_workunit').filter(val => val.value === 0).length > 0 ? [] : workunitOptions : workunitOptions}
                                                                             className           = 'react-select'
                                                                             placeholder         = "Pilih Satuan Kerja"
                                                                             isClearable
