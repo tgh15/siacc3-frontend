@@ -52,18 +52,16 @@ const ThemeNavbar = ({setMenuVisibility, skin, setSkin,menuCollapsed, setMenuCol
 						null
 				}
 
-				<Menu className='ficon menu-toggle hidden-xs is-active'onClick={() => setMenuVisibility(true)} />
-
-				{/* <NavbarBookmarks setMenuVisibility={setMenuVisibility} /> */}
+				<Menu className='ficon menu-toggle is-active d-block d-xl-none' onClick={() => setMenuVisibility(true)} />
 				<NavbarSearch 
-					setMenuVisibility={setMenuVisibility}
-					skin={skin}
-					setSkin={setSkin}
-					menuCollapsed={menuCollapsed}
-					setMenuCollapsed={setMenuCollapsed}
+					skin				= {skin}
+					setSkin				= {setSkin}
+					menuCollapsed		= {menuCollapsed}
+					setMenuCollapsed	= {setMenuCollapsed}
+					setMenuVisibility	= {setMenuVisibility}
 				/>
 			</div>
-			<ul className='nav navbar-nav align-items-center ml-auto'>
+			<ul className='nav navbar-nav align-items-center ml-auto ms-auto' style={{flexDirection: 'row'}}>
 				{
 					location.pathname != "/chats" ? 
 						<MessageDropdown /> 
@@ -79,9 +77,9 @@ const ThemeNavbar = ({setMenuVisibility, skin, setSkin,menuCollapsed, setMenuCol
 				<BroadcastDropdown />
 				<FaqDropdown/>
 				<UserDropdown />
+				<IncomingCall />
 			</ul>
 
-			<IncomingCall />
 
 			
 

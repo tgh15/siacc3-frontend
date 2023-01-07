@@ -79,7 +79,7 @@ export const NewsPreview = (props) => {
                                 null
                         }
                         
-                        <p className="text-justify mt-1 mb-2" style={{ wordWrap: 'break-word'}}>
+                        <p className="text-justi fy mt-1 mb-2" style={{ wordWrap: 'break-word'}}>
                             {dataNews.when_}, telah terjadi {dataNews.what}, 
                             bertempat di {dataNews.where} {dataNews.who}. 
                             Kejadian ini terjadi karena {dataNews.why}, {dataNews.how}

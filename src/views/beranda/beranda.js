@@ -276,7 +276,10 @@ const Beranda = (props) => {
                     </InfiniteScroll>
                 </Col>
 
-                <Col md={3} className="d-block d-sm-none d-md-block">
+                <Col 
+                    md          = {3} 
+                    className   = "d-block d-sm-none d-lg-block d-xl-block"
+                >
                     {
                         getRoleByMenuStatus('Beranda', 'trending_list') ? 
                             <FeedsTrendWidget 
