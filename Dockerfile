@@ -11,6 +11,7 @@ RUN apt update -y; apt -y install build-essential nghttp2 libnghttp2-dev libssl-
 #delete package json
 RUN rm -rf /app/package-lock.json
 RUN rm -rf /app/node_modules
+RUN rm -rf /app/.DS_Store
 RUN npm cache clear --force
 
 
@@ -34,10 +35,6 @@ EXPOSE 80
 # Copy .env file and shell script to container
 WORKDIR /usr/share/nginx/html
 COPY ./env.sh .
-#COPY .env .
-
-# Add bash
-#RUN apk add --no-cache bash
 
 # Make our shell script executable
 RUN chmod +x env.sh
