@@ -28,25 +28,46 @@ import Helper                           from '../../helpers';
 const PersetujuanBerita = (props) => {
 
     const {
-        allStatusPage,
-        setAllStatusPage,
-        allStatusCount,
-        allStatusPagination,
-        setAllStatusPagination,
         handleRemoveAgentReport,
+        
+        //All Status
+        countAllStatus,
+        loadingAllStatus,
+        leftStateAllStatus,
+        rightStateAllStatus,
+        paginationAllStatus,
         getAgentReportByStatusAll,
-
+        
         //Type Shared
+        countTypeShared,
         loadingTypeShared,
-        typeSharedPagination,
+        leftStateTypeShared,
+        rightStateTypeShared,
+        paginationTypeShared,
         getAgentReportByTypeSharedRead,
 
         //Type SharedLimit
+        countTypeSharedLimit,
+        loadingTypeSharedLimit,
+        leftStateTypeSharedLimit,
+        rightStateTypeSharedLimit,
+        paginationTypeSharedLimit,
         getAgentReportByTypeSharedLimit,
 
+        //Position Shared
+        countPositionShared,
+        loadingPositionShared,
+        leftStatePositionShared,
+        paginationPositionShared,
+        rightStatePositionShared,
         getAgentReportByPositionShared,
 
-        //getAgentReportByArchive
+        //Archive
+        countArchive,
+        loadingArchive,
+        leftStateArchive,
+        rightStateArchive,
+        paginationArchive,
         getAgentReportByArchive,
     } = props;
     
@@ -72,7 +93,7 @@ const PersetujuanBerita = (props) => {
                     >
                         Semua Persetujuan Berita
                         <Badge className="ml-1" color="primary">
-                            {allStatusPagination != null ? allStatusPagination.data_total : 0}
+                            {countAllStatus}
                         </Badge>
                     </NavLink>
                 </NavItem>
@@ -82,6 +103,9 @@ const PersetujuanBerita = (props) => {
                         onClick = {() => {toggle('2'); getAgentReportByTypeSharedRead(1)}}
                     >
                         Dapat Dibaca Semua
+                        <Badge className="ml-1" color="primary">
+                            {countTypeShared}
+                        </Badge>
                     </NavLink>
                 </NavItem>
                 <NavItem>
@@ -90,6 +114,9 @@ const PersetujuanBerita = (props) => {
                         onClick = {() => {toggle('3'); getAgentReportByTypeSharedLimit(1)}}
                     >
                         Pembatasan Berita
+                        <Badge className="ml-1" color="primary">
+                            {countTypeSharedLimit}
+                        </Badge>
                     </NavLink>
                 </NavItem>
                 <NavItem>
@@ -98,6 +125,9 @@ const PersetujuanBerita = (props) => {
                         onClick = {() => {toggle('4'); getAgentReportByPositionShared(1)}}
                     >
                         Dikirim Kepimpinan
+                        <Badge className="ml-1" color="primary">
+                            {countPositionShared}
+                        </Badge>
                     </NavLink>
                 </NavItem>
                 <NavItem>
@@ -106,6 +136,9 @@ const PersetujuanBerita = (props) => {
                         onClick = {() => {toggle('5'); getAgentReportByArchive(1)}}
                     >
                         Hanya Dilihat Pengirim
+                        <Badge className="ml-1" color="primary">
+                            {countArchive}
+                        </Badge>
                     </NavLink>
                 </NavItem>
             </Nav>
@@ -127,7 +160,6 @@ const PersetujuanBerita = (props) => {
                                             workunitOptions    = {props.workunitFilter}
                                             onChangeCategories = {(category) => {
                                                 props.setFilterAllState({type: 'category', value: category})
-                                                setAllStatusPage(1);
                                             }}
                                         />
                                     </Col>
@@ -135,7 +167,7 @@ const PersetujuanBerita = (props) => {
                                     <Col md={{offset: 1, size: 3}} className="d-flex justify-content-end">
                                         <SearchTable
                                             id          = "search-data-all-approval" 
-                                            onSearch    = {(keyword) => {props.setFilterAllState({type: 'keyword', value: keyword}); setAllStatusPage(1)}}
+                                            onSearch    = {(keyword) => {props.setFilterAllState({type: 'keyword', value: keyword});}}
                                             placeholder = {'Cari berita'} 
                                         />
                                     </Col>
@@ -144,16 +176,15 @@ const PersetujuanBerita = (props) => {
                                 <Row className="d-flex justify-content-end mb-2">
                                     <CustomTablePaginate 
                                         getData         = {(params) => { getAgentReportByStatusAll(params.page)}}
-                                        pagination      = {allStatusPagination} 
+                                        pagination      = {paginationAllStatus} 
                                         offsetSearch    = {12} 
                                     />
                                 </Row>
                                 
                                 <Row>
                                     {
-                                        props.loadingAllState ?
+                                        loadingAllStatus ?
                                             <Fragment>
-
                                                 <Col md='6'>
                                                     <FeedSkeleton count={1}/>
                                                 </Col>
@@ -163,8 +194,8 @@ const PersetujuanBerita = (props) => {
                                             </Fragment>
                                         :
 
-                                            props.statusAllLeftState.length < 1 && 
-                                            props.statusAllRightState.length < 1 ?
+                                            leftStateAllStatus.length < 1 && 
+                                            rightStateAllStatus.length < 1 ?
                                                 <Col md='12' sm='12'>
                                                     <CustomTableBodyEmpty/>
                                                 </Col>
@@ -172,8 +203,8 @@ const PersetujuanBerita = (props) => {
                                                 <Fragment>
                                                     <Col md='6' sm='12'>
                                                         {
-                                                            props.statusAllLeftState &&
-                                                            props.statusAllLeftState.map((data,index) => (
+                                                            leftStateAllStatus &&
+                                                            leftStateAllStatus.map((data,index) => (
                                                                 <Card>
                                                                     <CardBody>
                                                                         <ApprovedNewsWidget
@@ -194,8 +225,8 @@ const PersetujuanBerita = (props) => {
                                                     </Col>
                                                     <Col md='6' sm='12'>
                                                         {
-                                                            props.statusAllRightState &&
-                                                            props.statusAllRightState.map((data, index) => (
+                                                            rightStateAllStatus &&
+                                                            rightStateAllStatus.map((data, index) => (
                                                                 <Card>
                                                                     <CardBody>
                                                                         <ApprovedNewsWidget
@@ -225,30 +256,20 @@ const PersetujuanBerita = (props) => {
                 <TabPane tabId='2'>
                     {
                         getRoleByMenuStatus('Daftar Persetujuan Berita', 'all_can_be_read_list') ? 
-
-                            <Fragment>
-                                <Row className="d-flex justify-content-end mb-2">
-                                    <CustomTablePaginate 
-                                        getData         = {(params) => { getAgentReportByTypeSharedRead(params.page)}}
-                                        pagination      = {typeSharedPagination} 
-                                        offsetSearch    = {12} 
-                                    />
-                                </Row>
-                                
-                                <Row>
-                                    {
-                                        loadingTypeShared ?
-                                            <Fragment>
-                                                <Col md='6'>
-                                                    <FeedSkeleton count={1}/>
-                                                </Col>
-                                                <Col md='6'>
-                                                    <FeedSkeleton count={1}/>
-                                                </Col>
-                                            </Fragment>
-                                        :
-                                            props.typeSharedLeftState.length < 1 && 
-                                            props.typeSharedRightState.length < 1 ?
+                            !loadingTypeShared ?
+                                <Fragment>
+                                    <Row className="d-flex justify-content-end mb-2">
+                                        <CustomTablePaginate 
+                                            getData         = {(params) => { getAgentReportByTypeSharedRead(params.page)}}
+                                            pagination      = {paginationTypeShared} 
+                                            offsetSearch    = {12} 
+                                        />
+                                    </Row>
+                                    
+                                    <Row>
+                                        {
+                                            leftStateTypeShared.length < 1 && 
+                                            rightStateTypeShared.length < 1 ?
                                                 <Col md='12' sm='12'>
                                                     <CustomTableBodyEmpty/>
                                                 </Col>
@@ -256,8 +277,8 @@ const PersetujuanBerita = (props) => {
                                                 <Fragment>
                                                     <Col md='6' sm='12'>
                                                         {
-                                                            props.typeSharedLeftState &&
-                                                            props.typeSharedLeftState.map((data) => (
+                                                            leftStateTypeShared &&
+                                                            leftStateTypeShared.map((data) => (
                                                                 <NewsWidget
                                                                     id              = {data.id}
                                                                     data            = {data}
@@ -275,8 +296,8 @@ const PersetujuanBerita = (props) => {
                                                     </Col>
                                                     <Col md='6' sm='12'>
                                                         {
-                                                            props.typeSharedRightState &&
-                                                            props.typeSharedRightState.map((data) => (
+                                                            rightStateTypeShared &&
+                                                            rightStateTypeShared.map((data) => (
                                                                 <NewsWidget
                                                                     id              = {data.id}
                                                                     data            = {data}
@@ -293,9 +314,18 @@ const PersetujuanBerita = (props) => {
                                                         }
                                                     </Col>
                                                 </Fragment>
-                                    }
+                                        }
+                                    </Row>
+                                </Fragment>
+                            :
+                                <Row>
+                                    <Col md='6'>
+                                        <FeedSkeleton count={1}/>
+                                    </Col>
+                                    <Col md='6'>
+                                        <FeedSkeleton count={1}/>
+                                    </Col>
                                 </Row>
-                            </Fragment>
                         :
                             <CustomTableNotAuthorized/>
                     }
@@ -303,54 +333,74 @@ const PersetujuanBerita = (props) => {
                 <TabPane tabId='3'>
                     {
                         getRoleByMenuStatus('Daftar Persetujuan Berita', 'agent_report_restriction_list') ? 
-                            <Row>
-                                {
-                                    props.typeSharedLimitLeftState.length < 1 && 
-                                    props.typeSharedLimitRightState.length < 1 ?
-                                        <Col md='12' sm='12'>
-                                            <CustomTableBodyEmpty/>
-                                        </Col>
-                                    :
-                                        <Fragment>
-                                            <Col md='6' sm='12'>
-                                                {
-                                                    props.typeSharedLimitLeftState &&
-                                                    props.typeSharedLimitLeftState.map((data) => (
-                                                        <NewsWidget
-                                                            id              = {data.id}
-                                                            data            = {data}
-                                                            handleStore     = {props.handleStore}
+                            !loadingTypeSharedLimit ?
+                                <>
+                                    <Row className="d-flex justify-content-end mb-2">
+                                        <CustomTablePaginate 
+                                            getData         = {(params) => { getAgentReportByTypeSharedLimit(params.page)}}
+                                            pagination      = {paginationTypeSharedLimit} 
+                                            offsetSearch    = {12} 
+                                        />
+                                    </Row>
+                                    <Row>
+                                        {
+                                            leftStateTypeSharedLimit.length < 1 && 
+                                            rightStateTypeSharedLimit.length < 1 ?
+                                                <Col md='12' sm='12'>
+                                                    <CustomTableBodyEmpty/>
+                                                </Col>
+                                            :
+                                                <Fragment>
+                                                    <Col md='6' sm='12'>
+                                                        {
+                                                            leftStateTypeSharedLimit &&
+                                                            leftStateTypeSharedLimit.map((data) => (
+                                                                <NewsWidget
+                                                                    id              = {data.id}
+                                                                    data            = {data}
+                                                                    handleStore     = {props.handleStore}
 
-                                                            roleLike        = {true}
-                                                            roleDislike     = {true}
-                                                            roleComment     = {true}
-                                                            roleViewer      = {true}   
-                                                            {...data}
-                                                        />
-                                                    ))
-                                                }
-                                            </Col>
-                                            <Col md='6' sm='12'>
-                                                {
-                                                    props.typeSharedLimitRightState &&
-                                                    props.typeSharedLimitRightState.map((data) => (
-                                                        <NewsWidget
-                                                            id              = {data.id}
-                                                            data            = {data}
-                                                            handleStore     = {props.handleStore}
+                                                                    roleLike        = {true}
+                                                                    roleDislike     = {true}
+                                                                    roleComment     = {true}
+                                                                    roleViewer      = {true}   
+                                                                    {...data}
+                                                                />
+                                                            ))
+                                                        }
+                                                    </Col>
+                                                    <Col md='6' sm='12'>
+                                                        {
+                                                            rightStateTypeSharedLimit &&
+                                                            rightStateTypeSharedLimit.map((data) => (
+                                                                <NewsWidget
+                                                                    id              = {data.id}
+                                                                    data            = {data}
+                                                                    handleStore     = {props.handleStore}
 
-                                                            roleLike        = {true}
-                                                            roleDislike     = {true}
-                                                            roleComment     = {true}
-                                                            roleViewer      = {true}   
-                                                            {...data}
-                                                        />
-                                                    ))
-                                                }
-                                            </Col>
-                                        </Fragment>
-                                }
-                            </Row>
+                                                                    roleLike        = {true}
+                                                                    roleDislike     = {true}
+                                                                    roleComment     = {true}
+                                                                    roleViewer      = {true}   
+                                                                    {...data}
+                                                                />
+                                                            ))
+                                                        }
+                                                    </Col>
+                                                </Fragment>
+                                        }
+                                    </Row>
+                                </>
+                            :
+                                <Row>
+                                    <Col md='6'>
+                                        <FeedSkeleton count={1}/>
+                                    </Col>
+                                    <Col md='6'>
+                                        <FeedSkeleton count={1}/>
+                                    </Col>
+                                </Row>
+                                    
                         :
                             <CustomTableNotAuthorized/>
                     }
@@ -358,52 +408,71 @@ const PersetujuanBerita = (props) => {
                 <TabPane tabId='4'>
                     {
                         getRoleByMenuStatus('Daftar Persetujuan Berita', 'sent_to_leader_list') ? 
-                            <Row>
-                                {
-                                    props.positionSharedLeftState.length < 1 && 
-                                    props.positionSharedRightState.length < 1 ?
-                                        <Col md='12' sm='12'>
-                                            <CustomTableBodyEmpty/>
-                                        </Col>
-                                    :
-                                        <Fragment>
-                                            <Col md='6' sm='12'>
-                                                {
-                                                    props.positionSharedLeftState &&
-                                                    props.positionSharedLeftState.map((data) => (
-                                                        <Card>
-                                                            <CardBody>
-                                                                <ApprovedNewsWidget
-                                                                    title           = {data.title}
-                                                                    method          = {true}
-                                                                    agent_report    = {data}
-                                                                    onSubmit        = {props.getAgentReportByPositionShared}
-                                                                />
-                                                            </CardBody>
-                                                        </Card>
-                                                    ))
-                                                }
-                                            </Col>
-                                            <Col md='6' sm='12'>
-                                                {
-                                                    props.positionSharedRightState &&
-                                                    props.positionSharedRightState.map((data) => (
-                                                        <Card>
-                                                            <CardBody>
-                                                                <ApprovedNewsWidget
-                                                                    title           = {data.title}
-                                                                    method          = {true}
-                                                                    agent_report    = {data}
-                                                                    onSubmit        = {props.getAgentReportByPositionShared}
-                                                                />
-                                                            </CardBody>
-                                                        </Card>
-                                                    ))
-                                                }
-                                            </Col>
-                                        </Fragment>
-                                }
-                            </Row>
+                            !loadingPositionShared ?
+                                <>
+                                    <Row className="d-flex justify-content-end mb-2">
+                                        <CustomTablePaginate 
+                                            getData         = {(params) => { getAgentReportByPositionShared(params.page)}}
+                                            pagination      = {paginationPositionShared} 
+                                            offsetSearch    = {12} 
+                                        />
+                                    </Row>
+                                    <Row>
+                                        {
+                                            leftStatePositionShared.length < 1 && 
+                                            rightStatePositionShared.length < 1 ?
+                                                <Col md='12' sm='12'>
+                                                    <CustomTableBodyEmpty/>
+                                                </Col>
+                                            :
+                                                <Fragment>
+                                                    <Col md='6' sm='12'>
+                                                        {
+                                                            leftStatePositionShared &&
+                                                            leftStatePositionShared.map((data) => (
+                                                                <Card>
+                                                                    <CardBody>
+                                                                        <ApprovedNewsWidget
+                                                                            title           = {data.title}
+                                                                            method          = {true}
+                                                                            agent_report    = {data}
+                                                                            onSubmit        = {getAgentReportByPositionShared}
+                                                                        />
+                                                                    </CardBody>
+                                                                </Card>
+                                                            ))
+                                                        }
+                                                    </Col>
+                                                    <Col md='6' sm='12'>
+                                                        {
+                                                            rightStatePositionShared &&
+                                                            rightStatePositionShared.map((data) => (
+                                                                <Card>
+                                                                    <CardBody>
+                                                                        <ApprovedNewsWidget
+                                                                            title           = {data.title}
+                                                                            method          = {true}
+                                                                            agent_report    = {data}
+                                                                            onSubmit        = {getAgentReportByPositionShared}
+                                                                        />
+                                                                    </CardBody>
+                                                                </Card>
+                                                            ))
+                                                        }
+                                                    </Col>
+                                                </Fragment>
+                                        }
+                                    </Row>
+                                </>
+                            :
+                                <Row>
+                                    <Col md='6'>
+                                        <FeedSkeleton count={1}/>
+                                    </Col>
+                                    <Col md='6'>
+                                        <FeedSkeleton count={1}/>
+                                    </Col>
+                                </Row>
                         :
                             <CustomTableNotAuthorized/>
                     }
@@ -411,52 +480,71 @@ const PersetujuanBerita = (props) => {
                 <TabPane tabId='5'>
                     {
                         getRoleByMenuStatus('Daftar Persetujuan Berita', 'only_seen_by_sender_list') ? 
-                            <Row>
-                                {
-                                    props.archiveLeftState.length < 1 && 
-                                    props.archiveRightState.length < 1 ?
-                                        <Col md='12' sm='12'>
-                                            <CustomTableBodyEmpty/>
-                                        </Col>
-                                    :
-                                        <Fragment>
-                                            <Col md='6' sm='12'>
-                                                {
-                                                    props.archiveLeftState &&
-                                                    props.archiveLeftState.map((data) => (
-                                                        <Card>
-                                                            <CardBody>
-                                                                <ApprovedNewsWidget
-                                                                    title           = {data.title}
-                                                                    method          = {true}
-                                                                    agent_report    = {data}
-                                                                    hidden_status   = {true}
-                                                                />
-                                                            </CardBody>
-                                                        </Card>
-                                                    ))
-                                                }
-                                            </Col>
-                                            <Col md='6' sm='12'>
-                                                {
-                                                    props.archiveRightState &&
-                                                    props.archiveRightState.map((data) => (
-                                                        <Card>
-                                                            <CardBody>
-                                                                <ApprovedNewsWidget
-                                                                    title           = {data.title}
-                                                                    method          = {true}
-                                                                    agent_report    = {data}
-                                                                    hidden_status   = {true}
-                                                                />
-                                                            </CardBody>
-                                                        </Card>
-                                                    ))
-                                                }
-                                            </Col>
-                                        </Fragment>
-                                }
-                            </Row>
+                            !loadingArchive ?
+                                <>
+                                    <Row className="d-flex justify-content-end mb-2">
+                                        <CustomTablePaginate 
+                                            getData         = {(params) => { getAgentReportByArchive(params.page)}}
+                                            pagination      = {paginationArchive} 
+                                            offsetSearch    = {12} 
+                                        />
+                                    </Row>
+                                    <Row>
+                                        {
+                                            leftStateArchive.length < 1 && 
+                                            rightStateArchive.length < 1 ?
+                                                <Col md='12' sm='12'>
+                                                    <CustomTableBodyEmpty/>
+                                                </Col>
+                                            :
+                                                <Fragment>
+                                                    <Col md='6' sm='12'>
+                                                        {
+                                                            leftStateArchive &&
+                                                            leftStateArchive.map((data) => (
+                                                                <Card>
+                                                                    <CardBody>
+                                                                        <ApprovedNewsWidget
+                                                                            title           = {data.title}
+                                                                            method          = {true}
+                                                                            agent_report    = {data}
+                                                                            hidden_status   = {true}
+                                                                        />
+                                                                    </CardBody>
+                                                                </Card>
+                                                            ))
+                                                        }
+                                                    </Col>
+                                                    <Col md='6' sm='12'>
+                                                        {
+                                                            rightStateArchive &&
+                                                            rightStateArchive.map((data) => (
+                                                                <Card>
+                                                                    <CardBody>
+                                                                        <ApprovedNewsWidget
+                                                                            title           = {data.title}
+                                                                            method          = {true}
+                                                                            agent_report    = {data}
+                                                                            hidden_status   = {true}
+                                                                        />
+                                                                    </CardBody>
+                                                                </Card>
+                                                            ))
+                                                        }
+                                                    </Col>
+                                                </Fragment>
+                                        }
+                                    </Row>
+                                </>
+                            :
+                                <Row>
+                                    <Col md='6'>
+                                        <FeedSkeleton count={1}/>
+                                    </Col>
+                                    <Col md='6'>
+                                        <FeedSkeleton count={1}/>
+                                    </Col>
+                                </Row>
                         :
                             <CustomTableNotAuthorized/>
                     }

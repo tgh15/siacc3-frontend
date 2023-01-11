@@ -1,22 +1,28 @@
-import React, { Fragment, useState, useEffect }     from 'react';
-import { useSelector }                                 from 'react-redux';
+import React, { 
+    Fragment, 
+    useState, 
+    useEffect 
+}                                                                   from 'react';
+import { useSelector }                                              from 'react-redux';
 
 //Widgets
-import CustomToast                                  from '../../components/widgets/custom-toast';
+import CustomToast                                                  from '../../components/widgets/custom-toast';
 
 //Views
-import PersetujuanBerita                            from './approval_news';
+import PersetujuanBerita                                            from './approval_news';
 
 //API
-import { processAgentReports }                      from '../../components/widgets/feeds/news-card-widget/NewsConfig';
-import feedsAgentReportApprovalAPI                  from '../../services/pages/feeds/approval-news/url';
-import { agentReportChangeToArchive, StoreNews }    from '../beranda/beranda_api';
-import { CategoryProvider }                         from '../../context/CategoryContext';
-import employeeAPI                                  from '../../services/pages/employee';
+import { 
+    StoreNews,
+    agentReportChangeToArchive,
+}                                                                   from '../beranda/beranda_api';
+import employeeAPI                                                  from '../../services/pages/employee';
+import { CategoryProvider }                                         from '../../context/CategoryContext';
+import feedsAgentReportApprovalAPI                                  from '../../services/pages/feeds/approval-news/url';
+import { processAgentReports }                                      from '../../components/widgets/feeds/news-card-widget/NewsConfig';
 
 //Helper
-import Helper                                       from '../../helpers';
-
+import Helper                                                       from '../../helpers';
 
 const ApprovalNewsAPI = () => {
 
@@ -27,34 +33,42 @@ const ApprovalNewsAPI = () => {
     const selector                                                  = useSelector(state => {return state});
     
     const [workunitFilter, setWorkunitFilter]                       = useState([]);
-    
     const [filterAllState, setFilterAllState]                       = useState(null);
 
-    const [archiveLeftState, setArchiveLeftState]                   = useState([]);
-    const [archiveRightState, setArchiveRightState]                 = useState([]);
-    const [statusAllLeftState, setStatusAllLeftState]               = useState([]);
-    const [statusAllRightState, setStatusAllRightState]             = useState([]);
-    const [positionSharedLeftState, setPositionSharedLeftState]     = useState([]);
-    const [positionSharedRightState, setPositionSharedRightState]   = useState([]);
+    //Archive 
+    const [countArchive, setCountArchive]                           = useState(0);
+    const [loadingArchive, setLoadingArchive]                       = useState(false);
+    const [leftStateArchive, setLeftStateArchive]                   = useState([]);
+    const [rightStateArchive, setRightStateArchive]                 = useState([]);
+    const [paginationArchive, setPaginationArchive]                 = useState(null);
 
+    //Position Shared
+    const [countPositionShared, setCountPositionShared]             = useState(0);
+    const [loadingPositionShared, setLoadingPositionShared]         = useState(false);
+    const [leftStatePositionShared, setLeftStatePositionShared]     = useState([]);
+    const [rightStatePositionShared, setRigthStatePositionShared]   = useState([]);
+    const [paginationPositionShared, setPaginationPositionShared]   = useState(null);
 
     //All Status
-    const [allStatusPage, setAllStatusPage]                         = useState(1);
-    const [allStatusCount, setAllStatusCount]                       = useState(1);
-    const [loadingAllState, setLoadingAllState]                     = useState(false);
-    const [allStatusPagination, setAllStatusPagination]             = useState(null);
+    const [countAllStatus, setCountAllStatus]                       = useState(0);
+    const [loadingAllStatus, setLoadingAllStatus]                   = useState(false);
+    const [leftStateAllStatus, setLeftStateAllStatus]               = useState([]);
+    const [rightStateAllStatus, setRightStateAllStatus]             = useState([]);
+    const [paginationAllStatus, setPaginationAllStatus]             = useState(null);
 
-    //Type Shared
+    //Type Shared (Dapat Dibaca Semua)
+    const [countTypeShared, setCountTypeShared]                     = useState(0);
     const [loadingTypeShared, setLoadingTypeShared]                 = useState(false);
-    const [typeSharedLeftState, setTypeSharedLeftState]             = useState([]);
-    const [typeSharedRightState, setTypeSharedRightState]           = useState([]);
-    const [typeSharedPagination, setTypeSharedPagination]           = useState(null);
+    const [leftStateTypeShared, setLeftStateTypeShared]             = useState([]);
+    const [rightStateTypeShared, setRightStateTypeShared]           = useState([]);
+    const [paginationTypeShared, setPaginationTypeShared]           = useState(null);
 
-    //Type Shared Limit
-    const [loadingTypeSharedLimit, setLoadingTypeShareLimit]        = useState(false);
-    const [typeSharedLimitLeftState, setTypeSharedLimitLeftState]   = useState([]);
-    const [typeSharedLimitRightState, setTypeSharedLimitRightState] = useState([]);
-    const [typeSharedLimitPagination, setTypeSharedLimitPagination] = useState(false);
+    //Type Shared Limit 
+    const [countTypeSharedLimit, setCountTypeSharedLimit]           = useState(0);
+    const [loadingTypeSharedLimit, setLoadingTypeSharedLimit]       = useState(false);
+    const [leftStateTypeSharedLimit, setLeftStateTypeSharedLimit]   = useState([]);
+    const [rightStateTypeSharedLimit, setRightStateTypeSharedLimit] = useState([]);
+    const [paginationTypeSharedLimit, setPaginationTypeSharedLimit] = useState(false);
 
     //API archive news
     const changeToArchive = (option) => {
@@ -72,245 +86,6 @@ const ApprovalNewsAPI = () => {
     //Stored News
     const handleStore = (stored_data,resps) => {
         StoreNews(stored_data,resps);
-    };
-
-    //API agent report by status (all approval news)
-    const getAgentReportByStatusAll = (page) => {
-
-        setLoadingAllState(true);
-
-        let formData, params = {};
-
-        if(filterAllState === null){
-            formData = {
-                category : 0
-            }
-        }else{
-            if(filterAllState.type === "filter"){
-                formData = {
-                    category          : 0,
-                    order_by          : filterAllState.value.order_by,
-                    status_publish    : filterAllState.value.status_publish,
-                    work_unit_id_list : filterAllState.value.work_unit_id_list,
-                }
-            }else{
-                formData = {
-                    category : selector.FeedsCategoriesReducer.activeCategories.id == "all" ? 0 : selector.FeedsCategoriesReducer.activeCategories.id
-                }
-            }
-        }
-
-        if(page != undefined){
-            params.page = page;
-        }
-
-        if(filterAllState != null && filterAllState.type == 'keyword'){
-            params.keyword = filterAllState.value;
-        }
-
-        feedsAgentReportApprovalAPI.getAgentByStatus(formData, params).then(
-            res => {
-                if(!res.is_error){
-                    if ("agent_report" in res.data && res.data.agent_report != null) {
-                        //get array length
-                        let arrLength = res.data.agent_report.length;
-
-                        //search half array length value
-                        let getDivision = Math.round(arrLength/2);
-
-                        //get first half array
-                        setStatusAllLeftState(res.data.agent_report.splice(0,getDivision));
-
-                        //get last half array
-                        setStatusAllRightState(res.data.agent_report.splice(0,arrLength-getDivision));
-
-                        setAllStatusCount(res.data.pagination.data_total);
-                        setLoadingAllState(false);
-                        setAllStatusPagination(res.data.pagination);
-
-                    }else{
-                        setLoadingAllState(false);
-                        setStatusAllLeftState([]);
-                        setStatusAllRightState([]);
-                    }
-                }else{
-                    CustomToast("danger", res.message);
-                }
-
-            },
-            err => {
-                CustomToast("danger", err.message);
-            }
-        );
-    };
-
-    //API agent report by type shared (all can be read)
-    const getAgentReportByTypeSharedRead = (page) => {
-
-        setLoadingTypeShared(true);
-
-        const formData = {
-            category    : 0,
-            shared_type : ""
-        };
-
-        feedsAgentReportApprovalAPI.getAgentByTypeShared(formData, page).then(
-            res => {
-                if(!res.is_error){
-                    const {data} = res;
-    
-                    setTypeSharedPagination(data.pagination);
-    
-                    if(data.agent_report === null){
-                        setTypeSharedLeftState([]);
-                        setTypeSharedRightState([]);
-                        setLoadingTypeShared(false);
-                    }else{
-                        processAgentReports(data.agent_report).then(
-                        res => {
-                            //get array length
-                            let arrLength = res.length;
-    
-                            //search half array length value
-                            let getDivision = Math.round(arrLength/2);
-                            
-                            //get first half array
-                            setTypeSharedLeftState(res.splice(0,getDivision));
-                            
-                            //get last half array
-                            setTypeSharedRightState(res.splice(0,arrLength-getDivision));
-    
-                            setLoadingTypeShared(false);
-                        }
-                        );
-                    }
-                }else{
-                    CustomToast("danger", res.message);
-                }
-            },
-            err => {
-                CustomToast("danger", err.message);
-            }
-        );
-    };
-
-    //API agent report by type shared (news limit)
-    const getAgentReportByTypeSharedLimit = (page) => {
-
-        setLoadingTypeShareLimit(true);
-
-        const formData = {
-            category    : 0,
-            shared_type : "specific"
-        }
-
-        feedsAgentReportApprovalAPI.getAgentByTypeShared(formData, page).then(
-            res => {
-                if(!res.is_error){
-                    const {data} = res;
-                    setTypeSharedLimitPagination(data.pagination);
-    
-                    if(data.agent_report === null){
-                        setTypeSharedLimitLeftState([]);
-                        setTypeSharedLimitRightState([]);
-                    }else{
-                        processAgentReports(data.agent_report).then(
-                            res => {
-                                //get array length
-                                let arrLength = res.length;
-    
-                                //search half array length value
-                                let getDivision = Math.round(arrLength/2);
-                                
-                                //get first half array
-                                setTypeSharedLimitLeftState(res.splice(0,getDivision));
-                                
-                                //get last half array
-                                setTypeSharedLimitRightState(res.splice(0,arrLength-getDivision));
-                            }
-                        );
-                    }
-                }else{
-                    CustomToast("danger", res.message);
-                }
-                setLoadingTypeShareLimit(false);
-            },
-            err => {
-                CustomToast("danger", err.message);
-            }
-        );
-    };
-
-    //API agent report by position shared (sent to leader)
-    const getAgentReportByPositionShared = (page) => {
-        const formData = {
-            category    : 0,
-            position_id : 0
-        };
-
-        feedsAgentReportApprovalAPI.getAgentByPositionShared(formData, page).then(
-            res => {
-                if(!res.is_error){
-                    if ("agent_report" in res.data && res.data.agent_report != null) {
-                        //get array length
-                        let arrLength = res.data.agent_report.length;
-    
-                        //search half array length value
-                        let getDivision = Math.round(arrLength/2);
-    
-                        //get first half array
-                        setPositionSharedLeftState(res.data.agent_report.splice(0,getDivision));
-    
-                        //get last half array
-                        setPositionSharedRightState(res.data.agent_report.splice(0,arrLength-getDivision));
-                    }else{
-                        setPositionSharedLeftState([]);
-                        setPositionSharedRightState([]);
-                    }
-                }else{
-                    CustomToast("danger", res.message);
-                }
-            },
-            err => {
-                CustomToast("danger", err.message);
-            }
-        );
-    };
-
-    //API agent report by archive (only seen by sender)
-    const getAgentReportByArchive = (page) => {
-        const formData = {
-            category : 0
-        };
-
-        feedsAgentReportApprovalAPI.getAgentByArchive(formData, page).then(
-            res => {
-
-                if(!res.is_error){
-                    if ("agent_report" in res.data && res.data.agent_report != null) {
-                        //get array length
-                        let arrLength = res.data.agent_report.length;
-    
-                        //search half array length value
-                        let getDivision = Math.round(arrLength/2);
-    
-                        //get first half array
-                        setArchiveLeftState(res.data.agent_report.splice(0,getDivision));
-    
-                        //get last half array
-                        setArchiveRightState(res.data.agent_report.splice(0,arrLength-getDivision));
-                    }else{
-                        setArchiveLeftState([]);
-                        setArchiveRightState([]);
-                    }
-                }else{
-                    CustomToast("danger", res.message);
-                }
-            },
-            err => {
-                CustomToast("danger", err.message);
-            }
-        );
     };
 
     //API get workunit child
@@ -401,20 +176,290 @@ const ApprovalNewsAPI = () => {
         )
     }; 
 
+    //API remove agent report
     const handleRemoveAgentReport = () => {
-        if(allStatusPagination != null){
-            getAgentReportByStatusAll(allStatusPagination.current_page);
+        if(paginationAllStatus != null){
+            getAgentReportByStatusAll(paginationAllStatus.current_page);
         }else{
             getAgentReportByStatusAll(1);
         }
     };
+
+    //API agent report by status (all approval news)
+    const getAgentReportByStatusAll = (page) => {
+
+        setLoadingAllStatus(true);
+
+        let formData, params = {};
+
+        if(filterAllState === null){
+            formData = {
+                category : 0
+            }
+        }else{
+            if(filterAllState.type === "filter"){
+                formData = {
+                    category          : 0,
+                    order_by          : filterAllState.value.order_by,
+                    status_publish    : filterAllState.value.status_publish,
+                    work_unit_id_list : filterAllState.value.work_unit_id_list,
+                }
+            }else{
+                formData = {
+                    category : selector.FeedsCategoriesReducer.activeCategories.id == "all" ? 0 : selector.FeedsCategoriesReducer.activeCategories.id
+                }
+            }
+        }
+
+        if(page != undefined){
+            params.page = page;
+        }
+
+        if(filterAllState != null && filterAllState.type == 'keyword'){
+            params.keyword = filterAllState.value;
+        }
+
+        feedsAgentReportApprovalAPI.getAgentByStatus(formData, params).then(
+            res => {
+                if(!res.is_error){
+                    if ("agent_report" in res.data && res.data.agent_report != null) {
+                        //get array length
+                        let arrLength = res.data.agent_report.length;
+
+                        //search half array length value
+                        let getDivision = Math.round(arrLength/2);
+
+                        //get first half array
+                        setLeftStateAllStatus(res.data.agent_report.splice(0,getDivision));
+
+                        //get last half array
+                        setRightStateAllStatus(res.data.agent_report.splice(0,arrLength-getDivision));
+
+                        setCountAllStatus(res.data.pagination.data_total);
+                        setLoadingAllStatus(false);
+                        setPaginationAllStatus(res.data.pagination);
+
+                    }else{
+                        setLoadingAllStatus(false);
+                        setLeftStateAllStatus([]);
+                        setRightStateAllStatus([]);
+                    }
+                }else{
+                    CustomToast("danger", res.message);
+                }
+
+            },
+            err => {
+                CustomToast("danger", err.message);
+            }
+        );
+    };
+
+    //API agent report by type shared (all can be read)
+    const getAgentReportByTypeSharedRead = (page) => {
+
+        setLoadingTypeShared(true);
+
+        const formData = {
+            category    : 0,
+            shared_type : ""
+        };
+
+        feedsAgentReportApprovalAPI.getAgentByTypeShared(formData, page).then(
+            res => {
+                if(!res.is_error){
+                    const {data} = res;
+    
+                    setLoadingTypeShared(false);
+                    setPaginationTypeShared(data.pagination);
+                    setCountTypeShared(res.data.pagination.data_total)
+    
+                    if("agent_report" in res.data && res.data.agent_report != null){
+                        processAgentReports(data.agent_report).then(
+                            res => {
+                                //get array length
+                                let arrLength = res.length;
+        
+                                //search half array length value
+                                let getDivision = Math.round(arrLength/2);
+                                
+                                //get first half array
+                                setLeftStateTypeShared(res.splice(0,getDivision));
+                                
+                                //get last half array
+                                setRightStateTypeShared(res.splice(0,arrLength-getDivision));
+        
+                                
+
+                            }
+                        );
+                    }else{
+                        setLeftStateTypeShared([]);
+                        setRightStateTypeShared([]);
+                        setLoadingTypeShared(false);
+                    }
+                }else{
+                    CustomToast("danger", res.message);
+                }
+            },
+            err => {
+                CustomToast("danger", err.message);
+            }
+        );
+    };
+
+    //API agent report by type shared (news limit)
+    const getAgentReportByTypeSharedLimit = (page) => {
+
+        setLoadingTypeSharedLimit(true);
+
+        const formData = {
+            category    : 0,
+            shared_type : "specific"
+        }
+
+        feedsAgentReportApprovalAPI.getAgentByTypeShared(formData, page).then(
+            res => {
+                if(!res.is_error){
+                    const {data} = res;
+
+                    setLoadingTypeSharedLimit(false);
+                    setPaginationTypeSharedLimit(data.pagination);
+                    setCountTypeSharedLimit(res.data.pagination.data_total)
+
+                    if("agent_report" in res.data && res.data.agent_report != null){
+                        processAgentReports(data.agent_report).then(
+                            res => {
+                                //get array length
+                                let arrLength = res.length;
+    
+                                //search half array length value
+                                let getDivision = Math.round(arrLength/2);
+                                
+                                //get first half array
+                                setLeftStateTypeSharedLimit(res.splice(0,getDivision));
+                                
+                                //get last half array
+                                setRightStateTypeSharedLimit(res.splice(0,arrLength-getDivision));
+                            }
+                        );
+                    }else{
+                        setLeftStateTypeSharedLimit([]);
+                        setRightStateTypeSharedLimit([]);
+                        setLoadingTypeSharedLimit(false);
+                    }
+                }else{
+                    CustomToast("danger", res.message);
+                }
+                setLoadingTypeSharedLimit(false);
+            },
+            err => {
+                CustomToast("danger", err.message);
+            }
+        );
+    };
+
+    //API agent report by position shared (sent to leader)
+    const getAgentReportByPositionShared = (page) => {
+        setLoadingPositionShared(true)
+        const formData = {
+            category    : 0,
+            position_id : 0
+        };
+
+        feedsAgentReportApprovalAPI.getAgentByPositionShared(formData, page).then(
+            res => {
+                if(!res.is_error){
+                    if ("agent_report" in res.data && res.data.agent_report != null) {
+                        //get array length
+                        let arrLength = res.data.agent_report.length;
+    
+                        //search half array length value
+                        let getDivision = Math.round(arrLength/2);
+
+                        //
+    
+                        //get first half array
+                        setLeftStatePositionShared(res.data.agent_report.splice(0,getDivision));
+    
+                        //get last half array
+                        setRigthStatePositionShared(res.data.agent_report.splice(0,arrLength-getDivision));
+
+
+                        setCountPositionShared(res.data.pagination.data_total);
+                        setLoadingPositionShared(false);
+                        setPaginationPositionShared(res.data.pagination)
+                    }else{
+                        setLoadingPositionShared(false);
+                        setLeftStatePositionShared([]);
+                        setRigthStatePositionShared([]);
+                    }
+                }else{
+                    CustomToast("danger", res.message);
+                }
+            },
+            err => {
+                CustomToast("danger", err.message);
+            }
+        );
+    };
+
+    //API agent report by archive (only seen by sender)
+    const getAgentReportByArchive = (page) => {
+
+        setLoadingArchive(true);
+
+        const formData = {
+            category : 0
+        };
+
+        feedsAgentReportApprovalAPI.getAgentByArchive(formData, page).then(
+            res => {
+
+                if(!res.is_error){
+                    if ("agent_report" in res.data && res.data.agent_report != null) {
+                        //get array length
+                        let arrLength = res.data.agent_report.length;
+    
+                        //search half array length value
+                        let getDivision = Math.round(arrLength/2);
+    
+                        //get first half array
+                        setLeftStateArchive(res.data.agent_report.splice(0,getDivision));
+    
+                        //get last half array
+                        setRightStateArchive(res.data.agent_report.splice(0,arrLength-getDivision));
+
+                        setCountArchive(res.data.pagination.data_total)
+                        setLoadingArchive(false);
+                        setPaginationArchive(res.data.pagination);
+
+                    }else{
+                        setLeftStateArchive([]);
+                        setRightStateArchive([]);
+                    }
+                }else{
+                    CustomToast("danger", res.message);
+                }
+            },
+            err => {
+                CustomToast("danger", err.message);
+            }
+        );
+    };
+
 
     useEffect(() => {
         if(filterAllState == null){
             getWorkunitChild();
         }
 
-        getAgentReportByStatusAll();
+        getAgentReportByArchive(1);
+        getAgentReportByStatusAll(1);
+        getAgentReportByTypeSharedRead(1);
+        getAgentReportByPositionShared(1);
+        getAgentReportByTypeSharedLimit(1);
+        
     }, [filterAllState]);
 
     return (
@@ -423,51 +468,55 @@ const ApprovalNewsAPI = () => {
 
                 <PersetujuanBerita
                     //State
-                    workunitFilter              = {workunitFilter}
+                    workunitFilter                  = {workunitFilter}
+                    filterAllState                  = {filterAllState}
+                    setFilterAllState               = {setFilterAllState}
+                    
+                    //All Status
+                    countAllStatus                  = {countAllStatus}      
+                    loadingAllStatus                = {loadingAllStatus}
+                    leftStateAllStatus              = {leftStateAllStatus}
+                    rightStateAllStatus             = {rightStateAllStatus}
+                    paginationAllStatus             = {paginationAllStatus}
+                    getAgentReportByStatusAll       = {getAgentReportByStatusAll}
 
-                    //status State
-                    filterAllState              = {filterAllState}
-                    loadingAllState             = {loadingAllState}
-                    setFilterAllState           = {setFilterAllState}
-                    statusAllLeftState          = {statusAllLeftState}
-                    statusAllRightState         = {statusAllRightState}
-
-                    //All State
-                    allStatusPage               = {allStatusPage}
-                    allStatusCount              = {allStatusCount}      
-                    setAllStatusPage            = {setAllStatusPage}
-                    allStatusPagination         = {allStatusPagination}
-                    setAllStatusPagination      = {setAllStatusPagination}
-                    getAgentReportByStatusAll   = {getAgentReportByStatusAll}
-
-                    //Type Shared
+                    //Type Shared (Dapat Dibaca Semua)
+                    countTypeShared                 = {countTypeShared}
                     loadingTypeShared               = {loadingTypeShared}
-                    typeSharedLeftState             = {typeSharedLeftState}
-                    typeSharedRightState            = {typeSharedRightState}
-                    typeSharedPagination            = {typeSharedPagination}
+                    leftStateTypeShared             = {leftStateTypeShared}
+                    rightStateTypeShared            = {rightStateTypeShared}
+                    paginationTypeShared            = {paginationTypeShared}
                     getAgentReportByTypeSharedRead  = {getAgentReportByTypeSharedRead}
 
-                    //Type Shared Limit
-                    loadingTypeSharedLimit      = {loadingTypeSharedLimit}
-                    typeSharedLimitLeftState    = {typeSharedLimitLeftState}
-                    typeSharedLimitRightState   = {typeSharedLimitRightState}
-                    typeSharedLimitPagination   = {typeSharedLimitPagination}
+                    //Type Shared Limit (Pembatasan Berita)
+                    countTypeSharedLimit            = {countTypeSharedLimit}
+                    loadingTypeSharedLimit          = {loadingTypeSharedLimit}
+                    leftStateTypeSharedLimit        = {leftStateTypeSharedLimit}
+                    rightStateTypeSharedLimit       = {rightStateTypeSharedLimit}
+                    paginationTypeSharedLimit       = {paginationTypeSharedLimit}
                     getAgentReportByTypeSharedLimit = {getAgentReportByTypeSharedLimit}
 
+                    //Acrhive
+                    countArchive                    = {countArchive}
+                    loadingArchive                  = {loadingArchive}
+                    leftStateArchive                = {leftStateArchive}
+                    rightStateArchive               = {rightStateArchive}
+                    paginationArchive               = {paginationArchive}
+                    getAgentReportByArchive         = {getAgentReportByArchive}
 
-                    archiveLeftState            = {archiveLeftState}
-                    archiveRightState           = {archiveRightState}
-                    positionSharedLeftState     = {positionSharedLeftState}
-                    positionSharedRightState    = {positionSharedRightState}
+                    //Position Shared
+                    countPositionShared             = {countPositionShared}
+                    loadingPositionShared           = {loadingPositionShared}
+                    leftStatePositionShared         = {leftStatePositionShared}
+                    rightStatePositionShared        = {rightStatePositionShared}
+                    paginationPositionShared        = {paginationPositionShared}
+                    getAgentReportByPositionShared  = {getAgentReportByPositionShared}
 
                     //Function
                     handleStore                     = {handleStore}
                     changeToArchive                 = {changeToArchive}
                     handleRemoveAgentReport         = {handleRemoveAgentReport}
-                    getAgentReportByPositionShared  = {getAgentReportByPositionShared}
 
-                    //getAgentReportByArchive
-                    getAgentReportByArchive     = {getAgentReportByArchive}
                 />
             </CategoryProvider>
 
