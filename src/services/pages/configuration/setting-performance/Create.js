@@ -9,14 +9,17 @@ const CreateSettingPerformance = ({ data, onSuccess, onFail }) => {
         title               : data.title,
         points              : data.points,
         is_event            : data.is_event,
-        end_date            : data.end_date,
         condition           : data.condition,
-        start_date          : data.start_date,
-        workunit_id         : Array.from(data.workunit_id, workunit => workunit.value),
         target_value        : parseInt(data.target_value),
-        max_recipient       : parseInt(data.max_recipient),
-        max_recipient       : parseInt(data.max_recipient) ?? 0,
     }
+
+    if(data.is_event){
+        datas.end_date      = data.end_date;
+        datas.start_date    = data.start_date;
+        datas.workunit_id   = Array.from(data.workunit_id, workunit => workunit.value);
+        datas.max_recipient = parseInt(data.max_recipient) ?? 0;
+    }
+
 
     let dataPhoto = new FormData();
 

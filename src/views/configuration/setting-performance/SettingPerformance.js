@@ -69,7 +69,6 @@ const SettingPerformance = () => {
     const toggle = tab => {
         if (isEvent !== tab) {
             setIsEvent(tab);
-            console.log(tab)
             getData(tab);
         }
     };
@@ -282,7 +281,7 @@ const SettingPerformance = () => {
             <ModalBase
                 show    = {showDetail}
                 size    = "lg"
-                title   = "Detail Pengaturan Performance"
+                title   = {`Detail ${isEvent ? 'Event' : 'Badge'}`}
                 setShow = {(par) => { setShowDetail(par) }}
             >
                 <Detail
@@ -297,7 +296,7 @@ const SettingPerformance = () => {
             <ModalBase
                 show    = {showForm}
                 size    = "lg"
-                title   = {`${dataSelected ? "Ubah" : "Tambah"} Pengaturan Penilaian`}
+                title   = {`${dataSelected ? "Ubah" : "Tambah"} ${isEvent ? "Event" : "Badge"}`}
                 setShow = {(par) => { setShowForm(par) }}
             >
                 <FormSettingPerformance
@@ -311,7 +310,7 @@ const SettingPerformance = () => {
                 />
             </ModalBase>
 
-            {/* Form Trophy */}
+            {/* Form Trophy */}  
             <FormTrophy
                 show        = {showFormTrophy}
                 data        = {dataSelected}
@@ -382,7 +381,7 @@ const SettingPerformance = () => {
                                 active  = {isEvent == false}
                                 onClick = {() => { toggle(false) }}
                             >
-                                Core
+                                Badge
                             </NavLink>
                         </NavItem>
                         <NavItem>

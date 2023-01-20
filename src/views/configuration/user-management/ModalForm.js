@@ -58,7 +58,6 @@ const ModalForm = (props) => {
         setModalForm,
     } = props;
 
-    console.log(props);
     // context
     const { workunitOptions }                       = useContext(PerformanceContext);
 
@@ -218,7 +217,6 @@ const ModalForm = (props) => {
             res => {
                 if (!res.is_error) {
                     if (photoFile === null) {
-                        setLoading(false);
                         getData({page : 1});
                         setModalForm(false);
                         CustomToast("success", "Data Berhasil Disimpan");
@@ -231,7 +229,6 @@ const ModalForm = (props) => {
                         userManagementAPI.uploadPhoto(dataPhoto).then(
                             res => {
                                 if (!res.is_error) {
-                                    setLoading(false);
                                     getData({page : 1});
                                     setModalForm(false);
                                     CustomToast("success", "Data Berhasil Disimpan");
@@ -241,19 +238,23 @@ const ModalForm = (props) => {
                             }
                         )
                     }
+
                 }else {
-                    if (err.is_error) {
-                        if (err.message === "Error While Insert Employee ! Email Has Been Used") {
+                    if (res.is_error) {
+                        if (res.message === "Error While Insert Employee ! Email Has Been Used") {
                             CustomToast("danger", "Email Telah Digunakan.");
                         }else{
-                            CustomToast("danger", err.message);
+                            CustomToast("danger", res.message);
                         }
                     }
+                    setLoading(false);
+
                 }
             }
         ).catch(
             err => {
                 CustomToast("danger", err.message);
+                setLoading(false);
             }
         )
     };

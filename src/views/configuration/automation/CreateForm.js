@@ -321,9 +321,9 @@ const CreateForm = (props) => {
                                             >
                                                 Pilih Relasi
                                             </option>
-                                            {operators && operators.map((data) => (
+                                            {/* {operators && operators.map((data) => (
                                                 <option value={data.id}>{data.name}</option>
-                                            ))}
+                                            ))} */}
                                         </CustomInput>
                                     </div>
                                     {errors && errors.relation && <FormFeedback>{errors.relation.message}</FormFeedback>}

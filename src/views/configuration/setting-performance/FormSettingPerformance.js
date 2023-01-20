@@ -33,7 +33,10 @@ import CustomToast              from '../../../components/widgets/custom-toast';
 import ImageRounded             from '../../../components/widgets/image-rounded';
 import SubmitButton             from '../../../components/widgets/submit-button';
 import { ModalBase }            from '../../../components/widgets/modals-base';
-import { validation }           from './validation';
+import { 
+    validationEvent, 
+    validationNotEvent  
+    }                           from './validation';
 
 //API
 import SettingPerformanceApi    from '../../../services/pages/configuration/setting-performance';
@@ -75,7 +78,7 @@ const FormSettingPerformance = (props) => {
         let values   = [];
         
         datas.map((data,i) => (
-            values.push(workunitOption.filter(opt=> opt.value == data)[0])
+            values.push(workunitOptions.filter(opt=> opt.value == data)[0])
         ))
 
         return values;
@@ -84,13 +87,13 @@ const FormSettingPerformance = (props) => {
     const defaultValues = {
         title           : (data) ? data.title : null,
         note            : (data) ? data.note : null,
-        target_value    : (data) ? data.target_value : null,
-        points          : (data) ? data.points : null,
-        workunit_id     : (data) ? defaultWorkunit() : null,
+        points          : (data) ? data.points : 0,
+        workunit_id     : (data) ? defaultWorkunit() : [],
+        target_value    : (data) ? data.target_value : 0,  
         max_recipient   : (data) ? data.max_recipient : null
     };
 
-    const { register, errors, handleSubmit, control } = useForm({ defaultValues : defaultValues, mode: "onChange", resolver: yupResolver(validation) });
+    const { register, errors, handleSubmit, control } = useForm({ defaultValues : defaultValues, mode: "onChange", resolver: yupResolver(isEvent ? validationEvent : validationNotEvent ) });
 
     const selectBadge = e => {
         const reader  = new FileReader(),
@@ -103,7 +106,7 @@ const FormSettingPerformance = (props) => {
     };
 
     const onSubmit = dataForm => {
-
+        setLoading(true);
         dataForm["badge"]       = badgeDefault;
         dataForm["is_event"]    = isEvent;
         dataForm["badge_id"]    = badgeId;
@@ -318,7 +321,7 @@ const FormSettingPerformance = (props) => {
                                         name            = "target_value"
                                         invalid         = {(errors.target_value) ? true : false}
                                         innerRef        = {register()}
-                                        defafultValue   = {defaultValues.target_value}
+                                        defaultValue    = {defaultValues.target_value}
                                     />
                                     {errors && errors.target_value && <FormFeedback>{errors.target_value.message}</FormFeedback>}
                                 </FormGroup>
@@ -331,7 +334,7 @@ const FormSettingPerformance = (props) => {
                                         name            = "points"
                                         invalid         = {(errors.points) ? true : false}
                                         innerRef        = {register()}
-                                        defafultValue   = {defaultValues.points}
+                                        defaultValue    = {defaultValues.points}
                                     />
                                     {errors && errors.points && <FormFeedback>{errors.points.message}</FormFeedback>}
                                 </FormGroup>
@@ -348,82 +351,101 @@ const FormSettingPerformance = (props) => {
                     </CardBody>
                 </Card>
 
-                <Card 
-                    color   = "secondary" 
-                    outline
-                >
-                    <CardBody>
-                        <Row>
-                            <Col md="5">
-                                <FormGroup>
-                                    <Label>
-                                        Satuan Kerja
-                                    </Label>
-                                    <Controller
-                                        as              = {Select}
-                                        name            = "workunit_id"
-                                        theme           = {selectThemeColors}
-                                        control         = {control}
-                                        options         = {workunitOptions}
-                                        isMulti
-                                        className       = 'react-select'
-                                        isClearable     = {false}
-                                        placeholder     = "Pilih Satker"
-                                        classNamePrefix = 'select'
-                                    />
-                                </FormGroup>
-                                <FormGroup>
-                                    <Label>
-                                        Aktifkan Jumlah Agen
+                {
+                    isEvent &&
+                    <Card 
+                        color   = "secondary" 
+                        outline
+                    >
+                        <CardBody>
+                            <Row>
+                                <Col md="12">
+                                    <FormGroup>
+                                        <Label>
+                                            Satuan Kerja
+                                        </Label>
+                                        <Controller
+                                            as              = {Select}
+                                            name            = "workunit_id"
+                                            theme           = {selectThemeColors}
+                                            control         = {control}
+                                            options         = {workunitOptions}
+                                            isMulti
+                                            className       = 'react-select'
+                                            isClearable     = {false}
+                                            placeholder     = "Pilih Satker"
+                                            classNamePrefix = 'select'
+                                        />
+                                        {errors && errors.workunit_id && <Label className="text-danger">{errors.workunit_id.message}</Label>}
+                                    </FormGroup>
+                                </Col>
+                                <Col md="5">
+                                    <FormGroup>
+                                        <Label>
+                                            Aktifkan Jumlah Agen
+                                        </Label>
                                         <CustomInput
                                             id              = 'icon-primary'
                                             type            = 'switch'
                                             label           = {<IconSwitch />}
-                                            inline
                                             onChange        = {() => { setInputAgent(!inputAgent) }}
                                             defaultChecked  = {inputAgent}
                                         />
-                                    </Label>
-                                    <Input 
-                                        name            = 'max_recipient'
-                                        disabled        = {!inputAgent} 
-                                        innerRef        = {register()}
-                                        defafultValue   = {defaultValues.max_recipient}
-                                    />
-                                </FormGroup>
-                            </Col>
-                            <Col 
-                                md          = "5" 
-                                className   = "offset-md-2"
-                            >
-                                <FormGroup>
-                                    <Label>
-                                        Aktifkan Jangka Waktu &nbsp;
+                                    </FormGroup>
+                                    {
+                                        inputAgent &&
+                                        <FormGroup>
+                                            <Label>
+                                                Jumlah Agen
+                                            </Label>
+                                            <Input 
+                                                name            = 'max_recipient'
+                                                disabled        = {!inputAgent} 
+                                                innerRef        = {register()}
+                                                defafultValue   = {defaultValues.max_recipient}
+                                            />
+                                        </FormGroup>
+                                    }
+                                </Col>
+                                <Col 
+                                    md          = "5" 
+                                    className   = "offset-md-2"
+                                >
+                                    <FormGroup>
+                                        <Label>
+                                            Aktifkan Jangka Waktu
+                                        </Label>
                                         <CustomInput 
                                             id          = 'icon-primary2'
                                             type        = 'switch' 
                                             name        = 'icon-primary' 
                                             label       = {<IconSwitch/>} 
-                                            inline 
                                             onChange    = {() => {setPicker(!picker)}} 
                                         />
-                                    </Label>
-                                    <Flatpickr
-                                        id          = 'range-picker'
-                                        options     = {{
-                                            mode    : 'range',
-                                            minDate : new Date()
-                                        }}
-                                        onChange    = {date => { setInputRangeDate(date)}}
-                                        required    = {picker}
-                                        disabled    = {picker}
-                                        className   = 'form-control'
-                                    />
-                                </FormGroup>
-                            </Col>
-                        </Row>
-                    </CardBody>
-                </Card>
+                                    </FormGroup>
+                                    {
+                                        picker &&
+                                        <FormGroup>
+                                            <Label>
+                                                Jangka Waktu
+                                            </Label>
+                                            <Flatpickr
+                                                options     = {{
+                                                    mode    : 'range',
+                                                    minDate : new Date()
+                                                }}
+                                                onChange    = {date => { setInputRangeDate(date)}}
+                                                disabled    = {!picker}
+                                                className   = 'form-control'
+                                            />
+                                        </FormGroup>
+                                    }
+                                </Col>
+                            </Row>
+                        </CardBody>
+                    </Card>
+                }
+
                 <ModalFooter className="d-flex justify-content-between px-0">
                     <Button 
                         color   = 'primary' 

@@ -24,7 +24,15 @@ const DetailEventCore = ({data}) => {
                 <th>
                     Batas Waktu
                 </th>
-                <td> {Helper.dateIndo(data.start_date)} - {Helper.dateIndo(data.end_date)}</td>
+                <td>
+                    {
+                        data.start_date === '0001-01-01T07:07:12+07:07' ?
+                            '-'
+                        :
+                            Helper.dateIndo(data.start_date)+`-`+Helper.dateIndo(data.end_date)
+                    } 
+
+                </td>
             </tr>
             <tr>
                 <th >
@@ -37,6 +45,12 @@ const DetailEventCore = ({data}) => {
                     Jumlah Agen Maksimal
                 </th>
                 <td>{data.max_recipient}</td>
+            </tr>
+            <tr>
+                <th >
+                    Jumlah Point
+                </th>
+                <td>{data.points}</td>
             </tr>
         </table>
     )

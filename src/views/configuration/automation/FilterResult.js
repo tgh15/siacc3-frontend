@@ -7,7 +7,6 @@ const FilterResult = props => {
     const {
         show,
         onClose,
-        data
     } = props
 
     return (

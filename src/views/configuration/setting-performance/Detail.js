@@ -1,13 +1,16 @@
 // ** Default Avatar Image
-import { Fragment, useContext } from 'react'
-import { Star } from 'react-feather'
-import Rating from 'react-rating'
-import { Button, ModalFooter, Row } from 'reactstrap'
-import ImageRounded from '../../../components/widgets/image-rounded'
-import Helper from '../../../helpers'
-import DetailEventCore from './DetailEventCore'
-import DetailRating from './DetailRating'
-import DetailTrophy from './DetailTrophy'
+import { Fragment }             from 'react'
+import { Star }                 from 'react-feather'
+import Rating                   from 'react-rating'
+import { 
+    Button, 
+    ModalFooter, 
+    Row 
+}                               from 'reactstrap'
+import ImageRounded             from '../../../components/widgets/image-rounded'
+import DetailEventCore          from './DetailEventCore'
+import DetailRating             from './DetailRating'
+import DetailTrophy             from './DetailTrophy'
 import './settingPerformance.scss'
 
 const Detail = (props) => {
@@ -36,19 +39,23 @@ const Detail = (props) => {
     return (
         <Fragment>
             <Row className="d-flex justify-content-center">
-                {isEvent != "rating" ? <ImageRounded
-                    src={isEvent == "trophy" ? data.icon : data.badge}
-                    width={130}
-                    height={130}
-                /> :
-                    <Rating
-                        emptySymbol={<Star size={32} fill='#babfc7' stroke='#babfc7' />}
-                        fullSymbol={<Star size={32} fill={themeColors.colors.warning.main} stroke={themeColors.colors.warning.main} />}
-                        initialRating={data.rating}
-                        readonly
-                    />
+                {
+                    isEvent != "rating" ? 
+                        <ImageRounded
+                            src     = {isEvent == "trophy" ? data.icon : data.badge}
+                            width   = {130}
+                            height  = {130}
+                        /> 
+                    :
+                        <Rating
+                            readonly
+                            fullSymbol      = {<Star size={32} fill={themeColors.colors.warning.main} stroke={themeColors.colors.warning.main} />}
+                            emptySymbol     = {<Star size={32} fill='#babfc7' stroke='#babfc7' />}
+                            initialRating   = {data.rating}
+                        />
                 }
             </Row>
+            
             {getInfoDetail(data)}
 
             <ModalFooter >

@@ -132,7 +132,7 @@ const TableBody = props => {
                     </Media>
                 </Col>
                 <Col md="2">
-                    {data.user_group ? data.user_group[0].name : null}
+                    {/* {data.user_group ? data.user_group[0].name : null} */}
                 </Col>
                 <Col 
                     md        = "2" 

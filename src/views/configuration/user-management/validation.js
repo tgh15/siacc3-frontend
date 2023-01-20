@@ -1,7 +1,7 @@
 import * as yup from 'yup';
 
 export const schema = yup.object().shape({
-    identity_id     : yup.string().typeError('Hanya bisa memasukkan angka').min(10, 'Jumlah minimal karakter adalah 10!').required(),
+    identity_id     : yup.number().typeError('Hanya bisa memasukkan angka').min(10, 'Jumlah minimal karakter adalah 10!').required(),
     name            : yup.string().required('Kolom nama belum terisi'),
     ktp             : yup.number().typeError('Hanya bisa memasukkan angka').integer().min(10, 'Jumlah minimal karakter adalah 10!').required(),
     phone_number    : yup.number().typeError('Hanya bisa memasukkan angka').integer().min(10, 'Jumlah minimal karakter adalah 10!').required(),
