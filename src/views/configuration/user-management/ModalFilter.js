@@ -18,7 +18,7 @@ import { UserManagementContext }            from "../../../context/UserManagemen
 
 const ModalFilter = ({ setModalFilter, onFilter }) => {
     //Context
-    const { getData, setListData, workunitOptions } = useContext(UserManagementContext);
+    const { getData, workunitOptions } = useContext(UserManagementContext);
 
     //State
     const [kejati, setKejati]       = useState([]);

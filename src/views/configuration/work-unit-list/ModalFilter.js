@@ -29,6 +29,54 @@ const ModalFilter = () => {
                     </Col>
                 </Row>
             </FormGroup>
+            <FormGroup>
+                <div id="user-manajement-kejati">
+                    <Select
+                        name            = 'clear'
+                        block
+                        theme           = {selectThemeColors}
+                        options         = {workunitOptions.filter(opt => opt.workunit_level_id == 2)}
+                        isMulti
+                        onChange        = {(e) => { setKejati(e) }}
+                        className       = 'react-select'
+                        isClearable
+                        placeholder     = "Pilih Kejati"
+                        classNamePrefix = 'select'
+                    />
+                </div>
+            </FormGroup>
+            <FormGroup>
+                <div id="user-manajement-kejari">
+                    <Select
+                        name            = 'clear'
+                        block
+                        theme           = {selectThemeColors}
+                        options         = {workunitOptions.filter(opt => opt.workunit_level_id == 3)}
+                        isMulti
+                        onChange        = {(e) => { setKejari(e) }}
+                        className       = 'react-select'
+                        isClearable
+                        placeholder     = "Pilih Kejari"
+                        classNamePrefix = 'select'
+                    />
+                </div>
+            </FormGroup>
+            <FormGroup>
+                <div id="user-manajement-capjari">
+                    <Select
+                        name            = 'clear'
+                        block
+                        theme           = {selectThemeColors}
+                        options         = {workunitOptions.filter(opt => opt.workunit_level_id == 4)}
+                        isMulti
+                        onChange        = {(e) => { setCabjari(e) }}
+                        className       = 'react-select'
+                        placeholder     = "Pilih Cabjari"
+                        isClearable
+                        classNamePrefix = 'select'
+                    />
+                </div>
+            </FormGroup>
         </Fragment>
     )
 }

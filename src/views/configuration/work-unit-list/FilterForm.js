@@ -1,4 +1,4 @@
-import { Fragment, useState }   from "react";
+import { Fragment, useContext, useState }   from "react";
 import { 
     Col, 
     Row, 
@@ -6,10 +6,15 @@ import {
     Button,
     FormGroup, 
     ModalFooter, 
-} from "reactstrap";
+}                                           from "reactstrap";
+import Select                               from "react-select"
+import { selectThemeColors }                from '@utils';
+
 
 //Components
-import ButtonLoading            from "../../../components/widgets/loading-button";
+import ButtonLoading                        from "../../../components/widgets/loading-button";
+import { UserManagementContext }            from "../../../context/UserManagementContext";
+
 
 
 const FilterForm = (props) => {
@@ -19,10 +24,33 @@ const FilterForm = (props) => {
     } = props;
 
     //State
-    const [order, setOrder] = useState("latest");
+    const [order, setOrder]                     = useState("latest");
+    const [kejati, setKejati]                   = useState([]);
+    const [kejari, setKejari]                   = useState([]);
+    const [cabjari, setCabjari]                 = useState([]);
+
+    //context
+    const { workunitOptions } = useContext(UserManagementContext);
 
     //Handle Filter
-    const handleFilter      = () => {onFilter(order)};
+    const handleFilter      = () => {
+        
+        let workunitId_     = [];
+
+
+        if(kejati.length > 0){
+            kejati.map((data) => (workunitId_.push(data.value)));
+        }
+        
+        if(kejari.length > 0){
+            kejari.map((data) => (workunitId_.push(data.value)))
+        }
+
+        if(cabjari.length > 0){
+            cabjari.map((data) => (workunitId_.push(data.value)))
+        }
+
+        onFilter({order : order, workunit_id : workunitId_})};
     
     return (
         <Fragment>
@@ -72,6 +100,54 @@ const FilterForm = (props) => {
                         }
                     </Col>
                 </Row>
+            </FormGroup>
+            <FormGroup>
+                <div id="user-manajement-kejati">
+                    <Select
+                        name            = 'clear'
+                        block
+                        theme           = {selectThemeColors}
+                        options         = {workunitOptions.filter(opt => opt.workunit_level_id == 2)}
+                        isMulti
+                        onChange        = {(e) => { setKejati(e); }}
+                        className       = 'react-select'
+                        isClearable
+                        placeholder     = "Pilih Kejati"
+                        classNamePrefix = 'select'
+                    />
+                </div>
+            </FormGroup>
+            <FormGroup>
+                <div id="user-manajement-kejari">
+                    <Select
+                        name            = 'clear'
+                        block
+                        theme           = {selectThemeColors}
+                        options         = {workunitOptions.filter(opt => opt.workunit_level_id == 3)}
+                        isMulti
+                        onChange        = {(e) => { setKejari(e) }}
+                        className       = 'react-select'
+                        isClearable
+                        placeholder     = "Pilih Kejari"
+                        classNamePrefix = 'select'
+                    />
+                </div>
+            </FormGroup>
+            <FormGroup>
+                <div id="user-manajement-capjari">
+                    <Select
+                        name            = 'clear'
+                        block
+                        theme           = {selectThemeColors}
+                        options         = {workunitOptions.filter(opt => opt.workunit_level_id == 4)}
+                        isMulti
+                        onChange        = {(e) => { setCabjari(e) }}
+                        className       = 'react-select'
+                        placeholder     = "Pilih Cabjari"
+                        isClearable
+                        classNamePrefix = 'select'
+                    />
+                </div>
             </FormGroup>
             <ModalFooter className="d-flex justify-content-center">
                 <div id="workunitlist-apply">

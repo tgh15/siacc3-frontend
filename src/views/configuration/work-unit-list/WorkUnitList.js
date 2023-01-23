@@ -43,6 +43,7 @@ import SwiperCore, {
     Navigation,
     Pagination,
 } from 'swiper';
+import { UserManagementProvider } from "../../../context/UserManagementContext";
 
 
 SwiperCore.use([Navigation, Pagination, Lazy]);
@@ -68,7 +69,8 @@ const WorkUnitList = (props) => {
         page              : 1,
         keyword           : "",
         workunit_level_id : 0,
-        order_by          : "latest"
+        order_by          : "latest",
+        id_list           : []
     })
 
     //Props
@@ -150,15 +152,19 @@ const WorkUnitList = (props) => {
 
     //Filter order by
     const filterByOrder = (formDatas) => {
-        params.current.order_by = formDatas;
+
+        params.current.order_by = formDatas.order;
         
         setLoading(true);
         setListData(false);
 
         const formData = {
             order_by            : params.current.order_by,
-            condition_by        : "",
             workunit_level_id   : params.current.workunit_level_id
+        }
+
+        if(formDatas.workunit_id.length > 0){
+            formData.id_list      = formDatas.workunit_id;
         }
 
         workunitListAPI.filterByOrder(params.current.page, formData).then(
@@ -230,14 +236,17 @@ const WorkUnitList = (props) => {
                 title   = "Filter"
                 setShow = {(par) => setFilterForm(par)}
             >
-                <TourFilter
-                    onFilter = {(par) => {
-                        setStatusGetData("filter")
-                        filterByOrder(par)
-                    }}
-                    loading  = {loading}
-                    onClose  = {() => (setFilterForm(!filterForm))}
-                />
+                <UserManagementProvider>
+
+                    <TourFilter
+                        onFilter = {(par) => {
+                            setStatusGetData("filter")
+                            filterByOrder(par)
+                        }}
+                        loading  = {loading}
+                        onClose  = {() => (setFilterForm(!filterForm))}
+                    />
+                </UserManagementProvider>
             </ModalBase>
 
             {/* modal Delete */}
