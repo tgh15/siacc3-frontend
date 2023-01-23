@@ -457,14 +457,14 @@ const ModalForm = (props) => {
                                                 theme           = {selectThemeColors}
                                                 options         = {workunitOptions}
                                                 className       = 'react-select'
-                                                // isDisabled      = {
-                                                //     data ?
-                                                //         (localStorage.getItem('role') === 'Admin' || localStorage.getItem('role') === 'Verifikator Pusat' || localStorage.getItem('role') === 'Verifikator Daerah') || localStorage.getItem('role') === 'Admin Daerah' ?
-                                                //             false
-                                                //         :
-                                                //             true 
-                                                //     : false
-                                                // }
+                                                isDisabled      = {
+                                                    data ?
+                                                        (localStorage.getItem('role') === 'Admin' || localStorage.getItem('role') === 'Verifikator Pusat' || localStorage.getItem('role') === 'Verifikator Daerah') || localStorage.getItem('role') === 'Admin Daerah' ?
+                                                            false
+                                                        :
+                                                            true 
+                                                    : false
+                                                }
                                                 placeholder     = "Pilih Satker"
                                                 isClearable
                                                 classNamePrefix = 'select'
@@ -493,14 +493,14 @@ const ModalForm = (props) => {
                                                 theme           = {selectThemeColors}
                                                 options         = {PositionOptions}
                                                 className       = 'react-select'
-                                                // isDisabled      = {
-                                                //     data ?
-                                                //         (localStorage.getItem('role') === 'Admin' || localStorage.getItem('role') === 'Verifikator Pusat' || localStorage.getItem('role') === 'Verifikator Daerah') || localStorage.getItem('role') === 'Admin Daerah' ?
-                                                //             false
-                                                //         :
-                                                //             true 
-                                                //     : false
-                                                // }
+                                                isDisabled      = {
+                                                    data ?
+                                                        (localStorage.getItem('role') === 'Admin' || localStorage.getItem('role') === 'Verifikator Pusat' || localStorage.getItem('role') === 'Verifikator Daerah') || localStorage.getItem('role') === 'Admin Daerah' ?
+                                                            false
+                                                        :
+                                                            true 
+                                                    : false
+                                                }
                                                 placeholder     = "Pilih Jabatan"
                                                 isClearable
                                                 classNamePrefix = 'select'

@@ -362,7 +362,6 @@ const EditForm = (props) => {
                                 <Col md="4">
                                     <FormGroup>
                                         <Label> Pilih Kondisi </Label>
-
                                         <CustomInput
                                             id='select-custom'
                                             type='select'
@@ -392,9 +391,9 @@ const EditForm = (props) => {
                                             defaultValue={data.model?.auto_relations_and[0]?.operator_id}
                                         >
                                             <option disabled selected value={0}> Pilih Relasi </option>
-                                            {/* {operators && operators.map((data, index) => (
+                                            {operators && operators.map((data, index) => (
                                                 <option value={data.id}> {data.name} </option>
-                                            ))} */}
+                                            ))}
                                         </CustomInput>
                                         {errors && errors.relation && <FormFeedback>{errors.relation.message}</FormFeedback>}
                                     </FormGroup>
