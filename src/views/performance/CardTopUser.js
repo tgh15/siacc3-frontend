@@ -101,7 +101,6 @@ const CardTopUser = (props) => {
                                     md      = {4} 
                                     key     = {index}
                                     onClick = {() => {
-                                        active == 'agent' && 
                                         index === 1 ?
                                             setIsAchievementVisible(true)
                                         :
