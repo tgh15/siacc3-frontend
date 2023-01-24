@@ -13,7 +13,7 @@ const getEmployeeByUuid          = (data) => service.post(`${profileURL.employee
 const getByPositionShared        = (data) => service.post(`${profileURL.feedsPrefix}/${profileURL.agentReport}/${profileURL.byPositionShared}`, data);
 const getAchievementAgent        = (data) => service.post(`${profileURL.feedsPrefix}/${profileURL.achievementPrefix}/${profileURL.achievementAgent}`, data);
 const changeAchievementAgent     = (data) => service.post(`${profileURL.feedsPrefix}/${profileURL.achievementPrefix}/${profileURL.achievementAgent}/${profileURL.isActive}`, data);
-const getByEmployeeAgentReport   = (data) => service.post(`${profileURL.feedsPrefix}/${profileURL.agentReport}/${profileURL.byEmployee}`, data);
+const getByEmployeeAgentReport   = (data, params) => service.post(`${profileURL.feedsPrefix}/${profileURL.agentReport}/${profileURL.byEmployee}`, data, params);
 const getAgentProfilePerformance = (data) => service.post(`${profileURL.feedsPrefix}/${profileURL.performancePrefix}/${profileURL.achievementAgent}/${profileURL.profile}`, data);
 
 

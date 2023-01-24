@@ -25,6 +25,7 @@ const CardTopUser = (props) => {
         setDataSelected, 
         getWorkunitDetail,
         setIsAchievementVisible,
+        setIsDetailViewerVisible,
     }                                            = useContext(PerformanceContext)
 
     const getImage = () => {
@@ -54,63 +55,82 @@ const CardTopUser = (props) => {
     }
 
     return (
-        <Card onClick={onClick} className={selected()}>
+        <Card className={selected()}>
             <CardBody className="text-center cursor-pointer">
-                <h5>Peringkat {Helper.rankingText(index+1)}</h5>
+                <div onClick={onClick} >
+                        
+                    <h5>Peringkat {Helper.rankingText(index+1)}</h5>
 
-                {
-                    active == 'agent' ?
-                        <AvatarPerformance
-                            img         = {getImage()} 
-                            imgWidth       = {60} 
-                            imgHeight      = {60} 
-                            className   = "mt-1" 
-                        />
-                    :
-                        <img 
-                            src         = {getImage()} 
-                            width       = {60} 
-                            height      = {60} 
-                            className   = "mt-1" 
-                        />
-                }
-
-
-                <h5 className="mt-1 mb-0">
-                    {data.name}
-                </h5>
-                <p style={{ fontSize: "11px" }}>
-                    {data.workunit_level} {data.workunit}
-                </p>
-                <p className="mt-1 text-left" style={{ fontSize: "10px" }}>
-                    Aktivitas Berita (7 Hari Terakhir)
-                </p>
-                <Row>
-                    <ChartArea dataChart={data.last_activity} height={80} />
-                </Row>
-                <Row onClick={() => active == 'agent' && setIsAchievementVisible(true)}>
-                    {data.achievement ? data.achievement.map((achievement, index) => (
-                        <Col md={4} key={index}>
-                            <img 
-                                src         = {achievement.oldBadge} 
-                                alt         = 'latest-photo' 
-                                width       = {50}
-                                height      = {50}    
-                                onError     = {Helper.fallbackImage_} 
-                                className   = 'img-fluid my-1' 
+                    {
+                        active == 'agent' ?
+                            <AvatarPerformance
+                                img         = {getImage()} 
+                                imgWidth       = {60} 
+                                imgHeight      = {60} 
+                                className   = "mt-1" 
                             />
-                        </Col>
-                    )) : <div style={{ height:"50px"}}></div> }
+                        :
+                            <img 
+                                src         = {getImage()} 
+                                width       = {60} 
+                                height      = {60} 
+                                className   = "mt-1" 
+                            />
+                    }
+
+
+                    <h5 className="mt-1 mb-0">
+                        {data.name}
+                    </h5>
+                    <p style={{ fontSize: "11px" }}>
+                        {data.workunit_level} {data.workunit}
+                    </p>
+                    <p className="mt-1 text-left" style={{ fontSize: "10px" }}>
+                        Aktivitas Berita (7 Hari Terakhir)
+                    </p>
+                    <Row>
+                        <ChartArea dataChart={data.last_activity} height={80} />
+                    </Row>
+                </div>
+
+                <Row>
+                    {
+                        data.achievement ? 
+                            data.achievement.map((achievement, index) => (
+                                <Col 
+                                    md      = {4} 
+                                    key     = {index}
+                                    onClick = {() => {
+                                        active == 'agent' && 
+                                        index === 1 ?
+                                            setIsAchievementVisible(true)
+                                        :
+                                            setIsDetailViewerVisible(true)
+                                    }}
+                                >
+                                    <img 
+                                        src         = {achievement.oldBadge} 
+                                        alt         = 'latest-photo' 
+                                        width       = {50}
+                                        height      = {50}    
+                                        onError     = {Helper.fallbackImage_} 
+                                        className   = 'img-fluid my-1' 
+                                    />
+                                </Col>
+                            )) 
+                        : 
+                            <div style={{ height:"50px"}}></div> 
+                    }
                 </Row>
                 <Row className="text-center">
-                    <Col>
+                    <Col onClick={() => {setIsAchievementVisible(true)}}>
                         <small className="mb-0 mt-1">
                             {data.performance.total_report}
                         </small><br />
                         <small className="mt-0"> Berita</small>
                     </Col>
-                    <Col>
-
+                    <Col onClick ={() => {setIsDetailViewerVisible(true)
+}}>
                         <small className="mb-0 ">
                             {data.performance.total_viewer}
                         </small> <br />

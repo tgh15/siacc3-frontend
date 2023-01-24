@@ -33,6 +33,7 @@ import NavbarPerformance                    from "./NavbarPerformance";
 import CustomTableBodyEmpty                 from "../../components/widgets/custom-table/CustomTableBodyEmpty";
 import CustomTableNotAuthorized             from "../../components/widgets/custom-table/CustomTableNotAuthorized";
 import AchievementBadge from "./AchivementBadge";
+import DetailViewer from "./DetailViewer";
 
 const useQuery = () => {
     return new URLSearchParams(useLocation().search);
@@ -93,6 +94,9 @@ const PerformanceContainer = () => {
         <Fragment>
             {/* Modal Badge */}
             <AchievementBadge/>
+
+            {/* Modal Detail Viewer */}
+            <DetailViewer/>
 
             
             {

@@ -1,17 +1,16 @@
-import { useContext, useEffect, useState }              from "react"
+import { useContext, useEffect, useState }  from "react"
 import { Table }                            from "reactstrap";
 import { ModalBase }                        from "../../components/widgets/modals-base";
 import agentProfileAPI                      from "../../services/pages/profile/url";
 import Helper                               from "../../helpers";
 import Skeleton                             from "react-loading-skeleton";
 import CustomTableBodyEmpty                 from "../../components/widgets/custom-table/CustomTableBodyEmpty";
-import { PerformanceContext } from "../../context/PerformanceContext";
+import { PerformanceContext }               from "../../context/PerformanceContext";
 
 const AchievementBadge = () => {
 
     //Helper
     const {getUserData}                                     = Helper;
-
 
     //Context
     const { 

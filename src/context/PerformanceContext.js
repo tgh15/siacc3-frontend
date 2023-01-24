@@ -28,6 +28,7 @@ const PerformanceProvider = ({ children }) => {
     const [workunitLevel4           , setWorkunitLevel4]          = useState(null);
     const [workunitOptions          , setWorkunitOptions]         = useState(null)
     const [isAchievementVisible     , setIsAchievementVisible]    = useState(false);
+    const [isDetailViewerVisible    , setIsDetailViewerVisible]   = useState(false);
     const [workunitOptionsApproval  , setWorkunitOptionsApproval] = useState(null);
 
 
@@ -401,6 +402,8 @@ const PerformanceProvider = ({ children }) => {
             setWorkunitLevel,
             isAchievementVisible,
             setIsAchievementVisible,
+            isDetailViewerVisible,
+            setIsDetailViewerVisible,
             getDataAgent,
             getDataWorkunit,
             getAgentDetail,
