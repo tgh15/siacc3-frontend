@@ -13,6 +13,7 @@ const PerformanceContext = createContext(null)
 const PerformanceProvider = ({ children }) => {
     // states
     const searchTerm                                              = useRef(null)
+    const [year                     , setYear]                    = useState(new Date().getFullYear())
     const [page                     , setPage]                    = useState(1)
     const [active                   , setActive]                  = useState('agent')
     const [listData                 , setListData]                = useState(false)
@@ -245,13 +246,17 @@ const PerformanceProvider = ({ children }) => {
     }
 
     // get Data Agent
-    const getDataAgent = () => {
+    const getDataAgent = (params) => {
         setListData(false)
         setDataSelected(false)
         setSectorAgent("Nasional")
 
+        // //set params year
+        // params.year = year;
+
         PerformanceApi.GetAgent({
             keyword: query.get('agen') != undefined ? query.get('agen') : searchTerm.current,
+            params: params,
             onSuccess: (res) => {
                 if(!res.is_error){
                     setListData(res.data.agent_performance)
@@ -323,6 +328,7 @@ const PerformanceProvider = ({ children }) => {
         setListData(false)
         setDataSelected(false)
         setWorkunitLevel(params.workunit_level_id)
+
         PerformanceApi.GetWorkunit({
             keyword: searchTerm.current,
             params: params,
@@ -357,7 +363,6 @@ const PerformanceProvider = ({ children }) => {
             }
         })
     }
-
     const getWorkunitDetail = (uuid) => {
         setDataDetail(null)
         let datas = {
@@ -376,13 +381,16 @@ const PerformanceProvider = ({ children }) => {
     }
 
     useEffect(() => {
-        getWorkunitOptions()
-    }, [])
+        if(active === 'agent'){
+            getDataAgent({period: year})
+        }else{
+            getDataWorkunit({ workunit_level_id: 0, period:year });
+        }
+    }, [active, year])
 
     useEffect(() => {
-        getDataAgent()
-    }, [])
-
+        getWorkunitOptions();
+    }, []);
 
     return <PerformanceContext.Provider
         value={{
@@ -417,6 +425,8 @@ const PerformanceProvider = ({ children }) => {
             getWorkunitPoints,
             historyPoints,
             workunitList,
+            year,
+            setYear,
 
             workunitLevel1,
             workunitLevel2,

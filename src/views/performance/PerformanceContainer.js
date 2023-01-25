@@ -1,5 +1,5 @@
 import { Fragment, useContext, useEffect }  from "react";
-import { Card, Col, Row, CardBody }         from "reactstrap";
+import { Card, Col, Row, CardBody, FormGroup, Label }         from "reactstrap";
 
 import Select                               from "react-select";
 import Skeleton                             from "react-loading-skeleton";
@@ -45,6 +45,7 @@ const PerformanceContainer = () => {
 
     const { 
         active,
+        setYear,
         listData,
         searchTerm,
         setListData,
@@ -57,7 +58,11 @@ const PerformanceContainer = () => {
         getDataWorkunit,
     } = useContext(PerformanceContext)
 
-    const {getRoleByMenuStatus, useQuery}  = Helper;
+    const {
+        useQuery, 
+        getYearsBefore,
+        getRoleByMenuStatus, 
+    }                                      = Helper;
 
     let query                              = useQuery();
 
@@ -107,7 +112,19 @@ const PerformanceContainer = () => {
                     <Row>
                         <Col md="8" sm="12">
                             <Row>
-                                <Col sm={{ size: 5, offset: 7 }}>
+                                <Col md={3}>
+                                    <FormGroup>
+                                        <Select
+                                            theme           = {selectThemeColors}
+                                            options         = {getYearsBefore(10)}
+                                            onChange        = {(e) => setYear(e.value)}
+                                            className       = 'react-select'
+                                            placeholder     = "Pilih Tahun Performa"
+                                            classNamePrefix = 'select'
+                                        />
+                                    </FormGroup>
+                                </Col>
+                                <Col md={{size: 5, offset: 4}}>
                                     <SearchTable 
                                         value       = {query.get('agen') != undefined ? query.get('agen') : null}
                                         onSearch    = {(e)=> {onSearch(e)} } 
@@ -152,7 +169,7 @@ const PerformanceContainer = () => {
 
                             {/* top user */}
                             {listData &&
-                                <Row className="mt-1 ">
+                                <Row className="mt-1">
                                     {listData.slice(0, 3).map((data, i) => (
                                         <Col key={i} md="4" className="d-flex justify-content-stretch">
                                             <CardTopUser data={data} index={i} />

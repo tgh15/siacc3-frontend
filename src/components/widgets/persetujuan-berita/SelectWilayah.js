@@ -292,7 +292,7 @@ export const SelectWilayah  = ({data,show,setShow,onSubmit, index, statePosition
                 />
             </FormGroup>
             {
-                localStorage.getItem('role') == "Verifikator Pusat" ?
+                localStorage.getItem('role') == "Verifikator Pusat" || localStorage.getItem('role') == "Admin" ?
                     <>
                         <FormGroup>
                             <blockquote className="blockquote pl-1 border-left-primary border-left-3">

@@ -36,8 +36,8 @@ const CardTopUser = (props) => {
             return Helper.defaultAvatar(data.name)
         }
     }
-
     const selected = () => {
+
         if (data == dataSelected) {
             return "selected"
         }
@@ -54,10 +54,9 @@ const CardTopUser = (props) => {
     }
 
     return (
-        <Card className={selected()}>
+        <Card className={`${selected()} w-100`} >
             <CardBody className="text-center cursor-pointer">
-                <div onClick={onClick} >
-                        
+                <div>
                     <h5>Peringkat {Helper.rankingText(index+1)}</h5>
 
                     {
@@ -100,6 +99,7 @@ const CardTopUser = (props) => {
                                     md      = {4} 
                                     key     = {index}
                                     onClick = {() => {
+                                        onClick()
                                         index === 0 ?
                                             setIsAchievementVisible(true)
                                         :

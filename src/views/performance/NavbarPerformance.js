@@ -19,7 +19,8 @@ const NavbarPerformance = () => {
     const onAgent = () => {
 
         if (active != "agent") {
-            getDataAgent()
+
+            setActive('agent');
         }
         toggle('agent')
 
@@ -28,7 +29,7 @@ const NavbarPerformance = () => {
     const onWorkunit = () => {
 
         if (active != "workunit") {
-            getDataWorkunit({ workunit_level_id: 0 });
+            setActive('workunit');
         }
 
         toggle('workunit')

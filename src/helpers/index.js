@@ -304,8 +304,17 @@ const formatDate = (stringDate) => {
 };
 
 const getYearsBefore = (howManyYears) => {
-    const year = new Date().getFullYear();
-    return Array.from({length : howManyYears}, (v, i) => ({ label : year - howManyYears + i + 1, value : year - howManyYears + i + 1})).reverse();
+    const endYear   = new Date().getFullYear();
+    const startYear = 2022;
+
+    const diff = endYear-startYear;
+    const year = [];
+
+    for(let i=0; i <= diff; i++){
+        year.push({label: startYear+i, value : startYear+i})
+    }
+
+    return year.reverse();
 }
 
 const getMonthName = () => {
