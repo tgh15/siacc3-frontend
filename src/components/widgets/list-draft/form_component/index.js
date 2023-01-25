@@ -128,7 +128,7 @@ export const EditDraftComponent = ({getDraftAPI, data, closeModal})=>{
     const audioRef                  = useRef()
     const {category}                = useContext(CategoryContext);
 
-    let category_ = category.slice(1).map((data) => (
+    let category_ = category.slice(2).map((data) => (
         {
             value   : data.id,
             label   : data.name,
