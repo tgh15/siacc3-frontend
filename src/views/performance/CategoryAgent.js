@@ -7,8 +7,8 @@ const CategoryAgent = (props) => {
     
     const {
         sectorAgent,
+        getDataAgent,
         setSectorAgent,
-        getDataAgent
     } = useContext(PerformanceContext)
 
     const onNasional = () => {
@@ -19,20 +19,21 @@ const CategoryAgent = (props) => {
     return (
         <Fragment>
             <Button.Ripple 
-                        color="primary" 
-                        outline={sectorAgent == "Nasional" ? false : true} 
-                        className="round" 
-                        size="sm"
-                        onClick={() => {onNasional()}}
-                        >
+                size        = "sm"
+                color       = "primary" 
+                onClick     = {() => {onNasional()}}
+                outline     = {sectorAgent == "Nasional" ? false : true} 
+                className   = "round" 
+            >
                 Nasional
             </Button.Ripple>
             <Button.Ripple 
-                        outline color="primary" 
-                        outline={sectorAgent == "Lokal" ? false : true} 
-                        className="round ml-1" 
-                        size="sm"
-                        onClick={() => { setSectorAgent("Lokal")}}>
+                size        = "sm"
+                color       = "primary" 
+                onClick     = {() => { setSectorAgent("Lokal")}}
+                outline     = {sectorAgent == "Lokal" ? false : true} 
+                className   = "round ml-1" 
+            >
                 Lokal
             </Button.Ripple>
         </Fragment>

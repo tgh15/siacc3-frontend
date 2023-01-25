@@ -1,5 +1,4 @@
 import { useContext, useState } from "react"
-
 import { Card, CardBody, Col, Row } from "reactstrap"
 import AvatarPerformance from "../../components/widgets/avatar-performance"
 import avatarImg from '@src/assets/images/portrait/small/150x150.png'
@@ -54,7 +53,7 @@ const CardTopUser = (props) => {
     }
 
     return (
-        <Card className={`${selected()} w-100`} >
+        <Card className={`${selected()} w-100`} onClick={() => onClick()}>
             <CardBody className="text-center cursor-pointer">
                 <div>
                     <h5>Peringkat {Helper.rankingText(index+1)}</h5>
@@ -75,7 +74,6 @@ const CardTopUser = (props) => {
                                 className   = "mt-1" 
                             />
                     }
-
 
                     <h5 className="mt-1 mb-0">
                         {data.name}
@@ -99,7 +97,6 @@ const CardTopUser = (props) => {
                                     md      = {4} 
                                     key     = {index}
                                     onClick = {() => {
-                                        onClick()
                                         index === 0 ?
                                             setIsAchievementVisible(true)
                                         :

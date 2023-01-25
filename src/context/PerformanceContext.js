@@ -251,9 +251,6 @@ const PerformanceProvider = ({ children }) => {
         setDataSelected(false)
         setSectorAgent("Nasional")
 
-        // //set params year
-        // params.year = year;
-
         PerformanceApi.GetAgent({
             keyword: query.get('agen') != undefined ? query.get('agen') : searchTerm.current,
             params: params,

@@ -44,6 +44,7 @@ const useQuery = () => {
 const PerformanceContainer = () => {
 
     const { 
+        year,
         active,
         setYear,
         listData,
@@ -71,7 +72,7 @@ const PerformanceContainer = () => {
         setDataSelected(false)
 
         PerformanceApi.GetAgentByWorkUnit({
-            params      : {workunit_id : workunitId},
+            params      : {workunit_id : workunitId, period: year},
             onSuccess   : (res) => {
                 setListData(res.agent_performance)
                 setDataSelected(res.agent_performance ? res.agent_performance[0] : null)

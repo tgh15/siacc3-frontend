@@ -3,7 +3,8 @@ import { Table }                            from "reactstrap";
 import { ModalBase }                        from "../../components/widgets/modals-base";
 import { PerformanceContext }               from "../../context/PerformanceContext";
 import Skeleton                             from "react-loading-skeleton";
-import { feedsAchievementAPI } from "../../services/pages/feeds/achievement";
+import { feedsAchievementAPI }              from "../../services/pages/feeds/achievement";
+import CustomTableBodyEmpty                 from "../../components/widgets/custom-table/CustomTableBodyEmpty";
 
 
 
@@ -18,6 +19,9 @@ const DetailTrophy = () => {
     const [trophy, setTrophy]                          = useState(null);
 
     const getTrophyDataAgent    = () => {
+
+        setTrophy(null);
+        
         const params = {
             uuid : dataSelected.uuid
         }

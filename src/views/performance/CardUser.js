@@ -19,7 +19,9 @@ const CardUser = (props) => {
         getAgentDetail, 
         setDataSelected, 
         getWorkunitDetail,
-        setIsAchievementVisible
+        setIsAchievementVisible,
+        setIsDetailViewerVisible,
+        setIsDetailTrophyVisible,
     } = useContext(PerformanceContext)
 
 
@@ -76,7 +78,7 @@ const CardUser = (props) => {
                             <Col 
                                 md          = "1" 
                                 style       = {{ fontSize: "11px" }}
-                                onClick     = {() => {active === 'agent' && setIsAchievementVisible(true)}}
+                                onClick     = {() => {setIsAchievementVisible(true)}}
                                 className   = "d-flex align-items-center" 
                             >
                                 <div className="text-center">
@@ -85,14 +87,24 @@ const CardUser = (props) => {
                                     Berita
                                 </div>
                             </Col>
-                            <Col md="1" className="d-flex align-items-center" style={{ fontSize: "11px" }}>
+                            <Col 
+                                md          = "1" 
+                                style       = {{ fontSize: "11px" }}
+                                onClick     = {() => {setIsDetailViewerVisible(true)}}
+                                className   = "d-flex align-items-center" 
+                            >
                                 <div className="text-center">
                                     <span style={{ fontWeight: "bold" }}>{data.performance.total_viewer} </span>
                                     <br/>
                                     Viewer
                                 </div>
                             </Col>
-                            <Col md="1" className="d-flex align-items-center" style={{ fontSize: "11px" }}>
+                            <Col 
+                                md          = "1" 
+                                style       = {{ fontSize: "11px" }}
+                                onClick     = {() => {setIsDetailTrophyVisible(true)}}
+                                className   = "d-flex align-items-center" 
+                            >
                                 <div className="text-center">
                                     <span style={{ fontWeight: "bold" }}>{data.performance.total_trophy} </span>
                                     <br/>
@@ -101,7 +113,10 @@ const CardUser = (props) => {
                             </Col>
                         </Row>
                     </CardBody>
-                </Card> : null}
+                </Card> 
+                : 
+                    null
+            }
         </Fragment>
 
     )
