@@ -34,6 +34,7 @@ import CustomTableBodyEmpty                 from "../../components/widgets/custo
 import CustomTableNotAuthorized             from "../../components/widgets/custom-table/CustomTableNotAuthorized";
 import AchievementBadge from "./AchivementBadge";
 import DetailViewer from "./DetailViewer";
+import DetailTrophy from "./DetailTrophy";
 
 const useQuery = () => {
     return new URLSearchParams(useLocation().search);
@@ -92,13 +93,15 @@ const PerformanceContainer = () => {
 
     return (
         <Fragment>
-            {/* Modal Badge */}
+            {/* Modal Detail Badge */}
             <AchievementBadge/>
 
             {/* Modal Detail Viewer */}
             <DetailViewer/>
 
-            
+            {/* Modal Detail Trophy */}
+            <DetailTrophy/>
+
             {
                 getRoleByMenuStatus('Performance', 'performance_list') ?
                     <Row>

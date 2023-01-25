@@ -1,60 +1,34 @@
 import { useContext, useEffect, useState }  from "react"
 import { Table }                            from "reactstrap";
 import { ModalBase }                        from "../../components/widgets/modals-base";
-import agentProfileAPI                      from "../../services/pages/profile/url";
-import Skeleton                             from "react-loading-skeleton";
-import CustomTableBodyEmpty                 from "../../components/widgets/custom-table/CustomTableBodyEmpty";
 import { PerformanceContext }               from "../../context/PerformanceContext";
-import {feedsAchievementAPI}                from "../../services/pages/feeds/achievement/index"
+import Skeleton                             from "react-loading-skeleton";
+import { feedsAchievementAPI } from "../../services/pages/feeds/achievement";
 
-const AchievementBadge = () => {
 
-    //Context
+
+const DetailTrophy = () => {
+
     const {
         active,
         dataSelected, 
-        isAchievementVisible,
-        setIsAchievementVisible,
-    }                                                       = useContext(PerformanceContext)
-    const [achievement, setAchievement]                     = useState(null);
+        isDetailTrophyVisible,
+        setIsDetailTrophyVisible,
+    }                                                  = useContext(PerformanceContext)
+    const [trophy, setTrophy]                          = useState(null);
 
-    //API get achievement agent
-    const achievementBadgeAgent = () => {
-        const formData = {
+    const getTrophyDataAgent    = () => {
+        const params = {
             uuid : dataSelected.uuid
-        };
+        }
 
-        agentProfileAPI.getAchievementAgent(formData).then(
+        feedsAchievementAPI.getTrophyByType(params).then(
             res => {
                 if(!res.is_error){
                     if (res.data !== null) {
-                        setAchievement(res.data);
+                        setTrophy(res.data);
                     }else{
-                        setAchievement([]);
-                    }
-                }else{
-                    CustomToast('danger', res.message);
-                }
-            },
-            err => {
-                CustomToast("danger", err.message);
-            }
-        );
-    };
-
-    const achievementBadgeWorkunit = () => {
-
-        const formData = {
-            workunit_id : dataSelected.id
-        };
-
-        feedsAchievementAPI.getAchievementByWorkunit(formData).then(
-            res => {
-                if(!res.is_error){
-                    if (res.data !== null) {
-                        setAchievement(res.data);
-                    }else{
-                        setAchievement([]);
+                        setTrophy([]);
                     }
                 }else{
                     CustomToast('danger', res.message);
@@ -64,47 +38,70 @@ const AchievementBadge = () => {
                 CustomToast("danger", err.message);
             }
         )
-    }
+    };
+
+    const getTrophyDataWorkunit = () => {
+        const params = {
+            workunit_id : dataSelected.id
+        }
+
+        feedsAchievementAPI.getTrophyByType(params).then(
+            res => {
+                if(!res.is_error){
+                    if (res.data !== null) {
+                        setTrophy(res.data);
+                    }else{
+                        setTrophy([]);
+                    }
+                }else{
+                    CustomToast('danger', res.message);
+                }
+            },
+            err => {
+                CustomToast("danger", err.message);
+            }
+        )
+    };
 
     useEffect(() => {
+
         if(dataSelected != null){
             if(active === 'agent'){
-                achievementBadgeAgent();
+                getTrophyDataAgent();
             }else{
-                achievementBadgeWorkunit();
+                getTrophyDataWorkunit();
             }
         }
 
-        return(() => {setAchievement(null);})
-    }, [isAchievementVisible])
+    }, [isDetailTrophyVisible]);
 
     return (
         <>
             <ModalBase
-                show        = {isAchievementVisible}
+                show        = {isDetailTrophyVisible}
                 size        = "lg"
-                title       = {`Achievement Badge ${active === 'agent' ? 'Personal' : 'Satuan Kerja'}`}
-                setShow     = {(par) => { setIsAchievementVisible(par)}} 
+                title       = {`Detail Trophy ${active === 'agent' ? 'Personal' : 'Satuan Kerja'}`}
+                setShow     = {(par) => { setIsDetailTrophyVisible(par)}} 
             >
                 {
-                    achievement != null ? 
-                        achievement.length > 0 ?
+                    trophy != null ? 
+                        trophy.length > 0 ?
                             <Table responsive>
                                 <thead>
                                     <tr>
-                                        <th>Badge</th>
+                                        <th>Trophy</th>
                                         <th>Judul</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {
-                                        achievement.map((data) => (
+                                        trophy.map((data) => (
                                             <tr className='table-default'>
                                                 <td>
-                                                    <img className='me-50' src={active === 'agent' ? data.oldBadge : data.badge } alt={data.kind} height='80' width='80' />
+                                                    <img className='me-50' src={data.trophy_detail.icon } alt={data.trophy_detail.icon_name} height='80' width='80' />
                                                 </td>
                                                 <td>
-                                                    <span className='align-middle fw-bold'>{data.title}</span>
+                                                    <span className='align-middle fw-bold'>{data.trophy_detail.note}</span>
                                                 </td>
                                             </tr>
                                         ))
@@ -114,12 +111,13 @@ const AchievementBadge = () => {
                         :
                             <CustomTableBodyEmpty/>
                     :
-                        <Skeleton height={60} count={3} style={{ marginBottom: "10px" }} />
+                        <Skeleton height={60} count={3} style={{ marginBottom: "10px" }} /> 
                 }
 
             </ModalBase>
         </>
     )
-}
 
-export default AchievementBadge
+};
+
+export default DetailTrophy;

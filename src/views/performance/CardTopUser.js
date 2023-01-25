@@ -1,14 +1,12 @@
+import { useContext, useState } from "react"
+
 import { Card, CardBody, Col, Row } from "reactstrap"
 import AvatarPerformance from "../../components/widgets/avatar-performance"
 import avatarImg from '@src/assets/images/portrait/small/150x150.png'
-import defaultBadge from '@src/assets/images/achievement_icon/badges.png'
 import ChartArea from "./ChartArea"
 import "./Performance.scss"
 import Helper from "../../helpers"
-import { useContext, useState } from "react"
-import defaultAvatar from "../../components/widgets/default-image/DefaultAvatar"
 import { PerformanceContext } from "../../context/PerformanceContext"
-import Avatar from "../../components/widgets/avatar"
 
 
 const CardTopUser = (props) => {
@@ -26,6 +24,7 @@ const CardTopUser = (props) => {
         getWorkunitDetail,
         setIsAchievementVisible,
         setIsDetailViewerVisible,
+        setIsDetailTrophyVisible,
     }                                            = useContext(PerformanceContext)
 
     const getImage = () => {
@@ -93,7 +92,7 @@ const CardTopUser = (props) => {
                     </Row>
                 </div>
 
-                <Row>
+                <Row className="my-1">
                     {
                         data.achievement ? 
                             data.achievement.map((achievement, index) => (
@@ -101,10 +100,13 @@ const CardTopUser = (props) => {
                                     md      = {4} 
                                     key     = {index}
                                     onClick = {() => {
-                                        index === 1 ?
+                                        index === 0 ?
                                             setIsAchievementVisible(true)
                                         :
-                                            setIsDetailViewerVisible(true)
+                                            index === 1 ?
+                                                setIsDetailViewerVisible(true)
+                                            :
+                                                setIsDetailTrophyVisible(true)
                                     }}
                                 >
                                     <img 
@@ -118,7 +120,37 @@ const CardTopUser = (props) => {
                                 </Col>
                             )) 
                         : 
-                            <div style={{ height:"50px"}}></div> 
+                            <>
+                                <Col md={4} onClick={()=>{setIsAchievementVisible(true)}}>
+                                    <img
+                                        src     = {avatarImg}
+                                        width   = {50}
+                                        height  = {50}    
+                                        className = "rounded"
+                                    >
+                                    </img>
+                                </Col> 
+                                <Col md={4} onClick={()=>{setIsDetailViewerVisible(true)}}>
+                                    <img
+                                        src     = {avatarImg}
+                                        width   = {50}
+                                        height  = {50}   
+                                        className = "rounded"
+                                    >
+                                    </img>
+                                </Col> 
+                                <Col md={4} onClick={()=>{setIsDetailViewerVisible(true)}}>
+                                    <img
+                                        src     = {avatarImg}
+                                        width   = {50}
+                                        height  = {50}   
+                                        className = "rounded"
+
+                                    >
+                                    </img>
+                                </Col> 
+                            </>
+
                     }
                 </Row>
                 <Row className="text-center">
@@ -128,15 +160,13 @@ const CardTopUser = (props) => {
                         </small><br />
                         <small className="mt-0"> Berita</small>
                     </Col>
-                    <Col onClick ={() => {setIsDetailViewerVisible(true)
-}}>
+                    <Col onClick ={() => {setIsDetailViewerVisible(true)}}>
                         <small className="mb-0 ">
                             {data.performance.total_viewer}
                         </small> <br />
                         <small className="mt-0"> Viewer</small>
                     </Col>
-                    <Col>
-
+                    <Col onClick ={() => {setIsDetailTrophyVisible(true)}}>
                         <small className="mb-0 mt-1">
                             {data.performance.total_trophy}
                         </small><br />

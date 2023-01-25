@@ -11,6 +11,8 @@ import { PerformanceContext }                       from "../../context/Performa
 import DescriptionDetailAgent                       from "./DescriptionDetailAgent"
 import DescriptionDetailWorkunit                    from "./DescriptionDetailWorkunit"
 import FormDeduction                                from "./FormDeduction"
+import avatarImg from '@src/assets/images/portrait/small/150x150.png'
+
 
 const CardDetails = (props) => {
 
@@ -18,7 +20,9 @@ const CardDetails = (props) => {
         active, 
         dataDetail,
         dataSelected, 
-        setIsAchievementVisible
+        setIsViewerVisible,
+        setIsTrophyVisible,
+        setIsAchievementVisible,
     }                                          = useContext(PerformanceContext)
 
     const {getRoleByMenuStatus}                = Helper;
@@ -112,7 +116,36 @@ const CardDetails = (props) => {
                                     </Col>
                                 )) 
                             : 
-                                <div style={{ height:"50px"}}/>
+                                <>
+                                    <Col md={4} onClick={()=>{setIsAchievementVisible(true)}}>
+                                        <img
+                                            src     = {avatarImg}
+                                            width   = {50}
+                                            height  = {50}    
+                                            className = "rounded text-center my-1 cursor-pointer"
+                                        >
+                                        </img>
+                                    </Col> 
+                                    <Col md={4} onClick={()=>{setIsDetailViewerVisible(true)}}>
+                                        <img
+                                            src     = {avatarImg}
+                                            width   = {50}
+                                            height  = {50}   
+                                            className = "rounded text-center my-1 cursor-pointer"
+                                        >
+                                        </img>
+                                    </Col> 
+                                    <Col md={4} onClick={()=>{setIsDetailViewerVisible(true)}}>
+                                        <img
+                                            src     = {avatarImg}
+                                            width   = {50}
+                                            height  = {50}   
+                                            className = "rounded text-center my-1 cursor-pointer"
+
+                                        >
+                                        </img>
+                                    </Col> 
+                                </>
                         }
                     </Row>
 
