@@ -184,7 +184,7 @@ const Profile = (props) => {
                                                                 data.is_active === true ?
                                                                     <Fragment>
                                                                         <img 
-                                                                            src         = {data.oldBadge != "" ? data.oldBadge : null}
+                                                                            src         = {data.badge != "" ? data.badge : null}
                                                                             alt         = {'Profile Pic'} 
                                                                             style       = {{width: '65px', height: '65px', borderRadius: '50%'}} 
                                                                             onError     = {fallbackImage_}
@@ -200,7 +200,7 @@ const Profile = (props) => {
                                                                     </Fragment>
                                                                 : 
                                                                     <img 
-                                                                        src         = {data.oldBadge != "" ? data.oldBadge : null}
+                                                                        src         = {data.badge != "" ? data.badge : null}
                                                                         alt         = {'Profile Pic'} 
                                                                         style       = {{width: '65px', height: '65px', borderRadius: '50%'}} 
                                                                         onError     = {fallbackImage_}

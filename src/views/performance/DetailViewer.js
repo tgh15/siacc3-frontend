@@ -147,7 +147,7 @@ const DetailViewer = () => {
                                                     <a href={`/beranda/detail/${data.id}`} target="_blank">
                                                         {data.title}
                                                     </a>
-                                                    {/* <img className='me-50' src={data.oldBadge} alt={data.kind} height='80' width='80' /> */}
+                                                    {/* <img className='me-50' src={data.badge} alt={data.kind} height='80' width='80' /> */}
                                                 </td>
                                                 <td>
                                                     {data.viewer_count}

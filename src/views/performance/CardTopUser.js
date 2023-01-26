@@ -107,7 +107,7 @@ const CardTopUser = (props) => {
                                     }}
                                 >
                                     <img 
-                                        src         = {achievement.oldBadge} 
+                                        src         = {achievement.badge} 
                                         alt         = 'latest-photo' 
                                         width       = {50}
                                         height      = {50}    
@@ -136,7 +136,7 @@ const CardTopUser = (props) => {
                                     >
                                     </img>
                                 </Col> 
-                                <Col md={4} onClick={()=>{setIsDetailViewerVisible(true)}}>
+                                <Col md={4} onClick={()=>{setIsDetailTrophyVisible(true)}}>
                                     <img
                                         src     = {avatarImg}
                                         width   = {50}

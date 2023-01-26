@@ -74,7 +74,7 @@ const ChangeBadge = (props) => {
                                         </div>
                                         <div className="box-badge">
                                             <img 
-                                                src         = {data.oldBadge != "" ? data.oldBadge : null}
+                                                src         = {data.badge != "" ? data.badge : null}
                                                 alt         = {'Profile Pic'} 
                                                 style       = {{width: '80px', height: '77px', marginTop: '7px', borderRadius: '10px'}} 
                                                 className   = "img-fluid"

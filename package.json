@@ -1,6 +1,6 @@
 {
   "name": "redesign-siacc-ui",
-  "version": "0.2.0", 
+  "version": "0.2.0",
   "private": true,
   "dependencies": {
     "@antmedia/webrtc_adaptor": "^2.4.2-SNAPSHOT",

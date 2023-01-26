@@ -112,7 +112,7 @@ const CardDetails = (props) => {
                                         onClick     = {() => {(index === 0 && active === 'agent') && setIsAchievementVisible(true)}}
                                         className   = "text-center my-1 cursor-pointer"
                                     >
-                                        <ImageRounded src={achievement.oldBadge} width={50} />
+                                        <ImageRounded src={achievement.badge} width={50} />
                                     </Col>
                                 )) 
                             : 

@@ -101,7 +101,7 @@ const AchievementBadge = () => {
                                         achievement.map((data) => (
                                             <tr className='table-default'>
                                                 <td>
-                                                    <img className='me-50' src={active === 'agent' ? data.oldBadge : data.badge } alt={data.kind} height='80' width='80' />
+                                                    <img className='me-50' src={data.badge } alt={data.kind} height='80' width='80' />
                                                 </td>
                                                 <td>
                                                     <span className='align-middle fw-bold'>{data.title}</span>
