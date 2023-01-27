@@ -256,11 +256,18 @@ const PerformanceProvider = ({ children }) => {
             params: params,
             onSuccess: (res) => {
                 if(!res.is_error){
-                    setListData(res.data.agent_performance)
-                    if (res.data.agent_performance.length > 0) {
-                        setDataSelected(res.data.agent_performance ? res.data.agent_performance[0] : null)
-                        getAgentDetail(res.data.agent_performance ? res.data.agent_performance[0].uuid : null)
-                        getAgentPoints(1, res.data.agent_performance[0].uuid)
+                    if(res.data.agent_performance != null){
+                        setListData(res.data.agent_performance)
+                        if (res.data.agent_performance.length > 0) {
+                            setDataSelected(res.data.agent_performance ? res.data.agent_performance[0] : null)
+                            getAgentDetail(res.data.agent_performance ? res.data.agent_performance[0].uuid : null)
+                            getAgentPoints(1, res.data.agent_performance[0].uuid)
+                        }else{
+                            setDataSelected(null);
+                        }
+                    }else{
+                        setListData(null);
+                        setDataSelected(null);
                     }
                 }else{
                     CustomToast("danger", res.message);
@@ -346,7 +353,8 @@ const PerformanceProvider = ({ children }) => {
     const getAgentDetail = (uuid) => {
         setDataDetail(null)
         let datas = {
-            uuid: uuid
+            uuid    : uuid,
+            year    : year
         }
 
         PerformanceApi.getAgetDetail({
@@ -363,7 +371,9 @@ const PerformanceProvider = ({ children }) => {
     const getWorkunitDetail = (uuid) => {
         setDataDetail(null)
         let datas = {
-            id: uuid
+            id      : uuid,
+            year    : year
+
         }
 
         PerformanceApi.getWorkunitDetail({

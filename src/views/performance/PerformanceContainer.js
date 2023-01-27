@@ -208,9 +208,10 @@ const PerformanceContainer = () => {
 
                         </Col>
                         <Col md="4" sm="12">
+                            {console.log(dataSelected === null, 'data selected')}
                             {dataSelected && <CardDetails/>}
-                            {!dataSelected && dataSelected != null && <Skeleton style={{ height: "660px" }} />}
-                            {!dataSelected && dataSelected == null && <CustomTableBodyEmpty />}
+                            {(!dataSelected && dataSelected != null) && <Skeleton style={{ height: "660px" }} /> }
+                            {!dataSelected && dataSelected == null && <CustomTableBodyEmpty/>}
                         </Col>
                     </Row>
                 :

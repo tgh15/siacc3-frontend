@@ -35,6 +35,8 @@ export const Linechart = (props) => {
         detailChartAction, 
     } = props;
 
+    console.log(props, 'props')
+
     const [chartData, setChartData] = useState({
         labels: [0, 10, 20, 30, 40, 50, 60, 70, 80],
         datasets: [
@@ -104,7 +106,6 @@ export const Linechart = (props) => {
     };
 
     const getChartData = () => {
-
         const formData = {
             type              : data.body.type,
             chart             : data.body.chart,

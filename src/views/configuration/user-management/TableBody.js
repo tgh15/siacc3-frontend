@@ -51,7 +51,7 @@ const TableBody = props => {
         } else if (data && data.type === "connected") {
             return <Key size={20} className="cursor-pointer text-success" onClick={() => { setDeviceSelected(data);setDataSelected(data.biodata); SetModalDeviced(true) }} />
         } else if (data && data.type === "requested") {
-            return <Key size={20} className="cursor-pointer text-primary" onClick={() => { setDeviceSelected(data); setDataSelected(data.biodata); setModalChangeRequest(true); }} />
+            return <Key size={20} className="cursor-pointer text-danger" onClick={() => { setDeviceSelected(data); setDataSelected(data.biodata); setModalChangeRequest(true); }} />
         }
     }
 
@@ -132,7 +132,7 @@ const TableBody = props => {
                     </Media>
                 </Col>
                 <Col md="2">
-                    {/* {data.user_group ? data.user_group[0].name : null} */}
+                    {data.user_group && data.user_group[0] ? data.user_group[0]?.name : null}
                 </Col>
                 <Col 
                     md        = "2" 
