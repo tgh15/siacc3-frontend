@@ -586,8 +586,8 @@ export const processAgentReports = async(agentReports, commentsPage) => {
             };
 
             let bodyText     = `${when}, telah terjadi ${what}, bertempat di ${where} ${who}. Kejadian ini terjadi karena ${why}, ${how}`
-            const userAvatar = (work_photo) || `https://ui-avatars.com/api/?name=${ title ? title : "AN"}&background=4e73df&color=fff&bold=true`
-            const avatars    = <Avatar img={userAvatar} style={{marginRight:"8px"}}/>
+            // const userAvatar = (work_photo) || `https://ui-avatars.com/api/?name=${ title ? title : "AN"}&background=4e73df&color=fff&bold=true`
+            // const avatars    = <Avatar img={userAvatar} style={{marginRight:"8px"}}/>
             feeds = {
                 id              : ar_id,
                 title           : title,
@@ -604,7 +604,7 @@ export const processAgentReports = async(agentReports, commentsPage) => {
                 newsType        : newsType == 2 ? "nasional" : "lokal",
                 publish_date    : publish_date,
                 time_update     : time_update,
-                imgAvatar       : avatars,
+                imgAvatar       : "avatars",
                 viewCount       : viewCount,
                 nodropdown      : null,
                 feedsTitle      : feedsTitle,

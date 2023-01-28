@@ -70,13 +70,13 @@ const ModalForm = (props) => {
     const [AuthGroupOptions, setAuthGroupOptions]   = useState(false);
 
     const { 
-            errors, 
-            control, 
-            register, 
-            setValue, 
-            setError, 
-            clearErrors,
-            handleSubmit, 
+        errors, 
+        control, 
+        register, 
+        setValue, 
+        setError, 
+        clearErrors,
+        handleSubmit, 
     } = useForm(
         { 
             mode: "onChange", resolver: yupResolver(
@@ -446,7 +446,7 @@ const ModalForm = (props) => {
                             sm = "12"
                         >
                             <FormGroup>
-                                <Label for='satker'>Satuan Kerja</Label>
+                                <Label for='workunit_id'>Satuan Kerja</Label>
                                 <div id="user-manajement-satker">
                                     <Controller
                                         name    = "workunit_id"

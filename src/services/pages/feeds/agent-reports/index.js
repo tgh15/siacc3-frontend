@@ -22,7 +22,7 @@ const getAgentReportByStatus      = (data, page, search)        => page == undef
                                                                             Post(`${feedsURL.feedsPrefix}/${feedsURL.feedsAgentReport}/${feedsURL.feedsAgentReportByStatus}?page=${page}&keyword=${search}`, data);
 const getAgentReportByCategory    = (data, page)                => page == undefined ? Post(`${feedsURL.feedsPrefix}/${feedsURL.feedsAgentReport}/${feedsURL.feedsGetByCategory}`, data) : Post(`${feedsURL.feedsPrefix}/${feedsURL.feedsAgentReport}/${feedsURL.feedsGetByCategory}?page=${page}`, data);
 const getAgentReportBySelected    = (data, page)                => page == undefined ? Post(`${feedsURL.feedsPrefix}/${feedsURL.feedsAgentReport}/${feedsURL.feedsGetBySelected}`, data) : Post(`${feedsURL.feedsPrefix}/${feedsURL.feedsAgentReport}/${feedsURL.feedsGetBySelected}?page=${page}`, data);
-const getAgentReportByWorkunit    = (data)                      => Post(`${feedsURL.feedsPrefix}/${feedsURL.feedsAgentReport}/${feedsURL.feedsByWorkunit}`, data); 
+const getAgentReportByWorkunit    = (data, param)               => Post(`${feedsURL.feedsPrefix}/${feedsURL.feedsAgentReport}/${feedsURL.feedsByWorkunit}`, data, param); 
 
 
 //Share Agent Report

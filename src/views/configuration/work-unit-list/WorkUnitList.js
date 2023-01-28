@@ -68,9 +68,9 @@ const WorkUnitList = (props) => {
     const params = useRef({
         page              : 1,
         keyword           : "",
-        workunit_level_id : 0,
+        id_list           : [],
         order_by          : "latest",
-        id_list           : []
+        workunit_level_id : 0,
     })
 
     //Props

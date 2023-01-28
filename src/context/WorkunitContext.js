@@ -1,6 +1,5 @@
 import React, { createContext, useState, useEffect, useMemo }  from 'react';
 import { workunitAPI }                                         from '../services/pages/configuration/workunit';
-// import { error_handler }                                       from '../utils/error_handler';
 
 export const WorkunitContext    = createContext();
 
@@ -20,7 +19,6 @@ export const WorkunitProvider   =  ({ children }) => {
                 }                  
             },
             err => {
-                // error_handler(err, 'workunit');
                 console.log('workunitContext', err);
             }
         );

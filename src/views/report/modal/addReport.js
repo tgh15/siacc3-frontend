@@ -243,6 +243,8 @@ const FormReport = (props) => {
         let _newOrder   = [];
         let _newFilter  = [];
 
+        console.log(data, 'formData Laporan');
+
         //check is report formatted or note
         if(isFormat){
             // if formatted then check what format type
@@ -515,7 +517,7 @@ const FormReport = (props) => {
                 formData.work_unit_id           = data.workunit_level_4.map((data) => data.value).toString();
                 formData.work_unit_parent_id    = data.workunit_level_3.value;
             }
-            onSubmit({model : formData});
+            // onSubmit({model : formData});
         }else{
             if(data.content != null && data.content.filter(e => parseInt(e.value) === 1).length > 0){
                 if(data.content.filter(e => parseInt(e.value) >= 10 && parseInt(e.value) <= 17).length > 0){

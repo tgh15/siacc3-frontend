@@ -184,12 +184,16 @@ const Detail = ({ match }) => {
 
     //Get agent report by workunit
     const getAgentReportByWorkunit = (page) => {
+
+        const params = {
+            page        : page
+        }
+
         const formData = {
-            page        : page,
             workunit_id : parseInt(match.params.id)
         };
 
-        feedsAgentReportAPI.getAgentReportByWorkunit(formData).then(
+        feedsAgentReportAPI.getAgentReportByWorkunit(formData, params).then(
             res => {
                 if (!res.is_error) {
                     if (res.data.agent_report == null) {

@@ -23,8 +23,8 @@ import CustomToast                              from "../../components/widgets/c
 import Skeleton                                 from "react-loading-skeleton";
 import { AntmediaContext }                      from "../../context/AntmediaContext";
 import Helper                                   from "../../helpers";
-import CustomTableBodyEmpty from "../../components/widgets/custom-table/CustomTableBodyEmpty";
-import FormDelete from "../../components/widgets/form-delete/FormDelete";
+import CustomTableBodyEmpty                     from "../../components/widgets/custom-table/CustomTableBodyEmpty";
+import FormDelete                               from "../../components/widgets/form-delete/FormDelete";
 
 const VideoStreamingDetail = () => {
     
@@ -51,7 +51,6 @@ const VideoStreamingDetail = () => {
         getDuration,
         fallbackImage_
     }                                           = Helper;
-
 
     const getCommentVideoStream = () => {
         const params = {
@@ -88,7 +87,7 @@ const VideoStreamingDetail = () => {
 
         VideoStreamingAPI.VideoStreamingList(params).then(
             res => {
-                if(res.is_error === false){
+                if(!res.is_error){
                     setDetailData(res.data);
 
                     if(webRTCAdaptorPeer === null && res.data.broadcast.status !== 'finished'){

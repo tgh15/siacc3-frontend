@@ -222,7 +222,6 @@ const Report = (props) => {
         if(detailResults != null && detailResults.result != null){
             detailResults.result.map((data,index) => (
                 <>
-
                     {_sum      = 0}
                     {_bodyData = []}
                     {_bodyData.push((index+1).toString())}
@@ -259,7 +258,6 @@ const Report = (props) => {
                     {_body.push(_bodyData)}
                 </>
             ))
-
             setBody([..._body]);
         }
     }
@@ -327,7 +325,6 @@ const Report = (props) => {
 
         return doc;
     };
-
     const createFormatPDF = () => {
         let doc = new jsPDF({
             orientation: "landscape",
@@ -748,21 +745,6 @@ const Report = (props) => {
                     description = "Laporan"
                 />
 
-                {/* modal form */}
-                {/* <ModalBase 
-                    size    = "lg" 
-                    show    = {props.showForm} 
-                    title   = "Tambah Laporan" 
-                    setShow = {(par) => { props.setShowForm(par) }}
-                >
-                    <TourInput
-                        loading         = {props.loading}
-                        onCancel        = {() => { props.setShowForm(!props.showForm) }}
-                        onSubmit        = {props.onSubmit}
-                        reportCategory  = {props.reportCategory}
-                    />
-                </ModalBase> */}
-
                 {/* modal detail report */}
                 <ModalBase 
                     size    = "lg" 
@@ -951,11 +933,13 @@ const Report = (props) => {
                         }
                     </div>
 
-                    {!props.report && props.report != null && <Skeleton height={60} count={3} style={{ marginBottom: "10px" }}/>}
-                    {!props.report && props.report === null && <CustomTableBodyEmpty/>}
+                    {props.report == null && <Skeleton height={60} count={3} style={{ marginBottom: "10px" }}/>}
+                    {props.report != null && props.report.length === 0 && <CustomTableBodyEmpty/>}
                 </CustomTable>
+
             </Fragment>
-        : <CustomTableNotAuthorized/>
+        : 
+            <CustomTableNotAuthorized/>
     );
 };
 

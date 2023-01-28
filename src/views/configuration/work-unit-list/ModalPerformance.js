@@ -79,45 +79,53 @@ const ModalPerformance = props => {
     return (
         <div>
             <ModalBase
-                show={show}
-                setShow={() => onClose()}
-                title={type == "agent" ? "Daftar Agent dan Peringkat" : "Daftar Kejari & Kejari Serta Peringkat"}
-                size='lg'
-                onOpened={() => {
-                    getData()
-                }}
+                size        = 'lg'
+                show        = {show}
+                title       = {type == "agent" ? "Daftar Agent dan Peringkat" : "Daftar Kejari & Kejari Serta Peringkat"}
+                setShow     = {() => onClose()}
+                onOpened    = {() => {getData()}}
             >
-                {datas.loading ?
-                    <Skeleton count={3} style={{ height: "100px" }} /> :
+                {
                     datas.data != null ?
-                        <PerfectScrollbar style={{ maxHeight: "550px" }}>
-                            {datas.data.map((item, index) => (
-                                <CardPerformance 
-                                    data={item} 
-                                    index={index} 
-                                    type={type} 
-                                    pagination={datas.pagination} />
-                            ))}
-                        </PerfectScrollbar>
-                        : null
+                        <Row className="d-flex">
+                            <CustomTablePaginate
+                                offsetSearch    = {9}
+                                size            = {3}
+                                pagination      = {datas.pagination}
+                                onNext          = {() => {
+                                    page.current = page.current + 1;
+                                    getData()
+                                }}
+                                onPrev          = {() => {
+                                    page.current = page.current - 1;
+                                    getData()
+                                }}
+                            />
+                        </Row> 
+                    : 
+                        null
                 }
 
-                {datas.data != null ?
-                    <Row className="d-flex">
-                        <CustomTablePaginate
-                            offsetSearch={9}
-                            size={3}
-                            pagination={datas.pagination}
-                            onNext={() => {
-                                page.current = page.current + 1;
-                                getData()
-                            }}
-                            onPrev={() => {
-                                page.current = page.current - 1;
-                                getData()
-                            }}
-                        />
-                    </Row> : null}
+                {
+                    datas.loading ?
+                        <Skeleton count={3} style={{ height: "100px" }} /> 
+                    :
+                        datas.data != null ?
+                            <PerfectScrollbar>
+                                {
+                                    datas.data.map((item, index) => (
+                                        <CardPerformance 
+                                            data        = {item} 
+                                            type        = {type} 
+                                            index       = {index} 
+                                            pagination  = {datas.pagination} 
+                                        />
+                                    ))
+                                }
+                            </PerfectScrollbar>
+                        : 
+                            null
+                }
             </ModalBase>
         </div>
     )

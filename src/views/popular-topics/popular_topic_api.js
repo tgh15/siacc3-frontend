@@ -21,7 +21,7 @@ import feedsBerandaAgentReport  from '../../services/pages/feeds/beranda/url';
 const PopularTopicAPI = () => {
     //State
     const [loading, setLoading]                     = useState(true);
-    const [reportAgent, setReportAgent]             = useState([]);
+    const [reportAgent, setReportAgent]             = useState(null);
     const [trendingType, setTrendingType]           = useState('national');
     const [trendingFilter, setTrendingFilter]       = useState('daily');
     const [selectedWorkunit, setSelectedWorkunit]   = useState(0);
@@ -36,7 +36,7 @@ const PopularTopicAPI = () => {
     };
 
     const getReportAgentsAPI = () => {
-
+        setReportAgent(null);
         setLoading(true);
 
         let formData;

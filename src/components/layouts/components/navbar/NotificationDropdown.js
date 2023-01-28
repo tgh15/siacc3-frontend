@@ -69,11 +69,9 @@ const NotificationDropdown = () => {
   const renderNotificationItems = () => {
     return (
       <PerfectScrollbar
-        component='li'
-        className='media-list scrollable-container'
-        options={{
-          wheelPropagation: false
-        }}
+        options   = {{wheelPropagation: false}}
+        component = 'li'
+        className = 'media-list scrollable-container'
       >
         {notifications && notifications.map((item, index) => {
           return (
@@ -85,7 +83,7 @@ const NotificationDropdown = () => {
                 })}
               >
                 <Media left>
-                  <Avatar onError={fallbackImage_} img={item.icon} />
+                  <Avatar onError={fallbackImage_} img={item.icon}/>
                 </Media>
 
                 <Media body>
