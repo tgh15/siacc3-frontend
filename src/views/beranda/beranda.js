@@ -58,7 +58,7 @@ const Beranda = (props) => {
     const [filteredState,setFilteredState]         = useState({});
     const [loadDataFeeds,setLoadDataFeeds]         = useState(true);
     const [loadingApprove,setLoadingApprove]       = useState(false);
-    const [trendingReport, setTrendingReport]      = useState([]);
+    const [trendingReport, setTrendingReport]      = useState(null);
     const [refreshApproved,setRefreshApproved]     = useState(true);
     const [trophyPagination, setTrophyPagination]  = useState(null);
     
@@ -79,10 +79,11 @@ const Beranda = (props) => {
     };
 
     const filtered = (opt) => {
-        setFeed(null);
         setFilter(true);
+        setFeed(null);
         setFilteredState(opt);
         setLoadDataFeeds(true);
+        setPage(1);
     };
 
     const handleStore = (stored_data, resps) => {
@@ -170,7 +171,7 @@ const Beranda = (props) => {
         }
     },[selector, refreshApproved]);
 
-    useEffect(() => {                                                        
+    useEffect(() => {       
         try {
             if(!filter && loadDataFeeds && !loadingFeeds) {
                 getAgentReportData();
@@ -190,20 +191,23 @@ const Beranda = (props) => {
 
                     let next = res.response.pagination.has_next;
 
-                    setHasNext(next);
                     setFeed([...feed_]);
+                    setHasNext(next);
 
                 }).catch(err => {
                     console.log(err, 'err filter beranda')
-                    setLoadingFeeds(false);
                     setFeed([]);
                     CustomToast("danger", "Gagal memuat berita");
+                    setLoadingFeeds(false);
                 })
             }
         }catch(err){
             console.log("err",err);
         }
-    },[selector, loadDataFeeds, page, filteredState]);
+
+        console.log(loadingFeeds, 'loading Feeds', filter, 'filter')
+
+    },[selector, loadDataFeeds, page]);
 
     return (
         <Fragment>
@@ -214,7 +218,7 @@ const Beranda = (props) => {
                     sm = "12"
                 >
                     <InfiniteScroll
-                        next        = {() => {setPage(prev => prev+1)}}
+                        next        = {() => {setPage(prev => prev+1); setLoadDataFeeds(true)}}
                         style       = {{ overflowX: 'hidden' }}
                         loader      = {<h4 className='text-center'>Loading...</h4>}
                         hasMore     = {hasNext}
@@ -259,7 +263,6 @@ const Beranda = (props) => {
                                             feeds               = {feed}
                                             handleStore         = {handleStore}
                                             trophyPagination    = {trophyPagination}
-                                            // getAgentReportData  = {getAgentReportData}
                                         />
                                     ) 
                                 :
@@ -268,7 +271,6 @@ const Beranda = (props) => {
                                         feeds               = {feed}
                                         handleStore         = {handleStore}
                                         trophyPagination    = {trophyPagination}
-                                        // getAgentReportData  = {getAgentReportData}
                                     />
                             :
                                 <CustomTableNotAuthorized/>
@@ -325,7 +327,7 @@ const Beranda = (props) => {
                                 style       = {{alignContent:"center"}}
                                 className   = "d-flex justify-content-center" 
                             >
-                                <Spinner/>
+                                <FeedSkeleton count={2}/>
                             </div>
                         </Col>
                     : 

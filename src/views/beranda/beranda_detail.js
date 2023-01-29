@@ -24,6 +24,7 @@ import { FeedsApprovedNewsCard }                from "../../components/widgets/f
 import CustomToast from "../../components/widgets/custom-toast";
 import moment from "moment";
 import feedsBerandaAgentReport from "../../services/pages/feeds/beranda/url";
+import FeedSkeleton from "../../components/widgets/feed-skeleton/FeedSkeleton";
 
 
 
@@ -35,8 +36,8 @@ const BerandaDetail = () => {
     const [loading, setLoading]                     = useState(false);
     const [approveds,setApproveds]                  = useState(null);
     const [detailNews, setDetailNews]               = useState(null);
-    const [trendingReport, setTrendingReport]      = useState([]);
     const [loadingApprove,setLoadingApprove]        = useState(false);
+    const [trendingReport, setTrendingReport]       = useState(null);
     const [refreshApproved,setRefreshApproved]      = useState(true);
 
     
@@ -147,7 +148,7 @@ const BerandaDetail = () => {
                             />
                         :
                             <div className="text-center">
-                                <Spinner/>
+                                <FeedSkeleton count={1}/>
                             </div>
                     }
                 </Col>

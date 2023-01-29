@@ -6,7 +6,7 @@ import Helper                   from '../../helpers';
 
 export function FeedWrapper(props) {
     
-    let {feeds, handleStore, getAgentReportData} = props;
+    let {feeds, handleStore} = props;
 
     const {getRoleByMenuStatus}     = Helper;
 
@@ -22,7 +22,6 @@ export function FeedWrapper(props) {
                                         key                     = {`news-feed-page-${news.id}-${index}`}
                                         data                    = {news}
                                         handleStore             = {(newss,data) => {handleStore(newss,data)}}
-                                        getAgentReportData      = {getAgentReportData}
 
                                         //Role
                                         roleLike                = {getRoleByMenuStatus('Beranda', 'like')}

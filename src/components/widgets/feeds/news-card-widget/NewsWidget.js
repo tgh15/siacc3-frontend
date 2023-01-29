@@ -84,9 +84,6 @@ export const NewsWidget = (props) => {
         selected_check,
         self_selected_check,
 
-        //api
-        // getAgentReportData,
-
         //Role
         roleLike,            
         roleViewer, 

@@ -10,6 +10,7 @@ import {
 import { useHistory }           from 'react-router-dom';
 import CustomTableBodyEmpty     from '../../custom-table/CustomTableBodyEmpty';
 import { ApprovedNewsWidget }   from './Approve';
+import FeedSkeleton from '../../feed-skeleton/FeedSkeleton';
 
 
 export const FeedsApprovedNewsCard = (props) => {
@@ -56,7 +57,7 @@ export const FeedsApprovedNewsCard = (props) => {
                             }) 
                         :
                             <div className="text-center">
-                                <Spinner/>
+                                <FeedSkeleton count={2}/>
                             </div>
                     }
                 </CardBody>

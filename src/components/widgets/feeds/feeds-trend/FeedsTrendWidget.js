@@ -11,10 +11,11 @@ import { useHistory }       from 'react-router';
 import { NewsWidget }       from '../news-card-widget';
 import CustomTableBodyEmpty from '../../custom-table/CustomTableBodyEmpty';
 import Helper               from '../../../../helpers';
+import FeedSkeleton from '../../feed-skeleton/FeedSkeleton';
 
 export const FeedsTrendWidget = (props) => {
 
-    let {reportTrending, handleStore, getAgentReportData} = props;
+    let {reportTrending, handleStore} = props;
 
     const {getRoleByMenuStatus}     = Helper;
 
@@ -48,7 +49,6 @@ export const FeedsTrendWidget = (props) => {
                                         key                     = {`report_trending_${news.id}-${index}`}
                                         data                    = {news}
                                         handleStore             = {(newss,data) => {handleStore(newss,data)}}
-                                        // getAgentReportData      = {getAgentReportData}
 
                                         //Role
                                         roleLike                = {getRoleByMenuStatus('Beranda', 'like')}
@@ -60,7 +60,8 @@ export const FeedsTrendWidget = (props) => {
                                 )) 
                             :
                                 <CustomTableBodyEmpty/>
-                        : <Spinner/>
+                        : 
+                            <FeedSkeleton count={2}/>
                     }
                 </CardBody>
             </Card>
