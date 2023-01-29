@@ -173,10 +173,11 @@ const MessageDropdown = () => {
         <Fragment>
             {/* modal select single user */}
             <SelectSingleUser
-                show={modalPersonal}
-                setShow={(par) => setModalPersonal(par)}
-                title="Komunikasi Baru"
-                onSelect={(user) => onSelectPersonal(user.uuid)} />
+                show        = {modalPersonal}
+                title       = "Komunikasi Baru"
+                setShow     = {(par) => setModalPersonal(par)}
+                onSelect    = {(user) => onSelectPersonal(user.uuid)} 
+            />
 
             {/* modal new chat group */}
             <SelectMultipleUser

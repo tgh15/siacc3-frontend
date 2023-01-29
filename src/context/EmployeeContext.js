@@ -8,9 +8,10 @@ import userManagementAPI from "../services/pages/configuration/user-management/U
 const EmployeeContext = createContext(null)
 
 const EmployeeProvider = ({ children }) => {
-    const [leader, setLeader]               = useState(null);
-    const [employees, setEmployees]         = useState([])
-    const [employeesList, setEmployeesList] = useState(null);
+    const [leader, setLeader]                   = useState(null);
+    const [employees, setEmployees]             = useState([])
+    const [employeesList, setEmployeesList]     = useState(null);
+    const [employeesFilter, setEmployessFilter] = useState(null);
 
     const getEmployees = () => {
 
@@ -36,6 +37,34 @@ const EmployeeProvider = ({ children }) => {
     
     }
 
+    const getEmployeesWithKeyword = (keyword) => {
+
+        setEmployessFilter(null);
+
+        const params = {
+            limit  : 20,
+            keyword : keyword
+        }
+
+        userManagementAPI.getUserManagement(params).then(
+            res => {
+                if(!res.is_error){
+                    if(res.data.employee != null){
+                        setEmployessFilter(res.data.employee);
+                    }else{
+                        setEmployessFilter([]);
+                    }
+                }else{
+                    CustomToast('danger', 'Terjadi Kesalahan.');
+                }
+            },
+            err => {
+                CustomToast('danger', 'Terjadi Kesalahan.');
+                console.log(err, 'console log error');
+            }
+        )
+    }
+
     const getLeader = () => {
         UserManagementApi.leaderList({
             onSuccess: (res) => {
@@ -52,6 +81,7 @@ const EmployeeProvider = ({ children }) => {
         if (localStorage.getItem("userData")) {
             getEmployees();
             getLeader();
+            getEmployeesWithKeyword();
         }
 
         return(() => {
@@ -66,7 +96,12 @@ const EmployeeProvider = ({ children }) => {
             leader,
             setLeader,
             employeesList,
-            setEmployeesList
+            setEmployeesList,
+
+            employeesFilter,
+            setEmployessFilter,
+            
+            getEmployeesWithKeyword,
         }}>{children}</EmployeeContext.Provider>
 
 }
