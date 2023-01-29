@@ -162,7 +162,9 @@ export const TopComponentFileManager = ({ show, setProgress }) => {
                     setUrlApiActive();
                     setBreadcums({ type: "create", name: "Semua File", url: "" });
                 }
-            }, onFail: (err) => {}
+            }, onFail: (err) => {
+                console.log(err, 'drive upload error')
+            }
         })
     };
 

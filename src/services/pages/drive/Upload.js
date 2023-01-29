@@ -16,7 +16,7 @@ const Upload = ({ file, dir, onSuccess, onFail, options }) => {
     let url = (dir ? '?dir=' + dir : "")
 
     service.postMultipart(`drive${url}`, data, options).then(res => {
-        onSuccess(res.data.data)
+        onSuccess(res.data)
     }).catch(err => {
         onFail(err)
     })

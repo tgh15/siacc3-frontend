@@ -11,6 +11,7 @@ import {
 
 //Icon
 import { AlertCircle, Folder, Share2, Star, Tag } from "react-feather";
+import DropdownTrash from "./DropdownTrash";
 
 //Helper
 import Helper from "../../../helpers";
