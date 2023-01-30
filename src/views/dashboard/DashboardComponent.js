@@ -36,8 +36,6 @@ const DashboardComponent = () => {
         getRoleByMenuStatus
     }                                                           = Helper;
 
-
-
     const getDashboardLayout = () => {
         const formData = {
             uuid : getUserData().uuid

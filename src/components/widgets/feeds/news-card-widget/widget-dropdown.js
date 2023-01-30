@@ -120,7 +120,7 @@ export const WidgetChildDropdown = (props)=>{
                     <DropDownItemWithIcon
                         Icon    = { Printer }
                         text    = "Generate Berita"
-                        onClick = {() => {props.setShowExportForm(true)}}
+                        onClick = {() => {props.setShowExportForm()}}
                         subText = "Mengkonversi Berita Ke PDF."
                     />
 

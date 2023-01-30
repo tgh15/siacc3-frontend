@@ -4,6 +4,7 @@ import React, {
     Fragment, 
     useEffect, 
     useContext,
+    useCallback,
 } from 'react';
 
 import moment                      from 'moment';
@@ -57,6 +58,8 @@ import { ModalBase } from '../../modals-base';
 import Rating from 'react-rating';
 import { Link } from 'react-router-dom';
 import { WebsocketURL } from '../../../../configs/socket';
+import { toJpeg, toPng } from 'html-to-image';
+import jsPDF from 'jspdf';
 
 export const NewsWidget = (props) => {
     const {
@@ -101,6 +104,7 @@ export const NewsWidget = (props) => {
     } = props;
 
     const bodyCardRef                                       = useRef();
+    const exportRef                                         = useRef();
 
     const {
             countWord,
@@ -111,7 +115,6 @@ export const NewsWidget = (props) => {
 
     const { 
         register,
-        setValue,
         handleSubmit,
         formState   : { errors }
     }                                                           = useForm();
@@ -147,9 +150,9 @@ export const NewsWidget = (props) => {
     const [pageViewListLeader, setPageViewListLeader]           = useState(1);
     const [totalPageViewListLeader, setTotalPageViewListLeader] = useState(null);
 
-    const [selectedCheck, setSelectedCheck]                 = useState(selected_check); 
+    const [selectedCheck, setSelectedCheck]                     = useState(selected_check); 
 
-    const {trophies}                                        = useContext(TrophyContext);
+    const {trophies}                                            = useContext(TrophyContext);
 
     const [sendData, setSendData] = useState({
         comment         : "",
@@ -230,26 +233,7 @@ export const NewsWidget = (props) => {
         )
     }
 
-    const dropdownWidget = (archived || status < 2) ? 
-        null 
-    : 
-        <WidgetChildDropdown
-            key                     = {"widget_child_dropdown_"+id}  
-            saved                   = {savedBerita} 
-            hashtag                 = {hashtag}
-            dataNews                = {id}
-            setSaved                = {() => { toggle.save() }}
-            selectedCheck           = {selectedCheck}
-            changeToSelected        = {handleSelectedNews}
-            setShowTrophyForm       = {setShowTrophyForm}
-            setShowRatingForm       = {setShowRatingForm}
-            setShowExportForm       = {setShowExportForm}
-            setShowHashtagForm      = {setShowHashtagForm}
-            cancelFromSelected      = {handleCancelSelectedNews}
-            self_selected_check     = {self_selected_check}
-            getRatingByAgentReport  = {getRatingByAgentReport}
-        />
-
+    
     const setAnalog = (p) => {
         setAnalogComment(p)
     };
@@ -570,6 +554,57 @@ export const NewsWidget = (props) => {
             connectFeedsSocket();
         };
     }
+
+    const exportToJpg = useCallback(() => {
+        let doc = new jsPDF('p', 'mm', [215,279], {
+            orientation: "landscape",
+        });
+
+
+        var width  = doc.internal.pageSize.getWidth();
+        var height = doc.internal.pageSize.getHeight();
+
+        console.log(width, height);
+
+        if (exportRef.current === null) {
+            return
+        }
+
+
+        toPng(exportRef.current, { cacheBust: true, quality: 1})
+            .then((dataUrl) => {
+                console.log(dataUrl,"data")
+                doc.addImage(dataUrl,'PNG',5,6, width-10, height-420);
+                doc.save(`news-dashboard.pdf`);
+
+            })
+            .catch((err) => {
+                console.log(err, 'export to pdf');
+            })
+
+        
+    }, [exportRef]);
+
+    const dropdownWidget = (archived || status < 2) ? 
+        null 
+    : 
+        <WidgetChildDropdown
+            key                     = {"widget_child_dropdown_"+id}  
+            saved                   = {savedBerita} 
+            hashtag                 = {hashtag}
+            dataNews                = {id}
+            setSaved                = {() => { toggle.save() }}
+            selectedCheck           = {selectedCheck}
+            changeToSelected        = {handleSelectedNews}
+            setShowTrophyForm       = {setShowTrophyForm}
+            setShowRatingForm       = {setShowRatingForm}
+            setShowExportForm       = {exportToJpg}
+            setShowHashtagForm      = {setShowHashtagForm}
+            cancelFromSelected      = {handleCancelSelectedNews}
+            self_selected_check     = {self_selected_check}
+            getRatingByAgentReport  = {getRatingByAgentReport}
+        />
+
 
     useEffect(() => {
         setSaved(isSaved);
@@ -1090,183 +1125,185 @@ export const NewsWidget = (props) => {
                 onMouseEnter = {() => {handleViewer();}}
             >
                 <CardBody>
-                    {/* Header */}
-                    <WidgetNewsCardHeader
-                        title                   = {title} 
-                        avatar                  = {imgAvatar} 
-                        division                = {division} 
-                        subTitle                = {`${subTitle} - ${location}`} 
-                        division_id             = {division_id} 
-                        defaultNews             = {dropdownWidget} 
-                        selectedCheck           = {selectedCheck}
-                        division_level          = {division_level}
-                        division_level_id       = {division_level_id}
-                        cancelFromSelected      = {handleCancelSelectedNews}
-                    />
+                    <div ref ={exportRef}>
+                        {/* Header */}
+                        <WidgetNewsCardHeader
+                            title                   = {title} 
+                            avatar                  = {imgAvatar} 
+                            division                = {division} 
+                            subTitle                = {`${subTitle} - ${location}`} 
+                            division_id             = {division_id} 
+                            defaultNews             = {dropdownWidget} 
+                            selectedCheck           = {selectedCheck}
+                            division_level          = {division_level}
+                            division_level_id       = {division_level_id}
+                            cancelFromSelected      = {handleCancelSelectedNews}
+                        />
 
-                    {/* Title */}
-                    <FormGroup>
-                        <a href={`/beranda/detail/${id}`}>
-                            <h4>
-                                {
-                                    feedsTitle == undefined || feedsTitle == null ? null : parse(feedsTitle)
-                                }
-                            </h4>
-                        </a>
-                    </FormGroup>
+                        {/* Title */}
+                        <FormGroup>
+                            <a href={`/beranda/detail/${id}`}>
+                                <h4>
+                                    {
+                                        feedsTitle == undefined || feedsTitle == null ? null : parse(feedsTitle)
+                                    }
+                                </h4>
+                            </a>
+                        </FormGroup>
 
-                    {/* Content */}
-                    <FormGroup>
-                        {attach == null ? null : attach.img}
-                        {attach == null ? null : attach.video}
-                        {attach == null ? null : attach.audio}
-
-                        {
-                            "method" in props ?
-                                <Fragment>
-                                    <p className="text-justify mt-1 mb-2">
-                                        {
-                                            parse(
-                                                `
-                                                    ${dataNews.when_}, telah terjadi ${dataNews.what}, 
-                                                    bertempat di ${dataNews.where} ${dataNews.who}. 
-                                                    Kejadian ini terjadi karena ${dataNews.why}, ${dataNews.how}
-                                                `
-                                            )
-                                        }
-                                        {dataNews.when_}, telah terjadi {dataNews.what}, 
-                                        bertempat di {dataNews.where} {dataNews.who}. 
-                                        Kejadian ini terjadi karena {dataNews.why}, {dataNews.how}
-                                    </p>
-                                </Fragment>
-                            :
-                                "detail" in props ?
-                                    <p className='text-justify mt-1'>
-                                        {parse(bodyText)}
-                                    </p>
-                                :
-                                    <p className="text-justify mt-1 mb-2">
-                                        {
-                                            countWord(bodyText) > 100 ?
-                                                <>
-                                                    {parse(shortenWord(bodyText))}
-                                                    &nbsp;
-                                                    <Link to={"/beranda/detail/"+props.id}>
-                                                        <span style={{ color: 'inherit', whiteSpace: 'pre-line'}}>
-                                                            Lihat Detail ...
-                                                        </span>
-                                                    </Link>
-                                                </>
-                                            :    
-                                                parse(bodyText)
-                                        }
-                                    </p>
-                        }
-
-                        {
-                            publish_type != 'not_publish_yet' &&
-                            <p>Tanggal Publikasi : {moment(publish_date).format('DD MMMM YYYY')} ({publish_type === 'local_publish' ? 'Lokal' : 'Nasional'})</p>
-                        }
-
-                        {attach == null ? null : attach.files}
-                        {attach == null ? null : attach.links}
-                        
-                        <div style={{wordBreak: 'break-word'}}>
-                            <p>
+                        {/* Content */}
+                        <FormGroup>
+                            {attach == null ? null : attach.img}
+                            {attach == null ? null : attach.video}
+                            {attach == null ? null : attach.audio}
 
                             {
-                                hashtag != undefined ? 
-                                    hashtag.map((data) => (
-                                        <a href={`/advanced-search?keyword=${data.tag.replace('#',"")}`}><span className="mr-1">{parse(data.tag)}</span></a>
-                                    ))
+                                "method" in props ?
+                                    <Fragment>
+                                        <p className="text-justify mt-1 mb-2">
+                                            {
+                                                parse(
+                                                    `
+                                                        ${dataNews.when_}, telah terjadi ${dataNews.what}, 
+                                                        bertempat di ${dataNews.where} ${dataNews.who}. 
+                                                        Kejadian ini terjadi karena ${dataNews.why}, ${dataNews.how}
+                                                    `
+                                                )
+                                            }
+                                            {dataNews.when_}, telah terjadi {dataNews.what}, 
+                                            bertempat di {dataNews.where} {dataNews.who}. 
+                                            Kejadian ini terjadi karena {dataNews.why}, {dataNews.how}
+                                        </p>
+                                    </Fragment>
                                 :
-                                    null
+                                    "detail" in props ?
+                                        <p className='text-justify mt-1'>
+                                            {parse(bodyText)}
+                                        </p>
+                                    :
+                                        <p className="text-justify mt-1 mb-2">
+                                            {
+                                                countWord(bodyText) > 100 ?
+                                                    <>
+                                                        {parse(shortenWord(bodyText))}
+                                                        &nbsp;
+                                                        <Link to={"/beranda/detail/"+props.id}>
+                                                            <span style={{ color: 'inherit', whiteSpace: 'pre-line'}}>
+                                                                Lihat Detail ...
+                                                            </span>
+                                                        </Link>
+                                                    </>
+                                                :    
+                                                    parse(bodyText)
+                                            }
+                                        </p>
                             }
-                            </p>
 
-                        </div>
+                            {
+                                publish_type != 'not_publish_yet' &&
+                                <p>Tanggal Publikasi : {moment(publish_date).format('DD MMMM YYYY')} ({publish_type === 'local_publish' ? 'Lokal' : 'Nasional'})</p>
+                            }
 
+                            {attach == null ? null : attach.files}
+                            {attach == null ? null : attach.links}
+                            
+                            <div style={{wordBreak: 'break-word'}}>
+                                <p>
 
-                    </FormGroup>
-                    
-                    {
-                        archived || status < 2 ? (
-                            <>
                                 {
-                                    !archived && status == 0 ?
-                                        <>
-                                            <hr/>
-                                            <FormGroup className="d-flex align-items-center justify-content-end">
-                                                Menunggu Persetujuan Verifikator Daerah
-                                            </FormGroup>
-                                        </>
+                                    hashtag != undefined ? 
+                                        hashtag.map((data) => (
+                                            <a href={`/advanced-search?keyword=${data.tag.replace('#',"")}`}><span className="mr-1">{parse(data.tag)}</span></a>
+                                        ))
                                     :
                                         null
                                 }
-                                { 
-                                    !archived && status == 1 ?
-                                        <>
-                                            <hr/>
-                                            <FormGroup className="d-flex align-items-center justify-content-end">
-                                                Menunggu Persetujuan Verifikator Pusat
-                                            </FormGroup>
-                                        </>
-                                    :
-                                        null
-                                }
-                                {
-                                    archived ? 
-                                        archived === 1 ?
+                                </p>
+
+                            </div>
+
+
+                        </FormGroup>
+                        
+                        {
+                            archived || status < 2 ? (
+                                <>
+                                    {
+                                        !archived && status == 0 ?
                                             <>
                                                 <hr/>
                                                 <FormGroup className="d-flex align-items-center justify-content-end">
-                                                    <Archive size={16} style={{marginRight: '5px'}}/>&nbsp;Berita Diarsipkan Verifikator Daerah
+                                                    Menunggu Persetujuan Verifikator Daerah
                                                 </FormGroup>
                                             </>
                                         :
-                                            archived === 2 ?
+                                            null
+                                    }
+                                    { 
+                                        !archived && status == 1 ?
+                                            <>
+                                                <hr/>
+                                                <FormGroup className="d-flex align-items-center justify-content-end">
+                                                    Menunggu Persetujuan Verifikator Pusat
+                                                </FormGroup>
+                                            </>
+                                        :
+                                            null
+                                    }
+                                    {
+                                        archived ? 
+                                            archived === 1 ?
                                                 <>
                                                     <hr/>
                                                     <FormGroup className="d-flex align-items-center justify-content-end">
-                                                        <Archive size={16} style={{marginRight: '5px'}}/>&nbsp;Berita Diarsipkan Verifikator Pusat
+                                                        <Archive size={16} style={{marginRight: '5px'}}/>&nbsp;Berita Diarsipkan Verifikator Daerah
                                                     </FormGroup>
                                                 </>
                                             :
-                                                <>
-                                                    <hr/>
-                                                    <FormGroup className="d-flex align-items-center justify-content-end">
-                                                        <Archive size={16} style={{marginRight: '5px'}}/>&nbsp;Berita Diarsipkan Analis Per. Dir
-                                                    </FormGroup>
-                                                </>
-                                    :
-                                        null
-                                }
-                            </>
-                        ) : 
-                            // Icon
-                            <WidgetCardNewsBottom
-                                id              = {id}
-                                key             = {`footer-widget-${id}`}
-                                saved           = {savedBerita}
-                                trophy          = {trophy}
-                                ratings         = {ratings}
-                                newsType        = {newsType}
-                                viewList        = {viewList}
-                                viewListLeader  = {viewListLeader}
-                                viewListCombine = {viewListCombine}
-                                viewCounts      = {viewCount}
-                                commentCounts   = {commentCount}
-                                ratings_check   = {ratings_check}
-                                setShowViewForm = {setShowViewForm}
+                                                archived === 2 ?
+                                                    <>
+                                                        <hr/>
+                                                        <FormGroup className="d-flex align-items-center justify-content-end">
+                                                            <Archive size={16} style={{marginRight: '5px'}}/>&nbsp;Berita Diarsipkan Verifikator Pusat
+                                                        </FormGroup>
+                                                    </>
+                                                :
+                                                    <>
+                                                        <hr/>
+                                                        <FormGroup className="d-flex align-items-center justify-content-end">
+                                                            <Archive size={16} style={{marginRight: '5px'}}/>&nbsp;Berita Diarsipkan Analis Per. Dir
+                                                        </FormGroup>
+                                                    </>
+                                        :
+                                            null
+                                    }
+                                </>
+                            ) : 
+                                // Icon
+                                <WidgetCardNewsBottom
+                                    id              = {id}
+                                    key             = {`footer-widget-${id}`}
+                                    saved           = {savedBerita}
+                                    trophy          = {trophy}
+                                    ratings         = {ratings}
+                                    newsType        = {newsType}
+                                    viewList        = {viewList}
+                                    viewListLeader  = {viewListLeader}
+                                    viewListCombine = {viewListCombine}
+                                    viewCounts      = {viewCount}
+                                    commentCounts   = {commentCount}
+                                    ratings_check   = {ratings_check}
+                                    setShowViewForm = {setShowViewForm}
 
-                                //Role
-                                roleLike        = {roleLike}
-                                roleDislike     = {roleDislike}
-                                roleComment     = {roleComment}
-                                roleViewer      = {roleViewer}
-                            />
-                    }
-                    
+                                    //Role
+                                    roleLike        = {roleLike}
+                                    roleDislike     = {roleDislike}
+                                    roleComment     = {roleComment}
+                                    roleViewer      = {roleViewer}
+                                />
+                        }
+                        <div style={{height: '10px'}}></div>
+                    </div>
                     {
                         "commentHidden" in props ?
                             null 
@@ -1295,6 +1332,7 @@ export const NewsWidget = (props) => {
                             )
                     }
                 </CardBody>
+
             </Card>
         </Fragment>
     );
