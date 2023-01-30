@@ -23,11 +23,7 @@ export const SelectWilayah  = ({data,show,setShow,onSubmit, index, statePosition
     const [submitLoading, setSubmitLoading]             = useState(false);
     const [activeCategories,setActiveCategories]        = useState([]);
 
-    const { workunitOptions,workunitOptionsApproval }   = useContext(PerformanceContext);  
-
-    const selector = useSelector(status=>{
-        return status
-    });
+    const { workunitOptionsApproval }   = useContext(PerformanceContext);  
 
     const [agentUpdate,setAgentUpdate] = useState({
         agent_report_id : data.id,    
@@ -131,26 +127,38 @@ export const SelectWilayah  = ({data,show,setShow,onSubmit, index, statePosition
     }
 
     const handleSubmit = ()=>{
-        setSubmitLoading(true);
-        feedsAgentReportAPI.shareAgentReportByWorkunit(agentUpdate).then(
-            res => {
-                if(res.status === 200){
-                    setShow()
-                    onSubmit(index, statePosition)
-                    CustomToast("success", "Penentuan Status Berhasil.")
+
+        console.log(agentUpdate)
+        
+        if(agentUpdate.category_id.length > 0 && agentUpdate.kind != null && agentUpdate.workunit_id.length >0){
+
+            setSubmitLoading(true);
+            feedsAgentReportAPI.shareAgentReportByWorkunit(agentUpdate).then(
+                res => {
+                    if(res.status === 200){
+                        setShow()
+                        onSubmit(index, statePosition)
+                        CustomToast("success", "Penentuan Status Berhasil.")
+                        setAgentUpdate({agent_report_id:data.id,    
+                            kind        : null,
+                            category_id : [],
+                            workunit_id : []
+                        })
+                    }else{
+    
+                    }
                     setSubmitLoading(false);
-                    setAgentUpdate({agent_report_id:data.id,    
-                        kind: null,
-                        category_id:[],
-                        workunit_id:[]})
+    
                 }
-            }
-        ).catch(
-            err => {
-                console.log(err);
-                setSubmitLoading(false);
-            }
-        )
+            ).catch(
+                err => {
+                    setSubmitLoading(false);
+                }
+            )
+        }else{
+            CustomToast('danger', 'Masih Ada Kolom Belum Terisi');
+        }
+
     }    
 
     useEffect(()=>{
@@ -224,7 +232,12 @@ export const SelectWilayah  = ({data,show,setShow,onSubmit, index, statePosition
 
     
     return(
-        <ModalBase show={show} setShow={setShow} title="Tentukan Status" unmount={true}>
+        <ModalBase 
+            show    = {show} 
+            title   = "Tentukan Status" 
+            unmount = {true}
+            setShow = {setShow} 
+        >
             {
                 localStorage.getItem('role') == "Verifikator Pusat" || localStorage.getItem('role') == "Admin" ?
                     <FormGroup>
@@ -268,6 +281,7 @@ export const SelectWilayah  = ({data,show,setShow,onSubmit, index, statePosition
                 <Label>Kategori Berita</Label>
                 <Select
                     name            = 'colors'
+                    value           = {activeCategories != null && activeCategories}
                     theme           = {selectThemeColors}
                     isMulti
                     options         = {categories==null?[]:categories}
@@ -287,7 +301,6 @@ export const SelectWilayah  = ({data,show,setShow,onSubmit, index, statePosition
                         })
                         setActiveCategories(data);
                     }}
-                    value           = {activeCategories != null && activeCategories}
 
                 />
             </FormGroup>
@@ -301,15 +314,15 @@ export const SelectWilayah  = ({data,show,setShow,onSubmit, index, statePosition
                         </FormGroup>
                         <FormGroup>
                             <Select
-                                isClearable      = {false}
+                                name             = 'colors'
                                 theme            = {selectThemeColors}
-                                isOptionDisabled = {(option) => option.isdisabled}
                                 isMulti
-                                name     = 'colors'
-                                options  = {workunitOptionsApproval}
-                                onChange = {handlerUnitChange}
-                                className='react-select'
-                                classNamePrefix='select'
+                                options          = {workunitOptionsApproval}
+                                onChange         = {handlerUnitChange}
+                                className        = 'react-select'
+                                isClearable      = {false}
+                                classNamePrefix  = 'select'
+                                isOptionDisabled = {(option) => option.isdisabled}
                             />
                         </FormGroup>
                     </>

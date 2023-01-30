@@ -86,7 +86,6 @@ export const WidgetChildDropdown = (props)=>{
                         subText = "Teruskan berita ke grup untuk dibahas"
                         onClick = {() => {toggleDiscussion()}}
                     />
-                    {/* {console.log(props.selectedCheck, props.self_selected_check)} */}
                     {
                         localStorage.getItem('role') === 'Pimpinan Pusat' || localStorage.getItem('role') === 'Verifikator Pusat' || localStorage.getItem('role') === 'Analis Direktorat' ? 
                             props.selectedCheck ?
@@ -128,6 +127,7 @@ export const WidgetChildDropdown = (props)=>{
                         :
                             null
                     }
+                    
                     <DropDownItemWithIcon 
                         Icon    = {Star} 
                         text    = "Detail Rating"

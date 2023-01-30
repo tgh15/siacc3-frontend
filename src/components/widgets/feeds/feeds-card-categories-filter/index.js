@@ -1,4 +1,8 @@
-import React, { useContext, useEffect, useState }               from 'react'
+import React, { 
+    useState,
+    useEffect, 
+    useContext, 
+}                                               from 'react'
 
 import {
         Row,
@@ -7,9 +11,6 @@ import {
         Label, 
         Button, 
         FormGroup,
-        InputGroup,
-        InputGroupText,
-        Input, 
     }                                           from 'reactstrap'
 import moment                                   from 'moment'
 import Select                                   from 'react-select'
@@ -24,8 +25,6 @@ import { selectThemeColors }                    from '@utils'
 import { useForm, Controller }                  from "react-hook-form";
 
 import { PerformanceContext }                   from '../../../../context/PerformanceContext'
-import ExportFeeds from '../../../../views/beranda/export_beranda'
-import CustomToast from '../../custom-toast'
 
 export const FeedsCategoriesFilterModal = (props) => {
 
@@ -46,10 +45,7 @@ export const FeedsCategoriesFilterModal = (props) => {
 
     const [kind, setKind]                       = useState(2);
     const [orderBy, setOrderBy]                 = useState('latest');
-    const [isExport, setIsExport]               = useState(false);
-    const [exportData, setExportData]           = useState(null);
     const [publishType, setPublishType]         = useState('national');
-    const [isExportVisible, setIsExportVisible] = useState(false);
 
 
 
@@ -80,20 +76,8 @@ export const FeedsCategoriesFilterModal = (props) => {
             formData.end_date = moment(data.end_date[0]).format('YYYY-MM-DD')
         }
 
-
-        if(isExport){
-            let duration = moment.duration(moment(data.end_date[0]).diff(moment(data.start_date[0])));
-            if(duration.days() > 1){
-                CustomToast('warning','Maksimal Rentang Waktu Berita Adalah 1 Hari.')
-            }else{
-                setExportData(formData);
-                setIsExportVisible(true)
-                setShow(false);
-            }
-        }else{
-            setShow(false);
-            onFilter(formData);
-        }
+        setShow(false);
+        onFilter(formData);
     };
 
     const handleReset   = () => {
@@ -113,11 +97,6 @@ export const FeedsCategoriesFilterModal = (props) => {
 
     return(
         <>
-            <ExportFeeds
-                exportData          = {exportData}
-                isExportVisible     = {isExportVisible}
-                setIsExportVisible  = {setIsExportVisible}
-            />
             <ModalBase 
                 size        = "lg"
                 show        = {showing}
@@ -271,14 +250,6 @@ export const FeedsCategoriesFilterModal = (props) => {
                     </FormGroup>
 
                     <FormGroup className="d-flex justify-content-between">
-                        
-                        <Button 
-                            type    = "submit"
-                            color   = "primary" 
-                            onClick = {() => {setIsExport(true)}}
-                        >
-                            Export Laporan
-                        </Button>
 
                         <div>
                             <Button 
@@ -293,7 +264,6 @@ export const FeedsCategoriesFilterModal = (props) => {
                             <Button 
                                 type    = "submit"
                                 color   = "primary" 
-                                onClick = {() => {setIsExport(false)}}
                             >
                                 Terapkan
                             </Button>

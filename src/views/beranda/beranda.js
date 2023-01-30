@@ -207,7 +207,7 @@ const Beranda = (props) => {
 
         console.log(loadingFeeds, 'loading Feeds', filter, 'filter')
 
-    },[selector, loadDataFeeds, page]);
+    },[selector, loadDataFeeds, page, filteredState]);
 
     return (
         <Fragment>

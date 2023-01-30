@@ -91,11 +91,12 @@ const BerandaDetail = () => {
     const getTrendingReport = () => {
 
         let formData = {
-            trending_type : 'national',
             workunit      : [],
-            start_date    : moment().format('YYYY-MM-DD'),
             end_date      : moment().format('YYYY-MM-DD'),
+            start_date    : moment().format('YYYY-MM-DD'),
+            trending_type : 'national',
         };
+
         feedsBerandaAgentReport.getTrendingByType(formData).then(
             res => {
                 const {data} = res;
@@ -138,11 +139,11 @@ const BerandaDetail = () => {
                                 key                     = {`advanced-search-news-${id}`}
                                 handleStore             = {(newss,data) => {StoreNews(newss,data)}}
 
+                                detail                  = {true}
                                 roleLike                = {true}
                                 roleViewer              = {true}   
                                 roleDislike             = {true}
                                 roleComment             = {true}
-                                detail                  = {true}
 
                                 {...detailNews[0]}
                             />

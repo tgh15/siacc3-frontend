@@ -52,9 +52,7 @@ const ExportFeeds = (props) => {
                         processAgentReports(res.data).then(
                             res_ => {
                                 setFeedsData(res_);
-                                // setTimeout(() => {
-                                    exportToPdf();
-                                // }, 1000);
+                                exportToPdf();
                             }
                         );
                     }else{
@@ -68,6 +66,10 @@ const ExportFeeds = (props) => {
                 CustomToast('danger', err.message);
             }
         )
+    }
+
+    const getFeedsDetailData = () => {
+        
     }
 
     useEffect(() => {
