@@ -56,7 +56,6 @@ const Beranda = (props) => {
     const [approveds,setApproveds]                 = useState(null);
     const [loadingFeeds,setLoadingFeeds]           = useState(false);
     const [filteredState,setFilteredState]         = useState({});
-    const [loadDataFeeds,setLoadDataFeeds]         = useState(true);
     const [loadingApprove,setLoadingApprove]       = useState(false);
     const [trendingReport, setTrendingReport]      = useState(null);
     const [refreshApproved,setRefreshApproved]     = useState(true);
@@ -79,11 +78,12 @@ const Beranda = (props) => {
     };
 
     const filtered = (opt) => {
-        setFilter(true);
         setFeed(null);
-        setFilteredState(opt);
-        setLoadDataFeeds(true);
+
         setPage(1);
+        setFilter(true);
+        setFilteredState(opt);
+        getAgentReportFilter(1, opt);
     };
 
     const handleStore = (stored_data, resps) => {
@@ -154,6 +154,33 @@ const Beranda = (props) => {
         );
     };
 
+    const getAgentReportFilter = (active_page, filter_body) => {
+        setLoadingFeeds(true);
+        
+        filterAgentReport(active_page,filter_body).then(res => {
+            setLoadingFeeds(false);
+
+            let feed_ = feed == null ? [] : [...feed];
+
+            if(res.results != undefined){
+                res.results.map((data) => (
+                    feed_.push(data)
+                ))
+            }
+
+            let next = res.response.pagination.has_next;
+
+            setFeed([...feed_]);
+            setHasNext(next);
+
+        }).catch(err => {
+            setFeed([]);
+            CustomToast("danger", "Gagal memuat berita");
+
+            setLoadingFeeds(false);
+        })
+    }
+
     useEffect(() => {
         getAgentReportData();
         getTrendingReport();
@@ -169,45 +196,20 @@ const Beranda = (props) => {
                 setRefreshApproved(false);
             })
         }
-    },[selector, refreshApproved]);
+    },[refreshApproved]);
 
-    useEffect(() => {       
+    useEffect(() => {      
+        console.log(filter,  loadingFeeds) 
         try {
-            if(!filter && loadDataFeeds && !loadingFeeds) {
+            if(!filter && !loadingFeeds) {
                 getAgentReportData();
-            }else if(filter && loadDataFeeds && !loadingFeeds) {
-                setLoadingFeeds(true);
-                setLoadDataFeeds(false);
-                filterAgentReport(page,filteredState).then(res => {
-                    setLoadingFeeds(false);
-
-                    let feed_ = feed == null ? [] : [...feed];
-
-                    if(res.results != undefined){
-                        res.results.map((data) => (
-                            feed_.push(data)
-                        ))
-                    }
-
-                    let next = res.response.pagination.has_next;
-
-                    setFeed([...feed_]);
-                    setHasNext(next);
-
-                }).catch(err => {
-                    console.log(err, 'err filter beranda')
-                    setFeed([]);
-                    CustomToast("danger", "Gagal memuat berita");
-                    setLoadingFeeds(false);
-                })
+            }else{
+                getAgentReportFilter(page, filteredState);
             }
         }catch(err){
             console.log("err",err);
         }
-
-        console.log(loadingFeeds, 'loading Feeds', filter, 'filter')
-
-    },[selector, loadDataFeeds, page, filteredState]);
+    },[page]);
 
     return (
         <Fragment>
@@ -218,7 +220,7 @@ const Beranda = (props) => {
                     sm = "12"
                 >
                     <InfiniteScroll
-                        next        = {() => {setPage(prev => prev+1); setLoadDataFeeds(true)}}
+                        next        = {() => {setPage(prev => prev+1)}}
                         style       = {{ overflowX: 'hidden' }}
                         loader      = {<h4 className='text-center'>Loading...</h4>}
                         hasMore     = {hasNext}
@@ -242,7 +244,6 @@ const Beranda = (props) => {
                                             onChangeCategories = {() => {
                                                 setPage(1);
                                                 setFeed(null);
-                                                setLoadDataFeeds(true);
                                             }}
                                         />
                                     ) : null
