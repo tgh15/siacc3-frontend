@@ -8,7 +8,8 @@ import {
         Users,
         Bookmark, 
         CheckSquare,
-        MoreVertical, 
+        MoreVertical,
+        Printer, 
     } from "react-feather";
 import Trophy                   from '../../../../assets/icons/trophy.svg';
 
@@ -116,6 +117,13 @@ export const WidgetChildDropdown = (props)=>{
                         subText = "Simpan ini ke berita tersimpan"
                     />
 
+                    <DropDownItemWithIcon
+                        Icon    = { Printer }
+                        text    = "Generate Berita"
+                        onClick = {() => {props.setShowExportForm(true)}}
+                        subText = "Mengkonversi Berita Ke PDF."
+                    />
+
                     {
                         localStorage.getItem('role') === 'Pimpinan Pusat' ? 
                             <DropDownItemWithIcon 
@@ -127,7 +135,7 @@ export const WidgetChildDropdown = (props)=>{
                         :
                             null
                     }
-                    
+
                     <DropDownItemWithIcon 
                         Icon    = {Star} 
                         text    = "Detail Rating"

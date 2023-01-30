@@ -130,35 +130,64 @@ export const SelectWilayah  = ({data,show,setShow,onSubmit, index, statePosition
 
         console.log(agentUpdate)
         
-        if(agentUpdate.category_id.length > 0 && agentUpdate.kind != null && agentUpdate.workunit_id.length >0){
-
-            setSubmitLoading(true);
-            feedsAgentReportAPI.shareAgentReportByWorkunit(agentUpdate).then(
-                res => {
-                    if(res.status === 200){
-                        setShow()
-                        onSubmit(index, statePosition)
-                        CustomToast("success", "Penentuan Status Berhasil.")
-                        setAgentUpdate({agent_report_id:data.id,    
-                            kind        : null,
-                            category_id : [],
-                            workunit_id : []
-                        })
-                    }else{
-    
+        if(localStorage.getItem('role') == "Verifikator Pusat" || localStorage.getItem('role') == "Admin"){
+            if(agentUpdate.category_id.length > 0 && agentUpdate.kind != null && agentUpdate.workunit_id.length >0){
+                setSubmitLoading(true);
+                feedsAgentReportAPI.shareAgentReportByWorkunit(agentUpdate).then(
+                    res => {
+                        if(res.status === 200){
+                            setShow()
+                            onSubmit(index, statePosition)
+                            CustomToast("success", "Penentuan Status Berhasil.")
+                            setAgentUpdate({agent_report_id:data.id,    
+                                kind        : null,
+                                category_id : [],
+                                workunit_id : []
+                            })
+                        }else{
+        
+                        }
+                        setSubmitLoading(false);
+        
                     }
-                    setSubmitLoading(false);
-    
-                }
-            ).catch(
-                err => {
-                    setSubmitLoading(false);
-                }
-            )
+                ).catch(
+                    err => {
+                        setSubmitLoading(false);
+                    }
+                )
+            }else{
+                CustomToast('danger', 'Masih Ada Kolom Belum Terisi');
+            }
         }else{
-            CustomToast('danger', 'Masih Ada Kolom Belum Terisi');
+            if(agentUpdate.category_id.length > 0 ){
+                setSubmitLoading(true);
+                feedsAgentReportAPI.shareAgentReportByWorkunit(agentUpdate).then(
+                    res => {
+                        if(res.status === 200){
+                            setShow()
+                            onSubmit(index, statePosition)
+                            CustomToast("success", "Penentuan Status Berhasil.")
+                            setAgentUpdate({agent_report_id:data.id,    
+                                kind        : null,
+                                category_id : [],
+                                workunit_id : []
+                            })
+                        }else{
+        
+                        }
+                        setSubmitLoading(false);
+        
+                    }
+                ).catch(
+                    err => {
+                        setSubmitLoading(false);
+                    }
+                )
+            }else{
+                CustomToast('danger', 'Masih Ada Kolom Belum Terisi');
+            }
         }
-
+        
     }    
 
     useEffect(()=>{

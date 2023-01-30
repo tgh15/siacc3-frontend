@@ -127,6 +127,7 @@ export const NewsWidget = (props) => {
     const [showTrophyForm, setShowTrophyForm]                   = useState(false);
     const [showRatingForm, setShowRatingForm]                   = useState(false);
     const [commentLoading, setCommentLoading]                   = useState(false);
+    const [showExportForm, setShowExportForm]                   = useState(false);
     const [showHashtagForm, setShowHashtagForm]                 = useState(false);
 
     //Comment
@@ -151,9 +152,9 @@ export const NewsWidget = (props) => {
     const {trophies}                                        = useContext(TrophyContext);
 
     const [sendData, setSendData] = useState({
-        agent_report_id: id,
-        parent_id: parentID,
-        comment: "",
+        comment         : "",
+        parent_id       : parentID,
+        agent_report_id : id,
     }) ;
 
     const ref           = useRef();
@@ -242,6 +243,7 @@ export const NewsWidget = (props) => {
             changeToSelected        = {handleSelectedNews}
             setShowTrophyForm       = {setShowTrophyForm}
             setShowRatingForm       = {setShowRatingForm}
+            setShowExportForm       = {setShowExportForm}
             setShowHashtagForm      = {setShowHashtagForm}
             cancelFromSelected      = {handleCancelSelectedNews}
             self_selected_check     = {self_selected_check}
@@ -1049,13 +1051,14 @@ export const NewsWidget = (props) => {
                 </Form>
             </ModalBase>
 
-            <Card 
-                ref          = {bodyCardRef} 
-                // style        = {{ overflow: 'auto', height: 'auto'}}
-                onMouseEnter = {() => {handleViewer();}}
+            {/* Modal Export */}
+            <ModalBase
+                show     = {showExportForm}
+                size     = {"lg"}
+                title    = {`Generate Berita ${feedsTitle == undefined || feedsTitle == null ? null : feedsTitle}`}
+                setShow  = {setShowExportForm}
             >
-                <CardBody>
-                    {/* Header */}
+                <div className='mt-1'>
                     <WidgetNewsCardHeader
                         title                   = {title} 
                         avatar                  = {imgAvatar} 
@@ -1064,8 +1067,40 @@ export const NewsWidget = (props) => {
                         division_level          = {division_level}
                         division_level_id       = {division_level_id}
                         subTitle                = {`${subTitle} - ${location}`} 
+                        selectedCheck           = {selectedCheck}
+                        cancelFromSelected      = {handleCancelSelectedNews}
+                    />
+                </div>
+
+                <FormGroup>
+                    <a href={`/beranda/detail/${id}`}>
+                        <h4>
+                            {
+                                feedsTitle == undefined || feedsTitle == null ? null : parse(feedsTitle)
+                            }
+                        </h4>
+                    </a>
+                </FormGroup>
+
+            </ModalBase>
+            
+
+            <Card 
+                ref          = {bodyCardRef} 
+                onMouseEnter = {() => {handleViewer();}}
+            >
+                <CardBody>
+                    {/* Header */}
+                    <WidgetNewsCardHeader
+                        title                   = {title} 
+                        avatar                  = {imgAvatar} 
+                        division                = {division} 
+                        subTitle                = {`${subTitle} - ${location}`} 
+                        division_id             = {division_id} 
                         defaultNews             = {dropdownWidget} 
                         selectedCheck           = {selectedCheck}
+                        division_level          = {division_level}
+                        division_level_id       = {division_level_id}
                         cancelFromSelected      = {handleCancelSelectedNews}
                     />
 
