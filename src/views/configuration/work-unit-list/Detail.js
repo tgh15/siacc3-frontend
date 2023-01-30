@@ -60,8 +60,8 @@ const Detail = ({ match }) => {
 
     //State
     const [data, setData]                               = useState(false);
-    const [leftState, setLeftState]                     = useState([]);
-    const [rightState, setRightState]                   = useState([]);
+    const [leftState, setLeftState]                     = useState(null);
+    const [rightState, setRightState]                   = useState(null);
     const [dataDetail, setDataDetail]                   = useState(null);
     const [pagination, setPagination]                   = useState(null);
     const [defaultDataMap, setDefaultDataMap]           = useState({});
@@ -213,7 +213,6 @@ const Detail = ({ match }) => {
 
                                 //search half array length value
                                 let getDivision = Math.round(arrLength / 2);
-
 
                                 //get first half array
                                 setLeftState([...res.splice(0, getDivision)]);
@@ -419,6 +418,20 @@ const Detail = ({ match }) => {
                                     Total Personal
                                 </span>
                                 <span>
+                                    {dataDetail != null ? dataDetail.all_agent : null}
+                                </span>
+                            </CardBody>
+                        </Card>
+                        <Card 
+                            color     = "secondary" 
+                            outline 
+                            className = "mb-1"
+                        >
+                            <CardBody className="d-flex justify-content-between">
+                                <span>
+                                    Total Personal {dataDetail != null && `${dataDetail.workunit_level} ${dataDetail.name}`}
+                                </span>
+                                <span>
                                     {dataDetail != null ? dataDetail.total_agent : null}
                                 </span>
                             </CardBody>
@@ -544,7 +557,7 @@ const Detail = ({ match }) => {
             <p className="text-center font-weight-bolder">Berita - Berita Satker</p>
             <Row>
                 {
-                    leftState == null ?  
+                    leftState == null && rightState == null ?  
                         <>
                             <Col md={6}>
                                 <FeedSkeleton count={3}/>
@@ -554,7 +567,8 @@ const Detail = ({ match }) => {
                             </Col>
                         </>
                     :
-                        leftState.length < 1 && rightState.length < 1 ?
+                        
+                        Array.isArray(leftState) && Array.isArray(rightState) && (leftState.length < 1 && rightState.length < 1) ?
                             <Col 
                                 md = '12' 
                                 sm = '12'

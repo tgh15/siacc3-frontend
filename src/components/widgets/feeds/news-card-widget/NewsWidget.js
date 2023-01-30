@@ -560,29 +560,24 @@ export const NewsWidget = (props) => {
             orientation: "landscape",
         });
 
-
         var width  = doc.internal.pageSize.getWidth();
         var height = doc.internal.pageSize.getHeight();
 
-        console.log(width, height);
 
         if (exportRef.current === null) {
             return
         }
 
-
         toPng(exportRef.current, { cacheBust: true, quality: 1})
             .then((dataUrl) => {
                 console.log(dataUrl,"data")
                 doc.addImage(dataUrl,'PNG',5,6, width-10, height-420);
-                doc.save(`news-dashboard.pdf`);
+                doc.save(`generate berita (${title}-${feedsTitle}).pdf`);
 
             })
             .catch((err) => {
                 console.log(err, 'export to pdf');
             })
-
-        
     }, [exportRef]);
 
     const dropdownWidget = (archived || status < 2) ? 
