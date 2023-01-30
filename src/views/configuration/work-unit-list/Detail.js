@@ -32,6 +32,7 @@ import ModalPerformance                  from "./ModalPerformance";
 import CustomTableBodyEmpty              from "../../../components/widgets/custom-table/CustomTableBodyEmpty";
 import { processAgentReports }           from "../../../components/widgets/feeds/news-card-widget/NewsConfig";
 import CustomTablePaginate from "../../../components/widgets/custom-table/CustomTablePaginate";
+import FeedSkeleton from "../../../components/widgets/feed-skeleton/FeedSkeleton";
 
 
 const CardData = (props) => {
@@ -184,6 +185,9 @@ const Detail = ({ match }) => {
 
     //Get agent report by workunit
     const getAgentReportByWorkunit = (page) => {
+
+        setLeftState(null);
+        setRightState(null);
 
         const params = {
             page        : page
@@ -540,63 +544,72 @@ const Detail = ({ match }) => {
             <p className="text-center font-weight-bolder">Berita - Berita Satker</p>
             <Row>
                 {
-                    leftState.length < 1 &&
-                    rightState.length < 1 ?
-                        <Col 
-                            md = '12' 
-                            sm = '12'
-                        >
-                            <CustomTableBodyEmpty/>
-                        </Col>
+                    leftState == null ?  
+                        <>
+                            <Col md={6}>
+                                <FeedSkeleton count={3}/>
+                            </Col>
+                            <Col md={6}>
+                                <FeedSkeleton count={3}/>
+                            </Col>
+                        </>
                     :
-                        <Fragment>
-                            <Col md={12}>
-                                <CustomTablePaginate
-                                    getData         = {(params) => { getAgentReportByWorkunit(params.page)}}
-                                    pagination      = {pagination} 
-                                    offsetSearch    = {10} 
-                                />
-                            </Col>
-
+                        leftState.length < 1 && rightState.length < 1 ?
                             <Col 
-                                md = '6' 
+                                md = '12' 
                                 sm = '12'
                             >
-                                {
-                                    leftState &&
-                                    leftState.map((data) => (
-                                        <NewsWidget
-                                            key         = {`detail-workunit-news-${data.id}`}
-                                            // handleStore             = {(newss,data) => {handleStore(newss,data)}}
+                                <CustomTableBodyEmpty/>
+                            </Col>
+                        :
+                            <Fragment>
+                                <Col md={12}>
+                                    <CustomTablePaginate
+                                        getData         = {(params) => { getAgentReportByWorkunit(params.page)}}
+                                        pagination      = {pagination} 
+                                        offsetSearch    = {10} 
+                                    />
+                                </Col>
+                                <Col 
+                                    md = '6' 
+                                    sm = '12'
+                                >
+                                    {
+                                        leftState &&
+                                        leftState.map((data) => (
+                                            <NewsWidget
+                                                key         = {`detail-workunit-news-${data.id}`}
+                                                // handleStore             = {(newss,data) => {handleStore(newss,data)}}
 
-                                            roleLike    = {true}
-                                            roleViewer  = {true}
-                                            roleDislike = {true}
-                                            roleComment = {true}
-                                            {...data}
-                                        />
-                                    ))
-                                }
-                            </Col>
-                            <Col 
-                                md = '6' 
-                                sm = '12'
-                            >
-                                {
-                                    rightState &&
-                                    rightState.map((data) => (
-                                        <NewsWidget
-                                            key         = {`detail-workunit-news-${data.id}`}
-                                            roleLike    = {true}
-                                            roleViewer  = {true}
-                                            roleDislike = {true}
-                                            roleComment = {true}
-                                            {...data}
-                                        />
-                                    ))
-                                }
-                            </Col>
-                        </Fragment>
+                                                roleLike    = {true}
+                                                roleViewer  = {true}
+                                                roleDislike = {true}
+                                                roleComment = {true}
+                                                {...data}
+                                            />
+                                        ))
+                                    }
+                                </Col>
+                                <Col 
+                                    md = '6' 
+                                    sm = '12'
+                                >
+                                    {
+                                        rightState &&
+                                        rightState.map((data) => (
+                                            <NewsWidget
+                                                key         = {`detail-workunit-news-${data.id}`}
+                                                roleLike    = {true}
+                                                roleViewer  = {true}
+                                                roleDislike = {true}
+                                                roleComment = {true}
+                                                {...data}
+                                            />
+                                        ))
+                                    }
+                                </Col>
+                            </Fragment>
+                        
                 }
             </Row>
         </Fragment>
