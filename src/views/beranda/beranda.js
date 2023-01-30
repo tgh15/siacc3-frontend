@@ -94,7 +94,6 @@ const Beranda = (props) => {
 
         //selected category 
         const catsdata = selector.FeedsCategoriesReducer.activeCategories.id;
-        
         setLoadingFeeds(true);
 
         getAgentReport(page, (catsdata === "all" ? null : catsdata)).then(result => {
@@ -209,7 +208,7 @@ const Beranda = (props) => {
         }catch(err){
             console.log("err",err);
         }
-    },[page]);
+    },[selector, page]);
 
     return (
         <Fragment>
