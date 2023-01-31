@@ -14,28 +14,99 @@ import { selectThemeColors }                from '@utils';
 
 //Context
 import { UserManagementContext }            from "../../../context/UserManagementContext";
+import { PerformanceContext } from "../../../context/PerformanceContext";
+import { workunitAPI } from "../../../services/pages/configuration/workunit";
 
 
 const ModalFilter = ({ setModalFilter, onFilter }) => {
+    const { 
+        workunitLevel2,
+    }                                                   = useContext(PerformanceContext);
     //Context
     const { getData, workunitOptions } = useContext(UserManagementContext);
 
     //State
-    const [kejati, setKejati]       = useState([]);
-    const [kejari, setKejari]       = useState([]);
-    const [cabjari, setCabjari]     = useState([]);
+    const [kejati, setKejati]       = useState(null);
+    const [kejari, setKejari]       = useState(null);
+    const [cabjari, setCabjari]     = useState(null);
     const [newsType, setNewsType]   = useState("latest");
 
+    const [workunitLevel3, setWorkunitLevel3] = useState(null);
+    const [workunitLevel4, setWorkunitLevel4] = useState(null);
+
     const handleFilter = () => {
-        let workunits = kejati.concat(kejari).concat(cabjari);
+        console.log(kejati, kejari,cabjari);
+
+        console.log(workunitLevel4, workunitLevel3)
+
+        let workunit_id = [];
+
+        if(kejati != null){
+            workunit_id.push(kejati.value);
+        }
+
+        if(kejari != null){
+            workunit_id.push(kejari.value);
+        }
+
+        if(cabjari != null){
+            workunit_id.push(cabjari.value);
+        }
 
         let datas = {
             order_by    : newsType,
-            workunit_id : Array.from(workunits, workunit => workunit.value)
+            workunit_id : workunit_id
         };
 
-        onFilter(datas)
+        console.log(datas);
+
+        // onFilter(datas)
     };
+
+    const getChildWorkunit = (workunit_id, level) => {
+        const formData = {
+            parent_id     : workunit_id, 
+            condition_by  : "child_list",
+            include_parent: false,
+        };
+
+        workunitAPI.getWorkunitFilter(formData).then(
+            res => {
+                if(!res.is_error && res?.data?.length > 0){
+                    
+                    if(level === 3){
+                        let level_3_ = res.data.map((data3) => ({
+                            label : "KEJAKSAAN NEGERI " +data3.name,
+                            value : data3.id
+                        }))
+
+                        if(level_3_.length > 0){
+                            level_3_.unshift({label : 'SEMUA KEJAKSAAN NEGERI', value : (level_3_.map((data3) => (data3.value))).toString()})
+                        }
+
+                        setWorkunitLevel3(
+                            level_3_
+                        )
+                    }
+                    
+                    if(level === 4){
+                        let level_4_ = res.data.map((data4) => ({
+                            label : "CABANG KEJAKSAAN NEGERI " + data4.name,
+                            value : data4.id
+                        }))
+
+                        if(level_4_.length > 0){
+                            level_4_.unshift({label : 'SEMUA CABANG KEJAKSAAN NEGERI', value : (level_4_.map((data4) => (data4.value))).toString()})
+                        }
+                        
+                        setWorkunitLevel4(
+                            level_4_
+                        )
+                    }
+                }
+            }
+        )
+    }
 
     return (
         <Fragment>
@@ -92,9 +163,8 @@ const ModalFilter = ({ setModalFilter, onFilter }) => {
                         name            = 'clear'
                         block
                         theme           = {selectThemeColors}
-                        options         = {workunitOptions.filter(opt => opt.workunit_level_id == 2)}
-                        isMulti
-                        onChange        = {(e) => { setKejati(e) }}
+                        options         = {workunitLevel2}
+                        onChange        = {(e) => { setKejati(e); getChildWorkunit(e.value, 3) }}
                         className       = 'react-select'
                         isClearable
                         placeholder     = "Pilih Kejati"
@@ -108,13 +178,13 @@ const ModalFilter = ({ setModalFilter, onFilter }) => {
                         name            = 'clear'
                         block
                         theme           = {selectThemeColors}
-                        options         = {workunitOptions.filter(opt => opt.workunit_level_id == 3)}
-                        isMulti
-                        onChange        = {(e) => { setKejari(e) }}
+                        options         = {workunitLevel3?.filter((data) => (data.label != 'SEMUA KEJAKSAAN NEGERI'))}
+                        onChange        = {(e) => { setKejari(e); getChildWorkunit(e.value, 4) }}
                         className       = 'react-select'
                         isClearable
                         placeholder     = "Pilih Kejari"
                         classNamePrefix = 'select'
+                        isDisabled      = {workunitLevel3 === null ? true : false}
                     />
                 </div>
             </FormGroup>
@@ -124,13 +194,14 @@ const ModalFilter = ({ setModalFilter, onFilter }) => {
                         name            = 'clear'
                         block
                         theme           = {selectThemeColors}
-                        options         = {workunitOptions.filter(opt => opt.workunit_level_id == 4)}
-                        isMulti
+                        options         = {workunitLevel4?.filter((data) => (data.label != 'SEMUA CABANG KEJAKSAAN NEGERI'))}
                         onChange        = {(e) => { setCabjari(e) }}
                         className       = 'react-select'
+                        isDisabled      = {workunitLevel4 === null ? true : false}
                         placeholder     = "Pilih Cabjari"
                         isClearable
                         classNamePrefix = 'select'
+
                     />
                 </div>
             </FormGroup>

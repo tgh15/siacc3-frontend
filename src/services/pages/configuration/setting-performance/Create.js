@@ -16,7 +16,7 @@ const CreateSettingPerformance = ({ data, onSuccess, onFail }) => {
     if(data.is_event){
         datas.end_date      = data.end_date;
         datas.start_date    = data.start_date;
-        datas.workunit_id   = Array.from(data.workunit_id, workunit => workunit.value);
+        datas.workunit_id   = Array.from(data.workunit_id, workunit => parseInt(workunit.value));
         datas.max_recipient = parseInt(data.max_recipient) ?? 0;
     }
 
