@@ -58,9 +58,7 @@ const ModalFilter = ({ setModalFilter, onFilter }) => {
             workunit_id : workunit_id
         };
 
-        console.log(datas);
-
-        // onFilter(datas)
+        onFilter(datas)
     };
 
     const getChildWorkunit = (workunit_id, level) => {
