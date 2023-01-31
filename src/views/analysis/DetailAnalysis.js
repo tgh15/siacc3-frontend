@@ -1,12 +1,17 @@
+import jsPDF from "jspdf";
 import { useEffect, useState } from "react";
 import { Bar, Pie } from "react-chartjs-2";
 import { Eye } from "react-feather";
-import { Card, CardBody, Col, Row } from "reactstrap";
+import { Button, Card, CardBody, Col, Row } from "reactstrap";
 import Avatar from "../../components/widgets/avatar";
 import CustomTable from "../../components/widgets/custom-table";
 import CustomTableBody from "../../components/widgets/custom-table/CustomTableBody";
 import CustomTableBodyEmpty from "../../components/widgets/custom-table/CustomTableBodyEmpty";
 import { ModalBase } from "../../components/widgets/modals-base";
+import 'jspdf-autotable';
+
+import logoLight                                    from "../../assets/images/logo/logo_light.png";
+import moment               from "moment";
 
 const DetailAnalysis = (props) => {
 
@@ -23,6 +28,7 @@ const DetailAnalysis = (props) => {
     const [media, setMedia]         = useState(null);
     const [content, setContent]     = useState(null);
     const [sentiment, setSentiment] = useState({positif : 0, negatif : 0, netral : 0});
+    const [exportBody, setExportBody] = useState(null);
 
     const headerTableLocation = [
         {
@@ -204,6 +210,31 @@ const DetailAnalysis = (props) => {
             }))
         }
 
+        if(queryData.result.query.by === "location"){
+            let data_ = [];
+
+            queryData.Payload.media.list.map((data,index) => (
+                data_.push([index+1,data.value,data.frequency])
+            ))
+
+            setExportBody(data_);
+        }else{
+            let data_ = [];
+
+            queryData.Payload.media.list.map((data,index) => (
+                data_.push([
+                    index+1,
+                    data.value,
+                    data.frequency,
+                    queryData.Payload.content != null ? queryData.Payload.content.list.filter((data2) => data2.media === data.value && data2.sentiment === "negatif").length : 0,
+                    queryData.Payload.content != null ? queryData.Payload.content.list.filter((data2) => data2.media === data.value && data2.sentiment === "positif").length : 0,
+                    queryData.Payload.content != null ? queryData.Payload.content.list.filter((data2) => data2.media === data.value && data2.sentiment === "netral").length : 0,
+                ])
+            ))
+
+            setExportBody(data_);
+        }
+
         //set type
         setType(queryData.result.query.by);
         setMedia(queryData.Payload.media.list);
@@ -242,6 +273,60 @@ const DetailAnalysis = (props) => {
         });
     };
 
+    const addWatermark = (doc) => {
+
+        var totalPages = doc.internal.getNumberOfPages();
+
+        for (let i = 1; i <= totalPages; i++) {
+            doc.setPage(i);
+            doc.addImage(logoLight, 'PNG', 245, 190, 35, 10);
+        }
+
+        return doc;
+    };
+
+    const exportData = () => {
+
+        const headerMedia    = ["No.","Media","Jumlah Berita","Negatif","Positif","Netral"];
+        const headerLocation = ["No.","Media","Jumlah Berita"];
+        
+        let doc = new jsPDF({
+            orientation: "landscape",
+        });
+
+        let title = `Hasil Analisi Dengan Judul : ${queryData != null ? queryData.result.name : null}`;
+        
+        doc.text(title, 145, 20, null, null, "center");
+        doc.setFontSize(12);
+        doc.text('Tanggal: '+ moment().format('LL'), 145, 27, null, null, "center");
+
+        doc.autoTable({
+            startY          : 35,
+            head            : [type != null && type === 'location' ? headerLocation : headerMedia],
+            body            : exportBody,
+            styles          : { cellWidth: 'auto', minCellWidth: 30 },
+            columnStyles    : { 0: { cellWidth: 10 } },
+            headStyles      : {
+                fillColor: [23, 97, 56],
+            },
+            margin:         { top: 30, bottom: 25 }
+        });
+
+        let finalY = doc.lastAutoTable.finalY;
+        doc.text('Kesimpulan: ', 15, finalY+12, );
+        doc.text(`Berdasarkan data yang didapat jumlah keselurahan data adalah ${content != null ? content.size : null}`,15, finalY+20);
+        doc.text(`Dan data diatas memiliki 3 Sentiment Yaitu : `,15, finalY+26);
+        doc.text(`Sentiment Positif Sebanyak ${sentiment.positif}`, 15, finalY+32);
+        doc.text(`Sentiment Negatif Sebanyak ${sentiment.negatif} dan`, 15, finalY+38);
+        doc.text(`Sentiment Netral  Sebanyak ${sentiment.netral}`, 15, finalY+43);
+
+
+        doc = addWatermark(doc);
+
+        window.open(doc.output('bloburl'), '_blank');
+        return doc;
+    };
+
     useEffect(() => {
         if(queryData != null){
             getData();
@@ -250,11 +335,18 @@ const DetailAnalysis = (props) => {
 
     return (
         <>
-
             <ModalBase
                 size    = "lg"
                 show    = {isDetailAnalysisVisible}
                 title   = "Detail Analisis"
+                footer  = {
+                    <Button 
+                        color="primary"
+                        onClick = {() => {exportData()}}
+                    >
+                        Export
+                    </Button>
+                }
                 setShow = {(par) => {setIsDetailAnalysisVisible(par)}}
             >
                 {
@@ -412,7 +504,7 @@ const DetailAnalysis = (props) => {
                             </Row>
                         </>
                 }
-
+                
             </ModalBase>
 
         </>

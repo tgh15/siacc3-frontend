@@ -24,6 +24,8 @@ import DetailAnalysis from "./DetailAnalysis";
 import DetailAnalysisNews from "./DetailAnalysisNews";
 
 
+
+
 const Analysis = () => {
 
 
