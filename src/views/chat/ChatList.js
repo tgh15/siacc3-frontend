@@ -142,7 +142,7 @@ const ChatList = props => {
             {
                 chat.attachment && chat.attachment[0].type == "Audio" ?
                     <div >
-                        <audio src={chat.attachment[0].content} controls style={{width: '200px'}}/>
+                        <audio src={chat.attachment[0].content} controls style={{width: '20em'}}/>
                     </div>
                 : 
                     null

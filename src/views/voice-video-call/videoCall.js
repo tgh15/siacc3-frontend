@@ -7,6 +7,7 @@ import {
     Card, 
     Button, 
     CardBody,
+    CardFooter,
 }                               from 'reactstrap';
 
 //Icon
@@ -22,7 +23,7 @@ import {ChatContext}            from "../../context/ChatContext";
 import {AntmediaContext}        from "../../context/AntmediaContext";
 import { Post }                 from '../../services/core/request';
 import CustomToast              from '../../components/widgets/custom-toast';
-import Helper from '../../helpers';
+import Helper                   from '../../helpers';
 
 const VideoCall = (props) => {
 
@@ -176,44 +177,46 @@ const VideoCall = (props) => {
 
     return (
         <Fragment>
-        
-            <Card className="mb-0 h-100">
+            <Card 
+                className="mb-0"
+                style   = {{overflow: 'auto'}}
+            >
                 <div 
                     style     = {{ cursor: 'pointer' }}
                     className = 'show-content' 
                 >
-                    <CardBody className="h-75">
-                        <Row>
+                    <CardBody>
+                        <Row >
                             <Col md="6">
-                                {/*local*/}
-                                <Card className='box-voice-call'>
-                                    <video 
-                                        id              = "localVideo"
-                                        width           = {100}
-                                        height          = {100}
-                                        autoPlay 
-                                        controls 
-                                        className       = 'img-fluid img-video'
-                                        onLoadedData    = {() => {setCallerVideo(true);}}
-                                    />
-                                </Card>
+                                <video 
+                                    id              = "localVideo"
+                                    style           = {{height: '35vh'}}
+                                    width           = {100}
+                                    height          = {100}
+                                    autoPlay 
+                                    controls 
+                                    className       = 'img-video'
+                                    onLoadedData    = {() => {setCallerVideo(true);}}
+                                />
                             </Col>
 
                             {/*remote*/}
                             <Col md="6">
-                                <div className='box-voice-call'>
-                                    {
-                                        <video 
-                                            id          = "remoteVideoPeer" 
-                                            controls 
-                                            autoPlay 
-                                            className   = 'img-fluid img-video'
-                                        />
-                                    }
-                                </div>
+                                <video 
+                                    id          = "remoteVideoPeer" 
+                                    style       = {{height: '35vh'}}
+                                    width       = {100}
+                                    height      = {100}
+                                    controls 
+                                    autoPlay 
+                                    className   = 'img-video'
+                                />
                             </Col>
                         </Row>
-                        <div className=''>
+
+                    </CardBody>
+                    <CardFooter>
+                        <Col md={12}>
                             <div className='d-flex justify-content-center align-item-center'>
                                 <Button.Ripple 
                                     style     = {{ backgroundColor: '#fcfcfc' }}
@@ -265,8 +268,8 @@ const VideoCall = (props) => {
                                     />
                                 </Button.Ripple>
                             </div>
-                        </div> 
-                    </CardBody>
+                        </Col>
+                    </CardFooter>
                 </div>
             </Card>
         </Fragment>

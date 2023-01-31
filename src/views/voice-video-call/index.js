@@ -15,11 +15,17 @@ import ContentGroup         from './ptt/contentGroup';
 import { ChatContext }      from '../../context/ChatContext';
 import { AntmediaContext }  from '../../context/AntmediaContext';
 import CommunicationPTT     from '../../services/pages/chat/PushToTalk';
-import { WebsocketURL } from '../../configs/socket';
-import { ModalBase } from '../../components/widgets/modals-base';
-import { Button, Form, FormGroup, Input, Label } from 'reactstrap';
-import CustomToast from '../../components/widgets/custom-toast';
-import Helper from '../../helpers';
+import { WebsocketURL }     from '../../configs/socket';
+import { ModalBase }        from '../../components/widgets/modals-base';
+import { 
+    Button, 
+    Form, 
+    FormGroup, 
+    Input, 
+    Label 
+}                           from 'reactstrap';
+import CustomToast          from '../../components/widgets/custom-toast';
+import Helper               from '../../helpers';
 
 const IndexVoiceVideoCall = () => {
 
