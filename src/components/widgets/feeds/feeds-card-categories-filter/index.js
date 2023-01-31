@@ -250,24 +250,21 @@ export const FeedsCategoriesFilterModal = (props) => {
                     </FormGroup>
 
                     <FormGroup className="d-flex justify-content-between">
-
-                        <div>
-                            <Button 
-                                type    = "reset" 
-                                color   = "primary" 
-                                outline 
-                                onClick = {() => { handleReset() }}
-                            >
-                                Reset
-                            </Button>
-                            &nbsp;
-                            <Button 
-                                type    = "submit"
-                                color   = "primary" 
-                            >
-                                Terapkan
-                            </Button>
-                        </div>
+                        <Button 
+                            type    = "reset" 
+                            color   = "primary" 
+                            outline 
+                            onClick = {() => { handleReset() }}
+                        >
+                            Reset
+                        </Button>
+                        &nbsp;
+                        <Button 
+                            type    = "submit"
+                            color   = "primary" 
+                        >
+                            Terapkan
+                        </Button>
                     </FormGroup>
                 </Form>
 
