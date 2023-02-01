@@ -119,7 +119,6 @@ const MessageDropdown = () => {
                                     'align-items-center': item.switch
                                 })}
                             >
-
                                 <Fragment>
                                     <Media left>
                                         <Avatar onError={fallbackImage_}
@@ -135,7 +134,7 @@ const MessageDropdown = () => {
                                                 {Helper.getTimeAgo(item.time)}
                                             </span>
                                         </div>
-                                        <small className='notification-text'>{item.subtitle}</small>
+                                        <small className='notification-text'>{item.last_message}</small>
                                     </Media>
                                 </Fragment>
 
@@ -146,8 +145,6 @@ const MessageDropdown = () => {
             </PerfectScrollbar>
         )
     }
-
-
 
     /*eslint-enable */
     const dropdownNewMessage = () => {
@@ -201,9 +198,14 @@ const MessageDropdown = () => {
             <UncontrolledDropdown tag='li' className='dropdown-notification nav-item mr-25'>
                 <DropdownToggle tag='a' className='nav-link' href='/' onClick={e => e.preventDefault()}>
                     <MessageCircle size={21} />
-                    {totalUnreadMessage > 0 ? <Badge pill color='primary' className='badge-up'>
-                        {totalUnreadMessage}
-                    </Badge> : null}
+                    {
+                        totalUnreadMessage > 0 ? 
+                            <Badge pill color='primary' className='badge-up'>
+                                {totalUnreadMessage}
+                            </Badge> 
+                        : 
+                            null
+                    }
                 </DropdownToggle>
 
                 <DropdownMenu tag='ul' right className='dropdown-menu-media mt-0'>

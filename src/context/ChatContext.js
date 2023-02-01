@@ -53,9 +53,12 @@ const ChatProvider = ({ children }) => {
             onSuccess: (res) => {
                 setRoom(res.data)
                 if (res.data != null) {
+                    let count_ = 0;
                     res.data.map((data) => (
-                        setTotalUnreadMessage(totalUnreadMessage + data.un_read_message)
+                        data.is_read === false && count_++
                     ))
+                    console.log(count_);
+                    setTotalUnreadMessage(count_);
                 }
             },
             onFail: (err) => {
@@ -124,9 +127,9 @@ const ChatProvider = ({ children }) => {
                             setRoom([...oldRoom]);
                         }
 
-                        setRoomSelected(res.data);
-                        getMessages(res.data.id);
-                        getRoom();
+                        // setRoomSelected(res.data);
+                        // getMessages(res.data.id);
+                        // getRoom();
 
                         if (location.pathname != "/chats") {
                             setChatPopup(true);
@@ -464,6 +467,8 @@ const ChatProvider = ({ children }) => {
 
             selectedMessage,
             setSelectedMessage,
+
+            totalUnreadMessage,
 
             markAsRead,
             getMessages,
