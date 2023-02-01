@@ -191,6 +191,7 @@ export const ApprovedNewsWidget = (props) => {
                         onSubmit            = {props.onSubmit} 
                         statePosition       = {statePosition}
                     />
+                    
                     { 
                         localStorage.getItem('role') == 'Verifikator Pusat' || localStorage.getItem('role') == 'Admin' ?
                             agent_report.status == 1 ? 

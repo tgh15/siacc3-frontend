@@ -272,7 +272,8 @@ export const SelectWilayah  = ({data,show,setShow,onSubmit, index, statePosition
                     <FormGroup>
                         <Label>Jenis Berita</Label>
                         <p>
-                            <Button 
+                            <Button
+                                id      = {`select_national_kind_${index}`}
                                 outline = { type !== "nasional" } 
                                 onClick = { () => {
                                     setType('nasional')
@@ -288,6 +289,7 @@ export const SelectWilayah  = ({data,show,setShow,onSubmit, index, statePosition
                             </Button>&nbsp;
 
                             <Button 
+                                id      = {`select_local_kind_${index}`}
                                 onClick = { () => {
                                     setType('lokal')
                                     setAgentUpdate({
@@ -309,11 +311,12 @@ export const SelectWilayah  = ({data,show,setShow,onSubmit, index, statePosition
             <FormGroup>
                 <Label>Kategori Berita</Label>
                 <Select
+                    id              = {`select_category_${index}`}
                     name            = 'colors'
                     value           = {activeCategories != null && activeCategories}
                     theme           = {selectThemeColors}
                     isMulti
-                    options         = {categories==null?[]:categories}
+                    options         = {categories == null ? [] : categories}
                     className       = 'react-select'
                     isClearable     = {false}
                     defaultValue    = {activeCategories != null && activeCategories}
@@ -343,6 +346,7 @@ export const SelectWilayah  = ({data,show,setShow,onSubmit, index, statePosition
                         </FormGroup>
                         <FormGroup>
                             <Select
+                                id               = {`select_workunit_${index}`}
                                 name             = 'colors'
                                 theme            = {selectThemeColors}
                                 isMulti

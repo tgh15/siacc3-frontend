@@ -210,11 +210,11 @@ const PersetujuanBerita = (props) => {
                                                                         <ApprovedNewsWidget
                                                                             id                  = {data.id}
                                                                             index               = {index}
-                                                                            statePosition       = 'left'
                                                                             title               = {data.title}
                                                                             method              = {true}
                                                                             onSubmit            = {handleRemoveAgentReport}
                                                                             agent_report        = {data}
+                                                                            statePosition       = 'left'
                                                                             onChangeToArchive   = {props.changeToArchive}
                                                                             getAgentReportByStatusAll = {getAgentReportByStatusAll}
                                                                         />
