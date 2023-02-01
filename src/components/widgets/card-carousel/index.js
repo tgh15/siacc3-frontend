@@ -93,7 +93,7 @@ const CarouselAttachment = ({images}) => {
                     activeIndex = {activeIndex}
                 />
 
-                <ContainerFluid className = "ml-0 mr-0">
+                <ContainerFluid className = "ml-0 mr-0" style={{zIndex: 999}}>
                     <Carousel 
                         next        = {next} 
                         previous    = {previous} 

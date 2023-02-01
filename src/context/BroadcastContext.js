@@ -80,8 +80,6 @@ const BroadcastProvider = ({ children }) => {
         );
     }
 
-    
-
 
     // use Effect
     useEffect(() => {

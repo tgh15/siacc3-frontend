@@ -114,7 +114,7 @@ const ChatList = props => {
                 </div>
                 : null}
 
-            {/* image */}
+            {/* file */}
             {chat.attachment && chat.attachment[0].type != "Image" && chat.attachment[0].type != "Video" && chat.attachment[0].type != "Audio" ?
                 <div className='chat-file'>
                     <div>

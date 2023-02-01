@@ -20,8 +20,8 @@ export const chatURL = {
 };
 
 //GET
-const getBroadcast = () => Get(`${chatURL.chatPrefix}/${chatURL.chatRoom}/${chatURL.chatBroadcast}`);
-const getBroadcastMessage = (roomId) => roomId == undefined ? Get(`${chatURL.chatPrefix}/${chatURL.chatMessage}`) : Get(`${chatURL.chatPrefix}/${chatURL.chatMessage}/${roomId}`);
+const getBroadcast          = () => Get(`${chatURL.chatPrefix}/${chatURL.chatRoom}/${chatURL.chatBroadcast}`);
+const getBroadcastMessage   = (roomId) => roomId == undefined ? Get(`${chatURL.chatPrefix}/${chatURL.chatMessage}`) : Get(`${chatURL.chatPrefix}/${chatURL.chatMessage}/${roomId}`);
 
 //POST
 const readBroadcast = (data) => Post(`${chatURL.chatPrefix}/${chatURL.chatRoom}/${chatURL.chatRead}`, data);

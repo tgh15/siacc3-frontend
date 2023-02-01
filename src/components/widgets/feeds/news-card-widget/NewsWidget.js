@@ -278,21 +278,23 @@ export const NewsWidget = (props) => {
             })
         }
     };
+
+    const isBlank = (str) => {
+        return (!str || /^\s*$/.test(str));
+    }
     
     const commentButtonHandlers = {
         onClick: () => {
             let validated = true;
             let errs = [];
 
-            if(sendData.comment == ""){
+            if(isBlank(sendData.comment)){
                 validated = false;
             }else{
                 validated = true;
             };
 
-            console.log(sendData.comment, 'comment')
-            console.log(validated, 'validated')
-            
+      
             if (validated && commentLoading === false) {
                 setCommentLoading(true);
 
@@ -1155,7 +1157,10 @@ export const NewsWidget = (props) => {
                             {
                                 "method" in props ?
                                     <Fragment>
-                                        <p className="text-justify mt-1 mb-2">
+                                        <p 
+                                            style       = {{whiteSpace: 'pre-line'}}
+                                            className   = "text-justify mt-1 mb-2"
+                                        >
                                             {
                                                 parse(
                                                     `
@@ -1172,11 +1177,19 @@ export const NewsWidget = (props) => {
                                     </Fragment>
                                 :
                                     "detail" in props ?
-                                        <p className='text-justify mt-1'>
+                                        <p 
+                                            style       = {{whiteSpace: 'pre-line'}}
+                                            className   ='text-justify mt-1'
+
+                                        >
                                             {parse(bodyText)}
                                         </p>
                                     :
-                                        <p className="text-justify mt-1 mb-2">
+                                        <p 
+                                            style       = {{whiteSpace: 'pre-line'}}
+                                            className   = "text-justify mt-1 mb-2"
+
+                                        >
                                             {
                                                 countWord(bodyText) > 100 ?
                                                     <>
