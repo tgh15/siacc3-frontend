@@ -127,9 +127,9 @@ const ChatProvider = ({ children }) => {
                             setRoom([...oldRoom]);
                         }
 
-                        // setRoomSelected(res.data);
-                        // getMessages(res.data.id);
-                        // getRoom();
+                        setRoomSelected(res.data);
+                        getMessages(res.data.id);
+                        getRoom();
 
                         if (location.pathname != "/chats") {
                             setChatPopup(true);
