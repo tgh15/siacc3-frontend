@@ -23,11 +23,12 @@ import {
 
 import SubmitDiscussion         from '../submit-discussion';
 
-export const DropDownItemWithIcon = ({Icon,text,subText,onClick,Img})=>{
+export const DropDownItemWithIcon = ({Icon,text,subText,onClick,Img,id})=>{
     return(
-        <DropdownItem 
-            onClick = {onClick}
+        <DropdownItem
+            id      = {id}
             style   = {{width:"100%"}} 
+            onClick = {onClick}
         >
             <div className="media" >
                 <div style={{marginRight:"16px"}}>
@@ -52,6 +53,8 @@ export const DropDownItemWithIcon = ({Icon,text,subText,onClick,Img})=>{
 }
 export const WidgetChildDropdown = (props)=>{
 
+    const {index}                           = props;
+
     const [saved,setsaved]                  = useState(props.saved)
     const [discussion,setDiscussion]        = useState(false)
     const [dropdownOpen,setDropdownOpen]    = useState(false)
@@ -72,88 +75,96 @@ export const WidgetChildDropdown = (props)=>{
             isOpen  = {dropdownOpen}
             toggle  = {toggleDropdown}
         >
-                <SubmitDiscussion
-                    dataNews         = {props.dataNews}
-                    discussion       = {discussion}
-                    toggleDiscussion = {toggleDiscussion}
+            <SubmitDiscussion
+                dataNews         = {props.dataNews}
+                discussion       = {discussion}
+                toggleDiscussion = {toggleDiscussion}
+            />
+            <DropdownToggle color id={`more_option_${props.index}`}>
+                <MoreVertical size={14}/>
+            </DropdownToggle>
+            <DropdownMenu>
+                <DropDownItemWithIcon
+                    id      = {`submit_discussion_option_${index}`}
+                    Icon    = {Users} 
+                    text    = "Ajukan Pembahasan"
+                    subText = "Teruskan berita ke grup untuk dibahas"
+                    onClick = {() => {toggleDiscussion()}}
                 />
-                <DropdownToggle color="">
-                    <MoreVertical size={14}/>
-                </DropdownToggle>
-                <DropdownMenu>
-                    <DropDownItemWithIcon 
-                        Icon    = {Users} 
-                        text    = "Ajukan Pembahasan"
-                        subText = "Teruskan berita ke grup untuk dibahas"
-                        onClick = {() => {toggleDiscussion()}}
-                    />
-                    {
-                        localStorage.getItem('role') === 'Pimpinan Pusat' || localStorage.getItem('role') === 'Verifikator Pusat' || localStorage.getItem('role') === 'Analis Direktorat' ? 
-                            props.selectedCheck ?
-                                props.self_selected_check ?
-                                    <DropDownItemWithIcon 
-                                        Icon    = {CheckSquare} 
-                                        text    = {"Batalkan Berita Pilihan"}
-                                        onClick = {() => {props.cancelFromSelected(props.dataNews)}}
-                                        subText = "Batalkan ini ke berita pilihan"
-                                    />
-                                :
-                                    null
-                            :
-                                <DropDownItemWithIcon 
+                {
+                    localStorage.getItem('role') === 'Pimpinan Pusat' || localStorage.getItem('role') === 'Verifikator Pusat' || localStorage.getItem('role') === 'Analis Direktorat' ? 
+                        props.selectedCheck ?
+                            props.self_selected_check ?
+                                <DropDownItemWithIcon
+                                    id      = {`cancel_selected_news_option_${index}`}
                                     Icon    = {CheckSquare} 
-                                    text    = {"Jadikan Berita Pilihan"}
-                                    onClick = {() => {props.changeToSelected(props.dataNews)}}
-                                    subText = "Jadikan ini ke berita pilihan"
+                                    text    = {"Batalkan Berita Pilihan"}
+                                    onClick = {() => {props.cancelFromSelected(props.dataNews)}}
+                                    subText = "Batalkan ini ke berita pilihan"
                                 />
+                            :
+                                null
                         :
-                            null
-                    }
-                    
-                    <DropDownItemWithIcon 
-                        Icon    = { Bookmark } 
-                        text    = { saved ? "Batalkan Simpan Berita" : "Simpan Berita" } 
-                        onClick = { () => { props.setSaved()} }
-                        subText = "Simpan ini ke berita tersimpan"
-                    />
-
-                    <DropDownItemWithIcon
-                        Icon    = { Printer }
-                        text    = "Generate Berita"
-                        onClick = {() => {props.setShowExportForm()}}
-                        subText = "Mengkonversi Berita Ke PDF."
-                    />
-
-                    {
-                        localStorage.getItem('role') === 'Pimpinan Pusat' ? 
-                            <DropDownItemWithIcon 
-                                Img     = {<img src={Trophy} height={22} width={22}/>} 
-                                text    = "Berikan Trophy"
-                                onClick = {() => { props.setShowTrophyForm(true)}}
-                                subText = "Berikan berita ini trophy"
+                            <DropDownItemWithIcon
+                                id      = {`selected_news_option_${index}`}
+                                Icon    = {CheckSquare} 
+                                text    = {"Jadikan Berita Pilihan"}
+                                onClick = {() => {props.changeToSelected(props.dataNews)}}
+                                subText = "Jadikan ini ke berita pilihan"
                             />
-                        :
-                            null
-                    }
+                    :
+                        null
+                }
+                
+                <DropDownItemWithIcon
+                    id      = {`saved_news_option_${index}`}
+                    Icon    = { Bookmark } 
+                    text    = { saved ? "Batalkan Simpan Berita" : "Simpan Berita" } 
+                    onClick = { () => { props.setSaved()} }
+                    subText = "Simpan ini ke berita tersimpan"
+                />
 
-                    <DropDownItemWithIcon 
-                        Icon    = {Star} 
-                        text    = "Detail Rating"
-                        onClick = {() => { props.setShowRatingForm(true); props.getRatingByAgentReport()}}
-                        subText = "Menampilkan jumlah rating"
-                    />
-                    {
-                        props.hashtag != undefined && localStorage.getItem('role') === 'Verifikator Pusat'? 
-                            <DropDownItemWithIcon 
-                                Icon    = {Hash} 
-                                text    = "Ubah Hashtag"
-                                onClick = {() => { props.setShowHashtagForm(true)}}
-                                subText = "Mengubah hashtag"
-                            />
-                        :
-                            null
-                    }
-                </DropdownMenu>
+                <DropDownItemWithIcon
+                    id      = {`generate_news_option_${index}`}
+                    Icon    = { Printer }
+                    text    = "Generate Berita"
+                    onClick = {() => {props.setShowExportForm()}}
+                    subText = "Mengkonversi Berita Ke PDF."
+                />
+
+                {
+                    localStorage.getItem('role') === 'Pimpinan Pusat' ? 
+                        <DropDownItemWithIcon
+                            id      = {`trophy_news_option_${index}`}
+                            Img     = {<img src={Trophy} height={22} width={22}/>} 
+                            text    = "Berikan Trophy"
+                            onClick = {() => { props.setShowTrophyForm(true)}}
+                            subText = "Berikan berita ini trophy"
+                        />
+                    :
+                        null
+                }
+
+                <DropDownItemWithIcon
+                    id      = {`rating_news_option_${index}`}
+                    Icon    = {Star} 
+                    text    = "Detail Rating"
+                    onClick = {() => { props.setShowRatingForm(true); props.getRatingByAgentReport()}}
+                    subText = "Menampilkan jumlah rating"
+                />
+                {
+                    props.hashtag != undefined && localStorage.getItem('role') === 'Verifikator Pusat'? 
+                        <DropDownItemWithIcon
+                            id      = {`rating_news_option_${index}`}
+                            Icon    = {Hash} 
+                            text    = "Ubah Hashtag"
+                            onClick = {() => { props.setShowHashtagForm(true)}}
+                            subText = "Mengubah hashtag"
+                        />
+                    :
+                        null
+                }
+            </DropdownMenu>
         </ButtonDropdown>
     )
 }

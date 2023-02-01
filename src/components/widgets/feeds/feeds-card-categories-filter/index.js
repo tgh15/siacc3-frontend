@@ -109,18 +109,20 @@ export const FeedsCategoriesFilterModal = (props) => {
                         <Label>Jenis Berita</Label>
                         <p>
                             <Button
+                                id      = {"beranda_filter_national_news_kind"}
+                                color   = {"primary"}
                                 onClick = {()=>{setKind(2)}} 
                                 outline = {kind !== 2} 
-                                color   = {"primary"}
                             >
                                 Nasional
                             </Button>
                             &nbsp;
 
                             <Button 
+                                id      = {"beranda_filter_local_news_kind"}
+                                color   = {"primary"}
                                 onClick = {()=>{setKind(1)}} 
                                 outline = {kind !== 1} 
-                                color   = {"primary"}
                             >
                                 Lokal
                             </Button>
@@ -131,18 +133,20 @@ export const FeedsCategoriesFilterModal = (props) => {
                         <Label>Jenis Publikasi</Label>
                         <p>
                             <Button
+                                id      = {"beranda_filter_national_publication_kind"}
+                                color   = {"primary"}
                                 onClick = {()=>{setPublishType('national')}} 
                                 outline = {publishType !== 'national'} 
-                                color   = {"primary"}
                             >
                                 Nasional
                             </Button>
                             &nbsp;
 
                             <Button 
+                                id      = {"beranda_filter_local_publication_kind"}
+                                color   = {"primary"}
                                 onClick = {()=>{setPublishType('local')}} 
                                 outline = {publishType !== 'local'} 
-                                color   = {"primary"}
                             >
                                 Lokal
                             </Button>
@@ -153,34 +157,37 @@ export const FeedsCategoriesFilterModal = (props) => {
                         <Label>Urutkan</Label>
                         <p>
                             <Button 
+                                id      = {"beranda_filter_order_popular"}
+                                color   = "primary"
                                 outline = {orderBy !== "popular_topics"} 
                                 onClick = {() => {setOrderBy("popular_topics")}} 
-                                color   = "primary"
                             >
                                 Topik Populer
                             </Button>
                             &nbsp;
                             <Button 
+                                id      = {"beranda_filter_order_latest"}
+                                color   = "primary"
                                 outline = {orderBy !== "latest"} 
                                 onClick = {() => {setOrderBy("latest")}} 
-
-                                color   = "primary"
                             >
                                 Terbaru
                             </Button>
                             &nbsp;
-                            <Button 
+                            <Button
+                                id      = {"beranda_filter_order_oldest"} 
+                                color   = "primary"
                                 outline = {orderBy  !== "longest"} 
                                 onClick = {() => {setOrderBy("longest")}} 
-                                color   = "primary"
                             >
                                 Terlama
                             </Button>
                             &nbsp;
-                            <Button 
+                            <Button
+                                id      = {"beranda_filter_order_rarely"}
+                                color   = "primary"
                                 outline = {orderBy !== "rarely_seen"} 
                                 onClick = {() => {setOrderBy("rarely_seen")}} 
-                                color   = "primary"
                             >
                                 Jarang Dilihat
                             </Button>
@@ -200,7 +207,7 @@ export const FeedsCategoriesFilterModal = (props) => {
                                     control = {control}
                                     as      = {
                                         <Flatpickr 
-                                            id          = 'start_date' 
+                                            id          = 'beranda_filter_start_date' 
                                             options     = {{ dateFormat: "d-m-Y"}}
                                             className   = 'form-control' 
                                             placeholder = {moment().format('YYYY-MM-DD')}
@@ -217,7 +224,7 @@ export const FeedsCategoriesFilterModal = (props) => {
                                     control = {control}
                                     as      = {
                                         <Flatpickr 
-                                            id          = 'end_date' 
+                                            id          = 'beranda_filter_end_date' 
                                             options     = {{ dateFormat: "d-m-Y"}}
                                             className   = 'form-control' 
                                             placeholder = {moment().format('YYYY-MM-DD')}
@@ -232,11 +239,12 @@ export const FeedsCategoriesFilterModal = (props) => {
                     <FormGroup>
                         <Label>Satuan Kerja</Label>    
                         <Controller
+                            id      = 'beranda_filter_end_date' 
                             name    = "workunit"
                             control = {control}
                             as      = {
                                 <Select
-                                    id              = "workunit" 
+                                    id              = "beranda_filter_workunit" 
                                     theme           = {selectThemeColors}
                                     isMulti
                                     options         = {workunitOptions}
@@ -251,6 +259,7 @@ export const FeedsCategoriesFilterModal = (props) => {
 
                     <FormGroup className="d-flex justify-content-between">
                         <Button 
+                            id      = "beranda_filter_reset_button"
                             type    = "reset" 
                             color   = "primary" 
                             outline 
@@ -260,6 +269,7 @@ export const FeedsCategoriesFilterModal = (props) => {
                         </Button>
                         &nbsp;
                         <Button 
+                            id      = "beranda_filter_submit_button"
                             type    = "submit"
                             color   = "primary" 
                         >

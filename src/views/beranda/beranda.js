@@ -259,16 +259,16 @@ const Beranda = (props) => {
                                         loadingFeeds ? 
                                         <FeedSkeleton count={2}/> : 
                                         <FeedWrapper
-                                            trophy              = {trophy}
                                             feeds               = {feed}
+                                            trophy              = {trophy}
                                             handleStore         = {handleStore}
                                             trophyPagination    = {trophyPagination}
                                         />
                                     ) 
                                 :
                                     <FeedWrapper 
-                                        trophy              = {trophy}
                                         feeds               = {feed}
+                                        trophy              = {trophy}
                                         handleStore         = {handleStore}
                                         trophyPagination    = {trophyPagination}
                                     />

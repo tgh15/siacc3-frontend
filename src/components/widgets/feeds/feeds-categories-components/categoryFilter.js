@@ -17,7 +17,7 @@ import { useDispatch, useSelector }                         from 'react-redux';
 
 var refs = [];
 
-const CategoriesButton = ({ categories, setActive }) => {
+const CategoriesButton = ({ categories, setActive, id }) => {
 
     const selectors = useSelector(state => {
         const { FeedsCategoriesReducer } = state;
@@ -27,6 +27,7 @@ const CategoriesButton = ({ categories, setActive }) => {
     if (categories.id == selectors.activeCategories.id) {
         return (
             <li 
+                id          = {"filter_"+id}
                 className   = "nav-item"
             >
                 <a 
@@ -39,7 +40,8 @@ const CategoriesButton = ({ categories, setActive }) => {
         )
     } else {
         return (
-            <li 
+            <li
+                id          = {"filter_"+id}
                 ref         = {refs[categories.id]} 
                 className   = "nav-item"
             >
@@ -130,15 +132,17 @@ export const CategoryFilter = (props) => {
                         />
                         <Fragment>
                             <ul 
+                                id          = {`filter_category`}
                                 ref         = {divRef}
                                 className   = "cat-menu-component nav nav-tabs mb-0" 
                             >
                                 {
                                     Array.isArray(feedsCategories) ? 
                                         isApproval == undefined ? 
-                                            feedsCategories.map((feedscategory) => {
+                                            feedsCategories.map((feedscategory, index) => {
                                                 return (
                                                     <CategoriesButton
+                                                        id              = {`category_filter_${index}`}
                                                         key             = {`cat-feeds-components-${feedscategory.id}`}
                                                         setActive       = {(category) => {activate(category)}} 
                                                         categories      = {feedscategory} 
@@ -146,9 +150,10 @@ export const CategoryFilter = (props) => {
                                                 )
                                             })
                                         :
-                                            (feedsCategories.filter((data) => data.id != 'selected_news')).map((feedscategory) => {
+                                            (feedsCategories.filter((data, index) => data.id != 'selected_news')).map((feedscategory) => {
                                                 return (
                                                     <CategoriesButton
+                                                        id              = {`category_filter_${index}`}
                                                         key             = {`cat-feeds-components-${feedscategory.id}`}
                                                         setActive       = {(category) => {activate(category)}} 
                                                         categories      = {feedscategory} 

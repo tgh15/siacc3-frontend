@@ -23,7 +23,7 @@ const VerticalNavMenuLink = ({
   toggleActiveGroup,
   parentItem,
   routerProps,
-  currentActiveItem
+  currentActiveItem,
 }) => {
   // ** Conditional Link Tag, if item has newTab or externalLink props use <a> tag else use NavLink
   const LinkTag = item.externalLink ? 'a' : NavLink
@@ -69,7 +69,8 @@ const VerticalNavMenuLink = ({
 
   return (
     <li
-      className={classnames({
+      id        = {item.id}
+      className = {classnames({
         'nav-item': !item.children,
         disabled: item.disabled,
         active: item.navLink === activeItem

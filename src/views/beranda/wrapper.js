@@ -21,6 +21,7 @@ export function FeedWrapper(props) {
                                     <NewsWidget
                                         key                     = {`news-feed-page-${news.id}-${index}`}
                                         data                    = {news}
+                                        index                   = {index}
                                         handleStore             = {(newss,data) => {handleStore(newss,data)}}
 
                                         //Role

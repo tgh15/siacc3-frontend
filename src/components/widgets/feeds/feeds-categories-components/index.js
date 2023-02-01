@@ -13,7 +13,7 @@ import { CategoryContext }                      from '../../../../context/Catego
 
 var refs = [];
 
-const CategoriesButton = ({ categories, setActive, divref }) => {
+const CategoriesButton = ({ categories, setActive, id }) => {
 
     const selectors = useSelector(state => {
         const { FeedsCategoriesReducer } = state;
@@ -23,6 +23,7 @@ const CategoriesButton = ({ categories, setActive, divref }) => {
     if (categories.id == selectors.activeCategories.id) {
         return (
             <li 
+                id          = {id}
                 className   = "nav-item"
             >
                 <a 
@@ -36,6 +37,7 @@ const CategoriesButton = ({ categories, setActive, divref }) => {
     } else {
         return (
             <li 
+                id          = {id}
                 ref         = {refs[categories.id]} 
                 className   = "nav-item"
             >
@@ -125,15 +127,17 @@ export const FeedCategoriesWidget = (props) => {
                         />
                         <Fragment>
                             <ul 
+                                id              = {`category_filter`}
                                 ref         = {divRef}
                                 className   = "cat-menu-component nav nav-tabs mb-0" 
                             >
                                 {
                                     Array.isArray(feedsCategories) ? 
                                         isApproval == undefined ? 
-                                            feedsCategories.map((feedscategory) => {
+                                            feedsCategories.map((feedscategory, index) => {
                                                 return (
                                                     <CategoriesButton
+                                                        id              = {`category_filter_${index}`}
                                                         key             = {`cat-feeds-components-${feedscategory.id}`}
                                                         setActive       = {(category) => {activate(category)}} 
                                                         categories      = {feedscategory} 
@@ -141,9 +145,10 @@ export const FeedCategoriesWidget = (props) => {
                                                 )
                                             })
                                         :
-                                            (feedsCategories.filter((data) => data.id != 'selected_news')).map((feedscategory) => {
+                                            (feedsCategories.filter((data, index) => data.id != 'selected_news')).map((feedscategory) => {
                                                 return (
                                                     <CategoriesButton
+                                                        id              = {`category_filter_${index}`}
                                                         key             = {`cat-feeds-components-${feedscategory.id}`}
                                                         setActive       = {(category) => {activate(category)}} 
                                                         categories      = {feedscategory} 

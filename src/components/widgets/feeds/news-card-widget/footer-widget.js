@@ -35,6 +35,7 @@ export const WidgetCardNewsBottom = (props)=>{
     const {
         id,
         saved,
+        index,
         trophy,
         ratings,
         newsType,
@@ -161,6 +162,7 @@ export const WidgetCardNewsBottom = (props)=>{
                 {
                     roleLike ?
                         <Rating
+                            id              = {`news_rating_${index}`}
                             onClick         = {(value) => {handleRatings(value)}}
                             fullSymbol      = {<Star size={22} fill='#ff9f43' stroke='#ff9f43' />}
                             emptySymbol     = {<Star size={22} fill='#babfc7' stroke='#babfc7' />}
@@ -174,7 +176,8 @@ export const WidgetCardNewsBottom = (props)=>{
                 <Row>
                     {
                         roleComment ? 
-                            <Button 
+                            <Button
+                                id          = {`comment_count_${index}`}
                                 color       = "flat" 
                                 className   = "d-flex pb-0"
                             >
@@ -190,7 +193,8 @@ export const WidgetCardNewsBottom = (props)=>{
                         roleViewer ?
                             <>
                                 <div ref={viewRef}>
-                                    <Button 
+                                    <Button
+                                        id          = {`viewer_count_${index}`}
                                         color       = "flat" 
                                         className   = "d-flex pb-0"
                                     >
@@ -200,7 +204,9 @@ export const WidgetCardNewsBottom = (props)=>{
                                         </p>
                                     </Button>
                                 </div>
+
                                 <Popover
+                                    id          = {`viewer_popover_${index}`}
                                     isOpen      = {popView} 
                                     toggle      = {() => setPopView(!popView)} 
                                     target      = {viewRef}
@@ -303,7 +309,7 @@ export const WidgetCardNewsBottom = (props)=>{
     )
 }
 
-export const AddCommentWidget=({textProps,buttonProps,childText,loading})=>{
+export const AddCommentWidget=({textProps,buttonProps,childText,loading,index})=>{
     const clickHandler = ()=>{ 
         buttonProps.onClick()
     }
@@ -316,15 +322,24 @@ export const AddCommentWidget=({textProps,buttonProps,childText,loading})=>{
             <RowAvatarWidget img={userAvatar}/>
             <Col>
                 <div className="input-group-merge mb-2 input-group">
-                    <input  {...textProps} className="form-control" />
+                    <input  
+                        id = {`comment_input_${index}`}
+                        {...textProps} className="form-control" />
                     <div className="input-group-append">
                         {
                             loading === false ?
-                                <span onClick={clickHandler} className="cursor-pointer input-group-text">
+                                <span 
+                                    id          = {`comment_sent_${index}`}
+                                    onClick     = {clickHandler} 
+                                    className   = "cursor-pointer input-group-text"
+                                >
                                     <Send size={14}/>&nbsp;{childText==undefined?"":childText}
                                 </span>
                             :
-                                <span className="disabled input-group-text">
+                                <span 
+                                    id          = {`comment_sent_disabled_${index}`}
+                                    className   = "disabled input-group-text"
+                                >
                                     <Send size={14}/>&nbsp;{childText==undefined?"":childText}
                                 </span>
                         }

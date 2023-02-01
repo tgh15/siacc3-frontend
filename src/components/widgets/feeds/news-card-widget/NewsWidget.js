@@ -64,6 +64,7 @@ import jsPDF from 'jspdf';
 export const NewsWidget = (props) => {
     const {
         id,
+        index,
         title,
         status,
         ratings,
@@ -101,6 +102,8 @@ export const NewsWidget = (props) => {
         viewCount       : viewerCount, 
         commentsCount   : commentCount, 
         attachmentsData : attdata,
+
+        key
     } = props;
 
     const bodyCardRef                                       = useRef();
@@ -586,7 +589,8 @@ export const NewsWidget = (props) => {
         null 
     : 
         <WidgetChildDropdown
-            key                     = {"widget_child_dropdown_"+id}  
+            key                     = {"widget_child_dropdown_"+id} 
+            index                   = {index}
             saved                   = {savedBerita} 
             hashtag                 = {hashtag}
             dataNews                = {id}
@@ -1125,6 +1129,7 @@ export const NewsWidget = (props) => {
                     <div ref ={exportRef}>
                         {/* Header */}
                         <WidgetNewsCardHeader
+                            index                   = {index}
                             title                   = {title} 
                             avatar                  = {imgAvatar} 
                             division                = {division} 
@@ -1234,63 +1239,66 @@ export const NewsWidget = (props) => {
                         </FormGroup>
                         
                         {
-                            archived || status < 2 ? (
-                                <>
-                                    {
-                                        !archived && status == 0 ?
-                                            <>
-                                                <hr/>
-                                                <FormGroup className="d-flex align-items-center justify-content-end">
-                                                    Menunggu Persetujuan Verifikator Daerah
-                                                </FormGroup>
-                                            </>
-                                        :
-                                            null
-                                    }
-                                    { 
-                                        !archived && status == 1 ?
-                                            <>
-                                                <hr/>
-                                                <FormGroup className="d-flex align-items-center justify-content-end">
-                                                    Menunggu Persetujuan Verifikator Pusat
-                                                </FormGroup>
-                                            </>
-                                        :
-                                            null
-                                    }
-                                    {
-                                        archived ? 
-                                            archived === 1 ?
+                            archived || status < 2 ? 
+                                (
+                                    <>
+                                        {
+                                            !archived && status == 0 ?
                                                 <>
                                                     <hr/>
                                                     <FormGroup className="d-flex align-items-center justify-content-end">
-                                                        <Archive size={16} style={{marginRight: '5px'}}/>&nbsp;Berita Diarsipkan Verifikator Daerah
+                                                        Menunggu Persetujuan Verifikator Daerah
                                                     </FormGroup>
                                                 </>
                                             :
-                                                archived === 2 ?
+                                                null
+                                        }
+                                        { 
+                                            !archived && status == 1 ?
+                                                <>
+                                                    <hr/>
+                                                    <FormGroup className="d-flex align-items-center justify-content-end">
+                                                        Menunggu Persetujuan Verifikator Pusat
+                                                    </FormGroup>
+                                                </>
+                                            :
+                                                null
+                                        }
+                                        {
+                                            archived ? 
+                                                archived === 1 ?
                                                     <>
                                                         <hr/>
                                                         <FormGroup className="d-flex align-items-center justify-content-end">
-                                                            <Archive size={16} style={{marginRight: '5px'}}/>&nbsp;Berita Diarsipkan Verifikator Pusat
+                                                            <Archive size={16} style={{marginRight: '5px'}}/>&nbsp;Berita Diarsipkan Verifikator Daerah
                                                         </FormGroup>
                                                     </>
                                                 :
-                                                    <>
-                                                        <hr/>
-                                                        <FormGroup className="d-flex align-items-center justify-content-end">
-                                                            <Archive size={16} style={{marginRight: '5px'}}/>&nbsp;Berita Diarsipkan Analis Per. Dir
-                                                        </FormGroup>
-                                                    </>
-                                        :
-                                            null
-                                    }
-                                </>
-                            ) : 
+                                                    archived === 2 ?
+                                                        <>
+                                                            <hr/>
+                                                            <FormGroup className="d-flex align-items-center justify-content-end">
+                                                                <Archive size={16} style={{marginRight: '5px'}}/>&nbsp;Berita Diarsipkan Verifikator Pusat
+                                                            </FormGroup>
+                                                        </>
+                                                    :
+                                                        <>
+                                                            <hr/>
+                                                            <FormGroup className="d-flex align-items-center justify-content-end">
+                                                                <Archive size={16} style={{marginRight: '5px'}}/>&nbsp;Berita Diarsipkan Analis Per. Dir
+                                                            </FormGroup>
+                                                        </>
+                                            :
+                                                null
+                                        }
+                                    </>
+                                ) 
+                            : 
                                 // Icon
                                 <WidgetCardNewsBottom
                                     id              = {id}
                                     key             = {`footer-widget-${id}`}
+                                    index           = {index}
                                     saved           = {savedBerita}
                                     trophy          = {trophy}
                                     ratings         = {ratings}
@@ -1328,6 +1336,7 @@ export const NewsWidget = (props) => {
                                         {/* Write Comment */}
                                         <ContainerFluid>
                                             <AddCommentWidget
+                                                index       = {index}
                                                 loading     = {commentLoading}
                                                 textProps   = {commentTextHandlers}
                                                 childText   = "Kirim"

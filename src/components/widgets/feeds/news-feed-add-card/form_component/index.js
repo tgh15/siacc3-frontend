@@ -476,7 +476,8 @@ export const AddBeritaFormComponent = (props)=>{
                 setShow = {(par) => setPreviewForm(par)}
                 footer  = {
                     <>
-                        <Button 
+                        <Button
+                            id          = "news_cancel_button"
                             size        = "md" 
                             color       = "primary"
                             className   = "mr-1"
@@ -495,6 +496,7 @@ export const AddBeritaFormComponent = (props)=>{
                                 </Button>
                             :
                                 <Button 
+                                    id          = "news_submit_button"
                                     size        = "md" 
                                     type        = "submit"
                                     color       = "primary"
@@ -705,6 +707,7 @@ export const AddBeritaFormComponent = (props)=>{
                 <FormGroup>
                     <Label>Hastags</Label>
                     <Input
+                        id          = "news_hashtag_input"
                         name        = "hashtags"
                         onBlur      = {() => updateDraft()}
                         invalid     = {'hashtags' in errors}
@@ -870,6 +873,7 @@ export const AddBeritaFormComponent = (props)=>{
                             </Button>
                         :
                             <Button 
+                                id          = "draft_submit_button"
                                 size        = "md" 
                                 type        = "submit"
                                 color       = "primary"
@@ -880,6 +884,7 @@ export const AddBeritaFormComponent = (props)=>{
                             </Button>
                     } 
                     <Button 
+                        id          = "preview_submit_button"
                         size        = "md" 
                         type        = "submit"
                         color       = "primary"
