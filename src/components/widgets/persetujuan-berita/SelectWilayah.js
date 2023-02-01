@@ -365,7 +365,8 @@ export const SelectWilayah  = ({data,show,setShow,onSubmit, index, statePosition
             <FormGroup className="text-center">
                 {
                     !submitLoading ?
-                        <Button 
+                        <Button
+                            id      = {`approval_button_${index}`}
                             size    = "sm" 
                             color   = "primary"
                             onClick = {() => {handleSubmit()}} 
