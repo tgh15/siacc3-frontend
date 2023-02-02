@@ -53,67 +53,81 @@ const CardUser = (props) => {
 
     return (
         <Fragment>
-            {data.name ?
-                <Card className={`mb-1 cursor-pointer  ${selected()}`} onClick={onClick}>
-                    <CardBody>
-                        <Row>
-                            <Col md="1" className="d-flex align-items-center">
-                                {index + 4}
-                            </Col>
-                            <Col md="5" className="d-flex align-items-center">
-                                <Media>
-                                    <Media left href='#'>
-                                        <Avatar img={getImage()} imgHeight='40' imgWidth='40' status='online' />
+            {
+                data.name ?
+                    <Card 
+                        id          = {`bottom_user_card_${index}`}
+                        onClick     = {onClick}
+                        className   = {`mb-1 cursor-pointer ${selected()}`} 
+                    >
+                        <CardBody>
+                            <Row>
+                                <Col 
+                                    md          = "1" 
+                                    className   = "d-flex align-items-center"
+                                >
+                                    {index + 4}
+                                </Col>
+                                <Col 
+                                    md          = "5" 
+                                    className   = "d-flex align-items-center"
+                                >
+                                    <Media>
+                                        <Media left href='#'>
+                                            <Avatar img={getImage()} imgHeight='40' imgWidth='40' status='online' />
+                                        </Media>
+                                        <Media body>
+                                            <Media className="mb-0 ml-1">{data.name}</Media>
+                                            <small className="text-muted ml-1 mt-0">{data.workunit_level} {data.workunit} </small>
+                                        </Media>
                                     </Media>
-                                    <Media body>
-                                        <Media className="mb-0 ml-1">{data.name}</Media>
-                                        <small className="text-muted ml-1 mt-0">{data.workunit_level} {data.workunit} </small>
-                                    </Media>
-                                </Media>
-                            </Col>
+                                </Col>
 
-                            <Col md="3" className="d-flex align-items-center">
-                                <ChartArea dataChart={data.last_activity} height={90}/>
-                            </Col>
-                            <Col 
-                                md          = "1" 
-                                style       = {{ fontSize: "11px" }}
-                                onClick     = {() => {setIsAchievementVisible(true)}}
-                                className   = "d-flex align-items-center" 
-                            >
-                                <div className="text-center">
-                                    <span style={{ fontWeight: "bold" }}>{data.performance.total_report}</span>
-                                    <br />
-                                    Berita
-                                </div>
-                            </Col>
-                            <Col 
-                                md          = "1" 
-                                style       = {{ fontSize: "11px" }}
-                                onClick     = {() => {setIsDetailViewerVisible(true)}}
-                                className   = "d-flex align-items-center" 
-                            >
-                                <div className="text-center">
-                                    <span style={{ fontWeight: "bold" }}>{data.performance.total_viewer} </span>
-                                    <br/>
-                                    Viewer
-                                </div>
-                            </Col>
-                            <Col 
-                                md          = "1" 
-                                style       = {{ fontSize: "11px" }}
-                                onClick     = {() => {setIsDetailTrophyVisible(true)}}
-                                className   = "d-flex align-items-center" 
-                            >
-                                <div className="text-center">
-                                    <span style={{ fontWeight: "bold" }}>{data.performance.total_trophy} </span>
-                                    <br/>
-                                    Trofi
-                                </div>
-                            </Col>
-                        </Row>
-                    </CardBody>
-                </Card> 
+                                <Col md="3" className="d-flex align-items-center">
+                                    <ChartArea dataChart={data.last_activity} height={90}/>
+                                </Col>
+                                <Col 
+                                    id          = "bottom_user_card_badge_news"
+                                    md          = "1" 
+                                    style       = {{ fontSize: "11px" }}
+                                    onClick     = {() => {setIsAchievementVisible(true)}}
+                                    className   = "d-flex align-items-center" 
+                                >
+                                    <div className="text-center">
+                                        <span style={{ fontWeight: "bold" }}>{data.performance.total_report}</span>
+                                        <br />
+                                        Berita
+                                    </div>
+                                </Col>
+                                <Col 
+                                    id          = "bottom_user_card_badge_viewer"
+                                    md          = "1" 
+                                    style       = {{ fontSize: "11px" }}
+                                    onClick     = {() => {setIsDetailViewerVisible(true)}}
+                                    className   = "d-flex align-items-center" 
+                                >
+                                    <div className="text-center">
+                                        <span style={{ fontWeight: "bold" }}>{data.performance.total_viewer} </span>
+                                        <br/>
+                                        Viewer
+                                    </div>
+                                </Col>
+                                <Col 
+                                    id          = "bottom_user_card_badge_trophy"
+                                    md          = "1" 
+                                    style       = {{ fontSize: "11px" }}
+                                    onClick     = {() => {setIsDetailTrophyVisible(true)}}
+                                    className   = "d-flex align-items-center" 
+                                >
+                                    <div className="text-center">
+                                        <span style={{ fontWeight: "bold" }}>{data.performance.total_trophy} </span>
+                                        <br/>
+                                        Trofi
+                                    </div>
+                                </Col>
+                            </Row>
+                        </CardBody>
+                    </Card> 
                 : 
                     null
             }

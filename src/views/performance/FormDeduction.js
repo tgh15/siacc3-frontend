@@ -57,10 +57,23 @@ const FormDeduction = props => {
 
     return (
         <Fragment>
-            <p>Total point yang didapat saat ini adalah <span className="font-weight-bolder">{dataDetail.performance.points_total} Point</span></p>
-            <Input type="number" placeholder="Kurangi Point" className="mb-1" onChange={(e) =>{setPoints(e.target.value)} }></Input>
+            <p>Total point yang didapat saat ini adalah 
+            <span className="font-weight-bolder">{dataDetail.performance.points_total} Point</span></p>
+            <Input 
+                id          = {`point_deduction_input`}
+                type        = "number" 
+                onChange    = {(e) =>{setPoints(e.target.value)}}
+                className   = "mb-1" 
+                placeholder = "Kurangi Point" 
+            />
             <ModalFooter className="mt-2 px-0">
-                <Button.Ripple color="primary" disabled={!points} block onClick={onSubmit}>
+                <Button.Ripple 
+                    id          = {`point_deduction_submit`}
+                    block 
+                    color       = "primary" 
+                    onClick     = {onSubmit}
+                    disabled    = {!points} 
+                >
                     Kirim
                 </Button.Ripple>
             </ModalFooter>

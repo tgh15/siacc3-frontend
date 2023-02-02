@@ -25,7 +25,6 @@ const SearchTable = (props) => {
     return (
         <Fragment>
             <InputGroup 
-                id          = {id}
                 className   = 'input-group-merge mb-1' 
             >
                 <InputGroupAddon addonType='prepend'>
@@ -34,6 +33,7 @@ const SearchTable = (props) => {
                     </InputGroupText>
                 </InputGroupAddon>
                 <Input 
+                    id              = {id}
                     onKeyPress      = {(e) => (onKeyUp(e))}
                     placeholder     = {placeholder ?? "Cari..."}  
                     defaultValue    = {value}

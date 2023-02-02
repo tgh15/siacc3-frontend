@@ -86,7 +86,7 @@ const PersetujuanBerita = (props) => {
     return(
         <Fragment>
             <Nav tabs justified>
-                <NavItem>
+                <NavItem id={`agent_report_by_status_tab`}>
                     <NavLink
                         active  = {active === '1'}
                         onClick = {() => {toggle('1'); getAgentReportByStatusAll(1)}}
@@ -97,7 +97,7 @@ const PersetujuanBerita = (props) => {
                         </Badge>
                     </NavLink>
                 </NavItem>
-                <NavItem>
+                <NavItem id={`agent_report_by_type_shared_read_tab`}>
                     <NavLink
                         active  = {active === '2'}
                         onClick = {() => {toggle('2'); getAgentReportByTypeSharedRead(1)}}
@@ -108,7 +108,7 @@ const PersetujuanBerita = (props) => {
                         </Badge>
                     </NavLink>
                 </NavItem>
-                <NavItem>
+                <NavItem id={`agent_report_by_type_shared_limit_tab`}>
                     <NavLink
                         active  = {active === '3'}
                         onClick = {() => {toggle('3'); getAgentReportByTypeSharedLimit(1)}}
@@ -119,7 +119,7 @@ const PersetujuanBerita = (props) => {
                         </Badge>
                     </NavLink>
                 </NavItem>
-                <NavItem>
+                <NavItem id={`agent_report_by_position_shared_tab`}>
                     <NavLink
                         active  = {active === '4'}
                         onClick = {() => {toggle('4'); getAgentReportByPositionShared(1)}}
@@ -130,7 +130,7 @@ const PersetujuanBerita = (props) => {
                         </Badge>
                     </NavLink>
                 </NavItem>
-                <NavItem>
+                <NavItem id={`agent_report_by_archive_tab`}>
                     <NavLink
                         active  = {active === '5'}
                         onClick = {() => {toggle('5'); getAgentReportByArchive(1)}}

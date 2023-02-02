@@ -90,24 +90,25 @@ const DetailPoint = () => {
                 setShow = {(param) => {setShowFilterDate(param)}}
                 unmount = {true}
             >
-                <Form key="filter_date_form" onSubmit = {handleSubmit(handleSubmit_)}>
+                <Form 
+                    key      = "filter_date_form" 
+                    onSubmit = {handleSubmit(handleSubmit_)}
+                >
                     <FormGroup>
                         <Label>Tanggal Mulai</Label>
                         <Flatpickr
-                            id          = 'start_date' 
-                            options     = {{ 
-                                dateFormat  : "d-m-Y",
-                            }}
-                            className   = 'form-control' 
-                            defaultValue= {moment().format('DD-MM-YYYY')}
-                            onChange    = {(val) => {setStartDate(moment(val[0]).format('DD-MM-YYYY'))}}
-                            placeholder = {moment().format('DD-MM-YYYY')}
+                            id              = 'filter_performance_detail_date_start' 
+                            options         = {{ dateFormat  : "d-m-Y",}}
+                            onChange        = {(val) => {setStartDate(moment(val[0]).format('DD-MM-YYYY'))}}
+                            className       = 'form-control' 
+                            placeholder     = {moment().format('DD-MM-YYYY')}
+                            defaultValue    = {moment().format('DD-MM-YYYY')}
                         />
                     </FormGroup>
                     <FormGroup>
                         <Label>Tanggal Selesai</Label>
                         <Flatpickr
-                            id          = 'end_date' 
+                            id              = 'filter_performance_detail_date_end' 
                             options     = {{ 
                                 dateFormat  : "d-m-Y",
                                 minDate     : moment(startDate,'DD-MM-YYYY').format('DD-MM-YYYY'),
@@ -120,7 +121,12 @@ const DetailPoint = () => {
                     </FormGroup>
                     <Label>Periode Pemilihan Hanya Berlaku 30 Hari.</Label>
                     <FormGroup className="d-flex justify-content-end">
-                        <Button key="filter_date" type="submit" color="primary">
+                        <Button     
+                            id      = 'filter_performance_detail_date_submit' 
+                            key     = "filter_date" 
+                            type    = "submit" 
+                            color   = "primary"
+                        >
                             Cari
                         </Button>
                     </FormGroup>
@@ -146,6 +152,7 @@ const DetailPoint = () => {
 
                 <div className="d-flex demo-inline-spacing mb-2">
                     <Button
+                        id      = {`performance_detail_point_filter_all`}
                         key     = "filter_all"
                         color   = {selectedFilter === 1 ? "primary" : null}
                         onClick = {() => handleFilterHistory(1,1)} 
@@ -153,6 +160,7 @@ const DetailPoint = () => {
                         Semua
                     </Button>
                     <Button
+                        id      = {`performance_detail_point_filter_daily`}
                         key     = "filter_daily"
                         color   = {selectedFilter === 2 ? "primary" : null}
                         onClick = {() => handleFilterHistory(2,1)} 
@@ -160,6 +168,7 @@ const DetailPoint = () => {
                         Harian
                     </Button>
                     <Button
+                        id      = {`performance_detail_point_filter_weekly`}
                         key     = "filter_weekly"
                         color   = {selectedFilter === 3 ? "primary" : null}
                         onClick = {() => handleFilterHistory(3,1)} 
@@ -167,6 +176,7 @@ const DetailPoint = () => {
                         Mingguan
                     </Button>
                     <Button
+                        id      = {`performance_detail_point_filter_monthly`}
                         key     = "filter_monthly"
                         color   = {selectedFilter === 4 ? "primary" : null}
                         onClick = {() => handleFilterHistory(4,1)} 
@@ -174,6 +184,7 @@ const DetailPoint = () => {
                         Bulanan
                     </Button>
                     <Button
+                        id      = {`performance_detail_point_filter_date`}
                         key     = "filter_custom"
                         color   = {selectedFilter === 5 ? "primary" : null}
                         onClick = {() => handleFilterHistory(5,1)} 

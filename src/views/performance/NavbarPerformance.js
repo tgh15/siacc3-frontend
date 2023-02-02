@@ -39,16 +39,18 @@ const NavbarPerformance = () => {
         <Nav pills>
             <NavItem>
                 <NavLink
-                    active={active === 'agent'}
-                    onClick={onAgent}
+                    id      = {`performance_filter_personal`}
+                    active  = {active === 'agent'}
+                    onClick = {onAgent}
                 >
                     Personal
                 </NavLink>
             </NavItem>
             <NavItem>
                 <NavLink
-                    active={active === 'workunit'}
-                    onClick={onWorkunit}
+                    id      = {`performance_filter_workunit`}
+                    active  = {active === 'workunit'}
+                    onClick = {onWorkunit}
                 >
                     Satuan Kerja
                 </NavLink>

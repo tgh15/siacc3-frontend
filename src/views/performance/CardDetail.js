@@ -43,9 +43,12 @@ const CardDetails = (props) => {
     return (
         <Fragment>
             {/* modal points deduction */}
-            <ModalBase show={modalLessPoint} title="Tentukan Nilai Pengurangan" size="sm" setShow={(par) => {
-                setModalLessPoint(par)
-            }}>
+            <ModalBase 
+                show    = {modalLessPoint} 
+                size    = "sm" 
+                title   = "Tentukan Nilai Pengurangan" 
+                setShow = {(par) => {setModalLessPoint(par)}}
+            >
                 <FormDeduction setModalLessPoint={(par) => { setModalLessPoint(par) }} />
             </ModalBase>
 
@@ -192,7 +195,12 @@ const CardDetails = (props) => {
                         <Col>
                             {
                                 getRoleByMenuStatus('Performance', 'point_reduction') && (localStorage.getItem('role') === 'Admin' || localStorage.getItem('role') === 'Verifikator Pusat') ? 
-                                    <Button.Ripple color="primary" block onClick={() => { setModalLessPoint(true) }} >
+                                    <Button.Ripple 
+                                        id      = {`performance_detail_deduction_button`}
+                                        block 
+                                        color   = "primary" 
+                                        onClick = {() => { setModalLessPoint(true) }} 
+                                    >
                                         Kurangi Nilai
                                     </Button.Ripple>
                                 :
@@ -202,7 +210,13 @@ const CardDetails = (props) => {
                         <Col>
                             {
                                 getRoleByMenuStatus('Performance', 'point_history') ?
-                                    <Button.Ripple color="primary" block outline onClick={() => { setModalHistoryPoint(true) }}>
+                                    <Button.Ripple
+                                        id      = {`performance_detail_history_button`} 
+                                        block 
+                                        color   = "primary" 
+                                        outline 
+                                        onClick = {() => { setModalHistoryPoint(true) }}
+                                    >
                                         Riwayat Nilai
                                     </Button.Ripple>
                                 :

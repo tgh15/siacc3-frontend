@@ -116,6 +116,7 @@ const PerformanceContainer = () => {
                                 <Col md={3}>
                                     <FormGroup>
                                         <Select
+                                            id              = {`performance_filter_year`}
                                             theme           = {selectThemeColors}
                                             options         = {getYearsBefore(10)}
                                             onChange        = {(e) => setYear(e.value)}
@@ -126,7 +127,8 @@ const PerformanceContainer = () => {
                                     </FormGroup>
                                 </Col>
                                 <Col md={{size: 5, offset: 4}}>
-                                    <SearchTable 
+                                    <SearchTable
+                                        id          = {`performance_filter_keyword`}
                                         value       = {query.get('agen') != undefined ? query.get('agen') : null}
                                         onSearch    = {(e)=> {onSearch(e)} } 
                                         placeholder = {active === 'agent' ? "Cari Agen" : "Cari Satuan Kerja" } 
@@ -147,13 +149,13 @@ const PerformanceContainer = () => {
                                     <Row className="mb-1">
                                         <Col md={5}>
                                             <Select 
-                                                theme={selectThemeColors}
-                                                className='react-select'
-                                                classNamePrefix='select'
-                                                placeholder="Pilih Satker"
-                                                options={workunitOptions}
+                                                theme           = {selectThemeColors}
+                                                options         = {workunitOptions}
+                                                className       = 'react-select'
                                                 isClearable
-                                                onChange={(e) => { 
+                                                placeholder     = "Pilih Satker"
+                                                classNamePrefix = 'select'
+                                                onChange        = {(e) => { 
                                                     if(e != null){
                                                         getDataAgentByUnitwork(e.value) 
                                                     }

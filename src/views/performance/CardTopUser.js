@@ -53,7 +53,11 @@ const CardTopUser = (props) => {
     }
 
     return (
-        <Card className={`${selected()} w-100`} onClick={() => onClick()}>
+        <Card
+            id          = {`top_user_card_${index}`}
+            onClick     = {() => onClick()}
+            className   = {`${selected()} w-100`} 
+        >
             <CardBody className="text-center cursor-pointer">
                 <div>
                     <h5>Peringkat {Helper.rankingText(index+1)}</h5>
@@ -62,8 +66,8 @@ const CardTopUser = (props) => {
                         active == 'agent' ?
                             <AvatarPerformance
                                 img         = {getImage()} 
-                                imgWidth       = {60} 
-                                imgHeight      = {60} 
+                                imgWidth    = {60} 
+                                imgHeight   = {60} 
                                 className   = "mt-1" 
                             />
                         :
@@ -96,6 +100,7 @@ const CardTopUser = (props) => {
                                 <Col 
                                     md      = {4} 
                                     key     = {index}
+                                    index   = {`top_user_card_badge_${index}`}
                                     onClick = {() => {
                                         index === 0 ?
                                             setIsAchievementVisible(true)
@@ -118,7 +123,11 @@ const CardTopUser = (props) => {
                             )) 
                         : 
                             <>
-                                <Col md={4} onClick={()=>{setIsAchievementVisible(true)}}>
+                                <Col 
+                                    id      = {`top_user_card_badge_news`}
+                                    md      = {4} 
+                                    onClick = {()=>{setIsAchievementVisible(true)}}
+                                >
                                     <img
                                         src     = {avatarImg}
                                         width   = {50}
@@ -127,7 +136,11 @@ const CardTopUser = (props) => {
                                     >
                                     </img>
                                 </Col> 
-                                <Col md={4} onClick={()=>{setIsDetailViewerVisible(true)}}>
+                                <Col 
+                                    id      = {`top_user_card_badge_viewer`}
+                                    md      = {4} 
+                                    onClick = {()=>{setIsDetailViewerVisible(true)}}
+                                >
                                     <img
                                         src     = {avatarImg}
                                         width   = {50}
@@ -136,7 +149,11 @@ const CardTopUser = (props) => {
                                     >
                                     </img>
                                 </Col> 
-                                <Col md={4} onClick={()=>{setIsDetailTrophyVisible(true)}}>
+                                <Col 
+                                    id      = {`top_user_card_badge_trophy`}
+                                    md      = {4} 
+                                    onClick = {()=>{setIsDetailTrophyVisible(true)}}
+                                >
                                     <img
                                         src     = {avatarImg}
                                         width   = {50}

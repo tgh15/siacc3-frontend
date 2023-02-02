@@ -19,6 +19,7 @@ const CategoryAgent = (props) => {
     return (
         <Fragment>
             <Button.Ripple 
+                id          = {`performance_personal_national_filter`}
                 size        = "sm"
                 color       = "primary" 
                 onClick     = {() => {onNasional()}}
@@ -28,6 +29,7 @@ const CategoryAgent = (props) => {
                 Nasional
             </Button.Ripple>
             <Button.Ripple 
+                id          = {`performance_personal_local_filter`}
                 size        = "sm"
                 color       = "primary" 
                 onClick     = {() => { setSectorAgent("Lokal")}}

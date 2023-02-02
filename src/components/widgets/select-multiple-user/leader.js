@@ -59,10 +59,21 @@ const SelectMultipleLeader = props => {
                         }
                     }).map((item, index) => {
                         return (
-                            <ListGroupItem key={index} className="cursor-pointer" onClick={() => { selectUser(item.position_id) }} active={userSelected.indexOf(item.position_id) != -1 ? "true" : "" } >
+                            <ListGroupItem
+                                id          = {`leader_list_${index}`} 
+                                key         = {index} 
+                                active      = {userSelected.indexOf(item.position_id) != -1 ? "true" : "" } 
+                                onClick     = {() => { selectUser(item.position_id) }} 
+                                className   = "cursor-pointer" 
+                            >
                                 <Media>
                                     <Media left href='#'>
-                                        <Avatar onError={fallbackImage_} img={item.photo == "" ? `https://ui-avatars.com/api/?name=${item ? item.name : "UN"}&background=4e73df&color=fff&bold=true` : item.photo} imgHeight='40' imgWidth='40' />
+                                        <Avatar 
+                                            img         = {item.photo == "" ? `https://ui-avatars.com/api/?name=${item ? item.name : "UN"}&background=4e73df&color=fff&bold=true` : item.photo} 
+                                            onError     = {fallbackImage_} 
+                                            imgWidth    = '40' 
+                                            imgHeight   = '40' 
+                                        />
                                     </Media>
 
                                     <Media body>
@@ -87,17 +98,26 @@ const SelectMultipleLeader = props => {
             setShow = {() => { setShow(!show) }} 
         >
             {children}
-            <InputGroup className='input-group-merge mb-1'>
+            <InputGroup className   = 'input-group-merge mb-1'>
                 <InputGroupAddon addonType='prepend'>
                     <InputGroupText>
                         <Search size={14} />
                     </InputGroupText>
                 </InputGroupAddon>
-                <Input placeholder='Cari...' onChange={(e) => { setSearchUser(e.target.value) }} />
+                <Input 
+                    id          = {`search_filter_leader`}
+                    onChange    = {(e) => { setSearchUser(e.target.value) }} 
+                    placeholder = 'Cari...' 
+                />
             </InputGroup>
             {renderUsers()}
             <ModalFooter>
-                <Button color="primary" block onClick={() => {onSelect(userSelected)}}  >
+                <Button 
+                    id      = {`submit_button_filter_leader`}
+                    block 
+                    color   = "primary" 
+                    onClick = {() => {onSelect(userSelected)}}  
+                >
                     {titleButton}
                 </Button>
             </ModalFooter>

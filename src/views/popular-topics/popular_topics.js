@@ -89,8 +89,7 @@ const PopularTopics = (props) => {
                                             roleComment             = {getRoleByMenuStatus('Topik Populer', 'comment')}
                                             {...data}
                                         />
-                                    ))
-                            
+                                    )) 
                         }
                         
                         {/* {
