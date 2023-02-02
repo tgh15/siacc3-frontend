@@ -110,7 +110,8 @@ export const FeedCategoriesWidget = (props) => {
                     >
                         {
                             activeFilterState ? 
-                                <Button 
+                                <Button
+                                    id          = {'beranda_filter_button'} 
                                     color       = "primary" 
                                     onClick     = {() => {setFiltModalState(true)}} 
                                     className   = "btn-icon btn-sm mr-1"

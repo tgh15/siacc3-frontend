@@ -198,7 +198,6 @@ const Beranda = (props) => {
     },[refreshApproved]);
 
     useEffect(() => {      
-        console.log(filter,  loadingFeeds) 
         try {
             if(!filter && !loadingFeeds) {
                 getAgentReportData();
