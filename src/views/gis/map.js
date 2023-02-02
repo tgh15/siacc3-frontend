@@ -1,18 +1,17 @@
 import { 
+    useMemo,
     Fragment,
     useState,
-    useContext,
     useEffect,
-    useMemo
 }                                   from 'react';
 import ReactMapGL, {
-    Source, 
     Layer, 
-    Marker,
     Popup,
+    Source, 
+    Marker,
 }                                   from 'react-map-gl';
 
-// import data                         from './geojson';
+import  map                         from './geojson';
 import {data}                       from './boundary';
 
 import { dataLayer }                from "./mapStyle";
@@ -21,8 +20,8 @@ import imgMarker                    from "../../assets/images/map_icons/point-ma
 import ImageRounded                 from '../../components/widgets/image-rounded';
 
 import { API_MAPBOX, MAPBOX_SKIN }  from '../../services/core/default';
-import { PerformanceContext }       from '../../context/PerformanceContext';
 import { updatePercentiles}         from './utils';
+
 
 
 const Map = (props) => {
@@ -36,14 +35,13 @@ const Map = (props) => {
         setSelectedMarker,
     }                                   = props;
 
-    const { workunitList }              = useContext(PerformanceContext);
-
     const size                          = 20;
     const minMax                        = 600;
     const sizeNode                      = 10;
-    const mapHeight                     = (minMax-100);
+    const mapHeight                     = (minMax-186);
     const MAPBOX_TOKEN                  = API_MAPBOX;
     const MAPBOX_TILESET                = MAPBOX_SKIN;
+    // const MAPBOX_TILESET                = `mapbox://styles/zephyrfn/cldndtbve000h01p5igki3d2o`;
 
     const [viewport, setViewport] = useState({
         zoom        : 3.8,
@@ -93,11 +91,11 @@ const Map = (props) => {
     return (
         <Fragment>
             <ReactMapGL
+                style                   = {{borderRadius: '20px'}}
                 mapStyle                = {MAPBOX_TILESET}
+                onViewportChange        = {nextViewport => setViewport(nextViewport)}
                 mapboxApiAccessToken    = {MAPBOX_TOKEN}
                 {...viewport}
-                onViewportChange        = {nextViewport => setViewport(nextViewport)}
-                style                   = {{borderRadius: '20px'}}
             >
                 {
                     mapFilter === 'pin' && mapData != null ? 
@@ -302,6 +300,15 @@ const Map = (props) => {
                     :
                         null
                 }
+
+                {/* {
+                    selectedMap ? */}
+                        {/* <Source type="geojson" data={map}>
+                            <Layer {...dataLayer} />
+                        </Source> */}
+                    {/* :
+                        null
+                } */}
             </ReactMapGL>
         </Fragment>
 

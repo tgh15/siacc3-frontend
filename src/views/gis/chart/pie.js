@@ -89,7 +89,6 @@ const PieChart = ({data, title, setSelectedDetail, type}) => {
                     {
                         label           : data.labels,
                         data            : data_,
-                        // data            : [19, 17.5, 15, 13.5, 11, 9],
                         backgroundColor : backgroundColor_
                     }
                 ]

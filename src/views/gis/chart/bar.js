@@ -38,15 +38,22 @@ const BarChart = ({data, title, type, setSelectedDetail}) => {
         responsive          : true,
         maintainAspectRatio : false,
         animation           : { duration: 500 },
-        plugins             : {
-            legend  : {
-                display : true,
-                position: 'top',
-                labels: {
-                    // padding: 25,
-                    boxWidth: 12,
-                    usePointStyle: true
+
+        scales              : {
+            x : {
+                grid :{
+                    display : false
                 }
+            }
+        },
+        plugins             : {
+            legend              : {
+                display: false,
+                labels  : {
+                    display         : true,
+                    boxWidth        : 10,
+                    usePointStyle   : true,  
+                },
             },
             tooltip : {
                 enabled : true
@@ -64,7 +71,7 @@ const BarChart = ({data, title, type, setSelectedDetail}) => {
             scales: {
                 x: [{
                     barThickness: 10,  // number (pixels) or 'flex'
-                    maxBarThickness: 20 // number (pixels)
+                    maxBarThickness: 20, // number (pixels)
                 }]
             }
         }
@@ -72,19 +79,33 @@ const BarChart = ({data, title, type, setSelectedDetail}) => {
 
     useEffect(() => {
         if(data != null){
-            let data_ = [];
-
-            data.datasets.map((data__) => (
-                data_.push({
-                    label           : data__.label,
-                    data            : data__.data,
-                    backgroundColor : data__.backgroundColor
-                })
+            let data_               = [];
+            let labels_             = [];
+            let backgroundColor_    = [];
+            
+            data.datasets.map((data) => (
+                <>
+                    {
+                        labels_.push(data.label)
+                    }
+                    {
+                        data_.push(data.data)
+                    }
+                    {
+                        backgroundColor_.push(data.backgroundColor)
+                    }
+                </>
             ))
 
             setChartData({
-                labels   : data.labels,
-                datasets : data_
+                labels   : labels_,
+                datasets : [
+                    {
+                        label           : data.labels,
+                        data            : data_,
+                        backgroundColor : backgroundColor_
+                    }
+                ]
             });
         }
     }, [data]);
