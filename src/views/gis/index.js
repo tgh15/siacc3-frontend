@@ -12,13 +12,12 @@ import {
         Card,
         Input,
         Label,
+        Button,
+        Spinner,
         Progress,
         Pagination,
         PaginationItem,
         PaginationLink,
-        Spinner,
-        Button,
-
     }                               from 'reactstrap';
 
 import moment                       from 'moment';
@@ -246,8 +245,6 @@ const GIS = () => {
         getChartByWorkunitLevel(formData);
         getChartByTrendingCategory(formData);
     };
-
-
     const detectFullscreen = () => {
 
         if((document.fullscreen)) {
@@ -292,15 +289,15 @@ const GIS = () => {
     }
 
     useEffect(() => {
-        
+
         getGisData();
         getChartData();
 
     }, [gisFilter, mapFilter])
 
     useEffect(() => {
-        if(selectedDetail != null){
-            getDetailChart();
+        if(selectedDetail.type != null){
+            // getDetailChart();
         }
     }, [selectedDetail, page]);
 
