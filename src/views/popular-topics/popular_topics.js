@@ -15,7 +15,7 @@ import CustomTableNotAuthorized         from '../../components/widgets/custom-ta
 import Helper                           from '../../helpers';
 import { selectThemeColors }            from '@utils'
 import { PerformanceContext }           from '../../context/PerformanceContext';
-import FeedSkeleton from '../../components/widgets/feed-skeleton/FeedSkeleton';
+import FeedSkeleton                     from '../../components/widgets/feed-skeleton/FeedSkeleton';
 
 
 const PopularTopics = (props) => {
@@ -50,6 +50,7 @@ const PopularTopics = (props) => {
                                 md = "3"
                             >
                                 <Select
+                                    id              = {`popular_topic_workunit_filter`}
                                     theme           = {selectThemeColors}
                                     options         = {workunitOptions}
                                     onChange        = {(e) => { e ? props.setSelectedWorkunit(e.value) : props.setSelectedWorkunit(0) }}
@@ -74,10 +75,11 @@ const PopularTopics = (props) => {
                                 props.reportAgent?.length === 0 ?
                                     <CustomTableBodyEmpty/>
                                 :
-                                    props.reportAgent?.map((data) => (
+                                    props.reportAgent?.map((data, index) => (
                                         <NewsWidget
                                             id                      = {data.id}
                                             data                    = {data}
+                                            index                   = {`popular_topic_${index}`}
                                             handleStore             = {props.handleStore}
 
                                             //Role

@@ -14,9 +14,9 @@ const FilterRegion = (props) => {
                 >
                     {
                         props.trendingType === 'national' ?
-                            <Button 
+                            <Button
+                                id          = {`popular_topic_national_button`}
                                 color       = "primary"
-                                // style       = {{width: '125px'}}
                                 className   = "mr-1"
                             >
                                 <Globe size={14}/>&nbsp;
@@ -24,8 +24,8 @@ const FilterRegion = (props) => {
                             </Button>
                         :
                             <Button 
+                                id          = {`popular_topic_national_button_selected`}
                                 color       = "primary"
-                                // style       = {{width: '125px'}}
                                 outline
                                 className   = "mr-1"
                                 onClick     = {() => props.setTrendingType('national')}
@@ -38,16 +38,16 @@ const FilterRegion = (props) => {
                     {
                         props.trendingType === 'local' ?
                             <Button 
+                                id      = {`popular_topic_local_button`}
                                 color   = "primary"
-                                // style   = {{width: '125px'}}
                             >
                                 <MapPin size={14}/>&nbsp;
                                 Lokal
                             </Button>
                         :
                             <Button 
+                                id      = {`popular_topic_local_button_selected`}
                                 color   = "primary"
-                                // style   = {{width: '125px'}}
                                 outline 
                                 onClick = {() => props.setTrendingType('local')} 
                             >

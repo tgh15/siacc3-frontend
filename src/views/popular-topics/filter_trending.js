@@ -26,6 +26,7 @@ const FilterTrending = (props) => {
         <Fragment>
 
             <Select
+                id              = {`popular_topic_time_filter`}
                 theme           = {selectThemeColors}
                 options         = {options}
                 onChange        = {handleOnChange}
