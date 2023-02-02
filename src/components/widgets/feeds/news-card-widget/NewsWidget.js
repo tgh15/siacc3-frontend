@@ -103,7 +103,6 @@ export const NewsWidget = (props) => {
         commentsCount   : commentCount, 
         attachmentsData : attdata,
 
-        key
     } = props;
 
     const bodyCardRef                                       = useRef();

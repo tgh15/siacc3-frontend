@@ -209,7 +209,7 @@ const PersetujuanBerita = (props) => {
                                                                     <CardBody>
                                                                         <ApprovedNewsWidget
                                                                             id                  = {data.id}
-                                                                            index               = {index}
+                                                                            index               = {`left_state_all_status_`+index}
                                                                             title               = {data.title}
                                                                             method              = {true}
                                                                             onSubmit            = {handleRemoveAgentReport}
@@ -231,7 +231,7 @@ const PersetujuanBerita = (props) => {
                                                                     <CardBody>
                                                                         <ApprovedNewsWidget
                                                                             id                  = {data.id}
-                                                                            index               = {index}
+                                                                            index               = {`right_state_all_status_`+index}
                                                                             statePosition       = 'right'
                                                                             title               = {data.title}
                                                                             method              = {true}
@@ -278,10 +278,11 @@ const PersetujuanBerita = (props) => {
                                                     <Col md='6' sm='12'>
                                                         {
                                                             leftStateTypeShared &&
-                                                            leftStateTypeShared.map((data) => (
+                                                            leftStateTypeShared.map((data, index) => (
                                                                 <NewsWidget
                                                                     id              = {data.id}
                                                                     data            = {data}
+                                                                    index           = {`left_state_type_shared_`+index}
                                                                     handleStore     = {props.handleStore}
 
                                                                     //Role
@@ -297,10 +298,11 @@ const PersetujuanBerita = (props) => {
                                                     <Col md='6' sm='12'>
                                                         {
                                                             rightStateTypeShared &&
-                                                            rightStateTypeShared.map((data) => (
+                                                            rightStateTypeShared.map((data, index) => (
                                                                 <NewsWidget
                                                                     id              = {data.id}
                                                                     data            = {data}
+                                                                    index           = {`right_state_type_shared_`+index}
                                                                     handleStore     = {props.handleStore}
                                                                     
                                                                     //Role
@@ -354,10 +356,11 @@ const PersetujuanBerita = (props) => {
                                                     <Col md='6' sm='12'>
                                                         {
                                                             leftStateTypeSharedLimit &&
-                                                            leftStateTypeSharedLimit.map((data) => (
+                                                            leftStateTypeSharedLimit.map((data,index) => (
                                                                 <NewsWidget
                                                                     id              = {data.id}
                                                                     data            = {data}
+                                                                    index           = {`left_state_type_shared_limit_`+index}
                                                                     handleStore     = {props.handleStore}
 
                                                                     roleLike        = {true}
@@ -372,10 +375,11 @@ const PersetujuanBerita = (props) => {
                                                     <Col md='6' sm='12'>
                                                         {
                                                             rightStateTypeSharedLimit &&
-                                                            rightStateTypeSharedLimit.map((data) => (
+                                                            rightStateTypeSharedLimit.map((data, index) => (
                                                                 <NewsWidget
                                                                     id              = {data.id}
                                                                     data            = {data}
+                                                                    index           = {`right_state_type_shared_limit_`+index}
                                                                     handleStore     = {props.handleStore}
 
                                                                     roleLike        = {true}

@@ -10,6 +10,7 @@ import {
 
 const SearchTable = (props) => {
     const {
+        id,
         value,
         onSearch,
         placeholder,
@@ -24,7 +25,7 @@ const SearchTable = (props) => {
     return (
         <Fragment>
             <InputGroup 
-                id          = "search-data"
+                id          = {id}
                 className   = 'input-group-merge mb-1' 
             >
                 <InputGroupAddon addonType='prepend'>

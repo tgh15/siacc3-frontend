@@ -59,6 +59,7 @@ const CategoriesButton = ({ categories, setActive, id }) => {
 export const CategoryFilter = (props) => {
 
     const { 
+        index,
         modals, 
         onFilter, 
         isApproval,

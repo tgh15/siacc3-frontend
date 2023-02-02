@@ -592,7 +592,7 @@ const Detail = ({ match }) => {
                                         leftState &&
                                         leftState.map((data) => (
                                             <NewsWidget
-                                                key         = {`detail-workunit-news-${data.id}`}
+                                                id         = {`detail-workunit-news-${data.id}`}
                                                 // handleStore             = {(newss,data) => {handleStore(newss,data)}}
 
                                                 roleLike    = {true}
@@ -612,7 +612,7 @@ const Detail = ({ match }) => {
                                         rightState &&
                                         rightState.map((data) => (
                                             <NewsWidget
-                                                key         = {`detail-workunit-news-${data.id}`}
+                                                id         = {`detail-workunit-news-${data.id}`}
                                                 roleLike    = {true}
                                                 roleViewer  = {true}
                                                 roleDislike = {true}

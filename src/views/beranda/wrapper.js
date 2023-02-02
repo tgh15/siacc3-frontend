@@ -19,7 +19,7 @@ export function FeedWrapper(props) {
                             if(news != undefined) {
                                 return (
                                     <NewsWidget
-                                        key                     = {`news-feed-page-${news.id}-${index}`}
+                                        id                      = {`news-feed-page-${news.id}-${index}`}
                                         data                    = {news}
                                         index                   = {index}
                                         handleStore             = {(newss,data) => {handleStore(newss,data)}}

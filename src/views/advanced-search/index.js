@@ -255,7 +255,7 @@ const AdvancedSearch = () => {
                                             <Col md={4} className="d-flex flex-row">
                                                 <Link to={"/beranda/detail/"+data.id}>
                                                     <NewsWidget
-                                                        key                     = {`advanced-search-news-${index}`}
+                                                        id                     = {`advanced-search-news-${index}`}
                                                         handleStore             = {(newss,data) => {handleStore(newss,data)}}
 
                                                         roleLike                = {true}
@@ -611,7 +611,7 @@ const AdvancedSearch = () => {
                                             >
                                                 <Link to={"/beranda/detail/"+data.id}>
                                                     <NewsWidget
-                                                        key                     = {`advanced-search-news-${index}`}
+                                                        id                     = {`advanced-search-news-${index}`}
                                                         handleStore             = {(newss,data) => {handleStore(newss,data)}}
 
                                                         roleLike                = {true}

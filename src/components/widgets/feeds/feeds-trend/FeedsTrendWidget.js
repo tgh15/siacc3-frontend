@@ -46,7 +46,7 @@ export const FeedsTrendWidget = (props) => {
                             reportTrending.length > 0 ?
                                 reportTrending.map((news, index) => (
                                     <NewsWidget
-                                        key                     = {`report_trending_${news.id}-${index}`}
+                                        id                     = {`report_trending_${news.id}-${index}`}
                                         data                    = {news}
                                         handleStore             = {(newss,data) => {handleStore(newss,data)}}
 
