@@ -11,10 +11,13 @@ import ReactMapGL, {
     Marker,
 }                                   from 'react-map-gl';
 
+import 'mapbox-gl/dist/mapbox-gl.css';
+
+
 import  map                         from './geojson';
 import {data}                       from './boundary';
 
-import { dataLayer }                from "./mapStyle";
+import { dataLayer, dataLayer2 }    from "./mapStyle";
 
 import imgMarker                    from "../../assets/images/map_icons/point-map.png";
 import ImageRounded                 from '../../components/widgets/image-rounded';
@@ -295,7 +298,7 @@ const Map = (props) => {
                 {
                     heatFilter ? 
                         <Source type="geojson" data={data2}>
-                            <Layer {...dataLayer} />
+                            <Layer id="heatlayer" {...dataLayer} />
                         </Source>
                     :
                         null
@@ -304,7 +307,7 @@ const Map = (props) => {
                 {/* {
                     selectedMap ? */}
                         {/* <Source type="geojson" data={map}>
-                            <Layer {...dataLayer} />
+                            <Layer id="baselayer" {...dataLayer2} />
                         </Source> */}
                     {/* :
                         null

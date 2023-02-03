@@ -346,37 +346,49 @@ const capitalizeFirstLetter = (string) => {
         }
     ); 
 }
+
+const numToExcelColumn = (num) => {
+  var s = '', t;
+
+  while (num > 0) {
+    t = (num - 1) % 26;
+    s = String.fromCharCode(65 + t) + s;
+    num = (num - t)/26 | 0;
+  }
+  return s || undefined;
+}
   
 
 const Helper = {
-    dayIndo                 : dayIndo,
-    dateIndo                : dateIndo,
-    dateIndo1               : dateIndo1,
-    fileSize                : FileSize,
-    countWord               : countWord,
-    accessRole              : accessRole,
-    getTimeAgo              : getTimeAgo,
-    rankingText             : rankingText,
-    shortenWord             : shortenWord,
-    defaultAvatar           : defaultAvatar,
-    getCookieName           : getCookieName,
-    fallbackImage           : fallbackImage,
-    fallbackImage_          : fallbackImage_,
-    actionTypeIndo          : actionTypeIndo,
-    Redirectlogout          : Redirectlogout,
-    getDurationCall         : getDurationCall,
-    customTableNumber       : CustomTableNumber,
-    getRoleByMenuStatus     : getRoleByMenuStatus,
-    getParemeterFromString  : getParemeterFromString,
-    useQuery                : useQuery,
-    shortenLargeNumber      : shortenLargeNumber,
-    formatDate              : formatDate,
-    getYearsBefore          : getYearsBefore,
-    getMonthName            : getMonthName,
-    getLastDateOfCurrentMonth : getLastDateOfCurrentMonth,
-    getDuration             : getDuration,
-    getUserData             : getUserData,
-    capitalizeFirstLetter   : capitalizeFirstLetter
+    dayIndo                     : dayIndo,
+    dateIndo                    : dateIndo,
+    dateIndo1                   : dateIndo1,
+    fileSize                    : FileSize,
+    countWord                   : countWord,
+    accessRole                  : accessRole,
+    getTimeAgo                  : getTimeAgo,
+    rankingText                 : rankingText,
+    shortenWord                 : shortenWord,
+    defaultAvatar               : defaultAvatar,
+    getCookieName               : getCookieName,
+    fallbackImage               : fallbackImage,
+    fallbackImage_              : fallbackImage_,
+    actionTypeIndo              : actionTypeIndo,
+    Redirectlogout              : Redirectlogout,
+    getDurationCall             : getDurationCall,
+    customTableNumber           : CustomTableNumber,
+    getRoleByMenuStatus         : getRoleByMenuStatus,
+    getParemeterFromString      : getParemeterFromString,
+    useQuery                    : useQuery,
+    shortenLargeNumber          : shortenLargeNumber,
+    formatDate                  : formatDate,
+    getYearsBefore              : getYearsBefore,
+    getMonthName                : getMonthName,
+    getLastDateOfCurrentMonth   : getLastDateOfCurrentMonth,
+    getDuration                 : getDuration,
+    getUserData                 : getUserData,
+    capitalizeFirstLetter       : capitalizeFirstLetter,
+    numToExcelColumn            : numToExcelColumn,
 }
 
 export default Helper;

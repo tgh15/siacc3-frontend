@@ -2,6 +2,7 @@ import { Fragment, useEffect, useState } from "react";
 import { Button, Col, Row }                   from "reactstrap";
 import { Eye, Trash2 }                   from "react-feather";
 import { useLocation }                   from "react-router-dom";
+
 //API
 import DriveApi                          from "../../services/pages/drive";
 
@@ -32,6 +33,9 @@ import moment                            from "moment";
 
 //Export Excel
 import ReactExport                       from "react-export-excel";
+import FileSaver                         from "file-saver";
+import ExcelJS from "exceljs";
+
 
 // const useQuery = () => {
 //     return new URLSearchParams(useLocation().search);
@@ -72,7 +76,10 @@ const Report = (props) => {
     }                                          = props;
 
     //Helper
-    const {getRoleByMenuStatus}                = Helper;
+    const {
+        numToExcelColumn,
+        getRoleByMenuStatus
+    }                                          = Helper;
 
     const [body, setBody]                      = useState([]);
     const [header, setHeader]                  = useState([]);
@@ -83,12 +90,12 @@ const Report = (props) => {
     const ExcelColumn                          = ReactExport.ExcelFile.ExcelColumn;
 
     const monthName = [
+        "Mei",
         "Januari",
-        "Februari",
         "Maret",
         "April",
-        "Mei",
         "Juni",
+        "Februari",
         "Juli",
         "Agustus",
         "September",
@@ -677,36 +684,88 @@ const Report = (props) => {
     };
     
     const createExcel = () => {
-        //get header 
-        let dataHeader = [];
 
-        header.map((data) => (
-            dataHeader.push({ value: data, widthPx: 60, widthCh: 20})
-        ));
+        const workbook  = new ExcelJS.Workbook();
+        const worksheet = workbook.addWorksheet("Sheet1");
 
-        const dataSet = [
-            {
-                columns : header,
-                data    : body
-            }
-        ];
+        const header_ = header.map((data) => (
+                {header : data, key: data.toLowerCase().split(' ').join('_'), width: data.length+2}
+            ))
 
-        return (
-            <ExcelFile 
-                filename = {props.selectedReport.title}
-                element  = {
-                    <Button 
-                        key     = "submit" 
-                        color   = "primary" 
+        worksheet.columns = header_;
 
-                    >
-                        Export Excel
-                    </Button>}
-            >
-                <ExcelSheet dataSet={dataSet} name="Organization"/>
-            </ExcelFile>
-        )
+        body.map((data) => (
+            worksheet.addRow(data)
+        ))
+
+        workbook.xlsx
+            .writeBuffer()
+            .then((buffer) => FileSaver.saveAs(new Blob([buffer]), "data.xlsx"));
     };
+
+    const createFormatExcel = () => {
+        let header_     = [];
+        const workbook  = new ExcelJS.Workbook();
+        const worksheet = workbook.addWorksheet("Sheet1");
+
+
+        //change format header
+        if(body[0].length != 15){
+
+
+            let date_       = []; //used for header date
+            let dateLength_ = body[0].length > 0 ? body[0].length - 3 : 0; //used for check date length for header
+
+            console.log(`${numToExcelColumn(dateLength_)}1`,`${numToExcelColumn(dateLength_+1)}1`, `${numToExcelColumn(dateLength_+1)}2`)
+
+            Array.from(Array(dateLength_).keys()).map((data,index) => (
+                date_.push(index+1)
+            ))
+
+            // header_ = header.map((data) => (
+            //     {header : data, key: data.toLowerCase().split(' ').join('_')}
+            // ))
+
+            const header = [
+                {header : 'No.', key: 'no'},
+                {header : 'Satuan Kerja.', key: 'satuan_kerja'},
+                {header : 'Tanggal', key: 'tanggal'},
+                {header : '1', key: '1'},
+                {header : '2', key: '2'},
+                {header : '3', key: '3'},
+                {header : '4', key: '4'},
+                {header : '5', key: '5'},
+                {header : '6', key: '6'},
+                {header : '7', key: '7'},
+                {header : '8', key: '8'},
+                {header : '9', key: '9'},
+                {header : '10', key: '10'},
+                {header : '11', key: '11'},
+                {header : '12', key: '12'},
+                {header : '13', key: '13'},
+                {header : '14', key: '14'},
+                {header : 'Jumlah', key: 'jumlah'},
+
+            ]
+
+            worksheet.mergeCells("A1", "A2"); //For Merge No. Header
+            worksheet.mergeCells("B1", "B2"); //For Merge No. Satuan Kerja
+            worksheet.mergeCells(`C1`, `AB1`) //For Merge Tanggal
+            worksheet.mergeCells(`AC1`, `AC2`) //For Merge Jumlah
+            
+            // console.log(header_);
+            worksheet.columns = header;
+
+            body.map((data) => (
+                worksheet.addRow(data)
+            ))
+    
+            workbook.xlsx
+                .writeBuffer()
+                .then((buffer) => FileSaver.saveAs(new Blob([buffer]), "data_formatted.xlsx"));
+
+        }
+    }
 
     useEffect(() => {
         if(detailResults != null && "is_formatted" in detailResults && detailResults.is_formatted === true){
@@ -714,7 +773,7 @@ const Report = (props) => {
         }else{
             getHeader();        
         }
-
+        console.log(detailResults)
     }, [detailResults]);
 
     return (
@@ -803,18 +862,21 @@ const Report = (props) => {
                                 >
                                     Export PDF
                                 </Button.Ripple>
-                                {
-                                    detailResultLoading ?
-                                        <Button.Ripple 
-                                            color       = "primary" 
-                                            disabled    = {detailResultLoading}
-                                            className   = "mr-1" 
-                                        >
-                                            Export Excel
-                                        </Button.Ripple>
-                                    :
-                                        createExcel()
-                                }
+                                <Button.Ripple 
+                                    color       = "primary" 
+                                    onClick     = {() => {
+                                        if(detailResults != null && "is_formatted" in detailResults && detailResults.is_formatted === true){
+                                            createFormatExcel();
+                                        }else{
+                                            createExcel();
+                                        }
+                                    }}
+                                    disabled    = {detailResultLoading}
+                                    className   = "mr-1" 
+
+                                >
+                                    Export Excel
+                                </Button.Ripple>
                             </div>,
                     ]}
                     setShow     = {(par) => { setIsDetailResultsVisible(par) }}
