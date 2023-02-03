@@ -704,47 +704,50 @@ const Report = (props) => {
     };
 
     const createFormatExcel = () => {
-        let header_     = [];
-        const workbook  = new ExcelJS.Workbook();
+        const workbook  = new ExcelJS.Workbook({useStyles: true});
         const worksheet = workbook.addWorksheet("Sheet1");
 
-
         //change format header
-        if(body[0].length != 15){
+        if(detailResults?.report_type === 'monthly'){
 
-
-            let date_       = []; //used for header date
             let dateLength_ = body[0].length > 0 ? body[0].length - 2 : 0; //used for check date length for header
-
-            
-            Array.from(Array(dateLength_).keys()).map((data,index) => (
-                date_.push(index+1)
-            ))
-
-            console.log(date_, dateLength_)
-
-            // header_ = header.map((data) => (
-            //     {header : data, key: data.toLowerCase().split(' ').join('_')}
-            // ))
-
+        
             const header = [
-                {header : 'No.', key: 'no'},
-                {header : 'Satuan Kerja.', key: 'satuan_kerja'},
-                {header : 'Tanggal', key: 'tanggal2'},
+                {
+                    header  : 'No.', 
+                    key     : 'no', 
+                    style   : { alignment : { vertical: 'middle', horizontal: 'center' }} 
+                },
+                {
+                    header  : 'Satuan Kerja', 
+                    key     : 'satuan_kerja', 
+                    width   : 50,
+                    style   : { alignment : { vertical: 'middle', horizontal: 'center' }} 
+
+                },
+                {
+                    header  : 'Tanggal', 
+                    key     : 'tanggal',
+                    style   : { alignment : { vertical: 'middle', horizontal: 'center' }} 
+                },
             ]
 
             //add header
             worksheet.mergeCells("A1", "A2"); //For Merge No. Header
             worksheet.mergeCells("B1", "B2"); //For Merge No. Satuan Kerja
-            worksheet.mergeCells(`C1`, `${numToExcelColumn(dateLength_+1)}`) //For Merge Tanggal
+            worksheet.mergeCells(`C1`, `${numToExcelColumn(dateLength_+1)}1`) //For Merge Tanggal
             worksheet.columns = header;
 
+            //add jumlah header
+            const rowHeader = worksheet.getRow(1);
+            rowHeader.getCell(dateLength_+2).value = 'Jumlah'
+            worksheet.mergeCells(`${numToExcelColumn(dateLength_+2)}1`, `${numToExcelColumn(dateLength_+2)}2`); //For Merge No. Header
+
             //for add date to header
-            const rowHeader = worksheet.getRow(2);
-            Array.from(Array(dateLength_).keys()).map((data,index) => (
-                rowHeader.getCell(index+3).value = index+1
+            const rowHeader2 = worksheet.getRow(2);
+            Array.from(Array(dateLength_-1).keys()).map((data,index) => (
+                rowHeader2.getCell(index+3).value = index+1
             ))
-            
 
             body.map((data) => (
                 worksheet.addRow(data)
@@ -754,6 +757,126 @@ const Report = (props) => {
                 .writeBuffer()
                 .then((buffer) => FileSaver.saveAs(new Blob([buffer]), "data_formatted.xlsx"));
 
+        }else if(detailResults?.report_type === 'yearly'){
+            const header = [
+                {
+                    header  : 'No.', 
+                    key     : 'no', 
+                    style   : { alignment : { vertical: 'middle', horizontal: 'center' }} 
+                },
+                {
+                    header  : 'Satuan Kerja', 
+                    key     : 'satuan_kerja', 
+                    width   : 50,
+                    style   : { alignment : { vertical: 'middle', horizontal: 'center' }} 
+
+                },
+                {
+                    header  : 'Tanggal', 
+                    key     : 'tanggal',
+                    style   : { alignment : { vertical: 'middle', horizontal: 'center' }} 
+                },
+            ]
+
+            //add header
+            worksheet.mergeCells("A1", "A2"); //For Merge No. Header
+            worksheet.mergeCells("B1", "B2"); //For Merge No. Satuan Kerja
+            worksheet.mergeCells(`C1`, `${numToExcelColumn(14)}1`) //For Merge Tanggal
+            worksheet.columns = header;
+
+            //add jumlah header
+            const rowHeader = worksheet.getRow(1);
+            rowHeader.getCell(15).value = 'Jumlah'
+            worksheet.mergeCells(`${numToExcelColumn(15)}1`, `${numToExcelColumn(15)}2`); //For Merge No. Header
+
+            //for add date to header
+            const rowHeader2 = worksheet.getRow(2);
+            rowHeader2.getCell(3).value = "Januari";
+            rowHeader2.getCell(4).value = "Februari";
+            rowHeader2.getCell(5).value = "Maret";
+            rowHeader2.getCell(6).value = "April";
+            rowHeader2.getCell(7).value = "Mei";
+            rowHeader2.getCell(8).value = "Juni";
+            rowHeader2.getCell(9).value = "Juli";
+            rowHeader2.getCell(10).value = "Agustus";
+            rowHeader2.getCell(11).value = "September";
+            rowHeader2.getCell(12).value = "Oktober";
+            rowHeader2.getCell(13).value = "November";
+            rowHeader2.getCell(14).value = "Desember";
+
+            body.map((data) => (
+                worksheet.addRow(data)
+            ))
+    
+            workbook.xlsx
+                .writeBuffer()
+                .then((buffer) => FileSaver.saveAs(new Blob([buffer]), "data_formatted.xlsx"));
+
+        }else if(detailResults?.report_type === 'quarterly'){
+            let quarter    = detailResults?.quarterly?.map((data) => (data.name));
+            console.log(quarter)
+        }else{
+            const header = [
+                {
+                    header  : 'No.', 
+                    key     : 'no', 
+                    style   : { alignment : { vertical: 'middle', horizontal: 'center' }} 
+                },
+                {
+                    header  : 'Satuan Kerja', 
+                    key     : 'satuan_kerja', 
+                    width   : 50,
+                    style   : { alignment : { vertical: 'middle', horizontal: 'center' }} 
+
+                },
+                {
+                    header  : 'Data Berita', 
+                    key     : 'data_berita',
+                    style   : { alignment : { vertical: 'middle', horizontal: 'center' }} 
+                },
+            ]
+
+            let subHeader_ = [];
+            detailResults?.contents?.map((data_) => (
+                data_.report_content_id === 11 ?
+                    subHeader_.push(
+                        'Jumlah Berita di Publikasi',
+                    )
+                :
+                    data_.report_content_id === 12 ?
+                        subHeader_.push(
+                            'Jumlah Berita di Arsip',
+                        )
+                    :
+                        subHeader_.push(
+                            'Jumlah Berita ke Pimpinan',
+                        )
+            ));
+
+            //add header
+            worksheet.mergeCells("A1", "A2"); //For Merge No. Header
+            worksheet.mergeCells("B1", "B2"); //For Merge No. Satuan Kerja
+            worksheet.mergeCells(`C1`, `${numToExcelColumn(subHeader_.length+2)}1`) //For Merge Tanggal
+            worksheet.columns = header;
+
+            //add jumlah header
+            const rowHeader = worksheet.getRow(1);
+            rowHeader.getCell(subHeader_.length+3).value = 'Jumlah'
+            worksheet.mergeCells(`${numToExcelColumn(subHeader_.length+3)}1`, `${numToExcelColumn(subHeader_.length+3)}2`); //For Merge No. Header
+
+            //for add date to header
+            const rowHeader2 = worksheet.getRow(2);
+            subHeader_.map((data,index) => (
+                rowHeader2.getCell(index+3).value = data
+            ))
+
+            body.map((data) => (
+                worksheet.addRow(data)
+            ))
+    
+            workbook.xlsx
+                .writeBuffer()
+                .then((buffer) => FileSaver.saveAs(new Blob([buffer]), "data_formatted.xlsx"));
         }
     }
 
