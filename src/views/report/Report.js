@@ -714,13 +714,14 @@ const Report = (props) => {
 
 
             let date_       = []; //used for header date
-            let dateLength_ = body[0].length > 0 ? body[0].length - 3 : 0; //used for check date length for header
+            let dateLength_ = body[0].length > 0 ? body[0].length - 2 : 0; //used for check date length for header
 
-            console.log(`${numToExcelColumn(dateLength_)}1`,`${numToExcelColumn(dateLength_+1)}1`, `${numToExcelColumn(dateLength_+1)}2`)
-
+            
             Array.from(Array(dateLength_).keys()).map((data,index) => (
                 date_.push(index+1)
             ))
+
+            console.log(date_, dateLength_)
 
             // header_ = header.map((data) => (
             //     {header : data, key: data.toLowerCase().split(' ').join('_')}
@@ -729,32 +730,21 @@ const Report = (props) => {
             const header = [
                 {header : 'No.', key: 'no'},
                 {header : 'Satuan Kerja.', key: 'satuan_kerja'},
-                {header : 'Tanggal', key: 'tanggal'},
-                {header : '1', key: '1'},
-                {header : '2', key: '2'},
-                {header : '3', key: '3'},
-                {header : '4', key: '4'},
-                {header : '5', key: '5'},
-                {header : '6', key: '6'},
-                {header : '7', key: '7'},
-                {header : '8', key: '8'},
-                {header : '9', key: '9'},
-                {header : '10', key: '10'},
-                {header : '11', key: '11'},
-                {header : '12', key: '12'},
-                {header : '13', key: '13'},
-                {header : '14', key: '14'},
-                {header : 'Jumlah', key: 'jumlah'},
-
+                {header : 'Tanggal', key: 'tanggal2'},
             ]
 
+            //add header
             worksheet.mergeCells("A1", "A2"); //For Merge No. Header
             worksheet.mergeCells("B1", "B2"); //For Merge No. Satuan Kerja
-            worksheet.mergeCells(`C1`, `AB1`) //For Merge Tanggal
-            worksheet.mergeCells(`AC1`, `AC2`) //For Merge Jumlah
-            
-            // console.log(header_);
+            worksheet.mergeCells(`C1`, `${numToExcelColumn(dateLength_+1)}`) //For Merge Tanggal
             worksheet.columns = header;
+
+            //for add date to header
+            const rowHeader = worksheet.getRow(2);
+            Array.from(Array(dateLength_).keys()).map((data,index) => (
+                rowHeader.getCell(index+3).value = index+1
+            ))
+            
 
             body.map((data) => (
                 worksheet.addRow(data)

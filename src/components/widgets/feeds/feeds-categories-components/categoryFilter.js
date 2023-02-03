@@ -116,7 +116,8 @@ export const CategoryFilter = (props) => {
                     >
                         {
                             activeFilterState ? 
-                                <Button 
+                                <Button
+                                    id          = {`filter_button_approval_news`}
                                     color       = "primary" 
                                     onClick     = {() => {setFiltModalState(true)}} 
                                     className   = "btn-icon btn-sm mr-1"
