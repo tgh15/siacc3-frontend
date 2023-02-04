@@ -813,8 +813,91 @@ const Report = (props) => {
                 .then((buffer) => FileSaver.saveAs(new Blob([buffer]), "data_formatted.xlsx"));
 
         }else if(detailResults?.report_type === 'quarterly'){
-            let quarter    = detailResults?.quarterly?.map((data) => (data.name));
-            console.log(quarter)
+            let quarter         = detailResults?.quarterly?.map((data) => (data.name));
+            let lastPosition    = 2; // start position for triwulan header
+
+            const header = [
+                {
+                    header  : 'No.', 
+                    key     : 'no', 
+                    style   : { alignment : { vertical: 'middle', horizontal: 'center' }} 
+                },
+                {
+                    header  : 'Satuan Kerja', 
+                    key     : 'satuan_kerja', 
+                    width   : 50,
+                    style   : { alignment : { vertical: 'middle', horizontal: 'center' }} 
+
+                },
+            ]
+
+            worksheet.mergeCells("A1", "A2"); //For Merge No. Header
+            worksheet.mergeCells("B1", "B2"); //For Merge No. Satuan Kerja
+            worksheet.columns = header;
+
+            if(quarter.includes("Triwulan I")){
+                const rowHeader = worksheet.getRow(1);
+                rowHeader.getCell(3).value = 'Triwulan I';
+                worksheet.mergeCells(lastPosition == 0 ? `C1` : numToExcelColumn(lastPosition+1), `${numToExcelColumn(lastPosition+3)}1`) //For Merge Tanggal
+
+                const rowHeader2 = worksheet.getRow(2);
+                rowHeader2.getCell(lastPosition+1).value = 'Januari';
+                rowHeader2.getCell(lastPosition+2).value = 'Februari';
+                rowHeader2.getCell(lastPosition+3).value = 'Maret';
+
+                lastPosition+=3
+
+            }
+
+            if(quarter.includes("Triwulan II")){
+                const rowHeader = worksheet.getRow(1);
+                rowHeader.getCell(lastPosition+1).value = 'Triwulan II';
+                worksheet.mergeCells(lastPosition == 0 ? `C1` : numToExcelColumn(lastPosition+1), `${numToExcelColumn(lastPosition+3)}1`) //For Merge Tanggal
+
+                const rowHeader2 = worksheet.getRow(2);
+                rowHeader2.getCell(lastPosition+1).value = 'April';
+                rowHeader2.getCell(lastPosition+2).value = 'Mei';
+                rowHeader2.getCell(lastPosition+3).value = 'Juni';
+                lastPosition+=3
+            }
+
+            if(quarter.includes("Triwulan III")){
+                const rowHeader = worksheet.getRow(1);
+                rowHeader.getCell(lastPosition+1).value = 'Triwulan III';
+                worksheet.mergeCells(lastPosition == 0 ? `C1` : numToExcelColumn(lastPosition+1), `${numToExcelColumn(lastPosition+3)}1`) //For Merge Tanggal
+
+                const rowHeader2 = worksheet.getRow(2);
+                rowHeader2.getCell(lastPosition+1).value = 'Juli';
+                rowHeader2.getCell(lastPosition+2).value = 'Agustus';
+                rowHeader2.getCell(lastPosition+3).value = 'September';
+                lastPosition+=3
+            }
+
+            if(quarter.includes("Triwulan IV")){
+                const rowHeader = worksheet.getRow(1);
+                rowHeader.getCell(lastPosition+1).value = 'Triwulan IV';
+                worksheet.mergeCells(lastPosition == 0 ? `C1` : numToExcelColumn(lastPosition+1), `${numToExcelColumn(lastPosition+3)}1`) //For Merge Tanggal
+                const rowHeader2 = worksheet.getRow(2);
+                rowHeader2.getCell(lastPosition+1).value = 'Oktober';
+                rowHeader2.getCell(lastPosition+2).value = 'November';
+                rowHeader2.getCell(lastPosition+3).value = 'Desember';
+                lastPosition+=3
+            }
+
+            //add jumlah header
+            const rowHeader = worksheet.getRow(1);
+            rowHeader.getCell(lastPosition+1).value = 'Jumlah'
+            worksheet.mergeCells(`${numToExcelColumn(lastPosition+1)}1`, `${numToExcelColumn(lastPosition+1)}2`); //For Merge No. Header
+
+            body.map((data) => (
+                worksheet.addRow(data)
+            ))
+    
+            workbook.xlsx
+                .writeBuffer()
+                .then((buffer) => FileSaver.saveAs(new Blob([buffer]), "data_formatted.xlsx"));
+
+
         }else{
             const header = [
                 {
@@ -839,18 +922,12 @@ const Report = (props) => {
             let subHeader_ = [];
             detailResults?.contents?.map((data_) => (
                 data_.report_content_id === 11 ?
-                    subHeader_.push(
-                        'Jumlah Berita di Publikasi',
-                    )
+                    subHeader_.push('Jumlah Berita di Publikasi')
                 :
                     data_.report_content_id === 12 ?
-                        subHeader_.push(
-                            'Jumlah Berita di Arsip',
-                        )
+                        subHeader_.push('Jumlah Berita di Arsip')
                     :
-                        subHeader_.push(
-                            'Jumlah Berita ke Pimpinan',
-                        )
+                        subHeader_.push('Jumlah Berita ke Pimpinan')
             ));
 
             //add header
