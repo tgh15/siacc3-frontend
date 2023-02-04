@@ -88,7 +88,6 @@ export const Barchart = ({id, handleDelete, data, title,legend,tooltips,xOptions
                             borderRadius: { topRight: 15, topLeft: 15 },
                         })
                     ))
-
                     setChartData(res.data);
 
                 }else{
@@ -121,7 +120,6 @@ export const Barchart = ({id, handleDelete, data, title,legend,tooltips,xOptions
     }
 
     const handleClick = () => {
-        console.log(chartData);
         if("details" in chartData){
             detailChartAction(chartData.details, title);
         }else{
@@ -177,6 +175,7 @@ export const Barchart = ({id, handleDelete, data, title,legend,tooltips,xOptions
             </CardHeader>
             <CardBody>
                 <div style={{ height: '450px', paddingBottom: '20px'}}>
+                    test
                     <Bar data={chartData} options={options}/>
                 </div>
             </CardBody>

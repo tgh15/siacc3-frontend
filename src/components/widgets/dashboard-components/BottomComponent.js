@@ -85,6 +85,23 @@ const MyChart = (props)=>{
                     detailChartAction   = {detailChartAction}
                 />
             )
+        case 'group_bar':
+            return (
+                <GroupBarCard
+                    id                  = {identity_id}
+                    data                = {data}
+                    index               = {index}
+                    title               = {chartTitle} 
+                    legend              = {plugins.legend.display} 
+                    tooltips            = {plugins.tooltip.enabled} 
+                    xOptions            = {scales.x}
+                    yOptions            = {scales.y}
+                    dashboard           = {dashboard}
+                    handleDelete        = {handleDelete}
+                    handleUpdate        = {handleUpdate}
+                    detailChartAction   = {detailChartAction}
+                />
+            )
         case "pie":
             return (
                 <CardPie
@@ -152,6 +169,7 @@ const MyChart = (props)=>{
                     handleUpdate        = {handleUpdate}
                     detailChartAction   = {detailChartAction}
                 />
+                // null
             )
         case "gauge":
             return (
@@ -166,7 +184,7 @@ const MyChart = (props)=>{
                     detailChartAction   = {detailChartAction}
                 />
             )
-        default:
+        case "card":
             return (
                 <CardIcon
                     id                  = {identity_id}

@@ -90,7 +90,7 @@ const Charts = (props)=>{
                     yOptions    = {yOptions}
                 />
             )
-        case "stacked":
+        case "group_bar":
             return (
                 <GroupBarCard 
                     title       = {title} 

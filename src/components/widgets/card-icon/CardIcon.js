@@ -47,6 +47,8 @@ export const CardIcon = (props)=>{
             formData.workunit_id_list = data.body.workunit_id_list;
         }
 
+        console.log(data.url)
+
         dashboardAPI.getChartData(data.url, formData).then(
             res => {
                 if(res.status === 200 && res.data != null){

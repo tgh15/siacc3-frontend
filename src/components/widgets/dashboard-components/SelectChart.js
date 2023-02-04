@@ -317,7 +317,7 @@ const SelectChart = ({gridItem,unSelected,handleFinish}) => {
                     <Button 
                         onClick = {() => {
                             if(lists.length<gridItem){
-                                setChartName("stacked")
+                                setChartName("group_bar")
                                 toggleModal()
                             }else{
                                 setToast(
@@ -413,7 +413,7 @@ const SelectChart = ({gridItem,unSelected,handleFinish}) => {
                                 return "Peta"
                             case "doughnut":
                                 return "Grafik Donat"
-                            case "group-bar":
+                            case "group_bar":
                                 return "Group Bar Chart"
                             case "gauge":
                                 return "Gauge Chart"

@@ -31,10 +31,23 @@ export const _GaugeChart = (props) => {
     const [chartData, setChartData] = useState(0);
 
     const getChartData = () => {
-        dashboardAPI.getChartData(data).then(
+
+        const formData = {
+            type              : data.body.type,
+            chart             : data.body.chart,
+            point_radius      : 1,
+        }
+        
+        if("period_type" in data.body){
+            formData.period_type      = data.body.period_type;
+            formData.workunit_id_list = data.body.workunit_id_list;
+        }
+
+        dashboardAPI.getChartData(data.url, formData).then(
             res => {
                 if(res.status === 200 && res.data != null){
-                    setChartData((res.data.gauge.user_online / res.data.gauge.user_total).toFixed(2));
+                    // setChartData((res.data.gauge.user_online / res.data.gauge.user_total).toFixed(2));
+                    setChartData(0);
                 }else{
                     setChartData(0);
                 }
