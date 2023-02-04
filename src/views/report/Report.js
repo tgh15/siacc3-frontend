@@ -897,7 +897,6 @@ const Report = (props) => {
                 .writeBuffer()
                 .then((buffer) => FileSaver.saveAs(new Blob([buffer]), "data_formatted.xlsx"));
 
-
         }else{
             const header = [
                 {
@@ -1142,14 +1141,28 @@ const Report = (props) => {
                                     </Col>
                                     <Col md="2">
                                         {
-                                            data.is_scheduled === true ?
-                                                <Button color='danger' size='sm'>
-                                                    Terjadwal
-                                                </Button>
-                                            :
-                                                <Button color='primary' size='sm'>
-                                                    Selesai
-                                                </Button>
+                                            data.is_scheduled === true &&
+                                            <Button color='danger' size='sm'>
+                                                Terjadwal
+                                            </Button>
+                                        }
+                                        {
+                                            data.is_formatted == false && data.is_scheduled === false &&
+                                            <Button color='primary' size='sm'>
+                                                Selesai
+                                            </Button>
+                                        }
+                                        {
+                                            data.is_formatted && data.is_scheduled === false && data.result != null &&
+                                            <Button color='primary' size='sm'>
+                                                Selesai
+                                            </Button>
+                                        }
+                                        {
+                                            data.is_formatted && data.is_scheduled === false && data.result == null &&
+                                            <Button color='info' size='sm'>
+                                                Dalam Proses
+                                            </Button>   
                                         }
                                     </Col>
                                     <Col 
@@ -1158,6 +1171,7 @@ const Report = (props) => {
                                     >
                                         {
                                             getRoleByMenuStatus('Laporan', 'show') ? 
+                                                !(data.is_formatted && data.is_scheduled === false && data.result == null) &&
                                                 <div id="detail-report">
                                                     <Eye
                                                         size        = {20} 
