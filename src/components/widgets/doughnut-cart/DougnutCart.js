@@ -127,10 +127,10 @@ export const DoughnutCard = (props)=>{
     }
 
     const handleClick = () => {
-        if("detail" in chartData){
-            detailChartAction(chartData.detail, title);
+        if("details" in chartData){
+            detailChartAction(chartData.details, title, chartData.filter);
         }else{
-            let redirect = Helper.getParemeterFromString(chartData, "type");
+            // let redirect = Helper.getParemeterFromString(chartData, "type");
 
             if(redirect === "laporan_masyarakat_harian" || redirect == "laporan_masyarakat_mingguan"){
                 window.location.href = "/laporan"

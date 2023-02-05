@@ -417,7 +417,7 @@ const WorkUnitList = (props) => {
                 getRoleByMenuStatus('Daftar Satker', 'workunit_list') ?
                     <CustomTable
                         header  = {headerTable}
-                        getData = {(params) => { setListData(false); console.log(params); getData(params) }}
+                        getData = {(params) => { setListData(false); getData(params) }}
                     >
                         {
                             listData && listData.map((data, i) => (

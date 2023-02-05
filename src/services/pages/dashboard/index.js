@@ -4,9 +4,9 @@ import { Get, GetDashboardData, Post, Delete }  from "../../core/request";
 //GET
 const chartList         = ()        => Get(`${employeeURL.employeePrefix}/${employeeURL.dashboardPrefix}/${employeeURL.charts}`);
 const getShareLinkId    = (id)      => Get(`${employeeURL.employeePrefix}/${employeeURL.dashboardPrefix}/share/${id}`);
-const getChartData      = (val, data)     => GetDashboardData(`${val}`, data);
 
 //POST
+const getChartData      = (url,data,param)     => GetDashboardData(url, data, param);
 const getLayout         = (data)    => Post(`${employeeURL.employeePrefix}/${employeeURL.dashboardPrefix}/${employeeURL.layout}/get`, data);
 const updateLayout      = (data)    => Post(`${employeeURL.employeePrefix}/${employeeURL.dashboardPrefix}/${employeeURL.layout}/update`, data);
 const getShareLink      = ()        => Post(`${employeeURL.employeePrefix}/${employeeURL.dashboardPrefix}/share`);

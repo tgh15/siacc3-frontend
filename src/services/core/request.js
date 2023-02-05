@@ -84,12 +84,13 @@ export const GetWithURL = (path) => {
     return promise;
 };
 
-export const GetDashboardData = (path, formData) => {
+export const GetDashboardData = (path, formData, params) => {
     const promise = new Promise((resolve, reject) => {
         axios({
             method          : 'post',
             url             : `${path}`,
             headers         : configHeaders,
+            params          : params,
             data            : formData,
         }).then(
             res => {

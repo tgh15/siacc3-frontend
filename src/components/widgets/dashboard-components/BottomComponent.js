@@ -153,24 +153,6 @@ const MyChart = (props)=>{
                     detailChartAction   = {detailChartAction}
                 />
             )
-        case "stacked":
-            return (
-                <GroupBarCard
-                    id                  = {identity_id}
-                    data                = {data}
-                    index               = {index}
-                    title               = {chartTitle} 
-                    legend              = {plugins.legend.display} 
-                    tooltips            = {plugins.tooltip.enabled} 
-                    xOptions            = {scales.x}
-                    yOptions            = {scales.y}
-                    dashboard           = {dashboard}
-                    handleDelete        = {handleDelete}
-                    handleUpdate        = {handleUpdate}
-                    detailChartAction   = {detailChartAction}
-                />
-                // null
-            )
         case "gauge":
             return (
                 <_GaugeChart
@@ -216,11 +198,12 @@ const BodyDashboardComponent = (props) => {
         setDetailChartVisible(!detailChartVisible)
     }
 
-    const detailChartAction = (detailChartUrl, chartTitle) => {
+    const detailChartAction = (detailChartUrl, chartTitle, body) => {
         setDetailChartData(
             {
                 url     : detailChartUrl, 
-                title   : chartTitle
+                title   : chartTitle,
+                body    : body
             }
         );
         detailChartToggle();
