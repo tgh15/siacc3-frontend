@@ -92,6 +92,7 @@ const FormReport = (props) => {
     }                                                   = useContext(PerformanceContext);
     const { employees }                                 = useContext(EmployeeContext);
     const { 
+        getUserData,
         getMonthName,
         getYearsBefore,
         capitalizeFirstLetter
@@ -106,6 +107,48 @@ const FormReport = (props) => {
     const [workunitLevel2_, setWorkunitLevel2_]         = useState(null);
     const [workunitLevel3, setWorkunitLevel3]           = useState(null);
     const [workunitLevel4, setWorkunitLevel4]           = useState(null);
+
+    let workunitLevelOptions;
+
+    if(localStorage.getItem('role') === 'Admin' || localStorage.getItem('role') === 'Verifikator Pusat' || localStorage.getItem('role') === 'Pimpinan Pusat'){
+        workunitLevelOptions = [
+            {value: 1   , label : 'Kejaksaan Agung'},
+            {value: 2   , label : 'Kejaksaan Tinggi'},
+            {value: 3   , label : 'Kejaksaan Negeri'},
+            {value: 4   , label : 'Cabang Kejaksaan Negeri'},
+        ]
+    }else if(localStorage.getItem('role') === 'Agen'){
+        if(getUserData().workunit_level === "KEJAKSAAN AGUNG"){
+            workunitLevelOptions = [
+                {value: 1   , label : 'Kejaksaan Agung'},
+                {value: 2   , label : 'Kejaksaan Tinggi'},
+                {value: 3   , label : 'Kejaksaan Negeri'},
+                {value: 4   , label : 'Cabang Kejaksaan Negeri'},
+            ]
+        }else if(getUserData().workunit_level === "KEJAKSAAN TINGGI"){
+            workunitLevelOptions = [
+                {value: 2   , label : 'Kejaksaan Tinggi'},
+                {value: 3   , label : 'Kejaksaan Negeri'},
+                {value: 4   , label : 'Cabang Kejaksaan Negeri'},
+            ]
+        }else if(getUserData().workunit_level === "KEJAKSAAN NEGERI"){
+            workunitLevelOptions = [
+                {value: 3   , label : 'Kejaksaan Negeri'},
+                {value: 4   , label : 'Cabang Kejaksaan Negeri'},
+            ]
+        }else{
+            workunitLevelOptions = [
+                {value: 3   , label : 'Kejaksaan Negeri'},
+                {value: 4   , label : 'Cabang Kejaksaan Negeri'},
+            ]
+        }
+    }else if(localStorage.getItem('role') === 'Verifikator Daerah' || localStorage.getItem('role') === 'Admin Daerah'){
+        workunitLevelOptions = [
+            {value: 2   , label : 'Kejaksaan Tinggi'},
+            {value: 3   , label : 'Kejaksaan Negeri'},
+            {value: 4   , label : 'Cabang Kejaksaan Negeri'},
+        ]
+    }
 
     const { 
         errors, 
@@ -999,12 +1042,7 @@ const FormReport = (props) => {
                                                 <Select
                                                     id              = "workunit_kind" 
                                                     theme           = {selectThemeColors}
-                                                    options         = {[
-                                                        {value: 1   , label : 'Kejaksaan Agung'},
-                                                        {value: 2   , label : 'Kejaksaan Tinggi'},
-                                                        {value: 3   , label : 'Kejaksaan Negeri'},
-                                                        {value: 4   , label : 'Cabang Kejaksaan Negeri'},
-                                                    ]}
+                                                    options         = {workunitLevelOptions}
                                                     onChange        = {(value) => {setWorkunitKind(value.value)}}
                                                     className       = 'react-select'
                                                     placeholder     = "Pilih Satuan Kerja"
