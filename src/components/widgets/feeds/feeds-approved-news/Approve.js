@@ -248,6 +248,7 @@ export const ApprovedNewsWidget = (props) => {
                             agent_report.status == 0 ? 
                                 <UncontrolledButtonDropdown direction='left'>
                                     <Button 
+                                        id          = {`set_state_${index}`}
                                         color       = "primary" size="sm" 
                                         onClick     = {toggle.publication} 
                                         className   = "btn-sm"
@@ -262,6 +263,7 @@ export const ApprovedNewsWidget = (props) => {
                                     </DropdownToggle>
                                     <DropdownMenu className='dropdown-toggle-split'>
                                         <DropdownItem 
+                                            id                = {`forward_leader_${index}`}
                                             tag               = "a" 
                                             href              = "#"
                                             onClick           = {() => {toggle.leader()}} 
@@ -269,6 +271,7 @@ export const ApprovedNewsWidget = (props) => {
                                             <User size        = {14}/>&nbsp;Teruskan Ke Pimpinan
                                         </DropdownItem>
                                         <DropdownItem 
+                                            id                = {`publish_${index}`}
                                             tag               = "a" 
                                             href              = "#"
                                             onClick           = {toggle.publication} 
@@ -276,6 +279,7 @@ export const ApprovedNewsWidget = (props) => {
                                             <Globe size       = {14}/>&nbsp;Publikasikan
                                         </DropdownItem>
                                         <DropdownItem 
+                                            id                = {`archive_${index}`}
                                             tag               = "a" 
                                             href              = "#"
                                             onClick           = {() => {toggle.toArchive()}} 
