@@ -110,7 +110,7 @@ const FormReport = (props) => {
 
     let workunitLevelOptions;
 
-    if(localStorage.getItem('role') === 'Admin' || localStorage.getItem('role') === 'Verifikator Pusat' || localStorage.getItem('role') === 'Pimpinan Pusat'){
+    if(localStorage.getItem('role') === 'Admin' || localStorage.getItem('role') === 'Verifikator Pusat' || localStorage.getItem('role') === 'Pimpinan Pusat' ||  localStorage.getItem('role') === 'Analis Pusat' ){
         workunitLevelOptions = [
             {value: 1   , label : 'Kejaksaan Agung'},
             {value: 2   , label : 'Kejaksaan Tinggi'},
