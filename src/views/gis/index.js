@@ -47,6 +47,7 @@ import { PerformanceProvider }      from '../../context/PerformanceContext';
 import { Maximize, Minimize }       from 'react-feather';
 import Skeleton                     from 'react-loading-skeleton';
 import CustomTableBodyEmpty         from '../../components/widgets/custom-table/CustomTableBodyEmpty';
+import GroupBarChart                from './chart/groupbar';
 
 const GIS = () => {
 
@@ -66,6 +67,7 @@ const GIS = () => {
     const [chartByCategory, setChartByCategory]                     = useState(null);
     const [chartByWorkunitLevel, setChartByWorkunitLevel]           = useState(null);
     const [isDetailChartVisible, setIsDetailChartVisible]           = useState(false);
+    const [chartByCategoryYearly, setChartByCategoryYearly]         = useState(null);
     const [chartByTrendingCategory, setChartByTrendingCategory]     = useState(null); 
     const [selectedMap, setSelectedMap]                             = useState(null);
     
@@ -201,6 +203,18 @@ const GIS = () => {
         )
     };
 
+    const getChartByCategoryYearly = (formData) => {
+        formData.type = 'berita_per_kategori_tahunan'
+
+        feedsGisAPI.getChartData(formData).then(
+            res => {
+                if(res.status === 200){
+                    setChartByCategoryYearly(res.data);
+                }
+            },
+        )
+    }
+
     const getDetailChart = () => {
         
         setLoading(true);
@@ -288,6 +302,7 @@ const GIS = () => {
         getChartByPeriod(formData);
         getChartByCategory(formData);
         getChartByWorkunitLevel(formData);
+        getChartByCategoryYearly(formData);
         getChartByTrendingCategory(formData);
     };
 
@@ -676,6 +691,17 @@ const GIS = () => {
                                     </div>
                                 </CardBody>
                             </Card>
+                        </Col>
+                    </Row>
+
+                    <Row>
+                        <Col md={12}> 
+                            <GroupBarChart
+                                data                = {chartByCategoryYearly}
+                                type                = "berita_per_kategori_tahunan"
+                                title               = "Timeline Perkembangan Berita"
+                                setSelectedDetail   = {setSelectedDetail}
+                            />
                         </Col>
                     </Row>
                 </div>
