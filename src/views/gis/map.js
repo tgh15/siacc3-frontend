@@ -43,8 +43,8 @@ const Map = (props) => {
     const sizeNode                      = 10;
     const mapHeight                     = (minMax-186);
     const MAPBOX_TOKEN                  = API_MAPBOX;
-    // const MAPBOX_TILESET                = MAPBOX_SKIN;
-    const MAPBOX_TILESET                = `mapbox://styles/zephyrfn/cldndtbve000h01p5igki3d2o`;
+    const MAPBOX_TILESET                = MAPBOX_SKIN;
+    // const MAPBOX_TILESET                = `mapbox://styles/zephyrfn/cldndtbve000h01p5igki3d2o`;
 
     const [viewport, setViewport] = useState({
         zoom        : 3.8,
@@ -306,9 +306,9 @@ const Map = (props) => {
 
                 {/* {
                     selectedMap ? */}
-                        <Source type="geojson" data={map}>
+                        {/* <Source type="geojson" data={map}>
                             <Layer id="baselayer" {...dataLayer2} />
-                        </Source>
+                        </Source> */}
                     {/* :
                         null
                 } */}

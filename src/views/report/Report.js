@@ -83,11 +83,6 @@ const Report = (props) => {
 
     const [body, setBody]                      = useState([]);
     const [header, setHeader]                  = useState([]);
-    
-    //Export Excel
-    const ExcelFile                            = ReactExport.ExcelFile;
-    const ExcelSheet                           = ReactExport.ExcelFile.ExcelSheet;
-    const ExcelColumn                          = ReactExport.ExcelFile.ExcelColumn;
 
     const monthName = [
         "Mei",
@@ -341,14 +336,15 @@ const Report = (props) => {
         doc.setFontSize(12);
         doc.text('Tanggal: '+Helper.dateIndo1(props.selectedReport.created_at), 145, 22, null, null, "center");
 
-        if(body[0].length != 15){
+                if(detailResults?.report_type === 'monthly'){
 
-            let date_ = [];
+            let date_       = [];
             let dateLength_ = body[0].length > 0 ? body[0].length - 3 : 0;
 
             Array.from(Array(dateLength_).keys()).map((data,index) => (
                 date_.push({content: index+1, styles: { halign: 'center'}})
             ))
+
 
             doc.autoTable({
                 startY          : 30,
@@ -361,15 +357,29 @@ const Report = (props) => {
                     ],
                     date_
                 ],
-                body            : [body][0],
+                body            : [body.map((data) => 
+                    (
+                        data.map((data2, index) => (
+                            index > 1 ?
+                                {
+                                    content : data2,
+                                    styles  : {halign: 'center'}
+                                }
+                            :
+                                {
+                                    content : data2,
+                                    styles  : {halign: 'left'}
+                                }
+                        ))
+                    ))][0],
+                margin          : { top: 10, bottom: 25 },
                 styles          : { cellWidth: 'auto'},
-                columnStyles    : { 0: { cellWidth: 10 } },
                 headStyles      : {
-                    fillColor: [23, 97, 56],
+                    fillColor   : [23, 97, 56],
                 },
-                margin:         { top: 10, bottom: 25 }
+                columnStyles    : { 0: { cellWidth: 10 } },
             });
-        }else{
+        }else if(detailResults?.report_type === 'yearly'){
             doc.autoTable({
                 startY          : 30,
                 head            : [
@@ -394,7 +404,145 @@ const Report = (props) => {
                         {content: 'Desember', styles: { halign: 'center'}},
                     ]
                 ],
-                body            : [body][0],
+                body            : [body.map((data) => 
+                    (
+                        data.map((data2, index) => (
+                            index > 1 ?
+                                {
+                                    content : data2,
+                                    styles  : {halign: 'center'}
+                                }
+                            :
+                                {
+                                    content : data2,
+                                    styles  : {halign: 'left'}
+                                }
+                        ))
+                    ))][0],
+                styles          : { cellWidth: 'auto'},
+                columnStyles    : { 0: { cellWidth: 10 } },
+                headStyles      : {
+                    fillColor: [23, 97, 56],
+                },
+                margin:         { top: 10, bottom: 25 }
+            });
+        }else if(detailResults?.report_type === 'quarterly'){
+
+            let quarter    = detailResults?.quarterly?.map((data) => (data.name));
+            let header_     = [
+                {content: 'No.', rowSpan: 2, styles: { halign: 'center', valign: 'middle'}},
+                {content: 'Satuan Kerja', rowSpan: 2, styles: { halign: 'center'}},
+            ];
+            let subHeader_  = [];
+
+            if(quarter.includes("Triwulan I")){
+                header_.push({content: 'Triwulan I', colSpan:3 ,styles: { halign: 'center'}});
+                subHeader_.push(
+                    {content: 'Januari', styles: { halign: 'center'}},
+                    {content: 'Februari', styles: { halign: 'center'}},
+                    {content: 'Maret', styles: { halign: 'center'}},
+                )
+            }
+            if(quarter.includes("Triwulan II")){
+                header_.push({content: 'Triwulan II', colSpan:3 ,styles: { halign: 'center'}});
+                subHeader_.push(
+                    {content: 'April', styles: { halign: 'center'}},
+                    {content: 'Mei', styles: { halign: 'center'}},
+                    {content: 'Juni', styles: { halign: 'center'}},
+                )
+            }
+            if(quarter.includes("Triwulan III")){
+                header_.push({content: 'Triwulan III', colSpan:3 ,styles: { halign: 'center'}});
+                subHeader_.push(
+                    {content: 'Juli', styles: { halign: 'center'}},
+                    {content: 'Agustus', styles: { halign: 'center'}},
+                    {content: 'September', styles: { halign: 'center'}},
+                )
+            }
+            if(quarter.includes("Triwulan IV")){
+                header_.push({content: 'Triwulan IV', colSpan:3 ,styles: { halign: 'center'}});
+                subHeader_.push(
+                    {content: 'Oktober', styles: { halign: 'center'}},
+                    {content: 'November', styles: { halign: 'center'}},
+                    {content: 'Desember', styles: { halign: 'center'}},
+                )
+            }
+            
+            doc.autoTable({
+                startY          : 30,
+                head            : [
+                    header_,
+                    subHeader_
+                ],
+                body            : [body.map((data) => 
+                    (
+                        data.map((data2, index) => (
+                            index > 1 ?
+                                {
+                                    content : data2,
+                                    styles  : {halign: 'center'}
+                                }
+                            :
+                                {
+                                    content : data2,
+                                    styles  : {halign: 'left'}
+                                }
+                        ))
+                    ))
+                ][0],
+                styles          : { cellWidth: 'auto'},
+                columnStyles    : { 0: { cellWidth: 10 } },
+                headStyles      : {
+                    fillColor: [23, 97, 56],
+                },
+                margin:         { top: 10, bottom: 25 }
+            });
+        }else if(detailResults?.report_type === 'periodically'){
+
+            let subHeader_ = [];
+
+            detailResults?.contents?.map((data_) => (
+                data_.report_content_id === 11 ?
+                    subHeader_.push(
+                        {content: 'Jumlah Berita di Publikasi', styles: { halign: 'center'}},
+                    )
+                :
+                    data_.report_content_id === 12 ?
+                        subHeader_.push(
+                            {content: 'Jumlah Berita di Arsip', styles: { halign: 'center'}},
+                        )
+                    :
+                        subHeader_.push(
+                            {content: 'Jumlah Berita ke Pimpinan', styles: { halign: 'center'}},
+                        )
+            ));
+
+            doc.autoTable({
+                startY          : 30,
+                head            : [
+                    [
+                        {content: 'No.', rowSpan : 2, styles: { halign: 'center', valign: 'middle'}},
+                        {content: 'Satuan Kerja', rowSpan: 2, styles: { halign: 'center'}},
+                        {content: 'Data Berita', colSpan : 3,styles: { halign: 'center'}},
+                    ],
+                    subHeader_
+                ],
+                body            : [body.map((data) => 
+                    (
+                        data.map((data2, index) => (
+                            index > 1 ?
+                                {
+                                    content : data2,
+                                    styles  : {halign: 'center'}
+                                }
+                            :
+                                {
+                                    content : data2,
+                                    styles  : {halign: 'left'}
+                                }
+                        ))
+                    )
+                )][0],
                 styles          : { cellWidth: 'auto'},
                 columnStyles    : { 0: { cellWidth: 10 } },
                 headStyles      : {
@@ -403,7 +551,6 @@ const Report = (props) => {
                 margin:         { top: 10, bottom: 25 }
             });
         }
-
 
         doc = addWatermark(doc);
 
