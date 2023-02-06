@@ -100,7 +100,9 @@ const UserDropdown = () => {
   const userAvatar = (userData && userData.photo) || `https://ui-avatars.com/api/?name=${ userData ? userData["name"] : "UN"}&background=4e73df&color=fff&bold=true`
 
   return (
-    <UncontrolledDropdown tag='li' className='dropdown-user nav-item'>
+    <UncontrolledDropdown 
+      id          = {'header_user'}
+      tag='li' className='dropdown-user nav-item'>
       <DropdownToggle href='/' tag='a' className='nav-link dropdown-user-link' onClick={e => e.preventDefault()}>
         <div className='user-nav d-sm-flex d-none'>
           <span className='user-name font-weight-bold text-capitalize' >{(userData && userData['name']) || ''}</span>
@@ -109,24 +111,36 @@ const UserDropdown = () => {
       </DropdownToggle>
       
       <DropdownMenu right>
-        <DropdownItem tag={Link} to='/profile' >
+        <DropdownItem 
+          id          = {'header_profile'}
+          to          = '/profile' 
+          tag         = {Link} 
+        >
           <User size={14} className='mr-75' />
           <span className='align-middle'>Profile</span>
         </DropdownItem>
 
         <DownloadMobile
-          basicModal    = {basicModal}
-          downloadData  = {downloadData}
-          setBasicModal = {setBasicModal}
-          downloadDataLite = {downloadDataLite}
+          basicModal        = {basicModal}
+          downloadData      = {downloadData}
+          setBasicModal     = {setBasicModal}
+          downloadDataLite  = {downloadDataLite}
         />
 
-        <DropdownItem tag={Link} onClick={getData}>
+        <DropdownItem 
+          id      = {'header_download_apk'}
+          tag     = {Link} 
+          onClick = {getData}
+        >
           <Download size={14} className='mr-75'/>
           <span className='align-middle'>Download APK</span>
         </DropdownItem>
 
-        <DropdownItem tag={Link} onClick={handleLogout} >
+        <DropdownItem 
+          id          = {'header_logout'}
+          tag         = {Link} 
+          onClick     ={handleLogout} 
+        >
           <Power size={14} className='mr-75' />
           <span className='align-middle'>Logout</span>
         </DropdownItem>

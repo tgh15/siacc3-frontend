@@ -152,7 +152,6 @@ const MessageDropdown = () => {
             <UncontrolledDropdown className='dropdown-notification nav-item'>
                 <DropdownToggle tag='div' href='/' onClick={e => e.preventDefault()}>
                     <Edit size={20} className="cursor-pointer text-secondary" />
-
                 </DropdownToggle>
                 <DropdownMenu right>
                     <DropdownItem href='/' tag='a' onClick={() => { setModalPersonal(true) }}>
@@ -195,7 +194,11 @@ const MessageDropdown = () => {
 
             </SelectMultipleUser>
 
-            <UncontrolledDropdown tag='li' className='dropdown-notification nav-item mr-25'>
+            <UncontrolledDropdown 
+                id          = {'header_message_chat'}
+                tag         = 'li' 
+                className   = 'dropdown-notification nav-item mr-25'
+            >
                 <DropdownToggle tag='a' className='nav-link' href='/' onClick={e => e.preventDefault()}>
                     <MessageCircle size={21} />
                     {

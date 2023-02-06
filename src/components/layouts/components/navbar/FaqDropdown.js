@@ -196,6 +196,7 @@ const FaqDropdown = () => {
             </ModalBase>
 
             <UncontrolledDropdown 
+                id          = {'header_faq'}
                 tag         = 'li' 
                 className   = 'dropdown-user nav-item'
             >   

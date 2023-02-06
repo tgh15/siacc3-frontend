@@ -319,7 +319,11 @@ const BroadcastDropdown = () => {
             </ModalBase>
 
             <BroadcastDetail show={modalDetailBroadcast} setShow={(par) => { setModalDetailBroadcast(par) }} />
-            <UncontrolledDropdown tag='li' className='dropdown-notification nav-item mr-25'>
+            <UncontrolledDropdown
+                id          = {'header_broadcast'}
+                tag         = 'li' 
+                className   = 'dropdown-notification nav-item mr-25'
+            >
                 <DropdownToggle tag='a' className='nav-link' href='/' onClick={e => e.preventDefault()}>
                     <Radio size={21} />
                     {broadcastCount > 0 && (
