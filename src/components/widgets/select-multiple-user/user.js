@@ -21,11 +21,10 @@ import Skeleton                     from "react-loading-skeleton"
 import CustomTableBodyEmpty         from "../custom-table/CustomTableBodyEmpty"
 
 
-const SelectMultipleUser = props => {
+const SelectMultipleUserFull = props => {
 
     const {
         size,
-        kind,
         show,
         title,
         center,
@@ -45,21 +44,17 @@ const SelectMultipleUser = props => {
 
     const { fallbackImage_ } = Helper
 
-    const selectUser = uuid => {
-        if (userSelected.indexOf(uuid) != -1) {
-            setUserSelected(userSelected.filter(opt => opt != uuid));
-        } else {
-            setUserSelected([...userSelected, uuid]);
-        }
-    }
-
     const selectUserFull = (data) => {
-        if (userSelected.indexOf(data) != -1) {
-            setUserSelected(userSelected.filter(opt => opt != data));
+        if (userSelected.map(e => e.uuid).indexOf(data.uuid) != -1) {
+            setUserSelected(userSelected.filter(opt => opt.uuid != data.uuid));
         } else {
             setUserSelected([...userSelected, data]);
         }
     }
+
+    useEffect(() => {
+        console.log(userSelected);
+    }, [userSelected]);
 
     const RenderUsers = () => {
         return (
@@ -70,24 +65,26 @@ const SelectMultipleUser = props => {
                             employeesFilter.length > 0 ?
                                 employeesFilter.filter(opt => opt.uuid != Helper.getUserData().uuid).map((item, index) => {
                                     return (
-                                        <ListGroupItem 
-                                            key         = {index} 
-                                            active      = {userSelected.indexOf(item.uuid) != -1 ? "true" : "" } 
-                                            onClick     = {() => { props.kind != undefined ? selectUserFull(item) : selectUser(item.uuid) }} 
-                                            className   = "cursor-pointer" 
-                                        >
-                                            <Media>
-                                                <Media left href='#'>
-                                                    <Avatar onError={fallbackImage_} img={item.photo == "" ? `https://ui-avatars.com/api/?name=${item ? item.name : "UN"}&background=4e73df&color=fff&bold=true` : item.photo} imgHeight='40' imgWidth='40' />
+                                        <>
+                                            <ListGroupItem 
+                                                key         = {index} 
+                                                active      = {userSelected.map((data) => data.uuid).indexOf(item.uuid) != -1 ? "true" : "" } 
+                                                onClick     = {() => { selectUserFull(item)}} 
+                                                className   = "cursor-pointer" 
+                                            >
+                                                <Media>
+                                                    <Media left href='#'>
+                                                        <Avatar onError={fallbackImage_} img={item.photo == "" ? `https://ui-avatars.com/api/?name=${item ? item.name : "UN"}&background=4e73df&color=fff&bold=true` : item.photo} imgHeight='40' imgWidth='40' />
+                                                    </Media>
+
+                                                    <Media body>
+                                                        <Media header className="mb-0 ml-1">{item.name}</Media>
+                                                        <h6 className="text-muted ml-1 mt-0">{item.workunit} </h6>
+                                                    </Media>
                                                 </Media>
 
-                                                <Media body>
-                                                    <Media header className="mb-0 ml-1">{item.name}</Media>
-                                                    <h6 className="text-muted ml-1 mt-0">{item.workunit} </h6>
-                                                </Media>
-                                            </Media>
-
-                                        </ListGroupItem>
+                                            </ListGroupItem>
+                                        </>
                                     )
                                 })
                             :
@@ -142,4 +139,4 @@ const SelectMultipleUser = props => {
     )
 }
 
-export default SelectMultipleUser
+export default SelectMultipleUserFull;

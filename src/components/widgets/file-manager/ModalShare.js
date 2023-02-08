@@ -11,6 +11,7 @@ import { FileManagerContext } from '../../../context/FileManagerContext'
 import Helper from '../../../helpers'
 import DriveApi from '../../../services/pages/drive'
 import CustomToast from '../custom-toast'
+import SelectMultipleUserFull from '../select-multiple-user/user.js'
 
 export const ModalChild = ({ show, setShow, request, setRequest }) => {
     const [limitOpen, setLimitOpen] = useState(request ? request["is_limit"] : null)
@@ -141,7 +142,6 @@ export const ModalChild = ({ show, setShow, request, setRequest }) => {
     )
 }
 
-
 export const ModalAccess = ({ show, setShow, setAccess, userShareSelected, removeUserShare }) => {
     return (
         <ModalBase title="Pilih Hak Akses" show={show} setShow={setShow}>
@@ -194,14 +194,23 @@ export const ModalAccess = ({ show, setShow, setAccess, userShareSelected, remov
 }
 
 const ModalShare = ({ isShow, setShow }) => {
-    const [modalChildShow, setModalChildShow] = useState(false)
 
-    const [showModalAction, setShowModalAction] = useState(false)
-    const [userShareSelected, setUserShareSelected] = useState(null)
+    const { 
+        users, 
+        getData, 
+        apiActive, 
+        dataSelected, 
+        shareSelected,
+    }                                                   = useContext(FileManagerContext)
+
+    const [modalChildShow, setModalChildShow]           = useState(false)
+
+    const [modalGroup, setModalGroup]                   = useState(false);
+    const [showModalAction, setShowModalAction]         = useState(false)
+    const [userShareSelected, setUserShareSelected]     = useState(null)
 
     const toggleModalChild = () => { setModalChildShow(!modalChildShow) }
     const toggleModalAction = () => { setShowModalAction(!showModalAction) }
-
 
     const [userShare, setUserShare] = useState([])
     const [editedAccess, setEditedAccess] = useState(0)
@@ -217,7 +226,6 @@ const ModalShare = ({ isShow, setShow }) => {
         toggleModalAction()
     }
 
-    const { users, dataSelected, getData, apiActive, shareSelected } = useContext(FileManagerContext)
 
     const [request, setRequest] = useState({
         owner_id: Helper.getUserData().uuid,
@@ -266,91 +274,128 @@ const ModalShare = ({ isShow, setShow }) => {
         navigator.clipboard.writeText(shareSelected.url);
         CustomToast("success","Link berhasil di copy ke clipboard")
     }
+
     return (
-        <ModalBase title="Bagikan Berkas" show={isShow} setShow={setShow}>
-            {/* Modal Accesss */}
-            <ModalAccess
-                userShareSelected={userShareSelected}
-                show={showModalAction}
-                setShow={setShowModalAction}
-                setAccess={(param) => {
-                    editedTable(param, editedAccess)
-                    setShowModalAction(false)
+        <>
+
+            <SelectMultipleUserFull
+                kind        = {2}
+                show        = {modalGroup}
+                title       = "Buat Group"
+                setShow     = {(par) => setModalGroup(par)}
+                onSelect    = {(par) => {
+
+                    let tb = par.map(evalue => {
+                        return {
+                            name        : evalue.name,
+                            user_uuid   : evalue.uuid_user,
+                            role        : 1
+                        }
+                    })
+                    setUserShare(tb);
+                    setModalGroup(false);
+
                 }}
-                removeUserShare={(data) => {
-                    removeUserShare(data)
-                }} />
+                titleButton = "Selesai"
+            >
+            </SelectMultipleUserFull>
 
-            <ModalChild 
-                show        = {modalChildShow} 
-                setShow     = {toggleModalChild} 
-                request     = {request} 
-                setRequest  = {(par => { setRequest(par) })} 
-            />
-
-            <FormGroup>
-                <Select
-                    theme           = {selectThemeColors}
-                    isMulti
-                    options         = {users}
-                    className       = 'react-select'
-                    placeholder     = "Pilih User"
-                    isClearable     = {false}
-                    classNamePrefix = 'select'
-                    onChange        = {(e) => {
-                        let tb = e.map(evalue => {
-                            return {
-                                name        : evalue.label,
-                                user_uuid   : evalue.value,
-                                role        : 1
-                            }
-                        })
-                        setUserShare(tb)
+            <ModalBase 
+                show        = {isShow} 
+                title       = "Bagikan Berkas" 
+                setShow     = {setShow}
+            >
+                {/* Modal Accesss */}
+                <ModalAccess
+                    show                = {showModalAction}
+                    setShow             = {setShowModalAction}
+                    setAccess           = {(param) => {
+                        editedTable(param, editedAccess)
+                        setShowModalAction(false)
                     }}
+                    removeUserShare     = {(data) => {removeUserShare(data)}} 
+                    userShareSelected   = {userShareSelected}
                 />
-            </FormGroup>
-            <FormGroup>
-                <Button 
-                    block 
-                    color="primary" 
-                    size="sm" 
-                    disabled={shareSelected ? false : true} 
-                    onClick={onCopyClipboard}>
-                        <Clipboard size={16} /> Salin Tautan
-                </Button>
-            </FormGroup>
-            <FormGroup>
-                <Button block color="primary" onClick={() => {
-                    toggleModalChild()
-                }}>Pengaturan Tautan</Button>
-            </FormGroup>
-            <FormGroup>
-                {userShare.map((v, key) => {
-                    return (
-                        <Row key={`tuyyj01922-${key}`} style={{ marginTop: "1em", marginBottom: "1em" }}>
-                            <Col>{v.name}</Col>
-                            <Col>{Helper.accessRole(v.role)}</Col>
-                            <Col className="text-right">
-                                <Button color="" size={"sm"} onClick={() => {
-                                    toggleModalAction()
-                                    setEditedAccess(key)
-                                    setUserShareSelected(v)
-                                }}>
-                                    <MoreHorizontal />
-                                </Button>
-                            </Col>
-                        </Row>
-                    )
-                })}
-            </FormGroup>
-            <ModalFooter className="d-flex justify-content-between px-0">
-                <Button outline color="primary" onClick={setShow}>Batal</Button>
-                {shareSelected ? <Button color="danger" onClick={onDeleteShare} outline>
-                    Hapus
-                </Button> : null}
-                <Button color="primary" onClick={() => { onSubmit() }} disabled={userShare.length > 0 ? false : true}>Simpan</Button>
-            </ModalFooter>
-        </ModalBase>
+
+                <ModalChild 
+                    show        = {modalChildShow} 
+                    setShow     = {toggleModalChild} 
+                    request     = {request} 
+                    setRequest  = {(par => { setRequest(par) })} 
+                />
+
+                <FormGroup>
+                    <Button
+                        color       = "primary" 
+                        onClick     = {() => { setModalGroup(true) }} 
+                        className   = "w-100"
+                    >
+                        Pilih Pengguna
+                    </Button>
+                    
+                    {/* <Select
+                        theme           = {selectThemeColors}
+                        isMulti
+                        options         = {users}
+                        className       = 'react-select'
+                        placeholder     = "Pilih User"
+                        isClearable     = {false}
+                        classNamePrefix = 'select'
+                        onChange        = {(e) => {
+                            let tb = e.map(evalue => {
+                                return {
+                                    name        : evalue.label,
+                                    user_uuid   : evalue.value,
+                                    role        : 1
+                                }
+                            })
+                            setUserShare(tb)
+                        }}
+                    /> */}
+                </FormGroup>
+                <FormGroup>
+                    <Button 
+                        block 
+                        color       = "primary" 
+                        size        = "sm" 
+                        disabled    = {shareSelected ? false : true} 
+                        onClick     = {onCopyClipboard}>
+                            <Clipboard size={16} /> Salin Tautan
+                    </Button>
+                </FormGroup>
+                <FormGroup>
+                    <Button block color="primary" onClick={() => {
+                        toggleModalChild()
+                    }}>Pengaturan Tautan</Button>
+                </FormGroup>
+                <FormGroup>
+                    {userShare.map((v, key) => {
+                        return (
+                            <Row key={`tuyyj01922-${key}`} style={{ marginTop: "1em", marginBottom: "1em" }}>
+                                <Col>{v.name}</Col>
+                                <Col>{Helper.accessRole(v.role)}</Col>
+                                <Col className="text-right">
+                                    <Button color="" size={"sm"} onClick={() => {
+                                        toggleModalAction()
+                                        setEditedAccess(key)
+                                        setUserShareSelected(v)
+                                    }}>
+                                        <MoreHorizontal />
+                                    </Button>
+                                </Col>
+                            </Row>
+                        )
+                    })}
+                </FormGroup>
+                <ModalFooter className="d-flex justify-content-between px-0">
+                    <Button outline color="primary" onClick={setShow}>Batal</Button>
+                    {shareSelected ? <Button color="danger" onClick={onDeleteShare} outline>
+                        Hapus
+                    </Button> : null}
+                    <Button color="primary" onClick={() => { onSubmit() }} disabled={userShare.length > 0 ? false : true}>Simpan</Button>
+                </ModalFooter>
+            </ModalBase>
+        </>
     )
 }
 
