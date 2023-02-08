@@ -7,7 +7,7 @@ export const dataLayer = {
         'fill-color': {
             property: 'REPORT_COUNT',
             stops: [
-                [0, '#badc58'],
+                [0, '#6a6b70'],
                 [1, '#6ab04c'],
                 [2, '#f1c40f'],
                 [3, '#e67e22'],
@@ -38,6 +38,6 @@ export const dataLayer2 = {
                 [10,"#3BAB59"]
             ]
         },
-        'fill-opacity': 0.8
+        'fill-opacity': 1
     }
 };

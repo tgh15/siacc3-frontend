@@ -23,7 +23,14 @@ import {PerformanceContext}         from '../../context/PerformanceContext';
 import {CategoryContext}            from '../../context/CategoryContext';
 
 
-const GisFilter = ({setGisFilter, chartByPeriod}) => {
+const GisFilter = (props) => {
+
+const {
+    setGisFilter, 
+    chartByPeriod, 
+    setSelectedMap
+}                               = props;
+
 const { workunitOptions }       = useContext(PerformanceContext);
 const { category }              = useContext(CategoryContext);
 
@@ -198,6 +205,7 @@ return (
                             trending_kind   : null,
                         }); 
                         setGisFilter(null);
+                        setSelectedMap(null);
                     }}
                     outline 
                 >

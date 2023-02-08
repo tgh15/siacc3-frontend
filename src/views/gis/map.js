@@ -55,7 +55,11 @@ import imgMarker                    from "../../assets/images/map_icons/point-ma
 import ImageRounded                 from '../../components/widgets/image-rounded';
 
 import { API_MAPBOX, MAPBOX_SKIN }  from '../../services/core/default';
-import { updatePercentiles}         from './utils';
+import { 
+    updateColor,
+    updatePercentiles,
+    updatePercentilesDetail
+}                                   from './utils';
 
 const Map = (props) => {
     
@@ -64,6 +68,8 @@ const Map = (props) => {
         mapFilter,
         gisFilter,
         heatFilter,
+        selectedMap,
+        setSelectedMap,
         selectedMarker,
         setSelectedMarker,
     }                                   = props;
@@ -84,104 +90,128 @@ const Map = (props) => {
         longitude   : 118.01486,
     });
 
-    const [selectedMap, setSelectedMap] = useState(null);
+    const [centerPositionMap, setCenterPositionMap]  = useState({
+        latitude    : 0,
+        longitude   : 0
+    })
 
     const data2 = useMemo(() => {
-        if(mapData != null){
+        
+        if(mapData != null && selectedMap == null){
             return data && updatePercentiles(data, mapData.work_units);
+        }else{
+            console.log(selectedMap && updatePercentilesDetail(selectedMap, mapData.work_units))
+            return selectedMap && updatePercentilesDetail(selectedMap, mapData.work_units)
         }
-    }, [data, mapData]);
+    }, [data, mapData, selectedMap]);
 
 
     const getFileJsonName = (code) => {
         if (code === "006050"){
-            setSelectedMap(updatePercentiles(aceh, mapData.work_units))
+            setSelectedMap(updateColor(aceh, mapData.work_units))
+            setCenterPositionMap({latitude : 4.705565134429243, longitude : 96.71696116065199})
         }else if (code === "008678"){
-            setSelectedMap(bali)
+            setSelectedMap(updateColor(bali, mapData.work_units))
+            setCenterPositionMap({latitude : -8.341252345543086, longitude : 115.08390057693202})
         }else if (code === "650325"){
-            setSelectedMap(banten)
+            setSelectedMap(updateColor(banten, mapData.work_units))
+            setCenterPositionMap({latitude : -6.399373259406597, longitude : 106.09642066528701})
         }else if (code === "009073"){
-            setSelectedMap(bengkulu)
+            setSelectedMap(updateColor(bengkulu, mapData.work_units))
+            setCenterPositionMap({latitude : -3.8136597984588967, longitude : 102.2893687108649})
         }else if (code === "005655"){
-            setSelectedMap(diy)
+            setSelectedMap(updateColor(diy, mapData.work_units))
+            setCenterPositionMap({latitude : -7.878395343583588, longitude : 110.39678547754697})
         }else if (code === "005020"){
-            setSelectedMap(dki)
+            setSelectedMap(updateColor(dki, mapData.work_units))
+            setCenterPositionMap({latitude : -6.203436395742954, longitude : 106.86778574414076})
         }else if (code === "650346"){
-            setSelectedMap(gorontalo)
+            setSelectedMap(updateColor(gorontalo, mapData.work_units))
+            setCenterPositionMap({latitude : 0.7210554847283317, longitude : 122.45298641468537})
         }else if (code === "006994"){
-            setSelectedMap(jambi)
+            setSelectedMap(updateColor(jambi, mapData.work_units))
+            setCenterPositionMap({latitude : -1.5878425740301796, longitude : 102.69899571830484})
         }else if (code === "005083"){
-            setSelectedMap(jabar)
+            setSelectedMap(updateColor(jabar, mapData.work_units))
+            setCenterPositionMap({latitude : -6.916599705798558, longitude : 107.6187206209833})
         }else if (code === "005304"){
-            setSelectedMap(jateng)
+            setSelectedMap(updateColor(jateng, mapData.work_units))
+            setCenterPositionMap({latitude : -7.305283212795637, longitude : 110.10089128865421})
         }else if (code === "005719"){
-            setSelectedMap(jatim)
+            setSelectedMap(updateColor(jatim, mapData.work_units))
+            setCenterPositionMap({latitude : -7.730066135490137, longitude : 112.67718519777326})
         }else if (code === "007371"){
-            setSelectedMap(kalbar)
+            setSelectedMap(updateColor(kalbar, mapData.work_units))
+            setCenterPositionMap({latitude : -0.11620418925405451, longitude : 111.05706083126})
         }else if (code === "007591"){
-            setSelectedMap(kalsel)
+            setSelectedMap(updateColor(kalsel, mapData.work_units))
+            setCenterPositionMap({latitude : -2.969003842047445, longitude : 115.4942178424309})
         }else if (code === "007481"){
-            setSelectedMap(kalteng)
+            setSelectedMap(updateColor(kalteng, mapData.work_units))
+            setCenterPositionMap({latitude : -1.4554391963362934, longitude : 113.38868077834293})
         }else if (code === "007702"){
-            setSelectedMap(kaltim)
+            setSelectedMap(updateColor(kaltim, mapData.work_units))
+            setCenterPositionMap({latitude : 0.6148475108073798, longitude : 116.329368452734})
         }else if (code === "650311"){
-            setSelectedMap(kepbabel)
+            setSelectedMap(updateColor(kepbabel, mapData.work_units))
+            setCenterPositionMap({latitude : -2.676100842762754, longitude : 106.50028788191773})
         }else if (code === "969400"){
-            setSelectedMap(kepriau)
+            setSelectedMap(updateColor(kepriau, mapData.work_units))
+            setCenterPositionMap({latitude : 0.32581185622054193, longitude : 104.36862265810797})
         }else if (code === "007301"){
-            setSelectedMap(lampung)
+            setSelectedMap(updateColor(lampung, mapData.work_units))
+            setCenterPositionMap({latitude : -4.828281306088277, longitude : 105.09516005114095})
         }else if (code === "008462"){
-            setSelectedMap(maluku)
+            setSelectedMap(updateColor(maluku, mapData.work_units))
+            setCenterPositionMap({latitude : -5.646003455817048, longitude : 129.7745412527819})
         }else if (code === "650332"){
-            setSelectedMap(malut)
+            setSelectedMap(updateColor(malut, mapData.work_units))
+            setCenterPositionMap({latitude : 0.6110314490493919, longitude : 127.76941977603322})
         }else if (code === "008767"){
-            setSelectedMap(ntb)
+            setSelectedMap(updateColor(ntb, mapData.work_units))
+            setCenterPositionMap({latitude : -8.685687981637162, longitude : 117.42949143739641})
         }else if (code === "008835"){
-            setSelectedMap(ntt)
+            setSelectedMap(updateColor(ntt, mapData.work_units))
+            setCenterPositionMap({latitude : -9.522914938328848, longitude : 122.19102431741588})
         }else if (code === "008970"){
-            setSelectedMap(papua)
+            setSelectedMap(updateColor(papua, mapData.work_units))
+            setCenterPositionMap({latitude : -4.355637454729408, longitude : 138.65219170112155})
         }else if (code === "006817"){
-            setSelectedMap(riau)
+            setSelectedMap(updateColor(riau, mapData.work_units))
+            setCenterPositionMap({latitude : 0.42038331465175277, longitude : 101.70969398281464})
         }else if (code === "008107"){
-            setSelectedMap(sulsel)
+            setSelectedMap(updateColor(sulsel, mapData.work_units))
+            setCenterPositionMap({latitude : -3.979001753179127, longitude : 119.986119377144560})
         }else if (code === "007872"){
-            setSelectedMap(sulteng)
-        }else if (code === "008416"){
-            setSelectedMap(sultra)
+            setSelectedMap(updateColor(sulteng, mapData.work_units))
+            setCenterPositionMap({latitude : -0.7474579485868843, longitude : 121.16369207500321})
         }else if (code === "007783"){
-            setSelectedMap(sulut)
-        }else if (code === "006622"){
-            setSelectedMap(sumbar)
-        }else if (code === "007102"){
-            setSelectedMap(sumsel)
-        }else if (code === "006287"){
-            setSelectedMap(sumut)
-        }else if (code === "00001"){
-            setSelectedMap(pabar)
+            setSelectedMap(updateColor(sulut, mapData.work_units))
+            setCenterPositionMap({latitude : 0.699949832606657, longitude : 124.3308498671964})
+        }else if (code === "008416"){
+            setSelectedMap(updateColor(sultra, mapData.work_units))
+            setCenterPositionMap({latitude : -3.990619075165716, longitude : 122.04236839178547})
         }else if (code === "001001"){
-            setSelectedMap(sulbar)
+            setSelectedMap(updateColor(sulbar, mapData.work_units))
+            setCenterPositionMap({latitude : -2.495198109485345, longitude : 119.36674267366904})
+        }else if (code === "006622"){
+            setSelectedMap(updateColor(sumbar, mapData.work_units))
+            setCenterPositionMap({latitude : -0.5445985127422124, longitude : 100.48364831042149})
+        }else if (code === "007102"){
+            setSelectedMap(updateColor(sumsel, mapData.work_units))
+            setCenterPositionMap({latitude : -3.170565611456028, longitude : 104.13330333016381})
+        }else if (code === "006287"){
+            setSelectedMap(updateColor(sumut, mapData.work_units))
+            setCenterPositionMap({latitude : 2.02309351205235, longitude : 98.7849784578709})
+        }else if (code === "00001"){
+            setSelectedMap(updateColor(pabar, mapData.work_units))
+            setCenterPositionMap({latitude : -1.90850263965104740, longitude : 132.5837537700121})
         }
     }
 
     useEffect(() => {
-        if(gisFilter != null && gisFilter.workunit_id != undefined && mapData != null && mapData.work_units != null){
-            let selectedWorkunit = mapData.work_units.filter((data) => (
-                data.id === gisFilter.workunit_id.value
-            ))
-
-            console.log(selectedWorkunit[0])
-
-            if(selectedWorkunit.length > 0){
-                setSelectedMap(true);
-                setViewport({
-                    zoom      : 7,
-                    width     : "100%",
-                    height    : mapHeight,
-                    latitude  : selectedWorkunit[0].latitude,
-                    longitude : selectedWorkunit[0].longitude,
-                })
-                getFileJsonName(selectedWorkunit[0].code);
-            }
+        if(gisFilter != null && gisFilter.workunit_id != undefined && mapData != null && mapData.parent.id != 0){
+            getFileJsonName(mapData.parent.code);
         }else{
             setViewport({
                 zoom        : 3.6,
@@ -192,6 +222,18 @@ const Map = (props) => {
             })
         }
     }, [gisFilter, mapData]);
+
+    useEffect(() => {
+        if(centerPositionMap.latitude != 0){
+            setViewport({
+                zoom      : 5.8,
+                width     : "100%",
+                height    : mapHeight,
+                latitude  : centerPositionMap.latitude,
+                longitude : centerPositionMap.longitude,
+            })
+        }
+    },[centerPositionMap])
 
 
     return (
@@ -270,7 +312,8 @@ const Map = (props) => {
                                                     longitude = {data.longitude}
                                                 >
                                                     <div 
-                                                        style   = {{ background: `#ffd32a`, height: sizeNode, width: sizeNode, borderRadius: '50%', textAlign:'center', color: 'white', transform: `translate(${-sizeNode / 2}px,${-sizeNode}px)`, cursor: 'pointer'}}
+                                                        style   = {{ background: `#ffd32a`, height: sizeNode + 5, width: sizeNode + 5, borderRadius: '50%', textAlign: 'center', color: 'white', transform: `translate(${-sizeNode / 1.5}px,${-sizeNode}px)`, cursor: 'pointer' }}
+                                                        onClick = {(e) => { setSelectedMarker(data) }}
                                                     />
                                                 </Marker>
                                             ))
@@ -281,23 +324,24 @@ const Map = (props) => {
                                 }
 
                                 {
-                                category.label == "Politik" ? 
-                                    category.data != null && category.data.length > 0 ? 
-                                        category.data.map((data) => (
-                                            <Marker
-                                                key       = {category.label+"-"+data.id}
-                                                latitude  = {data.latitude}
-                                                longitude = {data.longitude}
-                                            >
-                                                <div 
-                                                    style   = {{ background: `#3c40c6`, height: sizeNode, width: sizeNode, borderRadius: '50%', textAlign:'center', color: 'white', transform: `translate(${-sizeNode / 2}px,${-sizeNode}px)`, cursor: 'pointer'}}
-                                                />
-                                            </Marker>
-                                        ))
+                                    category.label == "Politik" ? 
+                                        category.data != null && category.data.length > 0 ? 
+                                            category.data.map((data) => (
+                                                <Marker
+                                                    key       = {category.label+"-"+data.id}
+                                                    latitude  = {data.latitude}
+                                                    longitude = {data.longitude}
+                                                >
+                                                    <div
+                                                        style   = {{ background: `#3c40c6`, height: sizeNode + 5, width: sizeNode + 5, borderRadius: '50%', textAlign: 'center', color: 'white', transform: `translate(${-sizeNode / 1.5}px,${-sizeNode}px)`, cursor: 'pointer' }}
+                                                        onClick = {(e) => { setSelectedMarker(data) }}
+                                                    />
+                                                </Marker>
+                                            ))
+                                        :
+                                            null
                                     :
                                         null
-                                :
-                                    null
                                 }
                                 {
                                     category.label == "Ekonomi" ? 
@@ -309,7 +353,8 @@ const Map = (props) => {
                                                     longitude = {data.longitude}
                                                 >
                                                     <div 
-                                                        style   = {{ background: `#303952`, height: sizeNode, width: sizeNode, borderRadius: '50%', textAlign:'center', color: 'white', transform: `translate(${-sizeNode / 2}px,${-sizeNode}px)`, cursor: 'pointer'}}
+                                                        style   = {{ background: `#303952`, height: sizeNode + 5, width: sizeNode + 5, borderRadius: '50%', textAlign: 'center', color: 'white', transform: `translate(${-sizeNode / 1.5}px,${-sizeNode}px)`, cursor: 'pointer' }}
+                                                        onClick = {(e) => { setSelectedMarker(data) }}
                                                     />
                                                 </Marker>
                                             ))
@@ -319,18 +364,22 @@ const Map = (props) => {
                                         null
                                 }
                                 {
-                                    category.data != null && category.data.length > 0 ? 
-                                        category.data.map((data) => (
-                                            <Marker
-                                                key       = {category.label+"-"+data.id}
-                                                latitude  = {data.latitude}
-                                                longitude = {data.longitude}
-                                            >
-                                                <div 
-                                                    style   = {{ background: `#ff3f34`, height: sizeNode, width: sizeNode, borderRadius: '50%', textAlign:'center', color: 'white', transform: `translate(${-sizeNode / 2}px,${-sizeNode}px)`, cursor: 'pointer'}}
-                                                />
-                                            </Marker>
-                                        ))
+                                    category.label == "Keuangan" ? 
+                                        category.data != null && category.data.length > 0 ? 
+                                            category.data.map((data) => (
+                                                <Marker
+                                                    key       = {category.label+"-"+data.id}
+                                                    latitude  = {data.latitude}
+                                                    longitude = {data.longitude}
+                                                >
+                                                    <div 
+                                                        style   = {{ background: `#ff3f34`, height: sizeNode + 5, width: sizeNode + 5, borderRadius: '50%', textAlign: 'center', color: 'white', transform: `translate(${-sizeNode / 1.5}px,${-sizeNode}px)`, cursor: 'pointer' }}
+                                                        onClick = {(e) => { setSelectedMarker(data) }}
+                                                    />
+                                                </Marker>
+                                            ))
+                                        :
+                                            null
                                     :
                                         null
 
@@ -345,7 +394,8 @@ const Map = (props) => {
                                                     longitude = {data.longitude}
                                                 >
                                                     <div 
-                                                        style   = {{ background: `#05c46b`, height: sizeNode, width: sizeNode, borderRadius: '50%', textAlign:'center', color: 'white', transform: `translate(${-sizeNode / 2}px,${-sizeNode}px)`, cursor: 'pointer'}}
+                                                        style   = {{ background: `#05c46b`, height: sizeNode + 5, width: sizeNode + 5, borderRadius: '50%', textAlign: 'center', color: 'white', transform: `translate(${-sizeNode / 1.5}px,${-sizeNode}px)`, cursor: 'pointer' }}
+                                                        onClick = {(e) => { setSelectedMarker(data) }}
                                                     />
                                                 </Marker>
                                             ))
@@ -364,7 +414,8 @@ const Map = (props) => {
                                                     longitude = {data.longitude}
                                                 >
                                                     <div 
-                                                        style   = {{ background: `#af05fa7f`, height: sizeNode, width: sizeNode, borderRadius: '50%', textAlign:'center', color: 'white', transform: `translate(${-sizeNode / 2}px,${-sizeNode}px)`, cursor: 'pointer'}}
+                                                        style   = {{ background: `#af05fa7f`, height: sizeNode + 5, width: sizeNode + 5, borderRadius: '50%', textAlign: 'center', color: 'white', transform: `translate(${-sizeNode / 1.5}px,${-sizeNode}px)`, cursor: 'pointer' }}
+                                                        onClick = {(e) => { setSelectedMarker(data) }}
                                                     />
                                                 </Marker>
                                             ))
@@ -383,7 +434,8 @@ const Map = (props) => {
                                                     longitude = {data.longitude}
                                                 >
                                                     <div 
-                                                        style   = {{ background: `#a5b1c2`, height: sizeNode, width: sizeNode, borderRadius: '50%', textAlign:'center', color: 'white', transform: `translate(${-sizeNode / 2}px,${-sizeNode}px)`, cursor: 'pointer'}}
+                                                        style   = {{ background: `#a5b1c2`, height: sizeNode + 5, width: sizeNode + 5, borderRadius: '50%', textAlign: 'center', color: 'white', transform: `translate(${-sizeNode / 1.5}px,${-sizeNode}px)`, cursor: 'pointer' }}
+                                                        onClick = {(e) => { setSelectedMarker(data) }}
                                                     />
                                                 </Marker>
                                             ))

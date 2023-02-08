@@ -13,6 +13,8 @@ import {
     DropdownToggle,
     UncontrolledButtonDropdown,
 }                                       from "reactstrap"
+import ChartDataLabels                  from 'chartjs-plugin-datalabels';
+
         
 export const GroupBarCard=(props)=>{
 
@@ -98,10 +100,9 @@ export const GroupBarCard=(props)=>{
             tooltip : {enabled : tooltips == undefined ? false : tooltips}
         },
         scales  : {
-            x   : {...xopt, stacked: true},
+            x   : {...xopt},
             y   : {
                 ...yopt, 
-                stacked : true, 
                 ticks   : {
                     stepSize : 10,
                 }
@@ -252,7 +253,11 @@ export const GroupBarCard=(props)=>{
             </CardHeader>
             <CardBody>
                 <div style={{ height: '450px', paddingBottom: '20px'}}>
-                    <Bar data={chartData} options={options}/>
+                    <Bar 
+                        data    = {chartData} 
+                        options = {options} 
+                        plugins = {[ChartDataLabels]}
+                    />
                 </div>
             </CardBody>
         </Card>

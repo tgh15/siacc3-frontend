@@ -51,17 +51,16 @@ import CustomTablePaginate          from '../../components/widgets/custom-table/
 
 const GIS = () => {
 
-    const [page, setPage]                                           = useState(1);
     const [fullscr,setFcr]                                          = useState(false);
     const [mapData, setMapData]                                     = useState(null);
     const [loading, setLoading]                                     = useState(true);
     const [mapFilter, setMapFilter]                                 = useState('pin');
     const [gisFilter, setGisFilter]                                 = useState(null);
-    const [totalPage, setTotalPage]                                 = useState(1);
     const [pagination, setPagination]                               = useState(null);
     const [heatFilter, setHeatFilter]                               = useState(false);
     const [chartByKind, setChartByKind]                             = useState(null);
     const [detailChart, setDetailChart]                             = useState(null);
+    const [selectedMap, setSelectedMap]                             = useState(null);
     const [chartByPeriod, setChartByPeriod]                         = useState(null);
     const [selectedDetail, setSelectedDetail]                       = useState({type: null, title: null});
     const [selectedMarker, setSelectedMarker]                       = useState(null);
@@ -70,7 +69,6 @@ const GIS = () => {
     const [isDetailChartVisible, setIsDetailChartVisible]           = useState(false);
     const [chartByCategoryYearly, setChartByCategoryYearly]         = useState(null);
     const [chartByTrendingCategory, setChartByTrendingCategory]     = useState(null); 
-    const [selectedMap, setSelectedMap]                             = useState(null);
     
     const getGisData = () => {
 
@@ -250,7 +248,6 @@ const GIS = () => {
                     setPagination(res.data.pagination)
 
                     setLoading(false);
-                    setTotalPage(res.data.pagination.page_total);
                 }
             }
         )
@@ -364,10 +361,9 @@ const GIS = () => {
 
     useEffect(() => {
         if(selectedDetail.type != null){
-            getDetailChart();
-            
+            getDetailChart();   
         }
-    }, [selectedDetail, page]);
+    }, [selectedDetail]);
 
     return (
         <>
@@ -427,7 +423,7 @@ const GIS = () => {
                                             <CardBody>
                                                 <Row>
                                                     <Col md={1} className="d-flex align-items-center justify-content-center">
-                                                        {page == 1 ? index+1 : (index+1)+(page*10) - 10}
+                                                        {pagination.current_page == 1 ? index+1 : (index+1)+(pagination.current_page*10) - 10}
                                                     </Col>
                                                     <Col md={3} className="d-flex align-items-center">
                                                         <a href={`beranda/detail/${data.id}`}>
@@ -460,58 +456,6 @@ const GIS = () => {
                                     <CustomTableBodyEmpty/>
                             }
 
-                            {/* <div className="d-flex justify-content-end">
-                                <Pagination className='d-flex mt-1'>
-                                    {
-                                        page == 1 ? 
-                                            <PaginationItem
-                                                disabled    = {true}
-                                                className   = "prev-item"
-                                            >
-                                                <PaginationLink>
-                                                </PaginationLink>
-                                            </PaginationItem>
-                                        :
-                                            <PaginationItem
-                                                onClick     = {() => {setPage(page-1)}}
-                                                disabled    = {false}
-                                                className   = "prev-item"
-                                            >
-                                                <PaginationLink>
-                                                </PaginationLink>
-                                            </PaginationItem>
-                                    }
-                                    <PaginationItem active>
-                                        <PaginationLink>{page}</PaginationLink>
-                                    </PaginationItem>
-                                    <PaginationItem>
-                                        <PaginationLink>/</PaginationLink>
-                                    </PaginationItem>
-                                    <PaginationItem>
-                                        <PaginationLink>{totalPage}</PaginationLink>
-                                    </PaginationItem>
-                                    
-                                    {
-                                        page < totalPage ?  
-                                            <PaginationItem 
-                                                onClick     = {() => {setPage(page+1)}}
-                                                disabled    = {false}
-                                                className   = "next-item"
-                                            >
-                                                <PaginationLink>
-                                                </PaginationLink>
-                                            </PaginationItem>
-                                        :
-                                            <PaginationItem 
-                                                disabled    = {true}
-                                                className   = "next-item"
-                                            >
-                                                <PaginationLink>
-                                                </PaginationLink>
-                                            </PaginationItem>
-                                    }
-                                </Pagination>
-                            </div> */}
                             
                         </div>
                 }
@@ -575,45 +519,91 @@ const GIS = () => {
                                 </div>
                                 
                                 {
-                                    mapFilter === "node" ?
-                                        <div className="d-flex justify-content-between mb-1 px-5">
-                                            <div className='d-flex align-items-center'>
-                                                <div style   = {{ background: `#ffd32a`, height: 15, width: 15, borderRadius: '50%'}}/>
-                                                <span className='ml-1'>Ideologi</span>
-                                            </div>
+                                    mapFilter === "node" &&
+                                        <Card
+                                            className   = "bg-light mb-0"
+                                        >
+                                            <CardBody className="p-1">
 
-                                            <div className='d-flex align-items-center'>
-                                                <div style   = {{ background: `#3c40c6`, height: 15, width: 15, borderRadius: '50%'}}/>
-                                                <span className='ml-1'>Politik</span>
-                                            </div>
+                                                {
+                                                    <div className="d-flex justify-content-between px-5">
+                                                        <div className='d-flex align-items-center'>
+                                                            <div style   = {{ background: `#ffd32a`, height: 15, width: 15, borderRadius: '50%'}}/>
+                                                            <span style={{marginLeft: '5px'}}>Ideologi</span>
+                                                        </div>
 
-                                            <div className='d-flex align-items-center'>
-                                                <div style   = {{ background: `#303952`, height: 15, width: 15, borderRadius: '50%'}}/>
-                                                <span className='ml-1'>Ekonomi</span>
-                                            </div>
+                                                        <div className='d-flex align-items-center'>
+                                                            <div style   = {{ background: `#3c40c6`, height: 15, width: 15, borderRadius: '50%'}}/>
+                                                            <span style={{marginLeft: '5px'}}>Politik</span>
+                                                        </div>
 
-                                            <div className='d-flex align-items-center'>
-                                                <div style   = {{ background: `#ff3f34`, height: 15, width: 15, borderRadius: '50%'}}/>
-                                                <span className='ml-1'>Keuangan</span>
-                                            </div>
+                                                        <div className='d-flex align-items-center'>
+                                                            <div style   = {{ background: `#303952`, height: 15, width: 15, borderRadius: '50%'}}/>
+                                                            <span style={{marginLeft: '5px'}}>Ekonomi</span>
+                                                        </div>
+                                                        <div className='d-flex align-items-center'>
+                                                            <div style   = {{ background: `#ff3f34`, height: 15, width: 15, borderRadius: '50%'}}/>
+                                                            <span style={{marginLeft: '5px'}}>Keuangan</span>
+                                                        </div>
 
-                                            <div className='d-flex align-items-center'>
-                                                <div style   = {{ background: `#05c46b`, height: 15, width: 15, borderRadius: '50%'}}/>
-                                                <span className='ml-1'>Sosial Budaya</span>
-                                            </div>
+                                                        <div className='d-flex align-items-center'>
+                                                            <div style   = {{ background: `#05c46b`, height: 15, width: 15, borderRadius: '50%'}}/>
+                                                            <span style={{marginLeft: '5px'}}>Sosial Budaya</span>
+                                                        </div>
 
-                                            <div className='d-flex align-items-center'>
-                                                <div style   = {{ background: `#af05fa7f`, height: 15, width: 15, borderRadius: '50%'}}/>
-                                                <span className='ml-1'>Pertahanan & Keamanan</span>
-                                            </div>
+                                                        <div className='d-flex align-items-center'>
+                                                            <div style   = {{ background: `#af05fa7f`, height: 15, width: 15, borderRadius: '50%'}}/>
+                                                            <span style={{marginLeft: '5px'}}>Hukum</span>
+                                                        </div>
 
-                                            <div className='d-flex align-items-center'>
-                                                <div style   = {{ background: `#a5b1c2`, height: 15, width: 15, borderRadius: '50%'}}/>
-                                                <span className='ml-1'>Hukum</span>
-                                            </div>
-                                        </div>
-                                    :
-                                        null
+                                                        <div className='d-flex align-items-center'>
+                                                            <div style   = {{ background: `#a5b1c2`, height: 15, width: 15, borderRadius: '50%'}}/>
+                                                            <span style={{marginLeft: '5px'}}>Pertahanan & Keamanan</span>
+                                                        </div>
+                                                    </div>
+
+                                                }
+
+                                            </CardBody>
+                                        </Card>
+                                    
+                                }
+
+                                {
+                                    heatFilter &&
+                                        <Card
+                                            className   = "bg-light mb-0"
+                                        >
+                                            <CardBody className="p-1">
+                                                {
+                                                    <div className="d-flex justify-content-between px-5">
+                                                        <div className='d-flex align-items-center'>
+                                                            <div style   = {{ background: '#6a6b70', height: 15, width: 15, borderRadius: '50%'}}/>
+                                                            <span style={{marginLeft: '5px'}}> 0 </span>
+                                                        </div>
+                                                        <div className='d-flex align-items-center'>
+                                                            <div style   = {{ background: '#6ab04c', height: 15, width: 15, borderRadius: '50%'}}/>
+                                                            <span style={{marginLeft: '5px'}}> 1 - 10 </span>
+                                                        </div>
+
+                                                        <div className='d-flex align-items-center'>
+                                                            <div style   = {{ background: '#f1c40f', height: 15, width: 15, borderRadius: '50%'}}/>
+                                                            <span style={{marginLeft: '5px'}}>11 - 100</span>
+                                                        </div>
+
+                                                        <div className='d-flex align-items-center'>
+                                                            <div style   = {{ background: '#e67e22', height: 15, width: 15, borderRadius: '50%'}}/>
+                                                            <span style={{marginLeft: '5px'}}>101 - 300</span>
+                                                        </div>
+                                                        <div className='d-flex align-items-center'>
+                                                            <div style   = {{ background: '#d35400', height: 15, width: 15, borderRadius: '50%'}}/>
+                                                            <span style={{marginLeft: '5px'}}>{`> 300`}</span>
+                                                        </div>
+                                                    </div>
+                                                }
+                                            </CardBody>
+                                        </Card>
+                                    
                                 }
                                 
                                 <Map
@@ -621,6 +611,8 @@ const GIS = () => {
                                     mapFilter           = {mapFilter}
                                     gisFilter           = {gisFilter}
                                     heatFilter          = {heatFilter}
+                                    selectedMap         = {selectedMap}
+                                    setSelectedMap      = {setSelectedMap}
                                     selectedMarker      = {selectedMarker}
                                     setSelectedMarker   = {setSelectedMarker}
                                 />
@@ -630,6 +622,7 @@ const GIS = () => {
                             <GisFilter
                                 setGisFilter    = {setGisFilter}
                                 chartByPeriod   = {chartByPeriod}
+                                setSelectedMap  = {setSelectedMap}
                             />  
                         </Col>
                     </Row>
