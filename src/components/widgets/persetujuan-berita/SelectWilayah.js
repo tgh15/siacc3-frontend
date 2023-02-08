@@ -128,10 +128,7 @@ export const SelectWilayah  = ({data,show,setShow,onSubmit, index, statePosition
 
     const handleSubmit = ()=>{
 
-        console.log(agentUpdate)
-        
-        if(localStorage.getItem('role') == "Verifikator Pusat" || localStorage.getItem('role') == "Admin"){
-            if(agentUpdate.category_id.length > 0 && agentUpdate.kind != null && agentUpdate.workunit_id.length >0){
+                // console.log(agentUpdate)
                 setSubmitLoading(true);
                 feedsAgentReportAPI.shareAgentReportByWorkunit(agentUpdate).then(
                     res => {
@@ -155,38 +152,42 @@ export const SelectWilayah  = ({data,show,setShow,onSubmit, index, statePosition
                         setSubmitLoading(false);
                     }
                 )
-            }else{
-                CustomToast('danger', 'Masih Ada Kolom Belum Terisi');
-            }
-        }else{
-            if(agentUpdate.category_id.length > 0 ){
-                setSubmitLoading(true);
-                feedsAgentReportAPI.shareAgentReportByWorkunit(agentUpdate).then(
-                    res => {
-                        if(res.status === 200){
-                            setShow()
-                            onSubmit(index, statePosition)
-                            CustomToast("success", "Penentuan Status Berhasil.")
-                            setAgentUpdate({agent_report_id:data.id,    
-                                kind        : null,
-                                category_id : [],
-                                workunit_id : []
-                            })
-                        }else{
+                
+                // if(localStorage.getItem('role') == "Verifikator Pusat" || localStorage.getItem('role') == "Admin"){
+                    // if(agentUpdate.category_id.length > 0 && agentUpdate.kind != null && agentUpdate.workunit_id.length >0){
+                //     }else{
+                //         CustomToast('danger', 'Masih Ada Kolom Belum Terisi');
+                //     }
+                // // }else{
+                //     if(agentUpdate.category_id.length > 0 ){
+                //         setSubmitLoading(true);
+                //         feedsAgentReportAPI.shareAgentReportByWorkunit(agentUpdate).then(
+                //             res => {
+                //                 if(res.status === 200){
+                //                     setShow()
+                //                     onSubmit(index, statePosition)
+                //                     CustomToast("success", "Penentuan Status Berhasil.")
+                //                     setAgentUpdate({agent_report_id:data.id,    
+                //                         kind        : null,
+                //                         category_id : [],
+                //                         workunit_id : []
+                //                     })
+                //                 }else{
+                
+                //                 }
+                //                 setSubmitLoading(false);
+                
+                //             }
+                //         ).catch(
+                //             err => {
+                //                 setSubmitLoading(false);
+                //             }
+                //         )
+                //     }else{
+                //         CustomToast('danger', 'Masih Ada Kolom Belum Terisi');
+                //     }
+                // }
         
-                        }
-                        setSubmitLoading(false);
-        
-                    }
-                ).catch(
-                    err => {
-                        setSubmitLoading(false);
-                    }
-                )
-            }else{
-                CustomToast('danger', 'Masih Ada Kolom Belum Terisi');
-            }
-        }
         
     }    
 
