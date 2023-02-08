@@ -11,11 +11,43 @@ import ReactMapGL, {
     Marker,
 }                                   from 'react-map-gl';
 
-import 'mapbox-gl/dist/mapbox-gl.css';
 
-
-import  map                         from './geojson';
-import {data}                       from './boundary';
+import {
+    aceh,
+    bali,
+    banten,
+    bengkulu,
+    diy,
+    dki,
+    gorontalo,
+    jabar,
+    jambi,
+    jateng,
+    jatim,
+    kalbar,
+    kalsel,
+    kalteng,
+    kaltim,
+    kepbabel,
+    kepriau,
+    lampung,
+    maluku,
+    malut,
+    ntb,
+    ntt,
+    pabar,
+    papua,
+    riau,
+    sulbar,
+    sulsel,
+    sulteng,
+    sultra,
+    sulut,
+    sumbar,
+    sumsel,
+    sumut,
+    data
+}                                   from './boundary';
 
 import { dataLayer, dataLayer2 }    from "./mapStyle";
 
@@ -24,8 +56,6 @@ import ImageRounded                 from '../../components/widgets/image-rounded
 
 import { API_MAPBOX, MAPBOX_SKIN }  from '../../services/core/default';
 import { updatePercentiles}         from './utils';
-
-
 
 const Map = (props) => {
     
@@ -44,17 +74,17 @@ const Map = (props) => {
     const mapHeight                     = (minMax-186);
     const MAPBOX_TOKEN                  = API_MAPBOX;
     const MAPBOX_TILESET                = MAPBOX_SKIN;
-    // const MAPBOX_TILESET                = `mapbox://styles/zephyrfn/cldndtbve000h01p5igki3d2o`;
+    const MAPBOX_STYLE_BLANK            = `mapbox://styles/zephyrfn/cldndtbve000h01p5igki3d2o`;
 
-    const [viewport, setViewport] = useState({
-        zoom        : 3.8,
+    const [viewport, setViewport]       = useState({
+        zoom        : 3.6,
         width       : "100%",
         height      : mapHeight,
-        latitude    : -2.548926,
-        longitude   : 118.0148634,
+        latitude    : -2.54893,
+        longitude   : 118.01486,
     });
 
-    const [popupInfo, setPopupInfo]     = useState(null);
+    const [selectedMap, setSelectedMap] = useState(null);
 
     const data2 = useMemo(() => {
         if(mapData != null){
@@ -62,26 +92,99 @@ const Map = (props) => {
         }
     }, [data, mapData]);
 
+
+    const getFileJsonName = (code) => {
+        if (code === "006050"){
+            setSelectedMap(updatePercentiles(aceh, mapData.work_units))
+        }else if (code === "008678"){
+            setSelectedMap(bali)
+        }else if (code === "650325"){
+            setSelectedMap(banten)
+        }else if (code === "009073"){
+            setSelectedMap(bengkulu)
+        }else if (code === "005655"){
+            setSelectedMap(diy)
+        }else if (code === "005020"){
+            setSelectedMap(dki)
+        }else if (code === "650346"){
+            setSelectedMap(gorontalo)
+        }else if (code === "006994"){
+            setSelectedMap(jambi)
+        }else if (code === "005083"){
+            setSelectedMap(jabar)
+        }else if (code === "005304"){
+            setSelectedMap(jateng)
+        }else if (code === "005719"){
+            setSelectedMap(jatim)
+        }else if (code === "007371"){
+            setSelectedMap(kalbar)
+        }else if (code === "007591"){
+            setSelectedMap(kalsel)
+        }else if (code === "007481"){
+            setSelectedMap(kalteng)
+        }else if (code === "007702"){
+            setSelectedMap(kaltim)
+        }else if (code === "650311"){
+            setSelectedMap(kepbabel)
+        }else if (code === "969400"){
+            setSelectedMap(kepriau)
+        }else if (code === "007301"){
+            setSelectedMap(lampung)
+        }else if (code === "008462"){
+            setSelectedMap(maluku)
+        }else if (code === "650332"){
+            setSelectedMap(malut)
+        }else if (code === "008767"){
+            setSelectedMap(ntb)
+        }else if (code === "008835"){
+            setSelectedMap(ntt)
+        }else if (code === "008970"){
+            setSelectedMap(papua)
+        }else if (code === "006817"){
+            setSelectedMap(riau)
+        }else if (code === "008107"){
+            setSelectedMap(sulsel)
+        }else if (code === "007872"){
+            setSelectedMap(sulteng)
+        }else if (code === "008416"){
+            setSelectedMap(sultra)
+        }else if (code === "007783"){
+            setSelectedMap(sulut)
+        }else if (code === "006622"){
+            setSelectedMap(sumbar)
+        }else if (code === "007102"){
+            setSelectedMap(sumsel)
+        }else if (code === "006287"){
+            setSelectedMap(sumut)
+        }else if (code === "00001"){
+            setSelectedMap(pabar)
+        }else if (code === "001001"){
+            setSelectedMap(sulbar)
+        }
+    }
+
     useEffect(() => {
         if(gisFilter != null && gisFilter.workunit_id != undefined && mapData != null && mapData.work_units != null){
             let selectedWorkunit = mapData.work_units.filter((data) => (
                 data.id === gisFilter.workunit_id.value
             ))
 
+            console.log(selectedWorkunit[0])
+
             if(selectedWorkunit.length > 0){
+                setSelectedMap(true);
                 setViewport({
-                    zoom      : 6.5,
+                    zoom      : 7,
                     width     : "100%",
                     height    : mapHeight,
                     latitude  : selectedWorkunit[0].latitude,
                     longitude : selectedWorkunit[0].longitude,
                 })
-            }else{
-                
+                getFileJsonName(selectedWorkunit[0].code);
             }
         }else{
             setViewport({
-                zoom        : 3.8,
+                zoom        : 3.6,
                 width       : "100%",
                 height      : mapHeight,
                 latitude    : -2.548926,
@@ -95,7 +198,7 @@ const Map = (props) => {
         <Fragment>
             <ReactMapGL
                 style                   = {{borderRadius: '20px'}}
-                mapStyle                = {MAPBOX_TILESET}
+                mapStyle                = {selectedMap ? MAPBOX_STYLE_BLANK : MAPBOX_TILESET}
                 onViewportChange        = {nextViewport => setViewport(nextViewport)}
                 mapboxApiAccessToken    = {MAPBOX_TOKEN}
                 {...viewport}
@@ -111,12 +214,12 @@ const Map = (props) => {
                                         longitude = {data.longitude}
                                     >
                                         <button
-                                        style   = {{ background: 'none', border: 'none', height: size + 10, width: size + 10, borderRadius: '50%', textAlign: 'center', color: 'white', transform: `translate(${-size / 1.5}px,${-size}px)`, cursor: 'pointer' }}
+                                            style   = {{ background: 'none', border: 'none', height: size + 10, width: size + 10, borderRadius: '50%', textAlign: 'center', color: 'white', transform: `translate(${-size / 1.5}px,${-size}px)`, cursor: 'pointer' }}
                                             onClick = {(e) => { setSelectedMarker(data) }}
                                         >
                                             <ImageRounded
-                                                src     = {imgMarker}
-                                                style   = {{ width: "20px" }}
+                                                src   = {imgMarker}
+                                                style = {{ width: "20px" }}
                                             />
                                         </button>
                                     </Marker>
@@ -294,24 +397,27 @@ const Map = (props) => {
                         :
                             null
                 }
+
+                    
                 
                 {
                     heatFilter ? 
                         <Source type="geojson" data={data2}>
-                            <Layer id="heatlayer" {...dataLayer} />
+                            <Layer {...dataLayer} />
                         </Source>
                     :
                         null
                 }
 
-                {/* {
-                    selectedMap ? */}
-                        {/* <Source type="geojson" data={map}>
-                            <Layer id="baselayer" {...dataLayer2} />
-                        </Source> */}
-                    {/* :
-                        null
-                } */}
+                    
+
+                {
+                    selectedMap != null &&
+                    <Source type="geojson" data={selectedMap}>
+                        <Layer {...dataLayer2} />
+                    </Source>
+                }
+                   
             </ReactMapGL>
         </Fragment>
 

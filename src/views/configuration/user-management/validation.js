@@ -2,7 +2,7 @@ import * as yup from 'yup';
 
 export const schema = yup.object().shape({
     identity_id     : yup.number().typeError('Hanya bisa memasukkan angka').min(10, 'Jumlah minimal karakter adalah 10!').required(),
-    name            : yup.string().matches('^[a-zA-Z ]+$', 'Hanya bisa memasukkan huruf').required('Kolom nama belum terisi'),
+    name            : yup.string().matches('^[a-zA-Z., ]+$', 'Hanya bisa memasukkan huruf, tanda titik (.), dan tanda koma (,)').required('Kolom nama belum terisi'),
     ktp             : yup.number().typeError('Hanya bisa memasukkan angka').integer().min(10, 'Jumlah minimal karakter adalah 10!').required(),
     phone_number    : yup.number().typeError('Hanya bisa memasukkan angka').integer().min(10, 'Jumlah minimal karakter adalah 10!').required(),
     email           : yup.string().matches('^[A-Za-z0-9._%+-]+@kejaksaan\.go.id$', 'Silahkan menggunakan email kejaksaan.').required(),

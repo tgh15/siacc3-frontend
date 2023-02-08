@@ -31,14 +31,14 @@ const MapWorkunit = (props) => {
                         {...viewport}
                         onViewportChange        = {nextViewport => setViewport(nextViewport)}
                         mapboxApiAccessToken    = {API_MAPBOX}
-                        dragPan             = {false}
-                        keyboard            = {false}
-                        touchZoom           = {false}
-                        scrollZoom          = {false}
-                        dragRotate          = {false}
-                        interactive         = {false}
-                        touchRotate         = {false}
-                        doubleClickZoom     = {false}
+                        dragPan                 = {false}
+                        keyboard                = {false}
+                        touchZoom               = {false}
+                        scrollZoom              = {false}
+                        dragRotate              = {false}
+                        interactive             = {false}
+                        touchRotate             = {false}
+                        doubleClickZoom         = {false}
                     >
                         {props.children}
                         {/* <Source type="geojson" data={data2}>

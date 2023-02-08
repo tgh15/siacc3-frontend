@@ -30,6 +30,7 @@ import {ModalBase}                  from '../../components/widgets/modals-base';
 import PieChart                     from './chart/pie';
 import BarChart                     from './chart/bar';
 import GisFilter                    from './gisFilter';
+
 import ChartFilter                  from './chartFilter';
 import HorizontalBarChart           from './chart/horizontalBar';
 
@@ -40,14 +41,13 @@ import './index.css';
 import feedsGisAPI                  from '../../services/pages/feeds/gis';
 import PerfectScrollbar             from 'react-perfect-scrollbar'
 
-
-
 //Provider
 import { PerformanceProvider }      from '../../context/PerformanceContext';
 import { Maximize, Minimize }       from 'react-feather';
 import Skeleton                     from 'react-loading-skeleton';
 import CustomTableBodyEmpty         from '../../components/widgets/custom-table/CustomTableBodyEmpty';
 import GroupBarChart                from './chart/groupbar';
+import CustomTablePaginate          from '../../components/widgets/custom-table/CustomTablePaginate';
 
 const GIS = () => {
 
@@ -55,9 +55,10 @@ const GIS = () => {
     const [fullscr,setFcr]                                          = useState(false);
     const [mapData, setMapData]                                     = useState(null);
     const [loading, setLoading]                                     = useState(true);
-    const [mapFilter, setMapFilter]                                 = useState('node');
+    const [mapFilter, setMapFilter]                                 = useState('pin');
     const [gisFilter, setGisFilter]                                 = useState(null);
     const [totalPage, setTotalPage]                                 = useState(1);
+    const [pagination, setPagination]                               = useState(null);
     const [heatFilter, setHeatFilter]                               = useState(false);
     const [chartByKind, setChartByKind]                             = useState(null);
     const [detailChart, setDetailChart]                             = useState(null);
@@ -215,7 +216,7 @@ const GIS = () => {
         )
     }
 
-    const getDetailChart = () => {
+    const getDetailChart = (page) => {
         
         setLoading(true);
         setIsDetailChartVisible(true);
@@ -238,10 +239,15 @@ const GIS = () => {
         formData.workunit_id    = gisFilter != null ? gisFilter.workunit_id.value : 0;
         formData.trending_kind  = gisFilter != null ? gisFilter.trending_kind.value : null;
 
-        feedsGisAPI.getDetailChartData(formData, page).then(
+        const params = {
+            page : page
+        }
+
+        feedsGisAPI.getDetailChartData(formData, params).then(
             res => {
                 if(res.status === 200){
                     setDetailChart(res.data);
+                    setPagination(res.data.pagination)
 
                     setLoading(false);
                     setTotalPage(res.data.pagination.page_total);
@@ -378,26 +384,41 @@ const GIS = () => {
                         <Skeleton height={60} count={5}/>
                     :
                         <div className='p-2'>
-                            <Row className="mb-2">
-                                <Col md={1} className="text-center">
-                                    No
-                                </Col>
-                                <Col md={3}>
-                                    Judul Berita
-                                </Col>
-                                {/* <Col md={2}>
-                                    Kategori
-                                </Col> */}
-                                <Col md={2}>
-                                    Tanggal Publikasi
-                                </Col>
-                                <Col md={3}>
-                                    Pengirim
-                                </Col>
-                                <Col md={3}>
-                                    Status Publikasi
-                                </Col>
+                            <Row className="mb-1">
+                                <CustomTablePaginate
+                                    size        = {12}
+                                    getData     = {(e) => { getDetailChart(e.page) }}
+                                    pagination  = {pagination}
+                                />
                             </Row>
+
+                            <Card
+                                style       = {{ backgroundColor: "transparent" }}
+                                className   = "bg-transparant mb-0"
+                            >
+                                <CardBody>
+                                    <Row>
+                                        <Col md={1} className="text-center">
+                                            No
+                                        </Col>
+                                        <Col md={3}>
+                                            Judul Berita
+                                        </Col>
+                                        {/* <Col md={2}>
+                                            Kategori
+                                        </Col> */}
+                                        <Col md={2}>
+                                            Tanggal Publikasi
+                                        </Col>
+                                        <Col md={3}>
+                                            Pengirim
+                                        </Col>
+                                        <Col md={3}>
+                                            Status Publikasi
+                                        </Col>
+                                    </Row>
+                                </CardBody>
+                            </Card>
 
                             {
                                 detailChart != null ?
@@ -409,11 +430,10 @@ const GIS = () => {
                                                         {page == 1 ? index+1 : (index+1)+(page*10) - 10}
                                                     </Col>
                                                     <Col md={3} className="d-flex align-items-center">
-                                                        {data.title}
+                                                        <a href={`beranda/detail/${data.id}`}>
+                                                            {data.title}
+                                                        </a>
                                                     </Col>
-                                                    {/* <Col md={2} className="d-flex align-items-center">
-                                                        {data.category}
-                                                    </Col> */}
                                                     <Col md={2} className="d-flex align-items-center">
                                                         {Helper.dateIndo(data.created_at)}
                                                     </Col>
@@ -428,7 +448,7 @@ const GIS = () => {
                                                                 data.status === 1 ? 
                                                                     "Menunggu Persetujuan Verifikator Pusat"
                                                                 :
-                                                                    "Sudah Dipublish."
+                                                                    "Telah Dipublish"
                                                         }
                                                     </Col>
                                                 </Row>
@@ -440,7 +460,7 @@ const GIS = () => {
                                     <CustomTableBodyEmpty/>
                             }
 
-                            <div className="d-flex justify-content-end">
+                            {/* <div className="d-flex justify-content-end">
                                 <Pagination className='d-flex mt-1'>
                                     {
                                         page == 1 ? 
@@ -491,7 +511,7 @@ const GIS = () => {
                                             </PaginationItem>
                                     }
                                 </Pagination>
-                            </div>
+                            </div> */}
                             
                         </div>
                 }

@@ -240,15 +240,14 @@ const ModalForm = (props) => {
                     }
 
                 }else {
-                    if (res.is_error) {
-                        if (res.message === "Error While Insert Employee ! Email Has Been Used") {
-                            CustomToast("danger", "Email Telah Digunakan.");
-                        }else{
-                            CustomToast("danger", res.message);
-                        }
+                    if (res.message === "Error While Insert Employee ! Email Has Been Used") {
+                        CustomToast("danger", "Email Telah Digunakan.");
+                    }else if(res.message === "ERROR: duplicate key value violates unique constraint \"users_pkey\" (SQLSTATE 23505)"){
+                        CustomToast("danger", "Username Telah Digunakan.");
+                    }else{
+                        CustomToast("danger", res.message);
                     }
                     setLoading(false);
-
                 }
             }
         ).catch(

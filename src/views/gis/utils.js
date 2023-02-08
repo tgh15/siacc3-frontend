@@ -55,3 +55,19 @@ export function updatePercentiles(featureCollection, workunitList) {
         };
     }
 }
+
+export function updateColor(featureCollection, workunitList) {
+    const { features } = featureCollection;
+    if(workunitList != null){
+        return {
+            type: 'FeatureCollection',
+            features: features.map((f,index)=> {
+                properties = {
+                    ...f.properties,
+                    REPORT_COUNT: index
+                };
+                return { ...f, properties };
+            })
+        };
+    }
+}
