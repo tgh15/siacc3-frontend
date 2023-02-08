@@ -99,8 +99,8 @@ const Map = (props) => {
         
         if(mapData != null && selectedMap == null){
             return data && updatePercentiles(data, mapData.work_units);
-        }else{
-            console.log(selectedMap && updatePercentilesDetail(selectedMap, mapData.work_units))
+        }
+        if(mapData != null && selectedMap != null){
             return selectedMap && updatePercentilesDetail(selectedMap, mapData.work_units)
         }
     }, [data, mapData, selectedMap]);
