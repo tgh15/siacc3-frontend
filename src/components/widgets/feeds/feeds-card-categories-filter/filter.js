@@ -28,7 +28,7 @@ export const FeedsFilterModal = (props) => {
         workunitOptions
     }                                       = props;
     const [orderBy, setOrderBy]             = useState('latest');
-    const [statusPublish, setStatusPublish] = useState(null);
+    const [statusPublish, setStatusPublish] = useState("pusat");
 
     const { 
         reset,
@@ -48,7 +48,6 @@ export const FeedsFilterModal = (props) => {
         if(statusPublish != null){
             formData.status_publish = statusPublish;
         }
-        // formData.status_order       = statusOrder;
 
         if(formData.workunit_id != undefined) {
             formData.work_unit_id_list = [formData.workunit_id.value];
@@ -65,47 +64,22 @@ export const FeedsFilterModal = (props) => {
 
             <BaseModal {...modalData} size="lg">
                 <Form onSubmit={handleSubmit(handleSubmit_)}>
-
-                    {/* {
-                        (localStorage.getItem('role') === 'Verifikator Pusat' || localStorage.getItem('role') === 'Admin') &&
-                        <FormGroup>
-                            <Label>Urutkan Berdasarkan Jenis Persetujuan</Label>
-                            <p>
-                                <Button 
-                                    outline = { statusOrder == "asc" ? false : true} 
-                                    onClick = {() => setStatusOrder('asc')}
-                                    color   = "primary"
-                                >
-                                    Verifikator Daerah
-                                </Button>
-                                &nbsp;
-                                <Button 
-                                    outline = { statusOrder == "desc" ? false : true}
-                                    onClick = {() => setStatusOrder('desc')}
-                                    color   = "primary"
-                                >
-                                    Verifikator Pusat
-                                </Button>
-                            </p>
-                        </FormGroup>
-                    } */}
-
                     {
                         (localStorage.getItem('role') === 'Verifikator Pusat' || localStorage.getItem('role') === 'Admin') &&
                         <FormGroup>
                             <Label>Filter Berdasarkan Jenis Persetujuan</Label>
                             <p>
                                 <Button 
-                                    outline = { statusPublish == null ? false : true} 
-                                    onClick = {() => setStatusPublish(null)}
+                                    outline = { statusPublish == "pusat" ? false : true} 
+                                    onClick = {() => setStatusPublish("pusat")}
                                     color   = "primary"
                                 >
                                     Verifikator Pusat
                                 </Button>
                                 &nbsp;
                                 <Button 
-                                    outline = { statusPublish == "approve" ? false : true}
-                                    onClick = {() => setStatusPublish("approve")}
+                                    outline = { statusPublish == "daerah" ? false : true}
+                                    onClick = {() => setStatusPublish("daerah")}
                                     color   = "primary"
                                 >
                                     Verifikator Daerah

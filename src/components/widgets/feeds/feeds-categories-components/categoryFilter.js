@@ -87,7 +87,7 @@ export const CategoryFilter = (props) => {
 
     const activate = (category) => {
         dispatch(changeActiveCategories(category));
-        onChangeCategories();
+        onChangeCategories(category);
     }
     
     if (Array.isArray(feedsCategories)) {

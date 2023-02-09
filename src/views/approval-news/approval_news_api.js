@@ -17,12 +17,15 @@ import {
     agentReportChangeToArchive,
 }                                                                   from '../beranda/beranda_api';
 import employeeAPI                                                  from '../../services/pages/employee';
+import feedsAgentReportAPI                                          from '../../services/pages/feeds/agent-reports';
 import { CategoryProvider }                                         from '../../context/CategoryContext';
 import feedsAgentReportApprovalAPI                                  from '../../services/pages/feeds/approval-news/url';
 import { processAgentReports }                                      from '../../components/widgets/feeds/news-card-widget/NewsConfig';
 
 //Helper
 import Helper                                                       from '../../helpers';
+
+
 
 const ApprovalNewsAPI = () => {
 
@@ -32,7 +35,9 @@ const ApprovalNewsAPI = () => {
     //State
     const selector                                                  = useSelector(state => {return state});
     
-    const [workunitFilter, setWorkunitFilter]                       = useState([]);
+    const [filter, setFilter]                                       = useState(null);
+    const [filterKeyword, setFilterKeyword]                         = useState(null);
+    const [filterCategory, setFilterCategory]                       = useState(null);
     const [filterAllState, setFilterAllState]                       = useState(null);
 
     //Archive 
@@ -88,94 +93,6 @@ const ApprovalNewsAPI = () => {
         StoreNews(stored_data,resps);
     };
 
-    //API get workunit child
-    const getWorkunitChild = () => {
-        const formData = {
-            condition_by  : "by_parent_list",
-            parent_id     : parseInt(getUserData().workunit_id)
-        }
-
-        employeeAPI.getChild(formData).then(
-            res => {
-                if(!res.is_error){
-                    if(res.data != null && res.data.length > 0){
-    
-                        let level_1 = [];
-                        let level_2 = [];
-                        let level_3 = [];
-                        let level_4 = [];
-                        let data    = [];
-    
-                        res.data.map((data) => {
-                            if(data.workunit_level_id === 1){
-                                level_1.push({
-                                    value : data.id,
-                                    label : data.name
-                                });
-                            }
-    
-                            if(data.workunit_level_id === 2){
-                                level_2.push({
-                                    value : data.id,
-                                    label : data.name
-                                });
-                            }
-    
-                            if(data.workunit_level_id === 3){
-                                level_3.push({
-                                    value : data.id,
-                                    label : data.name
-                                });
-                            }
-    
-                            if(data.workunit_level_id === 4){
-                                level_4.push({
-                                    value : data.id,
-                                    label : data.name
-                                });
-                            }
-                        })
-                        
-                        if(level_1.length > 0){
-                            data.push({
-                                label   : 'Kejaksaan Agung',
-                                options : level_1 
-                            })
-                        }
-    
-                        if(level_2.length > 0){
-                            data.push({
-                                label : 'Kejaksaan Tinggi',
-                                options : level_2
-                            })
-                        }
-    
-                        if(level_3.length > 0){
-                            data.push({
-                                label : 'Kejaksaan Negeri',
-                                options : level_3
-                            })
-                        }
-    
-                        if(level_4.length > 0){
-                            data.push({
-                                label : 'Cabang Kejaksaan Negeri',
-                                options : level_4
-                            })
-                        }
-    
-                        setWorkunitFilter(data);
-                    }
-                }else{
-                    CustomToast('danger', res.message);
-                }
-            },
-            err => {
-                console.log(err, 'get workunit child')
-            }
-        )
-    }; 
-
     //API remove agent report
     const handleRemoveAgentReport = () => {
         if(paginationAllStatus != null){
@@ -190,50 +107,49 @@ const ApprovalNewsAPI = () => {
 
         setLoadingAllStatus(true);
 
-        let formData, params = {};
+        let params = {};
 
-        if(filterAllState === null){
-            formData = {
-                category : 0
+        params.approvement = 'approvement';
+        params.new         = true;
+        params.sort_by     = 'updated_at';
+        params.sort        = 'desc';
+        params.page        = page;
+
+        if(filter != null){
+            params.sort           = filter.value.order_by === 'latest' ? 'desc' : 'asc';
+            params.workunit_id    = filter.value.work_unit_id_list[0];
+            params.level          = filter.value.status_publish
+        }else{
+            params.workunit_id    = 0;
+        }
+
+        if(filterCategory != null){
+            if(filterCategory.value.id != 'all'){
+                params.category_id    = parseInt(filterCategory.value.id)
             }
         }else{
-            if(filterAllState.type === "filter"){
-                formData = {
-                    category          : 0,
-                    order_by          : filterAllState.value.order_by,
-                    status_publish    : filterAllState.value.status_publish,
-                    work_unit_id_list : filterAllState.value.work_unit_id_list,
-                }
-            }else{
-                formData = {
-                    category : selector.FeedsCategoriesReducer.activeCategories.id == "all" ? 0 : selector.FeedsCategoriesReducer.activeCategories.id
-                }
-            }
+            params.category_id    = 0
         }
 
-        if(page != undefined){
-            params.page = page;
+        if(filterKeyword != null){
+            params.keyword        = filterKeyword.value
         }
 
-        if(filterAllState != null && filterAllState.type == 'keyword'){
-            params.keyword = filterAllState.value;
-        }
-
-        feedsAgentReportApprovalAPI.getAgentByStatus(formData, params).then(
+        feedsAgentReportAPI.getFeeds(params).then(
             res => {
                 if(!res.is_error){
-                    if ("agent_report" in res.data && res.data.agent_report != null) {
+                    if ("result" in res.data && res.data.result != null) {
                         //get array length
-                        let arrLength = res.data.agent_report.length;
+                        let arrLength = res.data.result.length;
 
                         //search half array length value
                         let getDivision = Math.round(arrLength/2);
 
                         //get first half array
-                        setLeftStateAllStatus(res.data.agent_report.splice(0,getDivision));
+                        setLeftStateAllStatus(res.data.result.splice(0,getDivision));
 
                         //get last half array
-                        setRightStateAllStatus(res.data.agent_report.splice(0,arrLength-getDivision));
+                        setRightStateAllStatus(res.data.result.splice(0,arrLength-getDivision));
 
                         setCountAllStatus(res.data.pagination.data_total);
                         setLoadingAllStatus(false);
@@ -247,12 +163,11 @@ const ApprovalNewsAPI = () => {
                 }else{
                     CustomToast("danger", res.message);
                 }
-
             },
             err => {
                 CustomToast("danger", err.message);
             }
-        );
+        )
     };
 
     //API agent report by type shared (all can be read)
@@ -260,22 +175,39 @@ const ApprovalNewsAPI = () => {
 
         setLoadingTypeShared(true);
 
-        const formData = {
-            category    : 0,
-            shared_type : ""
-        };
+        let params = {};
 
-        feedsAgentReportApprovalAPI.getAgentByTypeShared(formData, page).then(
+        params.approvement = 'public';
+        params.new         = true;
+        params.sort_by     = 'updated_at';
+        params.sort        = 'desc';
+        params.page        = page;
+
+        if(filter != null){
+            params.sort           = filter.value.order_by === 'latest' ? 'desc' : 'asc';
+            params.workunit_id    = filter.value.work_unit_id_list[0];
+            params.level          = filter.value.status_publish
+        }
+
+        if(filterCategory != null){
+            if(filterCategory.value.id != 'all'){
+                params.category_id    = parseInt(filterCategory.value.id)
+            }
+        }
+
+        if(filterKeyword != null){
+            params.keyword        = filterKeyword.value
+        }
+
+        feedsAgentReportAPI.getFeeds(params).then(
             res => {
                 if(!res.is_error){
-                    const {data} = res;
-    
+                    setCountTypeShared(res.data.pagination.data_total);
                     setLoadingTypeShared(false);
-                    setPaginationTypeShared(data.pagination);
-                    setCountTypeShared(res.data.pagination.data_total)
+                    setPaginationTypeShared(res.data.pagination);
     
-                    if("agent_report" in res.data && res.data.agent_report != null){
-                        processAgentReports(data.agent_report).then(
+                    if("result" in res.data && res.data.result != null){
+                        processAgentReports(res.data.result).then(
                             res => {
                                 //get array length
                                 let arrLength = res.length;
@@ -313,22 +245,40 @@ const ApprovalNewsAPI = () => {
 
         setLoadingTypeSharedLimit(true);
 
-        const formData = {
-            category    : 0,
-            shared_type : "specific"
+        let params = {};
+
+        params.approvement = 'restrict';
+        params.new         = true;
+        params.sort_by     = 'updated_at';
+        params.sort        = 'desc';
+        params.page        = page;
+
+        if(filter != null){
+            params.sort           = filter.value.order_by === 'latest' ? 'desc' : 'asc';
+            params.workunit_id    = filter.value.work_unit_id_list[0];
+            params.level          = filter.value.status_publish
         }
 
-        feedsAgentReportApprovalAPI.getAgentByTypeShared(formData, page).then(
+        if(filterCategory != null){
+            if(filterCategory.value.id != 'all'){
+                params.category_id    = parseInt(filterCategory.value.id)
+            }
+        }
+
+        if(filterKeyword != null){
+            params.keyword        = filterKeyword.value
+        }
+
+        feedsAgentReportAPI.getFeeds(params).then(
             res => {
                 if(!res.is_error){
                     const {data} = res;
-
+                    setCountTypeSharedLimit(res.data.pagination.data_total);
                     setLoadingTypeSharedLimit(false);
                     setPaginationTypeSharedLimit(data.pagination);
-                    setCountTypeSharedLimit(res.data.pagination.data_total)
 
-                    if("agent_report" in res.data && res.data.agent_report != null){
-                        processAgentReports(data.agent_report).then(
+                    if("result" in res.data && res.data.result != null){
+                        processAgentReports(data.result).then(
                             res => {
                                 //get array length
                                 let arrLength = res.length;
@@ -362,31 +312,48 @@ const ApprovalNewsAPI = () => {
     //API agent report by position shared (sent to leader)
     const getAgentReportByPositionShared = (page) => {
         setLoadingPositionShared(true)
-        const formData = {
-            category    : 0,
-            position_id : 0
-        };
 
-        feedsAgentReportApprovalAPI.getAgentByPositionShared(formData, page).then(
+        let params = {};
+
+        params.approvement = 'leader';
+        params.new         = true;
+        params.sort_by     = 'updated_at';
+        params.sort        = 'desc';
+        params.page        = page;
+
+        if(filter != null){
+            params.sort           = filter.value.order_by === 'latest' ? 'desc' : 'asc';
+            params.workunit_id    = filter.value.work_unit_id_list[0];
+            params.level          = filter.value.status_publish
+        }
+
+        if(filterCategory != null){
+            if(filterCategory.value.id != 'all'){
+                params.category_id    = parseInt(filterCategory.value.id)
+            }
+        }
+
+        if(filterKeyword != null){
+            params.keyword        = filterKeyword.value
+        }
+
+        feedsAgentReportAPI.getFeeds(params).then(
             res => {
                 if(!res.is_error){
-                    if ("agent_report" in res.data && res.data.agent_report != null) {
+                    if ("result" in res.data && res.data.result != null) {
                         //get array length
-                        let arrLength = res.data.agent_report.length;
+                        let arrLength = res.data.result.length;
     
                         //search half array length value
                         let getDivision = Math.round(arrLength/2);
-
-                        //
     
                         //get first half array
-                        setLeftStatePositionShared(res.data.agent_report.splice(0,getDivision));
+                        setLeftStatePositionShared(res.data.result.splice(0,getDivision));
     
                         //get last half array
-                        setRigthStatePositionShared(res.data.agent_report.splice(0,arrLength-getDivision));
+                        setRigthStatePositionShared(res.data.result.splice(0,arrLength-getDivision));
 
-
-                        setCountPositionShared(res.data.pagination.data_total);
+                        setCountPositionShared(res.data.pagination.data_total); 
                         setLoadingPositionShared(false);
                         setPaginationPositionShared(res.data.pagination)
                     }else{
@@ -409,28 +376,48 @@ const ApprovalNewsAPI = () => {
 
         setLoadingArchive(true);
 
-        const formData = {
-            category : 0
-        };
+        let params = {};
 
-        feedsAgentReportApprovalAPI.getAgentByArchive(formData, page).then(
+        params.approvement = 'archive';
+        params.new         = true;
+        params.sort_by     = 'updated_at';
+        params.sort        = 'desc';
+        params.page        = page;
+
+        if(filter != null){
+            params.sort           = filter.value.order_by === 'latest' ? 'desc' : 'asc';
+            params.workunit_id    = filter.value.work_unit_id_list[0];
+            params.level          = filter.value.status_publish
+        }
+
+        if(filterCategory != null){
+            if(filterCategory.value.id != 'all'){
+                params.category_id    = parseInt(filterCategory.value.id)
+            }
+        }
+
+        if(filterKeyword != null){
+            params.keyword        = filterKeyword.value
+        }
+
+        feedsAgentReportAPI.getFeeds(params).then(
             res => {
 
                 if(!res.is_error){
-                    if ("agent_report" in res.data && res.data.agent_report != null) {
+                    if ("result" in res.data && res.data.result != null) {
                         //get array length
-                        let arrLength = res.data.agent_report.length;
+                        let arrLength = res.data.result.length;
     
                         //search half array length value
                         let getDivision = Math.round(arrLength/2);
     
                         //get first half array
-                        setLeftStateArchive(res.data.agent_report.splice(0,getDivision));
+                        setLeftStateArchive(res.data.result.splice(0,getDivision));
     
                         //get last half array
-                        setRightStateArchive(res.data.agent_report.splice(0,arrLength-getDivision));
+                        setRightStateArchive(res.data.result.splice(0,arrLength-getDivision));
 
-                        setCountArchive(res.data.pagination.data_total)
+                        setCountArchive(res.data.pagination.data_total);
                         setLoadingArchive(false);
                         setPaginationArchive(res.data.pagination);
 
@@ -450,9 +437,6 @@ const ApprovalNewsAPI = () => {
 
 
     useEffect(() => {
-        if(filterAllState == null){
-            getWorkunitChild();
-        }
 
         getAgentReportByArchive(1);
         getAgentReportByStatusAll(1);
@@ -460,7 +444,7 @@ const ApprovalNewsAPI = () => {
         getAgentReportByPositionShared(1);
         getAgentReportByTypeSharedLimit(1);
         
-    }, [filterAllState]);
+    }, [filter, filterKeyword, filterCategory]);
 
     return (
         <Fragment>
@@ -468,9 +452,11 @@ const ApprovalNewsAPI = () => {
 
                 <PersetujuanBerita
                     //State
-                    workunitFilter                  = {workunitFilter}
                     filterAllState                  = {filterAllState}
                     setFilterAllState               = {setFilterAllState}
+                    setFilter                       = {setFilter}
+                    setFilterKeyword                = {setFilterKeyword}
+                    setFilterCategory               = {setFilterCategory}
                     
                     //All Status
                     countAllStatus                  = {countAllStatus}      

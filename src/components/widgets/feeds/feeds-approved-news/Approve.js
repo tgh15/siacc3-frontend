@@ -41,9 +41,15 @@ export const ApprovedNewsWidget = (props) => {
     } = props;
 
     const [attachment, setAttachment]                       = useState(null);
+    const [publishType, setPublishType]                     = useState(false);
     const [leaderModalState,setLeaderModalState]            = useState(false);
     const [publicationModalState,setPublicationModalState]  = useState(false);
 
+
+    // PublishType
+    // 1. Publish Berita
+    // 2. Teruskan Berita
+    
     const toggle = {
         leader      : () => {setLeaderModalState(!leaderModalState)},
         toArchive   : () => {props.onChangeToArchive(props)},
@@ -189,6 +195,7 @@ export const ApprovedNewsWidget = (props) => {
                         index               = {index}
                         setShow             = {toggle.publication}
                         onSubmit            = {props.onSubmit} 
+                        publishType         = {publishType}
                         statePosition       = {statePosition}
                     />
                     
@@ -199,7 +206,7 @@ export const ApprovedNewsWidget = (props) => {
                                     <Button 
                                         id          = {`set_state_${index}`}
                                         color       = "primary" size="sm" 
-                                        onClick     = {toggle.publication} 
+                                        onClick     = {() => { setPublishType(1); toggle.publication();}} 
                                         className   = "btn-sm"
                                     >
                                         Tentukan Status
@@ -223,7 +230,7 @@ export const ApprovedNewsWidget = (props) => {
                                             id                = {`publish_${index}`}
                                             tag               = "a" 
                                             href              = "#"
-                                            onClick           = {toggle.publication} 
+                                            onClick           = {() => {setPublishType(1); toggle.publication();}} 
                                         >
                                             <Globe size       = {14}/>&nbsp;Publikasikan
                                         </DropdownItem>
@@ -250,7 +257,7 @@ export const ApprovedNewsWidget = (props) => {
                                     <Button 
                                         id          = {`set_state_${index}`}
                                         color       = "primary" size="sm" 
-                                        onClick     = {toggle.publication} 
+                                        onClick     = {() => {setPublishType(1); toggle.publication()}}
                                         className   = "btn-sm"
                                     >
                                         Tentukan Status
@@ -274,9 +281,17 @@ export const ApprovedNewsWidget = (props) => {
                                             id                = {`publish_${index}`}
                                             tag               = "a" 
                                             href              = "#"
-                                            onClick           = {toggle.publication} 
-                                        >
+                                            onClick           = {() => {setPublishType(1); toggle.publication();}}
+                                            >
                                             <Globe size       = {14}/>&nbsp;Publikasikan
+                                        </DropdownItem>
+                                        <DropdownItem 
+                                            id                = {`publish_${index}`}
+                                            tag               = "a" 
+                                            href              = "#"
+                                            onClick           = {() => {setPublishType(2); toggle.publication();}}
+                                            >
+                                            <Globe size       = {14}/>&nbsp;Teruskan Ke Pusat
                                         </DropdownItem>
                                         <DropdownItem 
                                             id                = {`archive_${index}`}

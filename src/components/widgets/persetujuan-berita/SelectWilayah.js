@@ -15,19 +15,27 @@ import feedsAgentReportAPI                      from '../../../services/pages/fe
 import CustomToast                              from '../custom-toast'
 import { PerformanceContext }                   from '../../../context/PerformanceContext'
 
-export const SelectWilayah  = ({data,show,setShow,onSubmit, index, statePosition}) => {
+export const SelectWilayah  = (props) => {
+    const {
+        data,
+        show,
+        index, 
+        setShow,
+        onSubmit,
+        publishType, 
+    }                                                   = props;
 
     const [unit,setUnit]                                = useState(null);
-    const [type,setType]                                = useState("");
+    const [type,setType]                                = useState("nasional");
     const [categories,setCategories]                    = useState(null);
     const [submitLoading, setSubmitLoading]             = useState(false);
     const [activeCategories,setActiveCategories]        = useState([]);
 
-    const { workunitOptionsApproval }   = useContext(PerformanceContext);  
+    const { workunitOptions, workunitOptionsApproval }   = useContext(PerformanceContext);  
 
     const [agentUpdate,setAgentUpdate] = useState({
         agent_report_id : data.id,    
-        kind            : null,
+        kind            : 2,
         category_id     : [],
         workunit_id     : []
     });
@@ -128,67 +136,31 @@ export const SelectWilayah  = ({data,show,setShow,onSubmit, index, statePosition
 
     const handleSubmit = ()=>{
 
-                // console.log(agentUpdate)
-                setSubmitLoading(true);
-                feedsAgentReportAPI.shareAgentReportByWorkunit(agentUpdate).then(
-                    res => {
-                        if(res.status === 200){
-                            setShow()
-                            onSubmit(index, statePosition)
-                            CustomToast("success", "Penentuan Status Berhasil.")
-                            setAgentUpdate({agent_report_id:data.id,    
-                                kind        : null,
-                                category_id : [],
-                                workunit_id : []
-                            })
-                        }else{
-        
-                        }
-                        setSubmitLoading(false);
-        
-                    }
-                ).catch(
-                    err => {
-                        setSubmitLoading(false);
-                    }
-                )
-                
-                // if(localStorage.getItem('role') == "Verifikator Pusat" || localStorage.getItem('role') == "Admin"){
-                    // if(agentUpdate.category_id.length > 0 && agentUpdate.kind != null && agentUpdate.workunit_id.length >0){
-                //     }else{
-                //         CustomToast('danger', 'Masih Ada Kolom Belum Terisi');
-                //     }
-                // // }else{
-                //     if(agentUpdate.category_id.length > 0 ){
-                //         setSubmitLoading(true);
-                //         feedsAgentReportAPI.shareAgentReportByWorkunit(agentUpdate).then(
-                //             res => {
-                //                 if(res.status === 200){
-                //                     setShow()
-                //                     onSubmit(index, statePosition)
-                //                     CustomToast("success", "Penentuan Status Berhasil.")
-                //                     setAgentUpdate({agent_report_id:data.id,    
-                //                         kind        : null,
-                //                         category_id : [],
-                //                         workunit_id : []
-                //                     })
-                //                 }else{
-                
-                //                 }
-                //                 setSubmitLoading(false);
-                
-                //             }
-                //         ).catch(
-                //             err => {
-                //                 setSubmitLoading(false);
-                //             }
-                //         )
-                //     }else{
-                //         CustomToast('danger', 'Masih Ada Kolom Belum Terisi');
-                //     }
-                // }
-        
-        
+        // console.log(agentUpdate)
+        setSubmitLoading(true);
+        feedsAgentReportAPI.shareAgentReportByWorkunit(agentUpdate).then(
+            res => {
+                console.log(onSubmit)
+                if(res.status === 200){
+                    setShow()
+                    onSubmit()
+                    CustomToast("success", "Penentuan Status Berhasil.")
+                    setAgentUpdate({agent_report_id:data.id,    
+                        kind        : null,
+                        category_id : [],
+                        workunit_id : []
+                    })
+                }else{
+
+                }
+                setSubmitLoading(false);
+
+            }
+        ).catch(
+            err => {
+                setSubmitLoading(false);
+            }
+        )
     }    
 
     useEffect(()=>{
@@ -240,26 +212,15 @@ export const SelectWilayah  = ({data,show,setShow,onSubmit, index, statePosition
                             category_id:xdata
                         })
 
+                        
+                        setType(response_detail.data.kind === 1 ? "lokal" : "nasional")
+
                         setActiveCategories(cats)
                     }
                 }
             )
-
-            // AgentReportApi.detail(data.id).then(response_detail=>{
-            //     if(response_detail.data.category==undefined||response_detail.data.category==null){
-            //         setActiveCategories([])
-            //     }else{
-            //         const cats = CategoriesHelper.toSelectVal(response_detail.data.category)
-            //         setActiveCategories(cats)
-            //     }
-            // })
         }
     },[show])
-
-    useEffect(() => {
-        console.log(activeCategories)
-    },[activeCategories])
-
     
     return(
         <ModalBase 
@@ -269,7 +230,7 @@ export const SelectWilayah  = ({data,show,setShow,onSubmit, index, statePosition
             setShow = {setShow} 
         >
             {
-                localStorage.getItem('role') == "Verifikator Pusat" || localStorage.getItem('role') == "Admin" ?
+                publishType === 1 ?
                     <FormGroup>
                         <Label>Jenis Berita</Label>
                         <p>
@@ -309,6 +270,7 @@ export const SelectWilayah  = ({data,show,setShow,onSubmit, index, statePosition
                 :
                     null
             }
+
             <FormGroup>
                 <Label>Kategori Berita</Label>
                 <Select
@@ -337,32 +299,36 @@ export const SelectWilayah  = ({data,show,setShow,onSubmit, index, statePosition
 
                 />
             </FormGroup>
+        
             {
-                localStorage.getItem('role') == "Verifikator Pusat" || localStorage.getItem('role') == "Admin" ?
-                    <>
+                publishType === 1 &&
+                <>
+                    {
+                        (localStorage.getItem('role') === 'Verifikator Pusat' || localStorage.getItem('role') === 'Admin') &&
                         <FormGroup>
                             <blockquote className="blockquote pl-1 border-left-primary border-left-3">
                                 Untuk tidak membatasi berita terpilih silahkan pilih "SEMUA WILAYAH" pada pilihan wilayah berikut.
                             </blockquote>
                         </FormGroup>
-                        <FormGroup>
-                            <Select
-                                id               = {`select_workunit_${index}`}
-                                name             = 'colors'
-                                theme            = {selectThemeColors}
-                                isMulti
-                                options          = {workunitOptionsApproval}
-                                onChange         = {handlerUnitChange}
-                                className        = 'react-select'
-                                isClearable      = {false}
-                                classNamePrefix  = 'select'
-                                isOptionDisabled = {(option) => option.isdisabled}
-                            />
-                        </FormGroup>
-                    </>
-                :
-                    null
+                    }
+                    <Label>Satuan Kerja</Label>
+                    <FormGroup>
+                        <Select
+                            id               = {`select_workunit_${index}`}
+                            name             = 'colors'
+                            theme            = {selectThemeColors}
+                            isMulti
+                            options          = {(localStorage.getItem('role') === 'Verifikator Pusat' || localStorage.getItem('role') === 'Admin') ? workunitOptionsApproval :  workunitOptions}
+                            onChange         = {handlerUnitChange}
+                            className        = 'react-select'
+                            isClearable      = {false}
+                            classNamePrefix  = 'select'
+                            isOptionDisabled = {(option) => option.isdisabled}
+                        />
+                    </FormGroup>
+                </>
             }
+
             <FormGroup className="text-center">
                 {
                     !submitLoading ?

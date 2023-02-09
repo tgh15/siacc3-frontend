@@ -75,9 +75,11 @@ export const NewsWidget = (props) => {
         division, 
         division_id,
         newsType,
+        kind,
         publish_date, 
         publish_type,
         time_update,
+        refreshData,
         location, 
         bodyText, 
         imgAvatar, 
@@ -1213,7 +1215,7 @@ export const NewsWidget = (props) => {
 
                             {
                                 publish_type != 'not_publish_yet' &&
-                                <p>Tanggal Publikasi : {moment(publish_date).format('DD MMMM YYYY')} ({publish_type === 'local_publish' ? 'Lokal' : 'Nasional'})</p>
+                                <p>Di Publikasi {status === 1 ? 'Lokal' : 'Nasional'} : tanggal {moment(publish_date).format('DD MMMM YYYY')} </p>
                             }
 
                             {attach == null ? null : attach.files}
@@ -1236,86 +1238,74 @@ export const NewsWidget = (props) => {
 
 
                         </FormGroup>
-                        
-                        {
-                            archived || status < 2 ? 
-                                (
-                                    <>
-                                        {
-                                            !archived && status == 0 ?
-                                                <>
-                                                    <hr/>
-                                                    <FormGroup className="d-flex align-items-center justify-content-end">
-                                                        Menunggu Persetujuan Verifikator Daerah
-                                                    </FormGroup>
-                                                </>
-                                            :
-                                                null
-                                        }
-                                        { 
-                                            !archived && status == 1 ?
-                                                <>
-                                                    <hr/>
-                                                    <FormGroup className="d-flex align-items-center justify-content-end">
-                                                        Menunggu Persetujuan Verifikator Pusat
-                                                    </FormGroup>
-                                                </>
-                                            :
-                                                null
-                                        }
-                                        {
-                                            archived ? 
-                                                archived === 1 ?
-                                                    <>
-                                                        <hr/>
-                                                        <FormGroup className="d-flex align-items-center justify-content-end">
-                                                            <Archive size={16} style={{marginRight: '5px'}}/>&nbsp;Berita Diarsipkan Verifikator Daerah
-                                                        </FormGroup>
-                                                    </>
-                                                :
-                                                    archived === 2 ?
-                                                        <>
-                                                            <hr/>
-                                                            <FormGroup className="d-flex align-items-center justify-content-end">
-                                                                <Archive size={16} style={{marginRight: '5px'}}/>&nbsp;Berita Diarsipkan Verifikator Pusat
-                                                            </FormGroup>
-                                                        </>
-                                                    :
-                                                        <>
-                                                            <hr/>
-                                                            <FormGroup className="d-flex align-items-center justify-content-end">
-                                                                <Archive size={16} style={{marginRight: '5px'}}/>&nbsp;Berita Diarsipkan Analis Per. Dir
-                                                            </FormGroup>
-                                                        </>
-                                            :
-                                                null
-                                        }
-                                    </>
-                                ) 
-                            : 
-                                // Icon
-                                <WidgetCardNewsBottom
-                                    id              = {id}
-                                    key             = {`footer-widget-${id}`}
-                                    index           = {index}
-                                    saved           = {savedBerita}
-                                    trophy          = {trophy}
-                                    ratings         = {ratings}
-                                    newsType        = {newsType}
-                                    viewList        = {viewList}
-                                    viewListLeader  = {viewListLeader}
-                                    viewListCombine = {viewListCombine}
-                                    viewCounts      = {viewCount}
-                                    commentCounts   = {commentCount}
-                                    ratings_check   = {ratings_check}
-                                    setShowViewForm = {setShowViewForm}
 
-                                    //Role
-                                    roleLike        = {roleLike}
-                                    roleDislike     = {roleDislike}
-                                    roleComment     = {roleComment}
-                                    roleViewer      = {roleViewer}
-                                />
+                        {
+                            archived ?
+                                archived === 1 ?
+                                    <>
+                                        <hr/>
+                                        <FormGroup className="d-flex align-items-center justify-content-end">
+                                            <Archive size={16} style={{marginRight: '5px'}}/>&nbsp;Berita Diarsipkan Verifikator Daerah
+                                        </FormGroup>
+                                    </>
+                                :
+                                    archived === 2 ?
+                                        <>
+                                            <hr/>
+                                            <FormGroup className="d-flex align-items-center justify-content-end">
+                                                <Archive size={16} style={{marginRight: '5px'}}/>&nbsp;Berita Diarsipkan Verifikator Pusat
+                                            </FormGroup>
+                                        </>
+                                    :
+                                        <>
+                                            <hr/>
+                                            <FormGroup className="d-flex align-items-center justify-content-end">
+                                                <Archive size={16} style={{marginRight: '5px'}}/>&nbsp;Berita Diarsipkan Analis Per. Dir
+                                            </FormGroup>
+                                        </>
+                            :
+                                status == 0 && kind == 0 ?
+                                    <>
+                                        <hr/>
+                                        <FormGroup className="d-flex align-items-center justify-content-end">
+                                            Menunggu Persetujuan Verifikator Daerah
+                                        </FormGroup>
+                                    </>
+                                :
+                                    status == 1 && kind === 0 ?
+                                        <>
+                                            <hr/>
+                                            <FormGroup className="d-flex align-items-center justify-content-end">
+                                                Menunggu Persetujuan Verifikator Pusat
+                                            </FormGroup>
+                                        </>
+                                    :
+                                        <WidgetCardNewsBottom
+                                            id              = {id}
+                                            key             = {`footer-widget-${id}`}
+                                            index           = {index}
+                                            saved           = {savedBerita}
+                                            trophy          = {trophy}
+                                            ratings         = {ratings}
+                                            kind            = {kind}
+                                            status          = {status}
+                                            newsType        = {newsType}
+                                            viewList        = {viewList}
+                                            viewListLeader  = {viewListLeader}
+                                            viewListCombine = {viewListCombine}
+                                            viewCounts      = {viewCount}
+                                            commentCounts   = {commentCount}
+                                            refreshData     = {refreshData}
+                                            ratings_check   = {ratings_check}
+                                            setShowViewForm = {setShowViewForm}
+
+                                            //Role
+                                            roleLike        = {roleLike}
+                                            roleDislike     = {roleDislike}
+                                            roleComment     = {roleComment}
+                                            roleViewer      = {roleViewer}
+                                        />
+
                         }
                         <div style={{height: '10px'}}></div>
                     </div>
