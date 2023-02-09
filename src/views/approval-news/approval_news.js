@@ -1,4 +1,4 @@
-import React, { Fragment, useState }    from 'react';
+import React, { Fragment, useContext, useState }    from 'react';
 import { 
     Row, 
     Col, 
@@ -25,7 +25,14 @@ import { ApprovedNewsWidget }           from '../../components/widgets/feeds/fee
 //Helper
 import Helper                           from '../../helpers'; 
 
+import { PerformanceContext }           from '../../context/PerformanceContext';
+
 const PersetujuanBerita = (props) => {
+
+
+    const {
+        workunitOptions
+    }                                  = useContext(PerformanceContext);
 
     const {
         handleRemoveAgentReport,
@@ -89,7 +96,7 @@ const PersetujuanBerita = (props) => {
                 <NavItem id={`agent_report_by_status_tab`}>
                     <NavLink
                         active  = {active === '1'}
-                        onClick = {() => {toggle('1'); getAgentReportByStatusAll(1)}}
+                        onClick = {() => {toggle('1'); getAgentReportByStatusAll(1); getAgentReportCount()}}
                     >
                         Semua Persetujuan Berita
                         <Badge className="ml-1" color="primary">
@@ -157,7 +164,7 @@ const PersetujuanBerita = (props) => {
                                         <CategoryFilter
                                             onFilter           = {props.setFilterAllState}
                                             isApproval         = {true}
-                                            workunitOptions    = {props.workunitFilter}
+                                            workunitOptions    = {workunitOptions}
                                             onChangeCategories = {(category) => {
                                                 props.setFilterAllState({type: 'category', value: category})
                                             }}

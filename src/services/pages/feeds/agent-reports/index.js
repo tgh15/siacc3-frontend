@@ -2,6 +2,7 @@ import { feedsURL }                                       from "..";
 import { Get, Post, PostUpload, Delete }                  from "../../../core/request";
 
 //All
+const getFeeds                    = (params)                    => Get(`${feedsURL.feedsPrefix}/${feedsURL.feedsAgentReport}`, params);
 const getAgentReport              = (page)                      => page == undefined ? Get(`${feedsURL.feedsPrefix}/${feedsURL.feedsAgentReport}/${feedsURL.feedsAgentReportByRole}`) : Get(`${feedsURL.feedsPrefix}/${feedsURL.feedsAgentReport}/${feedsURL.feedsAgentReportByRole}?page=${page}`);
 const createAgentReport           = (data)                      => Post(`${feedsURL.feedsPrefix}/${feedsURL.feedsAgentReport}/${feedsURL.create}`, data);
 const detailAgentReport           = (data)                      => Post(`${feedsURL.feedsPrefix}/${feedsURL.feedsAgentReport}/${feedsURL.detail}`, data);
@@ -59,6 +60,7 @@ const changeHashtagByAgentReport    = (data)                    => Post(`${feeds
 
 const feedsAgentReportAPI = {
     // All
+    getFeeds,
     getAgentReport,
     createAgentReport,
     detailAgentReport,
