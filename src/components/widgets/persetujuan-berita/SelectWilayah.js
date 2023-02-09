@@ -16,7 +16,6 @@ import CustomToast                              from '../custom-toast'
 import { PerformanceContext }                   from '../../../context/PerformanceContext'
 
 export const SelectWilayah  = (props) => {
-
     const {
         data,
         show,
@@ -24,20 +23,19 @@ export const SelectWilayah  = (props) => {
         setShow,
         onSubmit,
         publishType, 
-        statePosition
     }                                                   = props;
 
     const [unit,setUnit]                                = useState(null);
-    const [type,setType]                                = useState("");
+    const [type,setType]                                = useState("nasional");
     const [categories,setCategories]                    = useState(null);
     const [submitLoading, setSubmitLoading]             = useState(false);
     const [activeCategories,setActiveCategories]        = useState([]);
 
-    const { workunitOptions }   = useContext(PerformanceContext);  
+    const { workunitOptions, workunitOptionsApproval }   = useContext(PerformanceContext);  
 
     const [agentUpdate,setAgentUpdate] = useState({
         agent_report_id : data.id,    
-        kind            : null,
+        kind            : 2,
         category_id     : [],
         workunit_id     : []
     });
@@ -142,9 +140,10 @@ export const SelectWilayah  = (props) => {
         setSubmitLoading(true);
         feedsAgentReportAPI.shareAgentReportByWorkunit(agentUpdate).then(
             res => {
+                console.log(onSubmit)
                 if(res.status === 200){
                     setShow()
-                    onSubmit(index, statePosition)
+                    onSubmit()
                     CustomToast("success", "Penentuan Status Berhasil.")
                     setAgentUpdate({agent_report_id:data.id,    
                         kind        : null,
@@ -213,17 +212,15 @@ export const SelectWilayah  = (props) => {
                             category_id:xdata
                         })
 
+                        
+                        setType(response_detail.data.kind === 1 ? "lokal" : "nasional")
+
                         setActiveCategories(cats)
                     }
                 }
             )
         }
     },[show])
-
-    useEffect(() => {
-        console.log(activeCategories)
-    },[activeCategories])
-
     
     return(
         <ModalBase 
@@ -321,7 +318,7 @@ export const SelectWilayah  = (props) => {
                             name             = 'colors'
                             theme            = {selectThemeColors}
                             isMulti
-                            options          = {workunitOptions}
+                            options          = {(localStorage.getItem('role') === 'Verifikator Pusat' || localStorage.getItem('role') === 'Admin') ? workunitOptionsApproval :  workunitOptions}
                             onChange         = {handlerUnitChange}
                             className        = 'react-select'
                             isClearable      = {false}

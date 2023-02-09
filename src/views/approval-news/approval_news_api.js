@@ -35,6 +35,9 @@ const ApprovalNewsAPI = () => {
     //State
     const selector                                                  = useSelector(state => {return state});
     
+    const [filter, setFilter]                                       = useState(null);
+    const [filterKeyword, setFilterKeyword]                         = useState(null);
+    const [filterCategory, setFilterCategory]                       = useState(null);
     const [filterAllState, setFilterAllState]                       = useState(null);
 
     //Archive 
@@ -99,84 +102,56 @@ const ApprovalNewsAPI = () => {
         }
     };
 
-    //API count agent report all kind
-    const getAgentReportCount = () => {
-        const params = {
-            sort        : 'desc',
-            sort_by     : 'updated_at',
-            new         : true,
-            counter     : true,
-            approvement : true,
-        }
-
-        feedsAgentReportAPI.getFeeds(params)
-        .then(
-            res => {
-                console.log(res)
-                if(!res.is_error){
-                    setCountArchive(res.data.restricted)
-                    setCountAllStatus(res.data.approvement_all)
-                    setCountTypeShared(res.data.can_read_all)
-                    setCountPositionShared(res.data.send_to_leader)
-                    setCountTypeSharedLimit(res.data.sender_can_read)
-                }
-            },
-            err => {
-                CustomToast('danger', 'Terjadi Kesalahan.');
-            }
-        )
-    };
-
     //API agent report by status (all approval news)
     const getAgentReportByStatusAll = (page) => {
 
         setLoadingAllStatus(true);
 
-        let formData, params = {};
+        let params = {};
 
-        if(filterAllState === null){
-            formData = {
-                category : 0
+        params.approvement = 'approvement';
+        params.new         = true;
+        params.sort_by     = 'updated_at';
+        params.sort        = 'desc';
+        params.page        = page;
+
+        if(filter != null){
+            params.sort           = filter.value.order_by === 'latest' ? 'desc' : 'asc';
+            params.workunit_id    = filter.value.work_unit_id_list[0];
+            params.level          = filter.value.status_publish
+        }else{
+            params.workunit_id    = 0;
+        }
+
+        if(filterCategory != null){
+            if(filterCategory.value.id != 'all'){
+                params.category_id    = parseInt(filterCategory.value.id)
             }
         }else{
-            if(filterAllState.type === "filter"){
-                formData = {
-                    category          : 0,
-                    order_by          : filterAllState.value.order_by,
-                    status_publish    : filterAllState.value.status_publish,
-                    work_unit_id_list : filterAllState.value.work_unit_id_list,
-                }
-            }else{
-                formData = {
-                    category : selector.FeedsCategoriesReducer.activeCategories.id == "all" ? 0 : selector.FeedsCategoriesReducer.activeCategories.id
-                }
-            }
+            params.category_id    = 0
         }
 
-        if(page != undefined){
-            params.page = page;
+        if(filterKeyword != null){
+            params.keyword        = filterKeyword.value
         }
 
-        if(filterAllState != null && filterAllState.type == 'keyword'){
-            params.keyword = filterAllState.value;
-        }
-
-        feedsAgentReportApprovalAPI.getAgentByStatus(formData, params).then(
+        feedsAgentReportAPI.getFeeds(params).then(
             res => {
                 if(!res.is_error){
-                    if ("agent_report" in res.data && res.data.agent_report != null) {
+                    if ("result" in res.data && res.data.result != null) {
                         //get array length
-                        let arrLength = res.data.agent_report.length;
+                        let arrLength = res.data.result.length;
 
                         //search half array length value
                         let getDivision = Math.round(arrLength/2);
 
                         //get first half array
-                        setLeftStateAllStatus(res.data.agent_report.splice(0,getDivision));
+                        setLeftStateAllStatus(res.data.result.splice(0,getDivision));
 
                         //get last half array
-                        setRightStateAllStatus(res.data.agent_report.splice(0,arrLength-getDivision));
+                        setRightStateAllStatus(res.data.result.splice(0,arrLength-getDivision));
 
+                        setCountAllStatus(res.data.pagination.data_total);
                         setLoadingAllStatus(false);
                         setPaginationAllStatus(res.data.pagination);
 
@@ -188,12 +163,11 @@ const ApprovalNewsAPI = () => {
                 }else{
                     CustomToast("danger", res.message);
                 }
-
             },
             err => {
                 CustomToast("danger", err.message);
             }
-        );
+        )
     };
 
     //API agent report by type shared (all can be read)
@@ -201,21 +175,39 @@ const ApprovalNewsAPI = () => {
 
         setLoadingTypeShared(true);
 
-        const formData = {
-            category    : 0,
-            shared_type : ""
-        };
+        let params = {};
 
-        feedsAgentReportApprovalAPI.getAgentByTypeShared(formData, page).then(
+        params.approvement = 'public';
+        params.new         = true;
+        params.sort_by     = 'updated_at';
+        params.sort        = 'desc';
+        params.page        = page;
+
+        if(filter != null){
+            params.sort           = filter.value.order_by === 'latest' ? 'desc' : 'asc';
+            params.workunit_id    = filter.value.work_unit_id_list[0];
+            params.level          = filter.value.status_publish
+        }
+
+        if(filterCategory != null){
+            if(filterCategory.value.id != 'all'){
+                params.category_id    = parseInt(filterCategory.value.id)
+            }
+        }
+
+        if(filterKeyword != null){
+            params.keyword        = filterKeyword.value
+        }
+
+        feedsAgentReportAPI.getFeeds(params).then(
             res => {
                 if(!res.is_error){
-                    const {data} = res;
-    
+                    setCountTypeShared(res.data.pagination.data_total);
                     setLoadingTypeShared(false);
-                    setPaginationTypeShared(data.pagination);
+                    setPaginationTypeShared(res.data.pagination);
     
-                    if("agent_report" in res.data && res.data.agent_report != null){
-                        processAgentReports(data.agent_report).then(
+                    if("result" in res.data && res.data.result != null){
+                        processAgentReports(res.data.result).then(
                             res => {
                                 //get array length
                                 let arrLength = res.length;
@@ -253,21 +245,40 @@ const ApprovalNewsAPI = () => {
 
         setLoadingTypeSharedLimit(true);
 
-        const formData = {
-            category    : 0,
-            shared_type : "specific"
+        let params = {};
+
+        params.approvement = 'restrict';
+        params.new         = true;
+        params.sort_by     = 'updated_at';
+        params.sort        = 'desc';
+        params.page        = page;
+
+        if(filter != null){
+            params.sort           = filter.value.order_by === 'latest' ? 'desc' : 'asc';
+            params.workunit_id    = filter.value.work_unit_id_list[0];
+            params.level          = filter.value.status_publish
         }
 
-        feedsAgentReportApprovalAPI.getAgentByTypeShared(formData, page).then(
+        if(filterCategory != null){
+            if(filterCategory.value.id != 'all'){
+                params.category_id    = parseInt(filterCategory.value.id)
+            }
+        }
+
+        if(filterKeyword != null){
+            params.keyword        = filterKeyword.value
+        }
+
+        feedsAgentReportAPI.getFeeds(params).then(
             res => {
                 if(!res.is_error){
                     const {data} = res;
-
+                    setCountTypeSharedLimit(res.data.pagination.data_total);
                     setLoadingTypeSharedLimit(false);
                     setPaginationTypeSharedLimit(data.pagination);
 
-                    if("agent_report" in res.data && res.data.agent_report != null){
-                        processAgentReports(data.agent_report).then(
+                    if("result" in res.data && res.data.result != null){
+                        processAgentReports(data.result).then(
                             res => {
                                 //get array length
                                 let arrLength = res.length;
@@ -301,27 +312,48 @@ const ApprovalNewsAPI = () => {
     //API agent report by position shared (sent to leader)
     const getAgentReportByPositionShared = (page) => {
         setLoadingPositionShared(true)
-        const formData = {
-            category    : 0,
-            position_id : 0
-        };
 
-        feedsAgentReportApprovalAPI.getAgentByPositionShared(formData, page).then(
+        let params = {};
+
+        params.approvement = 'leader';
+        params.new         = true;
+        params.sort_by     = 'updated_at';
+        params.sort        = 'desc';
+        params.page        = page;
+
+        if(filter != null){
+            params.sort           = filter.value.order_by === 'latest' ? 'desc' : 'asc';
+            params.workunit_id    = filter.value.work_unit_id_list[0];
+            params.level          = filter.value.status_publish
+        }
+
+        if(filterCategory != null){
+            if(filterCategory.value.id != 'all'){
+                params.category_id    = parseInt(filterCategory.value.id)
+            }
+        }
+
+        if(filterKeyword != null){
+            params.keyword        = filterKeyword.value
+        }
+
+        feedsAgentReportAPI.getFeeds(params).then(
             res => {
                 if(!res.is_error){
-                    if ("agent_report" in res.data && res.data.agent_report != null) {
+                    if ("result" in res.data && res.data.result != null) {
                         //get array length
-                        let arrLength = res.data.agent_report.length;
+                        let arrLength = res.data.result.length;
     
                         //search half array length value
                         let getDivision = Math.round(arrLength/2);
     
                         //get first half array
-                        setLeftStatePositionShared(res.data.agent_report.splice(0,getDivision));
+                        setLeftStatePositionShared(res.data.result.splice(0,getDivision));
     
                         //get last half array
-                        setRigthStatePositionShared(res.data.agent_report.splice(0,arrLength-getDivision));
+                        setRigthStatePositionShared(res.data.result.splice(0,arrLength-getDivision));
 
+                        setCountPositionShared(res.data.pagination.data_total); 
                         setLoadingPositionShared(false);
                         setPaginationPositionShared(res.data.pagination)
                     }else{
@@ -344,27 +376,48 @@ const ApprovalNewsAPI = () => {
 
         setLoadingArchive(true);
 
-        const formData = {
-            category : 0
-        };
+        let params = {};
 
-        feedsAgentReportApprovalAPI.getAgentByArchive(formData, page).then(
+        params.approvement = 'archive';
+        params.new         = true;
+        params.sort_by     = 'updated_at';
+        params.sort        = 'desc';
+        params.page        = page;
+
+        if(filter != null){
+            params.sort           = filter.value.order_by === 'latest' ? 'desc' : 'asc';
+            params.workunit_id    = filter.value.work_unit_id_list[0];
+            params.level          = filter.value.status_publish
+        }
+
+        if(filterCategory != null){
+            if(filterCategory.value.id != 'all'){
+                params.category_id    = parseInt(filterCategory.value.id)
+            }
+        }
+
+        if(filterKeyword != null){
+            params.keyword        = filterKeyword.value
+        }
+
+        feedsAgentReportAPI.getFeeds(params).then(
             res => {
 
                 if(!res.is_error){
-                    if ("agent_report" in res.data && res.data.agent_report != null) {
+                    if ("result" in res.data && res.data.result != null) {
                         //get array length
-                        let arrLength = res.data.agent_report.length;
+                        let arrLength = res.data.result.length;
     
                         //search half array length value
                         let getDivision = Math.round(arrLength/2);
     
                         //get first half array
-                        setLeftStateArchive(res.data.agent_report.splice(0,getDivision));
+                        setLeftStateArchive(res.data.result.splice(0,getDivision));
     
                         //get last half array
-                        setRightStateArchive(res.data.agent_report.splice(0,arrLength-getDivision));
+                        setRightStateArchive(res.data.result.splice(0,arrLength-getDivision));
 
+                        setCountArchive(res.data.pagination.data_total);
                         setLoadingArchive(false);
                         setPaginationArchive(res.data.pagination);
 
@@ -385,15 +438,13 @@ const ApprovalNewsAPI = () => {
 
     useEffect(() => {
 
-        getAgentReportCount(); 
-
         getAgentReportByArchive(1);
         getAgentReportByStatusAll(1);
         getAgentReportByTypeSharedRead(1);
         getAgentReportByPositionShared(1);
         getAgentReportByTypeSharedLimit(1);
         
-    }, [filterAllState]);
+    }, [filter, filterKeyword, filterCategory]);
 
     return (
         <Fragment>
@@ -403,6 +454,9 @@ const ApprovalNewsAPI = () => {
                     //State
                     filterAllState                  = {filterAllState}
                     setFilterAllState               = {setFilterAllState}
+                    setFilter                       = {setFilter}
+                    setFilterKeyword                = {setFilterKeyword}
+                    setFilterCategory               = {setFilterCategory}
                     
                     //All Status
                     countAllStatus                  = {countAllStatus}      
@@ -447,7 +501,6 @@ const ApprovalNewsAPI = () => {
                     //Function
                     handleStore                     = {handleStore}
                     changeToArchive                 = {changeToArchive}
-                    getAgentReportCount             = {getAgentReportCount}
                     handleRemoveAgentReport         = {handleRemoveAgentReport}
 
                 />

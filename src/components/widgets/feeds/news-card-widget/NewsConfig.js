@@ -601,6 +601,7 @@ export const processAgentReports = async(agentReports, commentsPage) => {
                 division_level_id : division_level_id,
                 subTitle        : momen,
                 location        : location,
+                kind            : newsType,
                 newsType        : newsType == 2 ? "nasional" : "lokal",
                 publish_date    : publish_date,
                 time_update     : time_update,

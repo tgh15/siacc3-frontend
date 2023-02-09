@@ -26,6 +26,7 @@ import Helper                                               from '../../../../he
 import feedsRatingAPI                                       from '../../../../services/pages/feeds/rating';
 
 import Trophy                                               from '../../../../assets/icons/trophy.svg';
+import { SelectWilayah } from '../../persetujuan-berita'
 
 export const WidgetCardNewsBottom = (props)=>{
     const ref               = useRef(null)
@@ -38,9 +39,12 @@ export const WidgetCardNewsBottom = (props)=>{
         index,
         trophy,
         ratings,
+        kind,
+        status,
         newsType,
         viewList,
         viewCounts,
+        refreshData,
         commentCounts,
         setShowViewForm,
         viewListCombine,
@@ -54,6 +58,7 @@ export const WidgetCardNewsBottom = (props)=>{
 
     const [rating, setRating]       = useState(ratings);
     const [popView, setPopView]     = useState(false);
+    const [publicationModalState, setPublicationModalState] = useState(false);
     
     const [state,setState]          = useState({
         refreshed               : false,
@@ -158,28 +163,14 @@ export const WidgetCardNewsBottom = (props)=>{
     
     return (
         <Fragment>
-            <div className="d-flex justify-content-end">
-                {
-                    roleLike ?
-                        <Rating
-                            id              = {`news_rating_${index}`}
-                            onClick         = {(value) => {handleRatings(value)}}
-                            fullSymbol      = {<Star size={22} fill='#ff9f43' stroke='#ff9f43' />}
-                            emptySymbol     = {<Star size={22} fill='#babfc7' stroke='#babfc7' />}
-                            initialRating   = {rating}
-                        />
-                    :
-                        null
-                }
-            </div>
-            <div className="d-flex justify-content-between align-items-center">
-                <Row>
+            <Row >
+                <Col md={9} className="d-flex align-items-center">
                     {
                         roleComment ? 
                             <Button
                                 id          = {`comment_count_${index}`}
                                 color       = "flat" 
-                                className   = "d-flex pb-0"
+                                className   = "d-flex pb-0 pl-0"
                             >
                                 <MessageCircle size={22}/>
                                 <p className="ml-1">
@@ -196,7 +187,7 @@ export const WidgetCardNewsBottom = (props)=>{
                                     <Button
                                         id          = {`viewer_count_${index}`}
                                         color       = "flat" 
-                                        className   = "d-flex pb-0"
+                                        className   = "d-flex pb-0 pl-0"
                                     >
                                         <Eye size={22}/>
                                         <p className="ml-1">
@@ -255,7 +246,7 @@ export const WidgetCardNewsBottom = (props)=>{
                                     key         = {'trophy_id_button'+id}
                                     id          = {'trophy_id_button'+id}
                                     color       = "flat" 
-                                    className   = "d-flex pb-0"
+                                    className   = "d-flex pb-0 ml-1"
                                 >
                                     <img tabIndex="-1" ref={ref} src={Trophy} height={20} width={20}/>
                                 </Button>
@@ -284,14 +275,56 @@ export const WidgetCardNewsBottom = (props)=>{
                         saved ?
                             <Button 
                                 color       = "flat" 
-                                className   = "d-flex pb-0"
+                                className   = "d-flex pb-0 ml-1"
                             >
                                 <Bookmark size={22}/> 
                             </Button >
                         : 
                         null 
                     }
-                    </Row>
+                </Col>
+                <Col md={3} className="d-flex align-items-center justify-content-end">
+                    {
+                        roleLike ?
+                            <Rating
+                                id              = {`news_rating_${index}`}
+                                onClick         = {(value) => {handleRatings(value)}}
+                                fullSymbol      = {<Star size={22} fill='#ff9f43' stroke='#ff9f43' />}
+                                emptySymbol     = {<Star size={22} fill='#babfc7' stroke='#babfc7' />}
+                                initialRating   = {rating}
+                            />
+                        :
+                            null
+                    }
+                </Col>
+            </Row>
+            <Row>
+                <Col md={9} className="d-flex align-items-center">
+
+                    <SelectWilayah 
+                        data                = {{id : id}} 
+                        show                = {publicationModalState} 
+                        index               = {1}
+                        setShow             = {() => setPublicationModalState(false)}
+                        onSubmit            = {() => {refreshData(); console.log('trigger')}} 
+                        publishType         = {status}
+                    />
+                    {
+                        ((localStorage.getItem('role') === 'Verifikator Pusat' || localStorage.getItem('role') === 'Admin') && status == 1) &&
+                        <Button 
+                            id          = {`set_state_${index}`}
+                            color       = "primary" size="sm" 
+                            onClick     = {() => { setPublicationModalState(true)}} 
+                            className   = "btn-sm"
+                        >
+                            Publikasi Nasional
+                        </Button>
+                    }
+
+
+
+                </Col>
+                <Col md={3} className="d-flex justify-content-end">
                     <Button className="text-right pr-0" color="flat">
                         {
                             newsType === 'nasional' ?
@@ -304,7 +337,8 @@ export const WidgetCardNewsBottom = (props)=>{
                                 </Fragment>
                         }   
                     </Button>
-            </div>
+                </Col>
+            </Row>
         </Fragment>
     )
 }

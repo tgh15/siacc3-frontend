@@ -35,6 +35,9 @@ const PersetujuanBerita = (props) => {
     }                                  = useContext(PerformanceContext);
 
     const {
+        setFilter,
+        setFilterKeyword,
+        setFilterCategory,
         handleRemoveAgentReport,
         
         //All Status
@@ -96,7 +99,7 @@ const PersetujuanBerita = (props) => {
                 <NavItem id={`agent_report_by_status_tab`}>
                     <NavLink
                         active  = {active === '1'}
-                        onClick = {() => {toggle('1'); getAgentReportByStatusAll(1); getAgentReportCount()}}
+                        onClick = {() => {toggle('1'); getAgentReportByStatusAll(1);}}
                     >
                         Semua Persetujuan Berita
                         <Badge className="ml-1" color="primary">
@@ -162,11 +165,11 @@ const PersetujuanBerita = (props) => {
                                 <Row className="d-flex align-items-center">
                                     <Col md={8}>
                                         <CategoryFilter
-                                            onFilter           = {props.setFilterAllState}
+                                            onFilter           = {setFilter}
                                             isApproval         = {true}
                                             workunitOptions    = {workunitOptions}
                                             onChangeCategories = {(category) => {
-                                                props.setFilterAllState({type: 'category', value: category})
+                                                setFilterCategory({type: 'category', value: category})
                                             }}
                                         />
                                     </Col>
@@ -174,7 +177,7 @@ const PersetujuanBerita = (props) => {
                                     <Col md={{offset: 1, size: 3}} className="d-flex justify-content-end">
                                         <SearchTable
                                             id          = "search-data-all-approval" 
-                                            onSearch    = {(keyword) => {props.setFilterAllState({type: 'keyword', value: keyword});}}
+                                            onSearch    = {(keyword) => {setFilterKeyword({type: 'keyword', value: keyword});}}
                                             placeholder = {'Cari berita'} 
                                         />
                                     </Col>
@@ -265,6 +268,27 @@ const PersetujuanBerita = (props) => {
                         getRoleByMenuStatus('Daftar Persetujuan Berita', 'all_can_be_read_list') ? 
                             !loadingTypeShared ?
                                 <Fragment>
+                                    {/* <Row className="d-flex align-items-center">
+                                        <Col md={8}>
+                                            <CategoryFilter
+                                                onFilter           = {setFilter}
+                                                isApproval         = {true}
+                                                workunitOptions    = {workunitOptions}
+                                                onChangeCategories = {(category) => {
+                                                    setFilterCategory({type: 'category', value: category})
+                                                }}
+                                            />
+                                        </Col>
+
+                                        <Col md={{offset: 1, size: 3}} className="d-flex justify-content-end">
+                                            <SearchTable
+                                                id          = "search-data-all-approval" 
+                                                onSearch    = {(keyword) => {setFilterKeyword({type: 'keyword', value: keyword});}}
+                                                placeholder = {'Cari berita'} 
+                                            />
+                                        </Col>
+                                    </Row> */}
+
                                     <Row className="d-flex justify-content-end mb-2">
                                         <CustomTablePaginate 
                                             getData         = {(params) => { getAgentReportByTypeSharedRead(params.page)}}
@@ -291,6 +315,7 @@ const PersetujuanBerita = (props) => {
                                                                     data            = {data}
                                                                     index           = {`left_state_type_shared_`+index}
                                                                     handleStore     = {props.handleStore}
+                                                                    refreshData     = {() => getAgentReportByTypeSharedLimit(1)}
 
                                                                     //Role
                                                                     roleLike        = {true}
@@ -311,6 +336,7 @@ const PersetujuanBerita = (props) => {
                                                                     data            = {data}
                                                                     index           = {`right_state_type_shared_`+index}
                                                                     handleStore     = {props.handleStore}
+                                                                    refreshData     = {() => getAgentReportByTypeSharedLimit(1)}
                                                                     
                                                                     //Role
                                                                     roleLike        = {true}
