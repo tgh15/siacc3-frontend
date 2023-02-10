@@ -83,7 +83,7 @@ const Beranda = (props) => {
         setPage(1);
         setFilter(true);
         setFilteredState(opt);
-        getAgentReportFilter(1, opt);
+        // getAgentReportFilter(1, opt);
     };
 
     const handleStore = (stored_data, resps) => {
@@ -154,10 +154,13 @@ const Beranda = (props) => {
     };
 
     const getAgentReportFilter = (active_page, filter_body) => {
+        console.log('filter')
         setLoadingFeeds(true);
         
         filterAgentReport(active_page,filter_body).then(res => {
             setLoadingFeeds(false);
+
+
 
             let feed_ = feed == null ? [] : [...feed];
 
@@ -207,7 +210,7 @@ const Beranda = (props) => {
         }catch(err){
             console.log("err",err);
         }
-    },[selector, page]);
+    },[selector, page, filteredState]);
 
     return (
         <Fragment>

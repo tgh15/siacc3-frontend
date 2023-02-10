@@ -40,7 +40,7 @@ export function getApprovedBerandaFeeds(){
 
 export function filterAgentReport(page,options){
     const pages = page==null||page==undefined?1:page
-
+    console.log('filter disini');
     return getAgentReportFilter(pages,options)
 }
 

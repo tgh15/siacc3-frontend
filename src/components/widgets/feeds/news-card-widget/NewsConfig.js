@@ -630,15 +630,19 @@ export const processAgentReports = async(agentReports, commentsPage) => {
 export const getAgentReportFilter = async(page,filter) => {
     let promise = new Promise(async (resolve,reject) => {
         let dataFeeds;
+
+        console.log('filter disini 2')
     
         //if normal category
         dataFeeds = feedsAgentReportAPI.filterAgentReport(filter,page).then(async(response) => {
+            console.log(response, 'response')
             if (response.agentReport === null ){
                 resolve({results: [], response:response.data})
             }else{   
                 const {data}    = response;
                 dataFeeds       = processAgentReports(data.agent_report).then(categori => {
                     dataFeeds   = categori;
+                    console.log(dataFeeds, 'filter data');
                     resolve({results:dataFeeds,response:data});
                 })
             }

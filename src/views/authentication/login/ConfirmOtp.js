@@ -62,7 +62,6 @@ const ConfirmOtp = ({ email, username, password, fcmToken }) => {
         authAPI.loginUser(formData,params).then(
             res => {
                 setLoading(false);
-
                 if (!res.is_error) {
                     localStorage.setItem("userData", JSON.stringify(res.data.biodata));
                     localStorage.setItem("role", res.data.biodata.user_group[0].name);
@@ -77,7 +76,7 @@ const ConfirmOtp = ({ email, username, password, fcmToken }) => {
         ).catch(
             err => {
                 setLoading(false);
-                CustomToast("danger", err.code);
+                CustomToast("danger", err.message);
             }
         );
     }
