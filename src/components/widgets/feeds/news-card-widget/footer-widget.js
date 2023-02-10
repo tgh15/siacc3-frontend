@@ -40,6 +40,7 @@ export const WidgetCardNewsBottom = (props)=>{
         trophy,
         ratings,
         kind,
+        publish_type,
         status,
         newsType,
         viewList,
@@ -56,8 +57,8 @@ export const WidgetCardNewsBottom = (props)=>{
         
     }                               = props;
 
-    const [rating, setRating]       = useState(ratings);
-    const [popView, setPopView]     = useState(false);
+    const [rating, setRating]                               = useState(ratings);
+    const [popView, setPopView]                             = useState(false);
     const [publicationModalState, setPublicationModalState] = useState(false);
     
     const [state,setState]          = useState({
@@ -307,10 +308,11 @@ export const WidgetCardNewsBottom = (props)=>{
                         index               = {1}
                         setShow             = {() => setPublicationModalState(false)}
                         onSubmit            = {() => {refreshData(); console.log('trigger')}} 
-                        publishType         = {status}
+                        publishType         = {publish_type == 'not_publish_yet' ? 0 : 1}
                     />
+
                     {
-                        ((localStorage.getItem('role') === 'Verifikator Pusat' || localStorage.getItem('role') === 'Admin') && status == 1) &&
+                        ((localStorage.getItem('role') === 'Verifikator Pusat' || localStorage.getItem('role') === 'Admin') && publish_type == 'local_publish') ?
                         <Button 
                             id          = {`set_state_${index}`}
                             color       = "primary" size="sm" 
@@ -319,9 +321,9 @@ export const WidgetCardNewsBottom = (props)=>{
                         >
                             Publikasi Nasional
                         </Button>
+                        :
+                            null
                     }
-
-
 
                 </Col>
                 <Col md={3} className="d-flex justify-content-end">

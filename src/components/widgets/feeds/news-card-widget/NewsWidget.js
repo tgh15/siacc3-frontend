@@ -1215,7 +1215,7 @@ export const NewsWidget = (props) => {
 
                             {
                                 publish_type != 'not_publish_yet' &&
-                                <p>Di Publikasi {status === 1 ? 'Lokal' : 'Nasional'} : tanggal {moment(publish_date).format('DD MMMM YYYY')} </p>
+                                <p>Di Publikasi {publish_type === 'local_publish' ? 'Lokal' : 'Nasional'} : tanggal {moment(publish_date).format('DD MMMM YYYY')} </p>
                             }
 
                             {attach == null ? null : attach.files}
@@ -1296,6 +1296,7 @@ export const NewsWidget = (props) => {
                                             viewCounts      = {viewCount}
                                             commentCounts   = {commentCount}
                                             refreshData     = {refreshData}
+                                            publish_type    = {publish_type}
                                             ratings_check   = {ratings_check}
                                             setShowViewForm = {setShowViewForm}
 
