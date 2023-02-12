@@ -25,7 +25,13 @@ import { useForm, Controller }              from "react-hook-form"
 import CustomTablePaginate from "../../components/widgets/custom-table/CustomTablePaginate"
 
 const DetailPoint = () => {
-    const { active, getAgentPoints, getWorkunitPoints, historyPoints, dataDetail } = useContext(PerformanceContext);
+    const { 
+        active, 
+        dataDetail,
+        historyPoints, 
+        getAgentPoints, 
+        getWorkunitPoints, 
+    }                                               = useContext(PerformanceContext);
 
     const { 
         handleSubmit, 
@@ -38,6 +44,7 @@ const DetailPoint = () => {
 
     const handleFilterHistory = (id, page) => {
         setSelectedFilter(id);
+
         if(active === 'agent'){
             if(id === 1){
                 getAgentPoints(page, dataDetail.uuid);
@@ -48,7 +55,7 @@ const DetailPoint = () => {
             }else if(id === 4){
                 getAgentPoints(page, dataDetail.uuid, moment().subtract(30,'d').format('YYYY-MM-DD'), moment().format('YYYY-MM-DD'));
             }else if(id === 5){
-                setShowFilterDate(true);
+                handleSubmit_(page);
             }
         }else{
             if(id === 1){
@@ -60,21 +67,21 @@ const DetailPoint = () => {
             }else if(id === 4){
                 getWorkunitPoints(page, dataDetail.id, moment().subtract(30,'d').format('YYYY-MM-DD'), moment().format('YYYY-MM-DD'));
             }else if(id === 5){
-                setShowFilterDate(true);
+                handleSubmit_(page);
             }
         }
     };
 
-    const handleSubmit_ = () => { 
+    const handleSubmit_ = (page=1) => { 
         if(startDate == null){
             CustomToast('warning', 'Tanggal mulai belum terisi');
         }else if(endDate == null){
             CustomToast('warning', 'Tanggal selesai belum terisi');
         }else{
             if(active == 'agent'){
-                getAgentPoints(1, dataDetail.uuid, moment(startDate, 'DD-MM-YYYY').format('YYYY-MM-DD'), moment(endDate, 'DD-MM-YYYY').format('YYYY-MM-DD'));
+                getAgentPoints(page, dataDetail.uuid, moment(startDate, 'DD-MM-YYYY').format('YYYY-MM-DD'), moment(endDate, 'DD-MM-YYYY').format('YYYY-MM-DD'));
             }else{
-                getWorkunitPoints(1, dataDetail.id, moment(startDate, 'DD-MM-YYYY').format('YYYY-MM-DD'), moment(endDate, 'DD-MM-YYYY').format('YYYY-MM-DD'));
+                getWorkunitPoints(page, dataDetail.id, moment(startDate, 'DD-MM-YYYY').format('YYYY-MM-DD'), moment(endDate, 'DD-MM-YYYY').format('YYYY-MM-DD'));
             }
             setShowFilterDate(false);
         }
@@ -92,7 +99,7 @@ const DetailPoint = () => {
             >
                 <Form 
                     key      = "filter_date_form" 
-                    onSubmit = {handleSubmit(handleSubmit_)}
+                    onSubmit = {handleSubmit(() => handleSubmit_(1))}
                 >
                     <FormGroup>
                         <Label>Tanggal Mulai</Label>
@@ -187,7 +194,7 @@ const DetailPoint = () => {
                         id      = {`performance_detail_point_filter_date`}
                         key     = "filter_custom"
                         color   = {selectedFilter === 5 ? "primary" : null}
-                        onClick = {() => handleFilterHistory(5,1)} 
+                        onClick = {() => {setSelectedFilter(5); setShowFilterDate(true)}} 
                     >
                         Filter
                     </Button>
