@@ -70,6 +70,7 @@ export const NewsWidget = (props) => {
         ratings,
         isSaved, 
         hashtag,
+        approve,
         archived,
         subTitle, 
         division, 
@@ -237,7 +238,6 @@ export const NewsWidget = (props) => {
         )
     }
 
-    
     const setAnalog = (p) => {
         setAnalogComment(p)
     };
@@ -1286,6 +1286,8 @@ export const NewsWidget = (props) => {
                                             index           = {index}
                                             saved           = {savedBerita}
                                             trophy          = {trophy}
+                                            approve         = {approve}
+                                            comments        = {comments}
                                             ratings         = {ratings}
                                             kind            = {kind}
                                             status          = {status}

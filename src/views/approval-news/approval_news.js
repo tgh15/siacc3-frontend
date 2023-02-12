@@ -268,7 +268,7 @@ const PersetujuanBerita = (props) => {
                         getRoleByMenuStatus('Daftar Persetujuan Berita', 'all_can_be_read_list') ? 
                             !loadingTypeShared ?
                                 <Fragment>
-                                    {/* <Row className="d-flex align-items-center">
+                                    <Row className="d-flex align-items-center">
                                         <Col md={8}>
                                             <CategoryFilter
                                                 onFilter           = {setFilter}
@@ -287,7 +287,7 @@ const PersetujuanBerita = (props) => {
                                                 placeholder = {'Cari berita'} 
                                             />
                                         </Col>
-                                    </Row> */}
+                                    </Row>
 
                                     <Row className="d-flex justify-content-end mb-2">
                                         <CustomTablePaginate 
@@ -370,6 +370,26 @@ const PersetujuanBerita = (props) => {
                         getRoleByMenuStatus('Daftar Persetujuan Berita', 'agent_report_restriction_list') ? 
                             !loadingTypeSharedLimit ?
                                 <>
+                                    <Row className="d-flex align-items-center">
+                                        <Col md={8}>
+                                            <CategoryFilter
+                                                onFilter           = {setFilter}
+                                                isApproval         = {true}
+                                                workunitOptions    = {workunitOptions}
+                                                onChangeCategories = {(category) => {
+                                                    setFilterCategory({type: 'category', value: category})
+                                                }}
+                                            />
+                                        </Col>
+
+                                        <Col md={{offset: 1, size: 3}} className="d-flex justify-content-end">
+                                            <SearchTable
+                                                id          = "search-data-all-approval" 
+                                                onSearch    = {(keyword) => {setFilterKeyword({type: 'keyword', value: keyword});}}
+                                                placeholder = {'Cari berita'} 
+                                            />
+                                        </Col>
+                                    </Row>
                                     <Row className="d-flex justify-content-end mb-2">
                                         <CustomTablePaginate 
                                             getData         = {(params) => { getAgentReportByTypeSharedLimit(params.page)}}
@@ -394,6 +414,7 @@ const PersetujuanBerita = (props) => {
                                                                     id              = {data.id}
                                                                     data            = {data}
                                                                     index           = {`left_state_type_shared_limit_`+index}
+                                                                    approve         = {true}
                                                                     handleStore     = {props.handleStore}
 
                                                                     roleLike        = {true}
@@ -413,6 +434,7 @@ const PersetujuanBerita = (props) => {
                                                                     id              = {data.id}
                                                                     data            = {data}
                                                                     index           = {`right_state_type_shared_limit_`+index}
+                                                                    approve         = {true}
                                                                     handleStore     = {props.handleStore}
 
                                                                     roleLike        = {true}
@@ -447,6 +469,26 @@ const PersetujuanBerita = (props) => {
                         getRoleByMenuStatus('Daftar Persetujuan Berita', 'sent_to_leader_list') ? 
                             !loadingPositionShared ?
                                 <>
+                                    <Row className="d-flex align-items-center">
+                                        <Col md={8}>
+                                            <CategoryFilter
+                                                onFilter           = {setFilter}
+                                                isApproval         = {true}
+                                                workunitOptions    = {workunitOptions}
+                                                onChangeCategories = {(category) => {
+                                                    setFilterCategory({type: 'category', value: category})
+                                                }}
+                                            />
+                                        </Col>
+
+                                        <Col md={{offset: 1, size: 3}} className="d-flex justify-content-end">
+                                            <SearchTable
+                                                id          = "search-data-all-approval" 
+                                                onSearch    = {(keyword) => {setFilterKeyword({type: 'keyword', value: keyword});}}
+                                                placeholder = {'Cari berita'} 
+                                            />
+                                        </Col>
+                                    </Row>
                                     <Row className="d-flex justify-content-end mb-2">
                                         <CustomTablePaginate 
                                             getData         = {(params) => { getAgentReportByPositionShared(params.page)}}
@@ -519,6 +561,26 @@ const PersetujuanBerita = (props) => {
                         getRoleByMenuStatus('Daftar Persetujuan Berita', 'only_seen_by_sender_list') ? 
                             !loadingArchive ?
                                 <>
+                                    <Row className="d-flex align-items-center">
+                                        <Col md={8}>
+                                            <CategoryFilter
+                                                onFilter           = {setFilter}
+                                                isApproval         = {true}
+                                                workunitOptions    = {workunitOptions}
+                                                onChangeCategories = {(category) => {
+                                                    setFilterCategory({type: 'category', value: category})
+                                                }}
+                                            />
+                                        </Col>
+
+                                        <Col md={{offset: 1, size: 3}} className="d-flex justify-content-end">
+                                            <SearchTable
+                                                id          = "search-data-all-approval" 
+                                                onSearch    = {(keyword) => {setFilterKeyword({type: 'keyword', value: keyword});}}
+                                                placeholder = {'Cari berita'} 
+                                            />
+                                        </Col>
+                                    </Row>
                                     <Row className="d-flex justify-content-end mb-2">
                                         <CustomTablePaginate 
                                             getData         = {(params) => { getAgentReportByArchive(params.page)}}

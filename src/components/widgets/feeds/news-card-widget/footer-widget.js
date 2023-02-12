@@ -39,6 +39,8 @@ export const WidgetCardNewsBottom = (props)=>{
         index,
         trophy,
         ratings,
+        comments,
+        approve,
         kind,
         publish_type,
         status,
@@ -175,7 +177,8 @@ export const WidgetCardNewsBottom = (props)=>{
                             >
                                 <MessageCircle size={22}/>
                                 <p className="ml-1">
-                                    {commentCounts}
+                                    {/* {commentCounts} */}
+                                    {comments != null ? comments.length : 0}
                                 </p>
                             </Button >
                         :
@@ -192,7 +195,8 @@ export const WidgetCardNewsBottom = (props)=>{
                                     >
                                         <Eye size={22}/>
                                         <p className="ml-1">
-                                            {viewCounts}
+                                            {/* {viewCounts} */}
+                                            {viewListCombine != null ? viewListCombine.length : 0}
                                         </p>
                                     </Button>
                                 </div>
@@ -312,7 +316,7 @@ export const WidgetCardNewsBottom = (props)=>{
                     />
 
                     {
-                        ((localStorage.getItem('role') === 'Verifikator Pusat' || localStorage.getItem('role') === 'Admin') && publish_type == 'local_publish') ?
+                        approve && ((localStorage.getItem('role') === 'Verifikator Pusat' || localStorage.getItem('role') === 'Admin') && publish_type == 'local_publish') ?
                         <Button 
                             id          = {`set_state_${index}`}
                             color       = "primary" size="sm" 
