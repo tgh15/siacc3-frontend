@@ -126,42 +126,29 @@ const CardTopUser = (props) => {
                                 <Col 
                                     id      = {`top_user_card_badge_news`}
                                     md      = {4} 
-                                    onClick = {()=>{setIsAchievementVisible(true)}}
                                 >
-                                    <img
-                                        src     = {avatarImg}
-                                        width   = {50}
-                                        height  = {50}    
+                                    <div
+                                        style     = {{height: 90, width: 50}}
                                         className = "rounded"
-                                    >
-                                    </img>
+                                    />
                                 </Col> 
                                 <Col 
                                     id      = {`top_user_card_badge_viewer`}
                                     md      = {4} 
-                                    onClick = {()=>{setIsDetailViewerVisible(true)}}
                                 >
-                                    <img
-                                        src     = {avatarImg}
-                                        width   = {50}
-                                        height  = {50}   
+                                    <div
+                                        style     = {{height: 50, width: 50}}
                                         className = "rounded"
-                                    >
-                                    </img>
+                                    />
                                 </Col> 
                                 <Col 
                                     id      = {`top_user_card_badge_trophy`}
                                     md      = {4} 
-                                    onClick = {()=>{setIsDetailTrophyVisible(true)}}
                                 >
-                                    <img
-                                        src     = {avatarImg}
-                                        width   = {50}
-                                        height  = {50}   
+                                    <div
+                                        style     = {{height: 50, width: 50}}
                                         className = "rounded"
-
-                                    >
-                                    </img>
+                                    />
                                 </Col> 
                             </>
 
