@@ -3,6 +3,7 @@ import {
         useMemo,
         useEffect,
         useContext,
+        useCallback,
     }                               from 'react';
 
 //Component
@@ -49,8 +50,16 @@ import CustomTableBodyEmpty         from '../../components/widgets/custom-table/
 import GroupBarChart                from './chart/groupbar';
 import CustomTablePaginate          from '../../components/widgets/custom-table/CustomTablePaginate';
 
-const GIS = () => {
+import feedsAgentReportAPI          from '../../services/pages/feeds/agent-reports'
+import CustomToast                  from '../../components/widgets/custom-toast'
 
+
+//Export PDF
+import jsPDF                        from 'jspdf';
+import 'jspdf-autotable';
+
+const GIS = () => {
+    const [isFullScreen, setIsFullScreen]                           = useState(false);
     const [fullscr,setFcr]                                          = useState(false);
     const [mapData, setMapData]                                     = useState(null);
     const [loading, setLoading]                                     = useState(true);
@@ -65,6 +74,7 @@ const GIS = () => {
     const [selectedDetail, setSelectedDetail]                       = useState({type: null, title: null});
     const [selectedMarker, setSelectedMarker]                       = useState(null);
     const [chartByCategory, setChartByCategory]                     = useState(null);
+    const [isWarningVisible, setIsWarningVisible]                   = useState(false);
     const [chartByWorkunitLevel, setChartByWorkunitLevel]           = useState(null);
     const [isDetailChartVisible, setIsDetailChartVisible]           = useState(false);
     const [chartByCategoryYearly, setChartByCategoryYearly]         = useState(null);
@@ -230,12 +240,14 @@ const GIS = () => {
         }
 
         formData.type           = selectedDetail.type;
-        formData.kind           = gisFilter != null ? gisFilter.kind.value : 2;
-        formData.end_date       = gisFilter != null && gisFilter.end_date != undefined ? moment(gisFilter.end_date[0]).format("YYYY-MM-DD") : moment().format("YYYY-MM-DD");
-        formData.start_date     = gisFilter != null && gisFilter.start_date != undefined ? moment(gisFilter.start_date[0]).format("YYYY-MM-DD") : moment().add(-30, 'days').format("YYYY-MM-DD");
-        formData.category_id    = gisFilter != null ? category_ : [];
-        formData.workunit_id    = gisFilter != null ? gisFilter.workunit_id.value : 0;
-        formData.trending_kind  = gisFilter != null ? gisFilter.trending_kind.value : null;
+
+        formData.kind           = gisFilter != null && gisFilter.kind != undefined ? gisFilter.kind.value : 2;
+        formData.end_date       = gisFilter != null && gisFilter.end_data != undefined && gisFilterend_date != undefined ? moment(gisFilter?.end_date[0]).format("YYYY-MM-DD") : moment().format("YYYY-MM-DD");
+        formData.start_date     = gisFilter != null && gisFilter.start_date != undefined && gisFilterstart_date != undefined ? moment(gisFilter?.start_date[0]).format("YYYY-MM-DD") : moment().add(-30, 'days').format("YYYY-MM-DD");
+        formData.category_id    = gisFilter != null && gisFilter.category_id != undefined ? category_ : [];
+        formData.workunit_id    = gisFilter != null && gisFilter.workunit_id != undefined ? gisFilter.workunit_id.value : 0;
+        formData.trending_kind  = gisFilter != null && gisFilter.trending_kind != undefined ? gisFilter.trending_kind.value : null;
+
 
         const params = {
             page : page
@@ -319,7 +331,7 @@ const GIS = () => {
 
     }
 
-    let icon = fullscr ? <Minimize size={14}/> : <Maximize size={14}/>
+    let icon = isFullScreen ? <Minimize size={14}/> : <Maximize size={14}/>
     const handleFullscreen = () => {
 
         let ref = document.getElementById("fs-component");
@@ -351,6 +363,97 @@ const GIS = () => {
             }
         }
     }
+
+    const handleExportPdf = () => {
+
+        if(gisFilter == null){
+            setIsWarningVisible(true);
+        }else{
+            setIsWarningVisible(false);
+            const formData = {};
+    
+            let category_ = [];
+    
+            if(gisFilter != null && gisFilter.category_id != undefined){
+                gisFilter.category_id.map((data)=>(
+                    category_.push(data.id)
+                ))
+            }
+    
+            formData.kind           = gisFilter != null && gisFilter.kind != undefined ? gisFilter.kind.value : 2;
+            formData.end_date       = gisFilter != null && gisFilter.end_data != undefined && gisFilterend_date != undefined ? moment(gisFilter?.end_date[0]).format("YYYY-MM-DD") : moment().format("YYYY-MM-DD");
+            formData.start_date     = gisFilter != null && gisFilter.start_date != undefined && gisFilterstart_date != undefined ? moment(gisFilter?.start_date[0]).format("YYYY-MM-DD") : moment().add(-30, 'days').format("YYYY-MM-DD");
+            formData.category_id    = gisFilter != null && gisFilter.category_id != undefined ? category_ : [];
+            formData.workunit       = gisFilter != null && gisFilter.workunit_id != undefined ? [gisFilter.workunit_id.value] : 0;
+            formData.trending_kind  = gisFilter != null && gisFilter.trending_kind != undefined ? gisFilter.trending_kind.value : null;
+    
+            const params = {
+                export : true
+            }
+    
+            feedsGisAPI.getDetailChartData(formData, params).then(
+                res => {
+                    if(!res.is_error){
+                        let BodyExport_ = [];
+    
+                        if(res.data != null){
+                            res.data.map((data, index) => (
+                                <>
+                                    {
+                                        BodyExport_.push([
+                                            index+1,
+                                            data.title,
+                                            Helper.dateIndo1(data.created_at.toString()),
+                                            data.employee.name,
+                                            data.status === 0 ?
+                                                "Menunggu Persetujuan Verifikator Daerah"
+                                            :
+                                                data.status === 1 ? 
+                                                    "Menunggu Persetujuan Verifikator Pusat"
+                                                :
+                                                    "Telah Dipublish"
+                                        ])
+                                    }
+                                </>
+                            ))
+                        }
+                        printPDF(BodyExport_);
+                    }
+                },
+                err => {
+                    CustomToast('danger', err.message)
+                }
+            )
+        }
+
+    }
+
+    const printPDF = (body) => {
+        let doc = new jsPDF({
+            orientation: "landscape",
+        });
+
+        const header = ['No.', 'Judul Berita', "Tanggal Publikasi", 'Pengirim', 'Status Publikasi'];
+
+        doc.text(`Data Berita Satuan Kerja ${Helper.capitalizeFirstLetter(gisFilter.workunit_id.label)}`, 145, 15, null, null, "center");
+        doc.setFontSize(12);
+        
+        doc.autoTable({
+            startY          : 30,
+            head            : [header],
+            body            : [body][0],
+            styles          : { cellWidth: 'auto', minCellWidth: 30 },
+            columnStyles    : { 0: { cellWidth: 10 } },
+            headStyles      : {
+                fillColor: [23, 97, 56],
+            },
+            margin:         { top: 10, bottom: 25 }
+        });
+        doc.save(`Data Berita Satuan Kerja ${Helper.capitalizeFirstLetter(gisFilter.workunit_id.label)}.pdf`);
+        // doc.output('blob');
+
+        return doc;
+    };
 
     useEffect(() => {
 
@@ -462,23 +565,19 @@ const GIS = () => {
             </ModalBase>
 
             <PerformanceProvider>
-                <div style={{paddingBottom: "10vh"}} id="fs-component">
-                    <div className='text-right'>
-                        <Button 
-                            size        = "md"
-                            color       = "primary" 
-                            onClick     = {()=>{handleFullscreen()}} 
-                            className   = "btn-icon mb-1" 
-                        >
-                            {icon}
-                        </Button>
-                    </div>
-
+                <div style={{paddingBottom: "10vh"}}>
                     <Row 
+                        id          = "fs-component"
                         className   = "d-flex"
                     >
-                        <Col md={8}>
-                            <Card className="pt-2" style={{overflow: 'hidden' }}>
+                        <Col 
+                            md        = {8}
+                            style     = {isFullScreen ? {height: '90vh'} : {}}
+                        >
+                            <Card 
+                                style       = {{overflow: 'hidden', height: '95%' }}
+                                className   = "pt-2" 
+                            >
                                 <div className="d-flex justify-content-end mb-1 pr-1">
                                     <div className="form-check form-check-inline">
                                         <Input type="checkbox" id="heat_map" onChange={(val) => {setHeatFilter(val.target.checked)} }/>
@@ -524,7 +623,6 @@ const GIS = () => {
                                             className   = "bg-light mb-0"
                                         >
                                             <CardBody className="p-1">
-
                                                 {
                                                     <div className="d-flex justify-content-between px-5">
                                                         <div className='d-flex align-items-center'>
@@ -561,9 +659,7 @@ const GIS = () => {
                                                             <span style={{marginLeft: '5px'}}>Pertahanan & Keamanan</span>
                                                         </div>
                                                     </div>
-
                                                 }
-
                                             </CardBody>
                                         </Card>
                                     
@@ -605,15 +701,20 @@ const GIS = () => {
                                         </Card>
                                     
                                 }
-                                
+
                                 <Map
+                                    icon                = {icon}
                                     mapData             = {mapData}
                                     mapFilter           = {mapFilter}
                                     gisFilter           = {gisFilter}
                                     heatFilter          = {heatFilter}
                                     selectedMap         = {selectedMap}
+                                    isFullScreen        = {isFullScreen}
                                     setSelectedMap      = {setSelectedMap}
                                     selectedMarker      = {selectedMarker}
+                                    setIsFullScreen     = {setIsFullScreen}
+                                    handleFullScreen    = {handleFullscreen}
+                                    handleExportPdf     = {handleExportPdf}
                                     setSelectedMarker   = {setSelectedMarker}
                                 />
                             </Card>
@@ -623,100 +724,104 @@ const GIS = () => {
                                 setGisFilter    = {setGisFilter}
                                 chartByPeriod   = {chartByPeriod}
                                 setSelectedMap  = {setSelectedMap}
+                                isWarningVisible= {isWarningVisible}
                             />  
                         </Col>
                     </Row>
-
-                    <Row>
-                        <Col md={8}>
+                    {
+                        !isFullScreen &&
+                        <>
                             <Row>
-                                <Col md={6}>
-                                    <PieChart
-                                        data                = {chartByTrendingCategory}
-                                        type                = "berita_populer_per_kategori" 
-                                        title               = "Berita Trending Berdasarkan Kategori"
-                                        setSelectedDetail   = {setSelectedDetail}
-                                    />
+                                <Col md={8}>
+                                    <Row>
+                                        <Col md={6}>
+                                            <PieChart
+                                                data                = {chartByTrendingCategory}
+                                                type                = "berita_populer_per_kategori" 
+                                                title               = "Berita Trending Berdasarkan Kategori"
+                                                setSelectedDetail   = {setSelectedDetail}
+                                            />
+                                        </Col>
+                                        <Col md={6}>
+                                            <BarChart
+                                                data                = {chartByKind}
+                                                type                = "berita_jenis_per_level"
+                                                title               = "Jenis Publikasi Berita"
+                                                setSelectedDetail   = {setSelectedDetail}
+                                            />
+                                        </Col>
+                                    </Row>
+
+                                    <Row>
+                                        <Col md={6}>
+                                            <BarChart
+                                                data                = {chartByCategory}
+                                                type                = "berita_per_kategori_bulanan"
+                                                title               = "Berita Berdasarkan Kategori"
+                                                setSelectedDetail   = {setSelectedDetail}
+                                            />
+                                        </Col>
+                                        <Col md={6}>
+                                            <PieChart
+                                                data                = {chartByWorkunitLevel}
+                                                type                = "berita_per_level"
+                                                title               = "Berita Berdasarkan Tingkat Satker"
+                                                setSelectedDetail   = {setSelectedDetail}
+                                            />
+                                        </Col>
+                                    </Row>
                                 </Col>
-                                <Col md={6}>
-                                    <BarChart
-                                        data                = {chartByKind}
-                                        type                = "berita_jenis_per_level"
-                                        title               = "Jenis Publikasi Berita"
+                                <Col md={4}>
+                                    <Card>
+                                        <CardBody>
+                                            <CardTitle className="pl-1">
+                                                Berita Per Satker
+                                            </CardTitle>
+                                            <div
+                                                style     = {{height: '53.8vh'}}
+                                            >
+                                                <PerfectScrollbar
+                                                    options   = {{wheelPropagation: false}}
+                                                    component = 'div'
+                                                    onScrollX = {false}
+                                                    className = 'media-list scrollable-container px-1 pb-2'
+                                                >
+                                                    {
+                                                        chartByPeriod != null ?
+                                                            chartByPeriod.map((data) => (
+                                                                <Row className="pt-2">
+                                                                    <Col md={6}>
+                                                                        {data.name}
+                                                                    </Col>
+                                                                    <Col md={2} className="text-center">
+                                                                        {data.value}
+                                                                    </Col>
+                                                                    <Col md={4}>
+                                                                        <Progress value={data.value}/>
+                                                                    </Col> 
+                                                                </Row>
+                                                            ))
+                                                        :
+                                                            null 
+                                                    }
+                                                </PerfectScrollbar>
+                                            </div>
+                                        </CardBody>
+                                    </Card>
+                                </Col>
+                            </Row>
+                            <Row>
+                                <Col md={12}> 
+                                    <GroupBarChart
+                                        data                = {chartByCategoryYearly}
+                                        type                = "berita_per_kategori_tahunan"
+                                        title               = "Timeline Perkembangan Berita"
                                         setSelectedDetail   = {setSelectedDetail}
                                     />
                                 </Col>
                             </Row>
-
-                            <Row>
-                                <Col md={6}>
-                                    <BarChart
-                                        data                = {chartByCategory}
-                                        type                = "berita_per_kategori_bulanan"
-                                        title               = "Berita Berdasarkan Kategori"
-                                        setSelectedDetail   = {setSelectedDetail}
-                                    />
-                                </Col>
-                                <Col md={6}>
-                                    <PieChart
-                                        data                = {chartByWorkunitLevel}
-                                        type                = "berita_per_level"
-                                        title               = "Berita Berdasarkan Tingkat Satker"
-                                        setSelectedDetail   = {setSelectedDetail}
-                                    />
-                                </Col>
-                            </Row>
-                        </Col>
-                        <Col md={4}>
-                            <Card>
-                                <CardBody>
-                                    <CardTitle className="pl-1">
-                                        Berita Per Satker
-                                    </CardTitle>
-                                    <div
-                                        style     = {{height: '53.8vh'}}
-                                    >
-                                        <PerfectScrollbar
-                                            options   = {{wheelPropagation: false}}
-                                            component = 'div'
-                                            onScrollX = {false}
-                                            className = 'media-list scrollable-container px-1 pb-2'
-                                        >
-                                            {
-                                                chartByPeriod != null ?
-                                                    chartByPeriod.map((data) => (
-                                                        <Row className="pt-2">
-                                                            <Col md={6}>
-                                                                {data.name}
-                                                            </Col>
-                                                            <Col md={2} className="text-center">
-                                                                {data.value}
-                                                            </Col>
-                                                            <Col md={4}>
-                                                                <Progress value={data.value}/>
-                                                            </Col> 
-                                                        </Row>
-                                                    ))
-                                                :
-                                                    null 
-                                            }
-                                        </PerfectScrollbar>
-                                    </div>
-                                </CardBody>
-                            </Card>
-                        </Col>
-                    </Row>
-
-                    <Row>
-                        <Col md={12}> 
-                            <GroupBarChart
-                                data                = {chartByCategoryYearly}
-                                type                = "berita_per_kategori_tahunan"
-                                title               = "Timeline Perkembangan Berita"
-                                setSelectedDetail   = {setSelectedDetail}
-                            />
-                        </Col>
-                    </Row>
+                        </>
+                    }
                 </div>
             </PerformanceProvider>
 

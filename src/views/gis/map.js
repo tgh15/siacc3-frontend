@@ -3,14 +3,23 @@ import {
     Fragment,
     useState,
     useEffect,
+    useCallback,
 }                                   from 'react';
-import ReactMapGL, {
+import ReactMapGL,{
     Layer, 
     Popup,
     Source, 
     Marker,
+    NavigationControl
 }                                   from 'react-map-gl';
 
+import {
+    Button
+}                                   from 'reactstrap'
+
+import {
+    Download
+}                                   from 'react-feather';
 
 import {
     aceh,
@@ -61,25 +70,40 @@ import {
     updatePercentilesDetail
 }                                   from './utils';
 
+const useResize = (handler) => {
+    useEffect(() => {
+      window.addEventListener("resize", handler);
+  
+      return () => {
+        window.removeEventListener("resize", handler);
+      };
+    }, [handler]);
+  };
+
 const Map = (props) => {
-    
     const {
+        icon,
         mapData,
         mapFilter,
         gisFilter,
         heatFilter,
         selectedMap,
+        isFullScreen,
         setSelectedMap,
         selectedMarker,
+        handleExportPdf,
+        setIsFullScreen,
+        handleFullScreen,
         setSelectedMarker,
     }                                   = props;
 
     const size                          = 20;
-    const minMax                        = 600;
     const sizeNode                      = 10;
+    const [minMax, setMinMax]           = useState(600)
     const mapHeight                     = (minMax-186);
     const MAPBOX_TOKEN                  = API_MAPBOX;
     const MAPBOX_TILESET                = MAPBOX_SKIN;
+    // const MAPBOX_TILESET                = 'mapbox://styles/zephyrfn/clcep930h000q14qljwjvu3fu';
     const MAPBOX_STYLE_BLANK            = `mapbox://styles/zephyrfn/cldndtbve000h01p5igki3d2o`;
 
     const [viewport, setViewport]       = useState({
@@ -104,7 +128,6 @@ const Map = (props) => {
             return selectedMap && updatePercentilesDetail(selectedMap, mapData.work_units)
         }
     }, [data, mapData, selectedMap]);
-
 
     const getFileJsonName = (code) => {
         if (code === "006050"){
@@ -213,28 +236,68 @@ const Map = (props) => {
         if(gisFilter != null && gisFilter.workunit_id != undefined && mapData != null && mapData.parent.id != 0){
             getFileJsonName(mapData.parent.code);
         }else{
-            setViewport({
-                zoom        : 3.6,
-                width       : "100%",
-                height      : mapHeight,
-                latitude    : -2.548926,
-                longitude   : 118.0148634,
-            })
+            if(isFullScreen){
+                setViewport({
+                    zoom        : 3.6,
+                    width       : "100%",
+                    height      : 1600-186,
+                    latitude    : -2.548926,
+                    longitude   : 118.0148634,
+                })
+            }else{
+                setViewport({
+                    zoom        : 3.6,
+                    width       : "100%",
+                    height      : 600-186,
+                    latitude    : -2.548926,
+                    longitude   : 118.0148634,
+                })
+            }
         }
     }, [gisFilter, mapData]);
 
     useEffect(() => {
         if(centerPositionMap.latitude != 0){
-            setViewport({
-                zoom      : 5.8,
-                width     : "100%",
-                height    : mapHeight,
-                latitude  : centerPositionMap.latitude,
-                longitude : centerPositionMap.longitude,
-            })
+            if(isFullScreen){
+                setViewport({
+                    zoom      : 6.5,
+                    width     : "100%",
+                    height    : 1600-186,
+                    latitude  : centerPositionMap.latitude,
+                    longitude : centerPositionMap.longitude,
+                })
+            }else{
+                setViewport({
+                    zoom      : 5.8,
+                    width     : "100%",
+                    height    : 600-186,
+                    latitude  : centerPositionMap.latitude,
+                    longitude : centerPositionMap.longitude,
+                })
+            }
+            
         }
     },[centerPositionMap])
 
+    useEffect(() => {
+        if(isFullScreen){
+            setViewport({
+                zoom        : 3.6,
+                width       : "100%",
+                height      : 1600-186,
+                latitude    : -2.548926,
+                longitude   : 118.0148634,
+            })
+        }else{
+            setViewport({
+                zoom        : 3.6,
+                width       : "100%",
+                height      : 600-186,
+                latitude    : -2.548926,
+                longitude   : 118.0148634,
+            })
+        }
+    },[isFullScreen])
 
     return (
         <Fragment>
@@ -469,8 +532,41 @@ const Map = (props) => {
                         <Layer {...dataLayer2} />
                     </Source>
                 }
-                   
+
+                <NavigationControl
+                    style           = {{paddingLeft: '10px', paddingTop: '5px'}}
+                    showCompass     = {false}
+                />
+                
             </ReactMapGL>
+
+            <Button 
+                size        = "sm"
+                color       = "primary" 
+                style       = {{position: 'absolute', right: 10, bottom: 10}}
+                onClick     = {()=>{setIsFullScreen(!isFullScreen); handleFullScreen()}} 
+                className   = "btn-icon" 
+            >
+                {icon}
+            </Button>
+
+            {
+                isFullScreen &&
+                <Button 
+                    size        = "sm"
+                    color       = "primary" 
+                    style       = {{position: 'absolute', left: 10, bottom: 10}}
+                    onClick     = {()=>{handleExportPdf()}} 
+                    className   = "btn-icon" 
+                >
+                    <Download 
+                        size  = {14}
+                        style = {{marginRight: '5px'}}
+                    />
+                    Generate Laporan
+                </Button>
+            }
+            
         </Fragment>
 
     )

@@ -89,6 +89,9 @@ export const NewsWidget = (props) => {
         division_level_id,
         ratings_check,
         selected_check,
+        trending,
+        time_trending,
+        isTrending,
         self_selected_check,
 
         //Role
@@ -586,7 +589,7 @@ export const NewsWidget = (props) => {
             })
     }, [exportRef]);
 
-    const dropdownWidget = (archived || status < 2) ? 
+    const dropdownWidget = (archived || kind < 1) ? 
         null 
     : 
         <WidgetChildDropdown
@@ -1159,7 +1162,15 @@ export const NewsWidget = (props) => {
                             {attach == null ? null : attach.img}
                             {attach == null ? null : attach.video}
                             {attach == null ? null : attach.audio}
-
+                            {
+                                isTrending &&
+                                <Button 
+                                    color = "primary"
+                                    className = "mt-1"
+                                >
+                                    Trending #{trending} ({time_trending})
+                                </Button>
+                            }
                             {
                                 "method" in props ?
                                     <Fragment>
@@ -1316,7 +1327,7 @@ export const NewsWidget = (props) => {
                         "commentHidden" in props ?
                             null 
                         :
-                            archived || status < 2? null : (
+                            archived || kind < 1? null : (
                                 roleComment ?
                                     <>
                                         <hr/>

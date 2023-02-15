@@ -28,7 +28,8 @@ const GisFilter = (props) => {
 const {
     setGisFilter, 
     chartByPeriod, 
-    setSelectedMap
+    setSelectedMap,
+    isWarningVisible,
 }                               = props;
 
 const { workunitOptions }       = useContext(PerformanceContext);
@@ -216,6 +217,15 @@ return (
                 </Button>
             </div>
             
+            {
+                isWarningVisible &&
+                <Button
+                    color       = "primary"
+                    className   = "d-block mt-1"
+                >
+                    Untuk Membuat Report Harap Melakukan Filter Terlebih Dahulu!
+                </Button>
+            }
             
         </Form>
     </Card>

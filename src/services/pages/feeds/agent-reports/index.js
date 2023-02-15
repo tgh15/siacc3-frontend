@@ -21,10 +21,11 @@ const getAgentReportByStatus      = (data, page, search)        => page == undef
                                                                             Post(`${feedsURL.feedsPrefix}/${feedsURL.feedsAgentReport}/${feedsURL.feedsAgentReportByStatus}?page=${page}`, data) 
                                                                         :
                                                                             Post(`${feedsURL.feedsPrefix}/${feedsURL.feedsAgentReport}/${feedsURL.feedsAgentReportByStatus}?page=${page}&keyword=${search}`, data);
+
+const getAgentReportByFilter      = (data, param)               => Post(`${feedsURL.feedsPrefix}/${feedsURL.feedsAgentReport}/filter`, data, param); 
 const getAgentReportByCategory    = (data, page)                => page == undefined ? Post(`${feedsURL.feedsPrefix}/${feedsURL.feedsAgentReport}/${feedsURL.feedsGetByCategory}`, data) : Post(`${feedsURL.feedsPrefix}/${feedsURL.feedsAgentReport}/${feedsURL.feedsGetByCategory}?page=${page}`, data);
 const getAgentReportBySelected    = (data, page)                => page == undefined ? Post(`${feedsURL.feedsPrefix}/${feedsURL.feedsAgentReport}/${feedsURL.feedsGetBySelected}`, data) : Post(`${feedsURL.feedsPrefix}/${feedsURL.feedsAgentReport}/${feedsURL.feedsGetBySelected}?page=${page}`, data);
 const getAgentReportByWorkunit    = (data, param)               => Post(`${feedsURL.feedsPrefix}/${feedsURL.feedsAgentReport}/${feedsURL.feedsByWorkunit}`, data, param); 
-
 
 //Share Agent Report
 const shareAgentReportByWorkunit  = (data)                      => Post(`${feedsURL.feedsPrefix}/${feedsURL.feedsAgentReport}/${feedsURL.feedsShareByWorkunit}`, data);
@@ -67,6 +68,7 @@ const feedsAgentReportAPI = {
     filterAgentReport,
 
     // Get
+    getAgentReportByFilter,
     getAgentReportByStatus,
     getAgentReportBySelected,
     getAgentReportByCategory,

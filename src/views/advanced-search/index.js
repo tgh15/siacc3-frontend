@@ -253,19 +253,17 @@ const AdvancedSearch = () => {
                                     detailAgentReport.total > 0 ?
                                         detailAgentReport.data.map((data, index) => (
                                             <Col md={4} className="d-flex flex-row">
-                                                <Link to={"/beranda/detail/"+data.id}>
-                                                    <NewsWidget
-                                                        id                     = {`advanced-search-news-${index}`}
-                                                        handleStore             = {(newss,data) => {handleStore(newss,data)}}
+                                                <NewsWidget
+                                                    id                     = {`advanced-search-news-${index}`}
+                                                    handleStore             = {(newss,data) => {handleStore(newss,data)}}
 
-                                                        roleLike                = {true}
-                                                        roleViewer              = {true}   
-                                                        roleDislike             = {true}
-                                                        roleComment             = {true}
+                                                    roleLike                = {true}
+                                                    roleViewer              = {true}   
+                                                    roleDislike             = {true}
+                                                    roleComment             = {true}
 
-                                                        {...data}
-                                                    />
-                                                </Link>
+                                                    {...data}
+                                                />
                                             </Col>
                                         ))
                                     :
@@ -609,19 +607,17 @@ const AdvancedSearch = () => {
                                                 md          = {4} 
                                                 className   = "d-flex flex-row"
                                             >
-                                                <Link to={"/beranda/detail/"+data.id}>
-                                                    <NewsWidget
-                                                        id                     = {`advanced-search-news-${index}`}
-                                                        handleStore             = {(newss,data) => {handleStore(newss,data)}}
+                                                <NewsWidget
+                                                    id                     = {`advanced-search-news-${index}`}
+                                                    handleStore             = {(newss,data) => {handleStore(newss,data)}}
 
-                                                        roleLike                = {true}
-                                                        roleViewer              = {true}   
-                                                        roleDislike             = {true}
-                                                        roleComment             = {true}
+                                                    roleLike                = {true}
+                                                    roleViewer              = {true}   
+                                                    roleDislike             = {true}
+                                                    roleComment             = {true}
 
-                                                        {...data}
-                                                    />
-                                                </Link>
+                                                    {...data}
+                                                />
                                             </Col>
                                         : null
                                     ))

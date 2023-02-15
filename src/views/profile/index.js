@@ -338,9 +338,14 @@ const Profile = (props) => {
                         {/* : */}
                         <Fragment>
                             {/* write news */}
-                            <NewsFeedAddWidget
-                                onSave = {() => props.getReportAgentProfile()}
-                            />
+                            {
+                                getRoleByMenuStatus('Beranda', 'create_agent_report') ?
+                                    <NewsFeedAddWidget
+                                        onSave = {() => props.getReportAgentProfile()}
+                                    />
+                                :
+                                    null
+                            }
                             
                             {/* comment news */}
                             <Row>
