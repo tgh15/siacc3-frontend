@@ -80,6 +80,7 @@ const PopularTopics = (props) => {
                                             id                      = {data.id}
                                             data                    = {data}
                                             index                   = {`popular_topic_${index}`}
+                                            isTrending                = {true}
                                             handleStore             = {props.handleStore}
 
                                             //Role

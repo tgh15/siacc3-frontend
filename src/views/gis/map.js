@@ -91,6 +91,7 @@ const Map = (props) => {
         isFullScreen,
         setSelectedMap,
         selectedMarker,
+        handleExportPdf,
         setIsFullScreen,
         handleFullScreen,
         setSelectedMarker,
@@ -102,6 +103,7 @@ const Map = (props) => {
     const mapHeight                     = (minMax-186);
     const MAPBOX_TOKEN                  = API_MAPBOX;
     const MAPBOX_TILESET                = MAPBOX_SKIN;
+    // const MAPBOX_TILESET                = 'mapbox://styles/zephyrfn/clcep930h000q14qljwjvu3fu';
     const MAPBOX_STYLE_BLANK            = `mapbox://styles/zephyrfn/cldndtbve000h01p5igki3d2o`;
 
     const [viewport, setViewport]       = useState({
@@ -549,19 +551,19 @@ const Map = (props) => {
             </Button>
 
             {
-                // isFullScreen &&
+                isFullScreen &&
                 <Button 
                     size        = "sm"
                     color       = "primary" 
                     style       = {{position: 'absolute', left: 10, bottom: 10}}
-                    // onClick     = {()=>{setIsFullScreen(!isFullScreen); handleFullScreen()}} 
+                    onClick     = {()=>{handleExportPdf()}} 
                     className   = "btn-icon" 
                 >
                     <Download 
-                        size    = {14}
-                        style
+                        size  = {14}
+                        style = {{marginRight: '5px'}}
                     />
-                    Download
+                    Generate Laporan
                 </Button>
             }
             

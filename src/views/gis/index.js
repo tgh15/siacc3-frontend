@@ -50,6 +50,14 @@ import CustomTableBodyEmpty         from '../../components/widgets/custom-table/
 import GroupBarChart                from './chart/groupbar';
 import CustomTablePaginate          from '../../components/widgets/custom-table/CustomTablePaginate';
 
+import feedsAgentReportAPI          from '../../services/pages/feeds/agent-reports'
+import CustomToast                  from '../../components/widgets/custom-toast'
+
+
+//Export PDF
+import jsPDF                        from 'jspdf';
+import 'jspdf-autotable';
+
 const GIS = () => {
     const [isFullScreen, setIsFullScreen]                           = useState(false);
     const [fullscr,setFcr]                                          = useState(false);
@@ -66,6 +74,7 @@ const GIS = () => {
     const [selectedDetail, setSelectedDetail]                       = useState({type: null, title: null});
     const [selectedMarker, setSelectedMarker]                       = useState(null);
     const [chartByCategory, setChartByCategory]                     = useState(null);
+    const [isWarningVisible, setIsWarningVisible]                   = useState(false);
     const [chartByWorkunitLevel, setChartByWorkunitLevel]           = useState(null);
     const [isDetailChartVisible, setIsDetailChartVisible]           = useState(false);
     const [chartByCategoryYearly, setChartByCategoryYearly]         = useState(null);
@@ -231,12 +240,14 @@ const GIS = () => {
         }
 
         formData.type           = selectedDetail.type;
-        formData.kind           = gisFilter != null ? gisFilter.kind.value : 2;
-        formData.end_date       = gisFilter != null && gisFilter.end_date != undefined ? moment(gisFilter.end_date[0]).format("YYYY-MM-DD") : moment().format("YYYY-MM-DD");
-        formData.start_date     = gisFilter != null && gisFilter.start_date != undefined ? moment(gisFilter.start_date[0]).format("YYYY-MM-DD") : moment().add(-30, 'days').format("YYYY-MM-DD");
-        formData.category_id    = gisFilter != null ? category_ : [];
-        formData.workunit_id    = gisFilter != null ? gisFilter.workunit_id.value : 0;
-        formData.trending_kind  = gisFilter != null ? gisFilter.trending_kind.value : null;
+
+        formData.kind           = gisFilter != null && gisFilter.kind != undefined ? gisFilter.kind.value : 2;
+        formData.end_date       = gisFilter != null && gisFilter.end_data != undefined && gisFilterend_date != undefined ? moment(gisFilter?.end_date[0]).format("YYYY-MM-DD") : moment().format("YYYY-MM-DD");
+        formData.start_date     = gisFilter != null && gisFilter.start_date != undefined && gisFilterstart_date != undefined ? moment(gisFilter?.start_date[0]).format("YYYY-MM-DD") : moment().add(-30, 'days').format("YYYY-MM-DD");
+        formData.category_id    = gisFilter != null && gisFilter.category_id != undefined ? category_ : [];
+        formData.workunit_id    = gisFilter != null && gisFilter.workunit_id != undefined ? gisFilter.workunit_id.value : 0;
+        formData.trending_kind  = gisFilter != null && gisFilter.trending_kind != undefined ? gisFilter.trending_kind.value : null;
+
 
         const params = {
             page : page
@@ -352,6 +363,97 @@ const GIS = () => {
             }
         }
     }
+
+    const handleExportPdf = () => {
+
+        if(gisFilter == null){
+            setIsWarningVisible(true);
+        }else{
+            setIsWarningVisible(false);
+            const formData = {};
+    
+            let category_ = [];
+    
+            if(gisFilter != null && gisFilter.category_id != undefined){
+                gisFilter.category_id.map((data)=>(
+                    category_.push(data.id)
+                ))
+            }
+    
+            formData.kind           = gisFilter != null && gisFilter.kind != undefined ? gisFilter.kind.value : 2;
+            formData.end_date       = gisFilter != null && gisFilter.end_data != undefined && gisFilterend_date != undefined ? moment(gisFilter?.end_date[0]).format("YYYY-MM-DD") : moment().format("YYYY-MM-DD");
+            formData.start_date     = gisFilter != null && gisFilter.start_date != undefined && gisFilterstart_date != undefined ? moment(gisFilter?.start_date[0]).format("YYYY-MM-DD") : moment().add(-30, 'days').format("YYYY-MM-DD");
+            formData.category_id    = gisFilter != null && gisFilter.category_id != undefined ? category_ : [];
+            formData.workunit       = gisFilter != null && gisFilter.workunit_id != undefined ? [gisFilter.workunit_id.value] : 0;
+            formData.trending_kind  = gisFilter != null && gisFilter.trending_kind != undefined ? gisFilter.trending_kind.value : null;
+    
+            const params = {
+                export : true
+            }
+    
+            feedsGisAPI.getDetailChartData(formData, params).then(
+                res => {
+                    if(!res.is_error){
+                        let BodyExport_ = [];
+    
+                        if(res.data != null){
+                            res.data.map((data, index) => (
+                                <>
+                                    {
+                                        BodyExport_.push([
+                                            index+1,
+                                            data.title,
+                                            Helper.dateIndo1(data.created_at.toString()),
+                                            data.employee.name,
+                                            data.status === 0 ?
+                                                "Menunggu Persetujuan Verifikator Daerah"
+                                            :
+                                                data.status === 1 ? 
+                                                    "Menunggu Persetujuan Verifikator Pusat"
+                                                :
+                                                    "Telah Dipublish"
+                                        ])
+                                    }
+                                </>
+                            ))
+                        }
+                        printPDF(BodyExport_);
+                    }
+                },
+                err => {
+                    CustomToast('danger', err.message)
+                }
+            )
+        }
+
+    }
+
+    const printPDF = (body) => {
+        let doc = new jsPDF({
+            orientation: "landscape",
+        });
+
+        const header = ['No.', 'Judul Berita', "Tanggal Publikasi", 'Pengirim', 'Status Publikasi'];
+
+        doc.text(`Data Berita Satuan Kerja ${Helper.capitalizeFirstLetter(gisFilter.workunit_id.label)}`, 145, 15, null, null, "center");
+        doc.setFontSize(12);
+        
+        doc.autoTable({
+            startY          : 30,
+            head            : [header],
+            body            : [body][0],
+            styles          : { cellWidth: 'auto', minCellWidth: 30 },
+            columnStyles    : { 0: { cellWidth: 10 } },
+            headStyles      : {
+                fillColor: [23, 97, 56],
+            },
+            margin:         { top: 10, bottom: 25 }
+        });
+        doc.save(`Data Berita Satuan Kerja ${Helper.capitalizeFirstLetter(gisFilter.workunit_id.label)}.pdf`);
+        // doc.output('blob');
+
+        return doc;
+    };
 
     useEffect(() => {
 
@@ -612,6 +714,7 @@ const GIS = () => {
                                     selectedMarker      = {selectedMarker}
                                     setIsFullScreen     = {setIsFullScreen}
                                     handleFullScreen    = {handleFullscreen}
+                                    handleExportPdf     = {handleExportPdf}
                                     setSelectedMarker   = {setSelectedMarker}
                                 />
                             </Card>
@@ -621,6 +724,7 @@ const GIS = () => {
                                 setGisFilter    = {setGisFilter}
                                 chartByPeriod   = {chartByPeriod}
                                 setSelectedMap  = {setSelectedMap}
+                                isWarningVisible= {isWarningVisible}
                             />  
                         </Col>
                     </Row>

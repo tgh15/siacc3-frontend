@@ -32,9 +32,8 @@ import logoLight                         from "../../assets/images/logo/logo_lig
 import moment                            from "moment";
 
 //Export Excel
-import ReactExport                       from "react-export-excel";
 import FileSaver                         from "file-saver";
-import ExcelJS from "exceljs";
+import ExcelJS                          from "exceljs";
 
 
 // const useQuery = () => {
@@ -616,7 +615,6 @@ const Report = (props) => {
                 date_.push({content: index+1, styles: { halign: 'center'}})
             ))
 
-
             doc.autoTable({
                 startY          : 30,
                 head            : [
@@ -822,7 +820,6 @@ const Report = (props) => {
                 margin:         { top: 10, bottom: 25 }
             });
         }
-
 
         doc = addWatermark(doc);
         let print = window.open(doc.output('bloburl'), '_blank');

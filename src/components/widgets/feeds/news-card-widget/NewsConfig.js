@@ -515,6 +515,8 @@ export const processAgentReports = async(agentReports, commentsPage) => {
                 selected_check  : selected_check,
                 self_selected_check : self_selected_check,
                 trophies        : trophies,
+                trending_sequence : trending,
+                trending_time   : trending_time,
                 is_archive,
                 what,
                 comment_count,
@@ -524,6 +526,7 @@ export const processAgentReports = async(agentReports, commentsPage) => {
 
             let feeds      = {...FeedsModel};
             const momen    = moment(time_update).format('DD MMMM YYYY, HH:mm');
+            const time_trending = trending_time != "" ? moment(trending_time).format('DD MMMM YYYY, HH:mm') : null;
             let comment    = [] ;
             let comments   = [];
 
@@ -614,6 +617,8 @@ export const processAgentReports = async(agentReports, commentsPage) => {
                 ratings         : ratings,
                 isSaved         : stored_check == 1,
                 trophies        : trophies,
+                trending        : trending,
+                time_trending   : time_trending,
                 last_comment    : last_comment,
                 commentsCount   : comment_count,
                 ratings_check   : ratings_check,
