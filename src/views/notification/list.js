@@ -7,7 +7,7 @@ import Avatar from '../../components/widgets/avatar'
 import Helper from '../../helpers'
 
 import {
-  Card,
+	Card,
 
 } from 'reactstrap'
 
@@ -21,79 +21,105 @@ import { NotificationContext } from '../../context/NotificationContext'
 import { useHistory } from 'react-router-dom'
 
 const List = props => {
+	console.log(props);
+	const { datas } = props
 
-  const { datas } = props
+	const history = useHistory()
 
-  const history = useHistory()
+	const { room, setRoomSelected, setChatPopup, getMessages } 			= useContext(ChatContext)
+	const { broadcast, setModalDetailBroadcast, setBroadcastSelected } 	= useContext(BroadcastContext)
+	const { notificationUnread, notifications, handleReadNotification } = useContext(NotificationContext)
 
-  const { notificationUnread, notifications,handleReadNotification } = useContext(NotificationContext)
-  const { broadcast, setModalDetailBroadcast, setBroadcastSelected } = useContext(BroadcastContext)
-  const { room,setRoomSelected,setChatPopup,getMessages} = useContext(ChatContext)
+	const { fallbackImage_, dateIndo } = Helper
 
-  const { fallbackImage_, dateIndo } = Helper
+	// const tesRef = useRef(null)
 
-  // const tesRef = useRef(null)
+	const onSelectRoom = room => {
+		setRoomSelected(room);
+		setChatPopup(true);
+		getMessages(room.id);
+	}
 
-  const onSelectRoom = room => {
-    setRoomSelected(room);
-    setChatPopup(true);
-    getMessages(room.id);
-  }
+	const handleClickNotification = (notification) => {
 
-  const handleClickNotification = (notification) => {
+		handleReadNotification(notification.id)
 
+		if (notification.kind == "new_message" || notification.kind == "new_group" || notification.kind === "new_personal") {
+			onSelectRoom(room.find(data => data.id === notification.content))
+		} else if (notification.kind == "new_agent_report" || notification.kind == "agent_report_forward" || notification.kind == "agent_report_publish" || notification.kind == "agent_report_archive" || notification.kind == "new_like" || notification.kind == "new_comment") {
+			history.push(`/beranda/detail/${notification.content}`);
+		} else if (notification.kind == "automation_report") {
+			history.push("/report");
+		} else if (notification.kind == "new_broadcast") {
+			setBroadcastSelected(broadcast.find(data => data.id === notification.content))
+			setModalDetailBroadcast(true)
+		} else if (notification.kind == "achievement_new_event") {
+			history.push("/event");
+		} else if (notification.kind == "achievement_got") {
+			history.push("/profile");
+		}
+	}
 
-    
-    handleReadNotification(notification.id)
+	return (
+		<Fragment>
 
-    if (notification.kind == "new_message" || notification.kind == "new_group" || notification.kind === "new_personal") {
-      onSelectRoom(room.find(data => data.id === notification.content))
-    } else if (notification.kind == "new_agent_report" || notification.kind == "agent_report_forward" || notification.kind == "agent_report_publish" || notification.kind == "agent_report_archive" || notification.kind == "new_like" || notification.kind == "new_comment") {
-      history.push(`/beranda/${notification.content}`);
-    } else if (notification.kind == "automation_report") {
-      history.push("/report");
-    } else if (notification.kind == "new_broadcast") {
-      setBroadcastSelected(broadcast.find(data => data.id === notification.content))
-      setModalDetailBroadcast(true)
-    } else if (notification.kind == "achievement_new_event") {
-      history.push("/event");
-    } else if (notification.kind == "achievement_got") {
-      history.push("/profile");
-    }
-  }
-
-  return (
-    <Fragment>
-
-      {datas && datas.map((list) => (
-        <Card key={list.id}  className={classNames('notification-list', {
-          unread: list.is_read === false
-        })} onClick={() => {handleClickNotification(list.notification)}}>
-          <div className='media-list' style={{ borderRadius: '10px', cursor: 'pointer' }} >
-            <Media className="py-1">
-              <Media left href="#">
-                <Avatar onError={fallbackImage_} img={list.notification && list.notification.icon} />
-              </Media>
-              <Media body>
-                <h4 style={{ marginBottom: 0, fontWeight: 'bolder' }}>{list.notification && list.notification.title}</h4>
-                <p className='my-1 text-secondary'>
-                  {
-                    list.notification && list.notification.kind == "new_message" ?
-                      'mengirimi pesan baru '
-                      :
-                      null
-                  }
-                  {list.notification && list.notification.body.length > 100 ? list.notification && list.notification.body.substr(0, 100) + "..." : list.notification && list.notification.body}</p>
-              </Media>
-              <Media right>
-                <small>{dateIndo(list.created_at)}</small>
-              </Media>
-            </Media>
-          </div>
-        </Card>
-      ))}
-    </Fragment>
-  )
+			{
+				datas && datas.map((list) => (
+					<Card 
+						key			= {list.id} 
+						onClick		= {() => { handleClickNotification(list.notification) }}
+						className	= {classNames('notification-list', {unread: list.is_read === false})}
+					>
+						<div 
+							style		= {{ borderRadius: '10px', cursor: 'pointer' }} 
+							className	= 'media-list' 
+						>
+							<Media className="py-1 d-flex align-items-center">
+								<Media left href="#">
+									<Avatar 
+										img			= {list.notification && list.notification.icon}
+										imgWidth	= {40}
+										imgHeight	= {40}
+									/>
+								</Media>
+								<Media body>
+									<h4	
+										style		= {{ marginBottom: 0, fontWeight: 'bolder' }}
+										className	= { list.is_read === false ? 'text-white' : 'text-dark' }
+									>
+										{list.notification && list.notification.title}
+									</h4>
+									<p 
+										className	= {`my-1 ${list.is_read === false ? 'text-white' : 'text-dark'}`}
+									>
+										{
+											list.notification && list.notification.kind == "new_message" ?
+												'mengirimi pesan baru '
+											:
+												null
+										}
+										{
+											list.notification && list.notification.body.length > 100 ? 
+												list.notification && list.notification.body.substr(0, 100) + "..." 
+											: 	
+												list.notification && list.notification.body
+										}
+									</p>
+								</Media>
+								<Media right>
+									<small
+										className	= {`${list.is_read === false ? 'text-white' : 'text-dark'}`}
+									>
+										{dateIndo(list.created_at)}
+									</small>
+								</Media>
+							</Media>
+						</div>
+					</Card>
+				))
+			}
+		</Fragment>
+	)
 }
 
 export default List
