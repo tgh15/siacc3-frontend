@@ -50,7 +50,8 @@ const PerformanceProvider = ({ children }) => {
         if(localStorage.getItem('role') === "Agen" || localStorage.getItem('role') === "Verifikator Daerah" || localStorage.getItem('role') === "Admin Daerah"){
             const formData = {
                 condition_by : localStorage.getItem('role') === "Agen" ? "parent_list" : "child_list",
-                parent_id    : parseInt(getUserData().workunit_id)
+                parent_id    : parseInt(getUserData().workunit_id),
+                include_parent : true,
             }
 
             workunitAPI.getWorkunitFilter(formData).then(
