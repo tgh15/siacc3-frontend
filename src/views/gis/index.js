@@ -356,7 +356,7 @@ const GIS = () => {
 
         getGisData();
         getChartData();
-
+1
     }, [gisFilter, mapFilter])
 
     useEffect(() => {
