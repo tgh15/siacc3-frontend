@@ -196,8 +196,18 @@ export const WidgetCardNewsBottom = (props)=>{
                                     >
                                         <Eye size={22}/>
                                         <p className="ml-1">
-                                            {/* {viewCounts} */}
-                                            {viewListCombine != null ? viewListCombine.length : 0}
+                                            {
+                                                (viewList != null && viewListLeader != null) ?
+                                                    viewList.length+viewListLeader.length
+                                                :
+                                                    viewList != null && viewListLeader == null ?
+                                                        viewList.length
+                                                    :
+                                                        viewList == null && viewListLeader != null ?
+                                                            viewListLeader.length
+                                                        :
+                                                            0
+                                            }
                                         </p>
                                     </Button>
                                 </div>
