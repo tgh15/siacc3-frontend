@@ -1124,7 +1124,6 @@ export const NewsWidget = (props) => {
 
             </ModalBase>
             
-
             <Card 
                 ref          = {bodyCardRef} 
                 onMouseEnter = {() => {handleViewer();}}
@@ -1352,7 +1351,6 @@ export const NewsWidget = (props) => {
                             )
                     }
                 </CardBody>
-
             </Card>
         </Fragment>
     );

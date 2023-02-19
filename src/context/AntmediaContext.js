@@ -32,7 +32,6 @@ const AntmediaProvider = ({children}) =>{
 
 
     const setWebRtc = (kind="peer",localvideoId,remoteVideoId, type) => {
-
         let adaptor;
 
         if ( kind == "peer" && type === 'video'){
@@ -59,6 +58,7 @@ const AntmediaProvider = ({children}) =>{
             })
         }
         else{
+            console.log('disini2');
             adaptor = new WebRTCAdaptor({
                 websocket_url           : url_antmedia_server,
                 mediaConstraints        : {
@@ -87,9 +87,10 @@ const AntmediaProvider = ({children}) =>{
 
     useEffect(()=>{
         console.log(callback, 'callback2');
-
         console.log(errorCallback, 'error callback')
     },[callback])
+
+
 
     return <AntmediaContext.Provider 
             value = {{
