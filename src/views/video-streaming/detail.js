@@ -62,7 +62,7 @@ const VideoStreamingDetail = () => {
             res => {
                 if(res.is_error === false ){
                     if(res.data != null){
-                        setCommentData(res.data);
+                        setCommentData(res.data.reverse());
                         setCommentDataPinned(res.data.filter((data) => (
                             data.is_pinned === true
                         )));
@@ -89,12 +89,13 @@ const VideoStreamingDetail = () => {
             res => {
                 if(!res.is_error){
                     setDetailData(res.data);
-
                     if(webRTCAdaptorPeer === null && res.data.broadcast.status !== 'finished'){
                         setTimeout(() => {
+                            console.log('open koneksi')
                             setWebRtc("peer","localVideo","remoteVideo", "video")
                             setCommentData([]);
-                        },1000)
+                            getCommentVideoStream();
+                        },500)
                     }else if(res.data.broadcast.status === 'finished'){
                         getCommentVideoStream();
                     }
@@ -165,7 +166,7 @@ const VideoStreamingDetail = () => {
 
         data_.push(value)
 
-        setCommentData([...data_])
+        setCommentData(data_)
     }
 
     useEffect(() => {
@@ -181,16 +182,14 @@ const VideoStreamingDetail = () => {
             }else if(callback.info === 'data_received' ){
 
                 let parse = JSON.parse(callback.obj.data)
-
                 if(parse.type == 'live_viewer'){
                     setViewerCount(parseInt(parse.viewer))
-                }else{
-                    handleComment(callback.obj)
+                }else if(parse.type === 'new_comment'){
+                    // handleComment(callback.obj)
+                    getCommentVideoStream()
                 }
             }
         }
-
-
     }, [callback])
 
     return (
@@ -279,7 +278,7 @@ const VideoStreamingDetail = () => {
                                             }
 
                                             {
-                                                detailData.broadcast.status === 'created' &&
+                                                detailData.broadcast.status === 'created' || detailData.broadcast.status === 'broadcasting' &&
                                                 <>
                                                     {
                                                         !isPublished ?
