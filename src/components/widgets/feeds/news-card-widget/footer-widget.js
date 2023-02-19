@@ -49,6 +49,7 @@ export const WidgetCardNewsBottom = (props)=>{
         viewCounts,
         refreshData,
         commentCounts,
+        viewListLeader,
         setShowViewForm,
         viewListCombine,
 

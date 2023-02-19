@@ -1,9 +1,12 @@
 import React,{Fragment}         from 'react';
 import { File }                 from 'react-feather';
 import {FormGroup, Button}      from 'reactstrap';
+import FileSaver                from "file-saver";
+
 
 
 const CardFile = ({item}) => {
+
     return(
         <Fragment>
             <FormGroup>
@@ -27,9 +30,17 @@ const CardFile = ({item}) => {
                                         size        = {20} 
                                         className   = "mr-1"
                                     />
-                                    <a href={v.attachment}>
-                                        {v.Name}
-                                    </a>
+                                    {
+                                        typeof v.attachment.name == 'string' ?
+                                            <a onClick={() => {FileSaver.saveAs(new Blob([v.attachment]), v.Name)}}>
+                                                {v.Name}
+                                            </a>
+                                        :
+                                            <a href={v.attachment}>
+                                                {v.Name}
+                                            </a>
+
+                                    }
                                 </div>
                             </Button>
                         )
