@@ -25,9 +25,9 @@ const AntmediaProvider = ({children}) =>{
         ]
     }
     if(!process.env.NODE_ENV || process.env.NODE_ENV === 'production'){
-        url_antmedia_server = "wss://stream.siaccinfo.id//WebRTCAppEE/websocket"
+        url_antmedia_server = window._env_.REACT_APP_ANTMEDIA_SOCKET_URL
     }else{
-        url_antmedia_server = "wss://antmedia.underdev.team/WebRTCAppEE/websocket"
+        url_antmedia_server = process.env.REACT_APP_ANTMEDIA_SOCKET_URL
     }
 
 
