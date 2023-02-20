@@ -278,7 +278,7 @@ const VideoStreamingDetail = () => {
                                             }
 
                                             {
-                                                detailData.broadcast.status === 'created' || detailData.broadcast.status === 'broadcasting' &&
+                                                (detailData.broadcast.status === 'created' || detailData.broadcast.status === 'broadcasting') &&
                                                 <>
                                                     {
                                                         !isPublished ?
