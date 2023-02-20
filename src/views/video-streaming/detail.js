@@ -150,6 +150,7 @@ const VideoStreamingDetail = () => {
 
         VideoStreamingAPI.CreateCommentVideoStreaming(formData, param).then(
             res => {
+                setMessage(null);
                 console.log(res, 'send comment video');
             },
             err => {
@@ -157,16 +158,6 @@ const VideoStreamingDetail = () => {
             }
         )
 
-    }
-
-    const handleComment = (comment) => {
-        
-        let data_ = commentData;
-        let value = JSON.parse(comment.data);
-
-        data_.push(value)
-
-        setCommentData(data_)
     }
 
     useEffect(() => {
@@ -184,10 +175,14 @@ const VideoStreamingDetail = () => {
                 let parse = JSON.parse(callback.obj.data)
                 if(parse.type == 'live_viewer'){
                     setViewerCount(parseInt(parse.viewer))
-                }else if(parse.type === 'new_comment'){
-                    // handleComment(callback.obj)
-                    getCommentVideoStream()
+                }else if(parse.type === 'new_comment' || parse.type === 'pin_comment' || parse.type == 'unpin_comment'){
+                    getCommentVideoStream();
                 }
+            }
+        }
+        if(detailData != null && detailData.broadcast.status === 'broadcasting'){
+            if(webRTCAdaptorPeer !== null && callback.info === 'initialized' ){
+                handleStartPlay()
             }
         }
     }, [callback])
@@ -232,7 +227,7 @@ const VideoStreamingDetail = () => {
                                                 >
                                                     <div>
                                                         {
-                                                            (detailData.broadcast.status === 'created' ) &&
+                                                            (detailData.broadcast.status === 'created' && isPublishReady ) &&
                                                             <Badge color='danger'>
                                                                 Live
                                                             </Badge>
@@ -278,14 +273,14 @@ const VideoStreamingDetail = () => {
                                             }
 
                                             {
-                                                (detailData.broadcast.status === 'created' || detailData.broadcast.status === 'broadcasting') &&
+                                                (detailData.broadcast.status === 'created') &&
                                                 <>
                                                     {
                                                         !isPublished ?
                                                             <Button
                                                                 size      = "lg"
                                                                 color     = "primary"
-                                                                onClick   = {() => {detailData.broadcast.status === 'created' ? handleStartPublish() : handleStartPlay()}}
+                                                                onClick   = {() => {handleStartPublish()}}
                                                                 disabled  = {!isPublishReady}
                                                                 className = "w-100"
                                                             >
@@ -302,6 +297,18 @@ const VideoStreamingDetail = () => {
                                                             </Button>
                                                     }
                                                 </>
+
+                                            }
+                                            {
+                                                (detailData.broadcast.status === 'broadcasting' && isPublishReady) &&
+                                                <Button
+                                                    size      = "lg"
+                                                    color     = "primary"
+                                                    onClick   = {() => setShowDeleteForm(true)}
+                                                    className = "w-100"
+                                                >
+                                                    Akhiri Siaran Langsung
+                                                </Button>
 
                                             }
                                         </>
@@ -391,10 +398,11 @@ const VideoStreamingDetail = () => {
                             </div>
                         </CardBody>
                         <CardFooter>
-                            <Form className='chat-app-form'>
+                            <form onSubmit={e => e.preventDefault()} className='chat-app-form'>
                                 <InputGroup className='mr-1 form-send-message'>
                                     <Input
-                                        onChange    = {e => {setMessage(e.target.value)}}
+                                        value       = {message}
+                                        onChange    = {e => { e.defaultPrevented = true; setMessage(e.target.value)}}
                                         disabled    = {!isCommentReady}
                                         placeholder = 'Aa'
                                     />
@@ -407,7 +415,6 @@ const VideoStreamingDetail = () => {
                                     >
                                         <Send 
                                             size        = {14} 
-                                           
                                             className   = 'd-lg-none' 
                                         />
                                         <span className='d-none d-lg-block'>
@@ -415,7 +422,7 @@ const VideoStreamingDetail = () => {
                                         </span>
                                     </Button>
                                 </InputGroup>
-                            </Form>
+                            </form>
                         </CardFooter>
                     </Card>
                 </Col>
