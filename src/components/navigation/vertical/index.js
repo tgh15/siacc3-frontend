@@ -13,6 +13,7 @@ import popularTopic         from '../popularTopic'
 import configuration        from '../configuration'
 import fileManagement       from '../fileManagement'
 import voiceVideoCall       from '../voiceVideoCall'
+import videoStreaming       from '../videoStreaming'
 import reportCommunity      from '../publicReport'
 
 let menuText  = localStorage.getItem('menu');
@@ -75,6 +76,10 @@ menu != undefined && menu.map((data) => {
 
   if(data.label === "File Manajemen" && data.is_active === true){
     menu_.push(...fileManagement);
+  }
+
+  if(data.label === "Siaran Langsung" && data.is_active === true){
+    menu_.push(...videoStreaming);
   }
 
   if(data.label === "Konfigurasi" && data.is_active === true){
