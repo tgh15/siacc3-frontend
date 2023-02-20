@@ -29,7 +29,7 @@ const ChatItem = (props) => {
                         </Col>
                         <Col md={8}>
                             <p className="mb-0 ml-2">{data?.user?.name} - {data?.user?.origin}</p>
-                            <p className="mb-0 ml-2">{data?.message}</p>
+                            <p className="mb-0 ml-2 mt-1">{data?.message}</p>
                         </Col>
                         <Col md={3} className="text-center">
                             { pinned && <Bookmark/> }
