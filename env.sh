@@ -14,6 +14,7 @@ echo "  REACT_APP_CORS_ORIGIN: \"$REACT_APP_CORS_ORIGIN\"," >> ./env-config.js
 echo "  REACT_APP_DIGITAL_IDENTIFICATION: \"$REACT_APP_DIGITAL_IDENTIFICATION\"," >> ./env-config.js
 echo "  REACT_APP_MAPBOX_API: \"$REACT_APP_MAPBOX_API\"," >> ./env-config.js
 echo "  REACT_APP_MAPBOX_MAP_SKIN: \"$REACT_APP_MAPBOX_MAP_SKIN\"," >> ./env-config.js
+echo "  REACT_APP_ANTMEDIA_SOCKET_URL: \"$REACT_APP_ANTMEDIA_SOCKET_URL\"," >> ./env-config.js
 
 echo "}" >> ./env-config.js
 
