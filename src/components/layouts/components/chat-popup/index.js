@@ -169,6 +169,7 @@ const ChatPopup = () => {
 								<ChatList
 									item={item}
 									chat={chat}
+									setImageSelected={setImageSelected}
 								/>
 							))
 						}
@@ -227,6 +228,7 @@ const ChatPopup = () => {
 				visible		= {imageSelected}
 				onClose		= {() => {setImageSelected(null)}}
 				container	= {document.getElementById("container")}
+				style		= {{zIndex:999}}
 			/>
 
 			<ModalForward 
