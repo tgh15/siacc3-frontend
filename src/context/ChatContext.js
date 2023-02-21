@@ -55,9 +55,9 @@ const ChatProvider = ({ children }) => {
                 if (res.data != null) {
                     let count_ = 0;
                     res.data.map((data) => (
-                        data.is_read === false && count_++
+                        data.un_read_message > 0 && count_++
                     ))
-                    console.log(count_);
+
                     setTotalUnreadMessage(count_);
                 }
             },
