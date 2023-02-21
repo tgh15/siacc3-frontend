@@ -101,16 +101,16 @@ export const CardIcon = (props)=>{
 
             {
                 data != undefined ?
-                    (chartData != null && chartData.data === 'object' && "detail" in chartData.data) ? 
+                    // (chartData != null && chartData.data === 'object' && "detail" in chartData.data) ? 
                         <div>
                             <UncontrolledButtonDropdown>
-                                <Button 
+                                {/* <Button 
                                     size    = "sm" 
                                     color   = 'primary' 
                                     onClick = {handleClick}
                                 >
                                     Detail
-                                </Button>
+                                </Button> */}
                                 {
                                     !dashboard &&
                                     <>
@@ -123,8 +123,8 @@ export const CardIcon = (props)=>{
                                 }
                             </UncontrolledButtonDropdown>
                         </div>
-                    :
-                        null
+                    // :
+                    //     null
                 :
                     null
             }
@@ -134,6 +134,11 @@ export const CardIcon = (props)=>{
             <ContainerFluid className="text-center" >
                 <Row>
                     <Col sm={12} md={12}>
+                        {console.log(chartData)}
+                        {
+                            chartData == null &&
+                            NewsIcon.local
+                        }
                         {
                             chartData != null && chartData.code === "berita_belum_disetujui" ? 
                                 NewsIcon.local
@@ -141,7 +146,7 @@ export const CardIcon = (props)=>{
                                 null
                         }
                         {
-                            chartData != null && (chartData.code === "berita_dapat_dibaca_semua" || chartData.code === "berita_populer" || chartData.code === "jumlah_berita_populer")  ? 
+                            chartData != null && (chartData.code === "berita_dapat_dibaca_semua" || chartData.code === "berita_populer" || chartData.code === "jumlah_berita_populer" || chartData.code === 'jumlah_berita_keseluruhan' || chartData.code == "jumlah_berita_diteruskan_kepimpinan")  ? 
                                 NewsIcon.popular
                             :
                                 null
@@ -159,13 +164,13 @@ export const CardIcon = (props)=>{
                                 null
                         }
                         {
-                            chartData != null && (chartData.code === "feeds_dashboard_user_login" || chartData.code === "feeds_dashboard_pengguna_keseluruhan" || chartData.code === "jumlah_pengguna_keseluruhan") ? 
+                            chartData != null && (chartData.code === "feeds_dashboard_user_login" || chartData.code === "feeds_dashboard_pengguna_keseluruhan" || chartData.code === "jumlah_pengguna_keseluruhan" || chartData.code == "user_online" || chartData.code == "all_user_online") ? 
                                 <User size={140}/>
                             :
                                 null
                         }
                         {
-                            chartData != null && (chartData.code === "jumlah_berita" || chartData.code === "total_berita" || chartData.code === "jumlah_berita_diteruskan_ke_pimpinan" || chartData.code === "penonton" || chartData.code === "suka" || chartData.code === "komentar" || chartData.code === "dibagikan" || chartData.code === "jumlah_lencana" || chartData.code === "jumlah_event_Yang_diikuti" || chartData.code === "user_online" || chartData.code === "all_user_online")  ? 
+                            chartData != null && (chartData.code === "jumlah_berita" || chartData.code === "total_berita" || chartData.code === "jumlah_berita_diteruskan_ke_pimpinan" || chartData.code === "penonton" || chartData.code === "suka" || chartData.code === "komentar" || chartData.code === "dibagikan" || chartData.code === "jumlah_lencana" || chartData.code === "jumlah_event_Yang_diikuti" )  ? 
                                 NewsIcon.popular
                             :
                                 null
