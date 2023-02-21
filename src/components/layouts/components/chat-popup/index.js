@@ -219,7 +219,11 @@ const ChatPopup = () => {
 		}
 	}, [chatArea.current])
 
-
+	useEffect(() => {
+		if(imageSelected != null){
+			setChatPopup(false);
+		}
+	}, [imageSelected])
 
 	return (
 		<div id="chat-popup-modal">

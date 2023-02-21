@@ -34,7 +34,7 @@ const ChatList = props => {
         setImageSelected, 
     } = props
 
-    const { 
+    const {
         handleRevokeMe,
         handleRevokeAll, 
         setSelectedMessage, 
