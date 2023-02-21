@@ -43,6 +43,9 @@ const AddAnalysis = (props) => {
     const analysisTypeOptions = [
         { value: 'media',       label: 'Analisis Berdasarkan Media' },
         { value: 'location',    label: 'Analisis Berdasarkan Lokasi' },
+        { value: 'prediction',  label: 'Analisis Berdasarkan Prediksi' },
+        { value: 'clustering',    label: 'Analisis Berdasarkan Estimasi' },
+        { value: 'asosiasi',    label: 'Analisis Berdasarkan Klasifikasi' },
     ]
 
     const createQuery = (data) => {

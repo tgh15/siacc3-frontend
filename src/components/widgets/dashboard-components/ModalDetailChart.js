@@ -106,6 +106,12 @@ const Charts = (props)=>{
                     title       = {title} 
                 />
             )
+        case "card":
+            return (
+                <CardIcon 
+                    title       = {title} 
+                />
+            )
         default:
             return (
                 <CardIcon 

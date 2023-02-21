@@ -55,9 +55,9 @@ const ChatProvider = ({ children }) => {
                 if (res.data != null) {
                     let count_ = 0;
                     res.data.map((data) => (
-                        data.is_read === false && count_++
+                        data.un_read_message > 0 && count_++
                     ))
-                    console.log(count_);
+
                     setTotalUnreadMessage(count_);
                 }
             },
@@ -272,6 +272,17 @@ const ChatProvider = ({ children }) => {
                             content: msg,
                         }
                     };
+                }else if (type === "link"){
+                        val = {
+                            type: "communication-message-create",
+                            is_secure: true,
+                            token: localStorage.getItem('token'),
+                            payload: {
+                                room_id: roomSelected.id,
+                                content_type: "link",
+                                content: msg,
+                            }
+                        };
                 }else {
                     if (selectedMessage == null) {
                         val = {

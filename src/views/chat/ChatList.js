@@ -34,7 +34,7 @@ const ChatList = props => {
         setImageSelected, 
     } = props
 
-    const { 
+    const {
         handleRevokeMe,
         handleRevokeAll, 
         setSelectedMessage, 
@@ -56,7 +56,7 @@ const ChatList = props => {
     // ** User Profile
     let userUuid = Helper.getUserData().uuid;
     useEffect(() => {
-        if (chat.content_type == "public_report") {
+        if (chat.content_type == "link") {
             renderReport(chat.content)
         }
     }, [])
@@ -87,11 +87,11 @@ const ChatList = props => {
                 </UncontrolledDropdown>
             </div>
 
-            {chat.content_type == "public_report" ?
+            {chat.content_type == "link" ?
                 <div className='chat-forward'>
                     <CornerUpRight size={12} /> Berita diteruskan :
                 </div> : null}
-            {chat.content_type == "public_report" ?
+            {chat.content_type == "link" ?
                 <div >
                     {renderReport(chat.msg)}
                 </div> : null}
@@ -149,7 +149,7 @@ const ChatList = props => {
             }
 
             { item.senderId != userUuid ? <span className="chat-name">{chat.name}</span> : null}
-            <p>{chat.content_type == "public_report" ?
+            <p>{chat.content_type == "link" ?
                 <div className="chat-public-report" onClick={() => window.location.href = `/beranda/detail/${parseInt(chat.msg)}`}>
                     {content}
                 </div>

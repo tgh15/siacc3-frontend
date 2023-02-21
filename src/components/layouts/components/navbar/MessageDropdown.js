@@ -37,7 +37,7 @@ const MessageDropdown = () => {
     const [modalGroup, setModalGroup] = useState(false)
     const [searchTerm, setSearchTerm] = useState("")
     const [groupName, setGroupName] = useState("")
-    const { room, totalUnreadMessage, setChatPopup, setRoomSelected, getMessages, chatSocket } = useContext(ChatContext)
+    const { room, totalUnreadMessage, setChatPopup, setRoomSelected, getMessages, chatSocket, markAsRead } = useContext(ChatContext)
     const { fallbackImage_, getUserData } = Helper
     const history = useHistory()
 
@@ -46,6 +46,7 @@ const MessageDropdown = () => {
         setRoomSelected(room);
         setChatPopup(true);
         getMessages(room.id);
+        markAsRead(room.id);
     }
 
     const onSelectPersonal = (id) => {
@@ -134,7 +135,15 @@ const MessageDropdown = () => {
                                                 {Helper.getTimeAgo(item.time)}
                                             </span>
                                         </div>
-                                        <small className='notification-text'>{item.last_message}</small>
+                                        <small className='notification-text'>
+                                            {item.last_message}
+                                            {
+                                                item.un_read_message > 0 &&
+                                                <Badge pill color="primary" className="ml-1">
+                                                    {item.un_read_message}
+                                                </Badge>
+                                            }
+                                        </small>
                                     </Media>
                                 </Fragment>
 

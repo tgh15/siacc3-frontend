@@ -76,6 +76,7 @@ export const WidgetChildDropdown = (props)=>{
             toggle  = {toggleDropdown}
         >
             <SubmitDiscussion
+                type             = "link"
                 dataNews         = {props.dataNews}
                 discussion       = {discussion}
                 toggleDiscussion = {toggleDiscussion}
