@@ -201,15 +201,23 @@ export const compareComment = (last_comment,no_replies) => {
 export const newsByStatus = (data) => {
     let prom = new Promise((resolve,reject) => {
 
-        const formData = {
-            status : data
-        };
+        // const formData = {
+        //     status : data
+        // };
 
-        feedsAgentReportAPI.getAgentReportByStatus(formData).then(
+        let params = {};
+
+        params.approvement = 'approvement';
+        params.new         = true;
+        params.sort_by     = 'updated_at';
+        params.sort        = 'desc';
+        params.page        = 1;
+
+        feedsAgentReportAPI.getFeeds(params).then(
             response => {
                 if(!response.is_error){
                     let NmapData                         = [];
-                    const { data : {agent_report:data} } = response;
+                    const { data : {result:data} } = response;
     
                     if(Array.isArray(data)){
                         data.map(valueData=>{
