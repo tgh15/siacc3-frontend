@@ -445,7 +445,7 @@ const SettingPerformance = () => {
                                                     <Edit2
                                                         id        = "performance-update"
                                                         size      = {20}
-                                                        onClick   = {() => { setDataSelected(data); callForm() }}
+                                                        onClick   = {() => { callForm();setDataSelected(data);  }}
                                                         className = "ml-1 cursor-pointer"
                                                     />
                                                 : null

@@ -20,15 +20,15 @@ const DetailRating = ({ data }) => {
                 <th>Agent</th>
                 <td> {data.basic_ratings[1]?.points}</td>
             </tr>
-            <tr>
+            {/* <tr>
                 <th colSpan={4} className="pt-2">Trending Point</th>
-            </tr>
-            <tr>
+            </tr> */}
+            {/* <tr>
                 <th>Pimpinan</th>
                 <td> {data.trending_ratings[0]?.points}</td>
                 <th>Agent</th>
                 <td> {data.trending_ratings[1]?.points}</td>
-            </tr>
+            </tr> */}
         </table>
     )
 }

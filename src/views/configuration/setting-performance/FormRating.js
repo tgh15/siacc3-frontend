@@ -1,5 +1,5 @@
 import { yupResolver } from "@hookform/resolvers/yup"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Star } from "react-feather"
 import { useForm } from "react-hook-form"
 import Rating from "react-rating"
@@ -12,7 +12,6 @@ import validationRating from "./validationRating"
 
 
 const FormRating = props => {
-
     const {
         data,
         show,
@@ -28,7 +27,7 @@ const FormRating = props => {
     const [errRating, setErrRating] = useState(false)
 
 
-    const { register, errors, handleSubmit, control } = useForm({ mode: "onChange", resolver: yupResolver(validationRating) });
+    const { register, errors, handleSubmit, control, setValue } = useForm({ mode: "onChange", resolver: yupResolver(validationRating) });
 
 
     const create = data => {
@@ -86,7 +85,7 @@ const FormRating = props => {
 
         }
 
-
+        console.log(errRating, 'rating err')
         setErrRating(errRating)
 
 
@@ -109,11 +108,11 @@ const FormRating = props => {
                 trending_points: [
                     {
                         level: 1,
-                        points: dataForm.trending_leader
+                        points: dataForm.basic_leader
                     },
                     {
                         level: 2,
-                        points: dataForm.trending_agent,
+                        points: dataForm.basic_agent,
                     },
                 ]
             }
@@ -122,8 +121,8 @@ const FormRating = props => {
                 formData.id = data.id
                 formData.basic_points[0].id = data?.basic_ratings[0]?.id
                 formData.basic_points[1].id = data?.basic_ratings[1]?.id
-                formData.trending_points[0].id = data?.trending_ratings[0]?.id
-                formData.trending_points[1].id = data?.trending_ratings[1]?.id
+                formData.trending_points[0].id = data?.basic_ratings[0]?.id
+                formData.trending_points[1].id = data?.basic_ratings[1]?.id
                 update(formData)
             } else {
                 create(formData)
@@ -140,7 +139,7 @@ const FormRating = props => {
             size="md"
             show={show}
         >
-
+            {console.log(errRating)}
             <Form onSubmit={handleSubmit(onSubmit)}>
                 <Row className="mb-2 mt-1">
                     <Col>
@@ -164,11 +163,11 @@ const FormRating = props => {
                         <FormGroup>
                             <Label for="basic_leader">Pimpinan</Label>
                             <Input
+                                id="basic_leader"
                                 type="number"
                                 name="basic_leader"
-                                id="basic_leader"
                                 innerRef={register}
-                                defaultValue={data && isEvent == "rating" ? data?.basic_ratings[0]?.points : 0}
+                                defaultValue={data ? data.basic_ratings[0].points : 0}
                                 invalid={errors.basic_leader ? true : false}
                             />
 
@@ -183,7 +182,7 @@ const FormRating = props => {
                                 name="basic_agent"
                                 id="basic_agent"
                                 innerRef={register}
-                                defaultValue={data && isEvent == "rating" ? data?.basic_ratings[1]?.points : 0}
+                                defaultValue={data ? data.basic_ratings[1].points : 0}
                                 invalid={errors.basic_agent ? true : false}
                             />
                             {errors.basic_agent && <FormFeedback>{errors.basic_agent?.message}</FormFeedback>}
@@ -191,7 +190,7 @@ const FormRating = props => {
                     </Col>
                 </Row>
 
-                <h5 style={{ fontWeight: "bold" }} className="mt-1"> Trending Point </h5>
+                {/* <h5 style={{ fontWeight: "bold" }} className="mt-1"> Trending Point </h5>
                 <Row>
                     <Col md={6} sm={12}>
                         <FormGroup>
@@ -221,7 +220,7 @@ const FormRating = props => {
                             {errors.trending_agent && <FormFeedback>{errors.trending_agent?.message}</FormFeedback>}
                         </FormGroup>
                     </Col>
-                </Row>
+                </Row> */}
                 <ModalFooter className="d-flex justify-content-between px-0">
                     <Button
                         color='primary'
