@@ -272,6 +272,17 @@ const ChatProvider = ({ children }) => {
                             content: msg,
                         }
                     };
+                }else if (type === "link"){
+                        val = {
+                            type: "communication-message-create",
+                            is_secure: true,
+                            token: localStorage.getItem('token'),
+                            payload: {
+                                room_id: roomSelected.id,
+                                content_type: "link",
+                                content: msg,
+                            }
+                        };
                 }else {
                     if (selectedMessage == null) {
                         val = {

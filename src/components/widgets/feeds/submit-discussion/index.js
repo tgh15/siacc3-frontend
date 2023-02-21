@@ -46,6 +46,7 @@ const SubmitDiscussion = (props) => {
     };
 
     const sendDisscussion = () => {
+        console.log(props, 'props');
         if("type" in props){
             sendMessage(props.dataNews.toString(),[],props.type);
             toggleDiscussion();
