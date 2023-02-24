@@ -1319,7 +1319,7 @@ const Report = (props) => {
                                                 <div id="detail-report">
                                                     <Eye
                                                         size        = {20} 
-                                                        onClick     = {() => { data.results.length > 0 ? handleDetail(data) : handleDetailResults(data)}}
+                                                        onClick     = {() => { data.results.length > 0 ? handleDetail(data.id) : handleDetailResults(data.id)}}
                                                         className   = "mr-1 cursor-pointer" 
                                                     />
                                                 </div>

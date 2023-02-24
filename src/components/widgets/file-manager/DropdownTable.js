@@ -183,6 +183,7 @@ export const DropdownFilemanagerTable = (props) => {
     DriveHomeApi.download({
       id: props.data.id,
       onSuccess: (res) => {
+        console.log(res);
       },
       onFail: (err) => {
         console.log(err)
