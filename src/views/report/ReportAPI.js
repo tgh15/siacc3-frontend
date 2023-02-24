@@ -152,8 +152,11 @@ const ReportAPI = () => {
     };
 
     //detail
-    const handleDetailResults = (formData) => {
-        delete formData.query;
+    const handleDetailResults = (id) => {
+
+        const formData = {
+            id : id
+        }
 
         setSelectedReport(formData);   
         
