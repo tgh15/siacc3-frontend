@@ -127,7 +127,7 @@ const ModalForm = (props) => {
 
                     res.data.result.map((data, i) => {
                         if (localStorage.getItem('role') === 'Verifikator Daerah' || localStorage.getItem('role') === 'Admin Daerah') {
-                            if (data.title === 'admin-daerah' || data.title === 'verifikator-daerah' || data.title === 'pimpinan-daerah' || data.title === 'agen') {
+                            if (data.title === 'pimpinan-daerah' || data.title === 'agen') {
                                 newData.push({
                                     key   : i,
                                     value : data.id,
