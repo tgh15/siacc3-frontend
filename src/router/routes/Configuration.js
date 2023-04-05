@@ -69,6 +69,10 @@ const ConfigurationRoutes = [
     path: '/configuration/license',
     component: lazy(() => import('../../views/configuration/license/tour'))
   },
+  {
+    path: '/configuration/video-tutorial',
+    component: lazy(() => import('../../views/configuration/user-preferences/video-tutorial')),
+  },
 ];
 
 export default ConfigurationRoutes;

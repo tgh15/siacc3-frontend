@@ -14,6 +14,7 @@ import configuration        from '../configuration'
 import fileManagement       from '../fileManagement'
 import voiceVideoCall       from '../voiceVideoCall'
 import videoStreaming       from '../videoStreaming'
+import videoTutorial        from '../videoTutorial'
 import reportCommunity      from '../publicReport'
 
 let menuText  = localStorage.getItem('menu');

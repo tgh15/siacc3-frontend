@@ -1,0 +1,28 @@
+.row_card{
+    /* @apply tw-bg-white tw-rounded-md tw-shadow-md tw-text-center tw-my-4 tw-h-20; */
+    background-color: rgb(255 255 255);
+    border-radius: 0.375rem; /* 6px */
+    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+    text-align: center;
+    margin-top: 1rem; /* 16px */
+    margin-bottom: 1rem; /* 16px */
+    height: 5rem; /* 80px */
+}
+td{
+    /* @apply bg-white */
+    /* @apply tw-p-2 */
+    padding: 0.5rem; /* 8px */
+}
+td:first-child{
+    border-radius:8px 0px 0px 8px;
+}
+td:last-child {
+    border-radius:0px 8px 8px 0px;
+}
+
+
+th{
+    /* @apply tw-py-4 */
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+}

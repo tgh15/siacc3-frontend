@@ -1,0 +1,157 @@
+.video-container{
+    width: 100% !important;
+    overflow: hidden;
+    max-width: 1000px;
+    display: flex;
+    justify-content: center;
+    margin-inline: auto;
+    position: relative;
+    /* @apply tw-bg-gray-300 tw-rounded-md */
+    background-color: rgb(209 213 219);
+    border-radius: 0.375rem; /* 6px */
+}
+
+.video-container.theater,
+.video-container.fullscreen{
+    max-width: initial;
+    width: 100%;
+    max-height: 100%;
+}
+
+.video-container.theater{
+    width: 90vh;
+}
+
+.video-container.fullscreen{
+    max-height: 100vh;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+}
+
+.video-container.fullscreen video{
+    width: 100vw !important;
+}
+
+video{
+    width: 89% !important;
+    max-width: 100%;
+}
+
+.video-controls-container{
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    z-index: 100;
+    opacity: 0;
+    transition: opacity 150ms ease-in-out;
+}
+
+.video-controls-container::before{
+    content: "";
+    position: absolute;
+    bottom: 0;
+    /* background: linear-gradient(to top, rgba(0,0,0,.75), transparent); */
+    background-color: rgb(17 24 39);
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    pointer-events: none;
+}
+
+.video-container:hover .video-controls-container,
+.video-container:focus-within .video-controls-container,
+.video-container.paused .video-controls-container{
+    opacity: 1;
+}
+
+.video-controls-container .controls{
+    display: flex;
+    gap: .5rem;
+    padding: .25rem;
+    align-items: center;
+}
+
+.video-controls-container .controls button{
+    height: 30px;
+    width: 30px;
+    font-size: 1.1rem;
+    cursor: pointer;
+    opacity: .85;
+    transition: opacity 150ms ease-in-out;
+}
+
+.video-controls-container .controls button:hover{
+    opacity: 1;
+}
+
+.video-container.paused .pause-icon{
+    display: none;
+}
+.video-container:not(.paused) .play-icon{
+    display: none;
+}
+
+.video-container.theater .tall{
+    display: none;
+}
+.video-container:not(.theater) .wide{
+    display: none;
+}
+
+.video-container.fullscreen .open{
+    display: none;
+}
+.video-container:not(.fullscreen) .close{
+    display: none;
+}
+
+.volume-high-icon,
+.volume-low-icon,
+.volume-muted-icon {
+  display: none;
+}
+
+.video-container[data-volume-level="high"] .volume-high-icon {
+    display: block;
+}
+.video-container[data-volume-level="low"] .volume-low-icon {
+    display: block;
+}
+.video-container[data-volume-level="muted"] .volume-muted-icon {
+    display: block;
+}
+.volume-container {
+display: flex;
+flex-grow: 1;
+align-items: center;
+}
+
+.setting-container{
+    position: relative;
+}
+.setting-container button{
+    width: 100% !important;
+    /* @apply tw-text-sm ; */
+    font-size: 0.875rem !important; /* 14px */
+    line-height: 1.25rem !important; /* 20px */
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 0.5rem; /* 8px */
+    /* @apply tw-flex tw-flex-row tw-items-center tw-gap-2; */
+}
+.setting-menu{
+    position: absolute;
+    bottom: 40px;
+    right: 0px;
+    min-height: 50px;
+    min-width: 150px;
+    left: -100px;
+    filter: drop-shadow(0 4px 3px rgb(0 0 0 / 0.07)) drop-shadow(0 2px 2px rgb(0 0 0 / 0.06));
+    border-radius: 0.375rem; /* 6px */
+    /* @apply tw-shadow-md tw-rounded-md */
+}

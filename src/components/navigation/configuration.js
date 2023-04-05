@@ -185,7 +185,16 @@ configuration != null && configuration.length > 0 && configuration[0].children !
             }
         );
     }
+    
 });
+children_.push(
+    {
+        id : 'video_tutorial',
+        title : 'Video Tutorial',
+        icon : <XOctagon/>,
+        navLink : '/configuration/video-tutorial'
+    }
+);
 
 export default [
     {
