@@ -209,10 +209,10 @@ const Player = (props) => {
           </div>
           <div className="setting-container tw-flex">
             <div
-              className="setting-menu tw-bg-white tw-p-2 tw-text-gray-500 tw-flex tw-flex-col"
+              className="setting-menu tw-bg-white tw-p-2 tw-text-gray-500 tw-flex tw-flex-col tw-hidden"
               ref={settingMenuRef}
             >
-              <div className="main-menu" ref={mainMenuRef}>
+              <div ref={mainMenuRef}>
                 <button onClick={showResolusiMenu}>
                   <svg
                     xmlns="http://www.w3.org/2000/svg"

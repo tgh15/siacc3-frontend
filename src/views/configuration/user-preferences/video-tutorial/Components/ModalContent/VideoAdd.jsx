@@ -9,11 +9,12 @@ import { VideoContext } from "../../Context/VideoContext";
 import Tags from "../Form/Tags";
 
 const VideoAdd = (props) => {
-  const { postVideo } = useContext(VideoContext);
+  const { postVideo, categories, addCategory, removeCategory } = useContext(VideoContext);
   const [dropDownState, setDropDownState] = useState({
     role: true,
     kategori: true,
   });
+
   const [state, setState] = useState({
     video: null,
     thumbnail: null,
@@ -24,6 +25,9 @@ const VideoAdd = (props) => {
     tags: [],
     uploader_id: Math.random().toString(),
   });
+
+  const [newCategory, setNewCategory] = useState("")
+  
   const handleChangeFile = (e) => {
     setState({
       ...state,
@@ -255,9 +259,40 @@ const VideoAdd = (props) => {
             <div
               className={`${
                 dropDownState.kategori && "tw-hidden"
-              } tw-absolute tw-max-h-64 tw-overflow-y-scroll tw-top-16 tw-left-0 tw-right-0 tw-bg-gray-200 tw-rounded-lg tw-shadow-md`}
+              } tw-absolute tw-max-h-64 tw-overflow-y-scroll tw-top-16 tw-left-0 tw-right-0 tw-bg-gray-200 tw-rounded-lg tw-shadow-md tw-z-10`}
             >
-              <div className="tw-border-b-2 tw-border-gray-300 tw-text-sm tw-p-2">
+              <div className="tw-border-b-2 tw-border-gray-300 tw-text-sm tw-p-2 tw-flex tw-justify-between"> 
+                <input type="text" value={newCategory} onChange={(e) => setNewCategory(e.target.value)}/>
+
+                <button onClick={() => {addCategory(newCategory); setNewCategory("")}}>
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="tw-w-6 tw-h-6">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                </button>
+              </div>
+
+              {categories.map((category, index) => (
+              <div className="tw-border-b-2 tw-border-gray-300 tw-text-sm tw-p-2 tw-flex tw-justify-between" key={index}> 
+                <button
+                  onClick={() => {
+                    setState({ ...state, kategori: category });
+                    setDropDownState({
+                      ...dropDownState,
+                      kategori: !dropDownState.kategori,
+                    });
+                  }}
+                >
+                  {category}
+                  
+                </button>
+                <button onClick={() => removeCategory(category)}>
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="tw-w-6 tw-h-6">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+                </button>
+              </div>
+              ))}
+              {/* <div className="tw-border-b-2 tw-border-gray-300 tw-text-sm tw-p-2">
                 <button
                   onClick={() => {
                     setState({ ...state, kategori: "Communication" });
@@ -270,6 +305,7 @@ const VideoAdd = (props) => {
                   Communication
                 </button>
               </div>
+
               <div className="tw-border-b-2 tw-border-gray-300 tw-text-sm tw-p-2">
                 <button
                   onClick={() => {
@@ -454,7 +490,7 @@ const VideoAdd = (props) => {
                 >
                   Menu Tautan Akun
                 </button>
-              </div>
+              </div> */}
             </div>
           </div>
           {/* <Kategori /> */}

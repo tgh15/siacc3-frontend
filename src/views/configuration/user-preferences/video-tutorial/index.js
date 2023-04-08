@@ -7,8 +7,7 @@ import VideoFilter from "./Components/ModalContent/VideoFilter";
 import SearchBar from "./Components/SearchBar/SearchBar";
 import ImgFilter from "./assets/vector.png" 
 import VideoContextProvider, { VideoContext } from "./Context/VideoContext";
-// require("./tailwind")
-// require("./index.css")
+
 import "./tailwind"
 import "./index.css"
 
@@ -36,6 +35,7 @@ const VideoManagement =  () =>{
     progress,
     pagination,
     setPagination,
+    getCategories
   } = useContext(VideoContext);
 
   const [searchTitle, setSearchTitle] = useState("");
@@ -49,6 +49,7 @@ const VideoManagement =  () =>{
 
   useEffect(() => {
     getListVideoAdmin(1);
+    getCategories()
   }, []);
 
   useEffect(() => {

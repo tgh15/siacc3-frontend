@@ -18,6 +18,7 @@ const VideoContextProvider = (props) => {
   const [modalData, setModalData] = useState({});
   const [videoUpdateState, setVideoUpdateState] = useState({});
   const [progress, setProgress] = useState(false);
+  const [categories, setCategories] = useState([])
 
   const getListVideoViewer = async (role) => {
     return await fetch(`${API_URL}/list-video-viewer?role=${role}`, {
@@ -464,6 +465,43 @@ const VideoContextProvider = (props) => {
       });
   };
 
+  const getCategories = async () => {
+    return await fetch("http://192.168.52.90:8080/video-tutor/video/list/categories", {
+      method: "GET",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+    }). then(response => response.json())
+    .then(res => setCategories(res.data.result))
+  }
+
+  const addCategory = async (newCategory) => {
+    
+    return await fetch("http://192.168.52.90:8080/video-tutor/video/update-category", {
+      method: "PUT",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify([...categories, newCategory])
+    }). then(response => response.json())
+    .then(res => setCategories([...categories, newCategory]))
+  }
+
+  const removeCategory = async (category) => {
+    
+    return await fetch("http://192.168.52.90:8080/video-tutor/video/update-category", {
+      method: "PUT",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(categories.filter(item => item !== category))
+    }). then(response => response.json())
+    .then(res => setCategories(categories.filter(item => item !== category)))
+  }
+
   return (
     <VideoContext.Provider
       value={{
@@ -487,6 +525,7 @@ const VideoContextProvider = (props) => {
         progress,
         pagination,
         setPagination,
+        categories, setCategories,getCategories,addCategory, removeCategory
       }}
     >
       {props.children}
