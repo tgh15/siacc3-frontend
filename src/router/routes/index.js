@@ -134,6 +134,10 @@ const Routes = [
     path: '/gis',
     component: lazy(() => import('../../views/gis')),
   },
+  {
+    path: '/gis',
+    component: lazy(() => import('../../views/gis')),
+  },
 
 ];
 

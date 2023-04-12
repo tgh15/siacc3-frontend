@@ -7,6 +7,7 @@ import VideoFilter from "./Components/ModalContent/VideoFilter";
 import SearchBar from "./Components/SearchBar/SearchBar";
 import ImgFilter from "./assets/vector.png" 
 import VideoContextProvider, { VideoContext } from "./Context/VideoContext";
+import VideoTutorialContextProvider, {VideoTutorialContext} from "../../../../context/VideoTutorialContext"
 
 import "./tailwind"
 import "./index.css"
@@ -37,6 +38,8 @@ const VideoManagement =  () =>{
     setPagination,
     getCategories
   } = useContext(VideoContext);
+  
+  const {getListVideoViewer} = useContext(VideoTutorialContext);
 
   const [searchTitle, setSearchTitle] = useState("");
 
@@ -50,6 +53,7 @@ const VideoManagement =  () =>{
   useEffect(() => {
     getListVideoAdmin(1);
     getCategories()
+    getListVideoViewer()
   }, []);
 
   useEffect(() => {
@@ -207,8 +211,10 @@ const VideoManagement =  () =>{
 
 export default () => {
   return(
-    <VideoContextProvider>
-      <VideoManagement/>
-    </VideoContextProvider>
+    <VideoTutorialContextProvider>
+      <VideoContextProvider>
+        <VideoManagement/>
+      </VideoContextProvider>
+    </VideoTutorialContextProvider>
   )
 }
