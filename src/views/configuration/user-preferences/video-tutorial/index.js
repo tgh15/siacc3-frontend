@@ -1,47 +1,68 @@
-import { useContext, useEffect, useRef, useState } from "react";
-import Category from "./Components/Category/Category";
+import React, { useContext, useEffect, useRef, useState } from "react";
+
+
+/**
+ * Index file for video tutorial.
+ * 
+ * @todo:
+ * - Get role of current login user
+ * - Get user_id of current user
+ * 
+ */
+
+
+// components
 import Table, { TBody, THead } from "./Components/Table/Table";
+import Navigation from "./Components/Navigation/Navigation";
 import VideoAdd from "./Components/ModalContent/VideoAdd";
 import VideoTutorial from "./Components/ModalContent/VideoTutorial";
 import VideoFilter from "./Components/ModalContent/VideoFilter";
 import SearchBar from "./Components/SearchBar/SearchBar";
-import ImgFilter from "./assets/vector.png" 
+import ImgFilter from "./assets/vector.png"
+
+// context and providers
 import VideoContextProvider, { VideoContext } from "./Context/VideoContext";
-import VideoTutorialContextProvider, {VideoTutorialContext} from "../../../../context/VideoTutorialContext"
+import VideoTutorialContextProvider, { VideoTutorialContext } from "../../../../context/VideoTutorialContext"
 
 import "./tailwind"
 import "./index.css"
+tailwind.config = { prefix: "tw-" }
 
-tailwind.config = {
-    prefix: "tw-",
-    content: [
-      // "*.{js,jsx,ts,tsx}",
-      // "./src/views/video-tutorial/*.{js,jsx,ts,tsx}",
-      // "./**/*.{js,jsx,ts,tsx}",
-    ],
-    // corePlugins: {
-    //   preflight: false,
-    // }
-  }
-
-const VideoManagement =  () =>{
+const VideoManagement = () => {
   const addRef = useRef();
   const tutorialRef = useRef();
   const filterRef = useRef();
 
+  // TODO: get role from current login session
+  const role = "Admin Daerah"
+
   const {
-    listVideoAdmin,
-    getListVideoAdmin,
-    videoAdminSearch,
+    // listVideoAdmin,
+    // getListVideoAdmin,
+    // videoAdminSearch,
+    // getCategories
     progress,
     pagination,
     setPagination,
-    getCategories
   } = useContext(VideoContext);
-  
-  const {getListVideoViewer} = useContext(VideoTutorialContext);
 
-  const [searchTitle, setSearchTitle] = useState("");
+  const {
+    getListVideoViewer,
+    listVideoAdmin, getListVideoAdmin,
+    getListCategories,
+  } = useContext(VideoTutorialContext);
+
+  const [filter, setFilter] = useState({
+    sort: "asc",
+    page: "1",
+    kategori: "",
+    search: "",
+    role: [],
+    upload_date: [{
+      startDate: null,
+      endDate: null
+    }]
+  })
 
   useEffect(() => {
     videoTutorial();
@@ -50,17 +71,22 @@ const VideoManagement =  () =>{
     });
   }, [window, listVideoAdmin, progress]);
 
+  // load videos for admin and viewer also categories
+  // when component is render/mounted 
   useEffect(() => {
-    getListVideoAdmin(1);
-    getCategories()
-    getListVideoViewer()
+    getListVideoAdmin(filter);
+    getListVideoViewer(role)
+    getListCategories()
   }, []);
 
+  // watch the search field
   useEffect(() => {
     setTimeout(() => {
-      videoAdminSearch(searchTitle);
+      setFilter({ ...filter, page: "1" })
+      getListVideoAdmin(filter);
     }, 1000);
-  }, [searchTitle]);
+  }, [filter.search]);
+
 
   const videoTutorial = () => {
     if (window.location.hash === "#tutor") {
@@ -78,6 +104,7 @@ const VideoManagement =  () =>{
     });
     await getListVideoAdmin(pagination.current_page - 1);
   };
+
   const nextPage = async () => {
     await setPagination({
       ...pagination,
@@ -103,7 +130,7 @@ const VideoManagement =  () =>{
             <div className="tw-relative tw-pt-1">
               Upload Video...
               <div className="tw-overflow-hidden tw-h-2 tw-mb-4 tw-text-xs tw-flex tw-rounded tw-bg-emerald-200">
-            <div
+                <div
                   style={{ width: progress + "%" }}
                   className="tw-shadow-none tw-flex tw-flex-col tw-text-center tw-whitespace-nowrap tw-text-white tw-justify-center tw-bg-emerald-500"
                 ></div>
@@ -111,8 +138,12 @@ const VideoManagement =  () =>{
             </div>
           </div>
         )}
-        <Category />
+
+        <Navigation />
+
+
         <div className="tw-self-center tw-flex">
+
           {/* <Filter /> */}
           <button
             className="tw-p-2 tw-w-8 tw-h-8 tw-rounded-md [background-color:#44624D] tw-text-white"
@@ -120,8 +151,9 @@ const VideoManagement =  () =>{
           >
             <img src={ImgFilter} alt="" />
           </button>
+
           {/* <CariVideo /> */}
-          <SearchBar state={searchTitle} setState={setSearchTitle} />
+          <SearchBar state={filter.search} setState={setFilter} />
         </div>
         <div className="tw-mb-4 tw-flex tw-justify-between">
           <button
@@ -210,10 +242,10 @@ const VideoManagement =  () =>{
 }
 
 export default () => {
-  return(
+  return (
     <VideoTutorialContextProvider>
       <VideoContextProvider>
-        <VideoManagement/>
+        <VideoManagement />
       </VideoContextProvider>
     </VideoTutorialContextProvider>
   )

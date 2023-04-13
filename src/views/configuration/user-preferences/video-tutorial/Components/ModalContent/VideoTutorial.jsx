@@ -1,5 +1,6 @@
 import React, { useContext, useEffect, useRef } from "react";
 import { VideoContext } from "../../Context/VideoContext";
+import { VideoTutorialContext } from "../../../../../../context/VideoTutorialContext"
 import Modal from "../Modal/Modal";
 import SearchBar from "../SearchBar/SearchBar";
 import VideoDetail from "./VideoDetail";
@@ -8,13 +9,19 @@ const role = "Admin Daerah";
 
 const VideoTutorial = (props) => {
   const {
-    listVideoViewer,
-    getListVideoViewer,
+    // listVideoViewer,
+    // getListVideoViewer,
     setModalData,
     getListPlaylist,
     listPlaylist,
     modalData,
   } = useContext(VideoContext);
+  
+  
+  const {
+    listVideoViewer, getListVideoViewer,
+    // listVideoAdmin, getListVideoAdmin
+  } = useContext(VideoTutorialContext);
 
   const detailRef = useRef();
 

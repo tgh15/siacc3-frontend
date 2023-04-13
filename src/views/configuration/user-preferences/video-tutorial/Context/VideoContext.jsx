@@ -1,6 +1,7 @@
 import { createContext, useState } from "react";
 import Swal from "sweetalert2";
 import * as tus from "tus-js-client";
+import axios from "axios";
 
 export const VideoContext = createContext();
 
@@ -8,17 +9,17 @@ const API_URL = "http://147.139.162.58:5001/api/v1";
 const API_URL_FILE = "http://147.139.162.58:5002/api/v1";
 
 const VideoContextProvider = (props) => {
-  const [listVideoAdmin, setListVideoAdmin] = useState([]);
+  // const [listVideoAdmin, setListVideoAdmin] = useState([]);
   const [pagination, setPagination] = useState({
     current_page: 1,
     total_page: 1,
   });
-  const [listVideoViewer, setListVideoViewer] = useState([]);
+  // const [listVideoViewer, setListVideoViewer] = useState([]);
   const [listPlaylist, setListPlayLIst] = useState([]);
   const [modalData, setModalData] = useState({});
   const [videoUpdateState, setVideoUpdateState] = useState({});
   const [progress, setProgress] = useState(false);
-  const [categories, setCategories] = useState([])
+  const [categories, setCategories] = useState([]);
 
   const getListVideoViewer = async (role) => {
     return await fetch(`${API_URL}/list-video-viewer?role=${role}`, {
@@ -195,6 +196,7 @@ const VideoContextProvider = (props) => {
       });
     }
   };
+
   const upload = async (data) => {
     console.log(data);
 
@@ -466,53 +468,67 @@ const VideoContextProvider = (props) => {
   };
 
   const getCategories = async () => {
-    return await fetch("http://192.168.52.90:8080/video-tutor/video/list/categories", {
-      method: "GET",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-    }). then(response => response.json())
-    .then(res => setCategories(res.data.result))
-  }
+    axios
+      .get("http://192.168.52.90:8080/video-tutor/video/list/categories")
+      .then((res) => setCategories(res.data.result));
+    // return await Get("http://192.168.52.90:8080/video-tutor/video/list/categories")
+    // return await fetch("http://192.168.52.90:8080/video-tutor/video/list/categories", {
+    //   method: "GET",
+    //   headers: {
+    //     "origin": "http://localhost:3000",
+    //     "Access-Control-Allow-Origin": "localhost:3000",
+    //     Accept: "application/json",
+    //     "Content-Type": "application/json",
+    //   },
+    // }). then(response => response.json())
+    // .then(res => setCategories(res.data.result))
+  };
 
   const addCategory = async (newCategory) => {
-    
-    return await fetch("http://192.168.52.90:8080/video-tutor/video/update-category", {
-      method: "PUT",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify([...categories, newCategory])
-    }). then(response => response.json())
-    .then(res => setCategories([...categories, newCategory]))
-  }
+    return await fetch(
+      "http://192.168.52.90:8080/video-tutor/video/update-category",
+      {
+        method: "PUT",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify([...categories, newCategory]),
+      }
+    )
+      .then((response) => response.json())
+      .then((res) => setCategories([...categories, newCategory]));
+  };
 
   const removeCategory = async (category) => {
-    
-    return await fetch("http://192.168.52.90:8080/video-tutor/video/update-category", {
-      method: "PUT",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(categories.filter(item => item !== category))
-    }). then(response => response.json())
-    .then(res => setCategories(categories.filter(item => item !== category)))
-  }
+    return await fetch(
+      "http://192.168.52.90:8080/video-tutor/video/update-category",
+      {
+        method: "PUT",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(categories.filter((item) => item !== category)),
+      }
+    )
+      .then((response) => response.json())
+      .then((res) =>
+        setCategories(categories.filter((item) => item !== category))
+      );
+  };
 
   return (
     <VideoContext.Provider
       value={{
-        listVideoAdmin,
+        // listVideoAdmin,
         setVideoVisibility,
-        getListVideoAdmin,
+        // getListVideoAdmin,
         addVideoSuggestion,
         deleteVideo,
         videoAdminSearch,
-        listVideoViewer,
-        getListVideoViewer,
+        // listVideoViewer,
+        // getListVideoViewer,
         postVideo,
         videoFilter,
         getListPlaylist,
@@ -525,7 +541,11 @@ const VideoContextProvider = (props) => {
         progress,
         pagination,
         setPagination,
-        categories, setCategories,getCategories,addCategory, removeCategory
+        categories,
+        setCategories,
+        getCategories,
+        addCategory,
+        removeCategory,
       }}
     >
       {props.children}

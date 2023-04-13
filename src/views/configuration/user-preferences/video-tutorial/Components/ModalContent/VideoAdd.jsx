@@ -1,15 +1,31 @@
 import React, { useContext, useState } from "react";
+
+// components
 import Modal from "../Modal/Modal";
+import Tags from "../Form/Tags";
+// import InputGroup from "../Form/InputGroup";
+// import Role from "../Dropdown/Role";
+// import Kategori from "../Dropdown/Kategori";
+
+// context and providers
+import { VideoContext } from "../../Context/VideoContext";
+import { VideoTutorialContext } from "../../../../../../context/VideoTutorialContext";
+
+// assests
 import SimbolUpload from "../../assets/simbol-upload.png";
 import SimbolThumbnail from "../../assets/simbol-thumbnail.png";
-import InputGroup from "../Form/InputGroup";
-import Role from "../Dropdown/Role";
-import Kategori from "../Dropdown/Kategori";
-import { VideoContext } from "../../Context/VideoContext";
-import Tags from "../Form/Tags";
 
 const VideoAdd = (props) => {
-  const { postVideo, categories, addCategory, removeCategory } = useContext(VideoContext);
+  const {
+    // postVideo,
+    // categories,
+    // addCategory,
+    // removeCategory
+  } = useContext(VideoContext);
+
+  const { listCategories, modifyCategories, postVideo } =
+    useContext(VideoTutorialContext);
+
   const [dropDownState, setDropDownState] = useState({
     role: true,
     kategori: true,
@@ -26,8 +42,8 @@ const VideoAdd = (props) => {
     uploader_id: Math.random().toString(),
   });
 
-  const [newCategory, setNewCategory] = useState("")
-  
+  const [newCategory, setNewCategory] = useState("");
+
   const handleChangeFile = (e) => {
     setState({
       ...state,
@@ -261,36 +277,69 @@ const VideoAdd = (props) => {
                 dropDownState.kategori && "tw-hidden"
               } tw-absolute tw-max-h-64 tw-overflow-y-scroll tw-top-16 tw-left-0 tw-right-0 tw-bg-gray-200 tw-rounded-lg tw-shadow-md tw-z-10`}
             >
-              <div className="tw-border-b-2 tw-border-gray-300 tw-text-sm tw-p-2 tw-flex tw-justify-between"> 
-                <input type="text" value={newCategory} onChange={(e) => setNewCategory(e.target.value)}/>
+              <div className="tw-border-b-2 tw-border-gray-300 tw-text-sm tw-p-2 tw-flex tw-justify-between">
+                <input
+                  type="text"
+                  value={newCategory}
+                  onChange={(e) => setNewCategory(e.target.value)}
+                />
 
-                <button onClick={() => {addCategory(newCategory); setNewCategory("")}}>
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="tw-w-6 tw-h-6">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                <button
+                  onClick={() => {
+                    modifyCategories("add", newCategory);
+                    setNewCategory("");
+                  }}
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth={1.5}
+                    stroke="currentColor"
+                    className="tw-w-6 tw-h-6"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"
+                    />
                   </svg>
                 </button>
               </div>
 
-              {categories.map((category, index) => (
-              <div className="tw-border-b-2 tw-border-gray-300 tw-text-sm tw-p-2 tw-flex tw-justify-between" key={index}> 
-                <button
-                  onClick={() => {
-                    setState({ ...state, kategori: category });
-                    setDropDownState({
-                      ...dropDownState,
-                      kategori: !dropDownState.kategori,
-                    });
-                  }}
+              {listCategories.map((category, index) => (
+                <div
+                  className="tw-border-b-2 tw-border-gray-300 tw-text-sm tw-p-2 tw-flex tw-justify-between"
+                  key={index}
                 >
-                  {category}
-                  
-                </button>
-                <button onClick={() => removeCategory(category)}>
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="tw-w-6 tw-h-6">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-                </svg>
-                </button>
-              </div>
+                  <button
+                    onClick={() => {
+                      setState({ ...state, kategori: category });
+                      setDropDownState({
+                        ...dropDownState,
+                        kategori: !dropDownState.kategori,
+                      });
+                    }}
+                  >
+                    {category}
+                  </button>
+                  <button onClick={() => modifyCategories("remove", category)}>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      strokeWidth={1.5}
+                      stroke="currentColor"
+                      className="tw-w-6 tw-h-6"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M6 18L18 6M6 6l12 12"
+                      />
+                    </svg>
+                  </button>
+                </div>
               ))}
               {/* <div className="tw-border-b-2 tw-border-gray-300 tw-text-sm tw-p-2">
                 <button
@@ -522,7 +571,11 @@ const VideoAdd = (props) => {
                   />
                 ) : (
                   <>
-                    <img src={SimbolUpload} alt="" className="tw-w-12 tw-mb-2" />
+                    <img
+                      src={SimbolUpload}
+                      alt=""
+                      className="tw-w-12 tw-mb-2"
+                    />
                     <p className="tw-mb-2 tw-text-sm tw-text-gray-500">
                       Upload Video Baru disini
                     </p>
@@ -532,11 +585,12 @@ const VideoAdd = (props) => {
               <input
                 id="preview"
                 name="video"
-                required
                 type="file"
+                accept=".mkv, .mp4"
                 className="tw-hidden"
                 value={state.video?.filename}
                 onChange={(e) => handleChangeFile(e)}
+                required
               />
             </label>
           </div>
@@ -560,9 +614,12 @@ const VideoAdd = (props) => {
             />
           </div>
           <div className="input-group  tw-cursor-pointer">
-            <div className="tw-flex" style={{"width":"100%"}}>
+            <div className="tw-flex" style={{ width: "100%" }}>
               <div className="tw-w-full">
-                <label htmlFor="thumbnail" className="tw-cursor-pointer tw-w-full">
+                <label
+                  htmlFor="thumbnail"
+                  className="tw-cursor-pointer tw-w-full"
+                >
                   Thumbnail
                 </label>
                 <label
@@ -574,11 +631,12 @@ const VideoAdd = (props) => {
                 <input
                   id="thumbnail"
                   type="file"
-                  required
+                  accept=".jpeg, .jpg, .png"
                   className="tw-hidden"
                   // value={state.thumbnail?.filename}
                   onChange={(e) => handleChangeFile(e)}
                   name="thumbnail"
+                  required
                 />
               </div>
               <div className="tw-ml-auto tw-w-auto tw-self-center">

@@ -1,7 +1,7 @@
 import React from "react";
-import "./Category.css";
+import "./Navigation.css";
 
-const Category = () => {
+const Navigation = () => {
 	return (
 		<div className="tw-flex [margin-top:34px] tw-mb-4">
 			<a href="#" className="[color:#153b20] vt-nav">Analitik Video</a>
@@ -12,4 +12,4 @@ const Category = () => {
 	);
 };
 
-export default Category
+export default Navigation 
