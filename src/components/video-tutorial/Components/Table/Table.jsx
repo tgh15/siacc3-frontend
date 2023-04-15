@@ -42,9 +42,14 @@ export const TBody = (props) => {
       ? window._env_.REACT_APP_API_GATEWAY
       : process.env.REACT_APP_API_GATEWAY;
 
-  const { setVideoUpdateState } = useContext(VideoContext);
-  const { modalData, setModalData, getListPlaylist, putVideoVisibility } =
-    useContext(VideoTutorialContext);
+  const {} = useContext(VideoContext);
+  const {
+    modalData,
+    setModalData,
+    getListPlaylist,
+    putVideoVisibility,
+    setVideoUpdateState,
+  } = useContext(VideoTutorialContext);
 
   const openModalVideo = async (row) => {
     await setModalData(row);
@@ -56,6 +61,7 @@ export const TBody = (props) => {
     await setVideoUpdateState(row);
     await updateRef.current.openModal();
   };
+
   const openModalDelete = (row) => {
     setModalData(row);
     deleteRef.current.openModal();

@@ -13,10 +13,21 @@ const VideoTutorialContextProvider = (props) => {
     const [progress, setProgress] = useState(false);
     const [percentage, setPercentage] = useState(0)
     const [modalData, setModalData] = useState({});
-    const [videoUpdateState, setVideoUpdateState] = useState({});
     const [pagination, setPagination] = useState({
         current_page: 1,
         total_page: 1,
+    });
+    const [videoUpdateState, setVideoUpdateState] = useState({
+        video: null,
+        video_new: null,
+        thumbnail: null,
+        thumbnail_new: null,
+        judul: "",
+        deskripsi: "",
+        kategori: "",
+        role: [],
+        tags: [],
+        uploader_id: Math.random().toString(), // TODO: change with logged user
     });
 
 
@@ -282,7 +293,11 @@ const VideoTutorialContextProvider = (props) => {
 
 
     // TODO: write the put video context
-    function putVideo(payload) { }
+    function putVideo(payload) {
+
+        const video = uploadVideo(payload)
+
+    }
 
 
     // putVideoVisibility update visibility of selected video to it's counterpart

@@ -10,26 +10,26 @@ const VideoShare = (props) => {
   };
   return (
     <Modal ref={props.modalRef} modal_md>
-      <p className="[color:#6E7191] tw-text-center tw-text-base tw-font-semibold">
+      <div className="[color:#6E7191] tw-text-center tw-text-base tw-font-semibold">
         Bagikan Video
-      </p>
+      </div>
       {/* <form action=""> */}
       <div className="tw-mt-16 tw-px-2">
         <div className="[margin-bottom:10px] tw-border [border-color:#D9DBE9] tw-rounded-lg tw-px-5 tw-py-2">
           <button className="tw-flex">
             <img src={IconPesan} alt="" className="tw-w-6" />
 
-            <p className="[color:#6E7191] tw-pl-4 [font-size:10px] tw-font-medium tw-self-center">
+            <div className="[color:#6E7191] tw-pl-4 [font-size:10px] tw-font-medium tw-self-center">
               Bagikan Via Pesan SIACC
-            </p>
+            </div>
           </button>
         </div>
         <div className="[margin-bottom:10px] tw-border [border-color:#D9DBE9] tw-rounded-lg tw-px-5 tw-py-2">
           <button className="tw-flex">
             <img src={IconWA} alt="" className="tw-w-6" />
-            <p className="[color:#6E7191] tw-pl-4 [font-size:10px] tw-font-medium tw-self-center">
+            <div className="[color:#6E7191] tw-pl-4 [font-size:10px] tw-font-medium tw-self-center">
               Bagikan Via Whatsapp
-            </p>
+            </div>
           </button>
         </div>
         <div className="[margin-bottom:10px] tw-border [border-color:#D9DBE9] tw-rounded-lg tw-py-2 tw-px-3 tw-flex">
@@ -55,7 +55,8 @@ const VideoShare = (props) => {
           </label>
         </div>
         <button
-          className="btn-y tw-mx-auto tw-flex tw-mt-16 tw-mb-9"
+          className="btn-y tw-mx-auto tw-mt-16 tw-mb-9"
+          style={{ margin: "10px auto" }}
           onClick={() => props.modalRef.current.closeModal()}
         >
           Selesai

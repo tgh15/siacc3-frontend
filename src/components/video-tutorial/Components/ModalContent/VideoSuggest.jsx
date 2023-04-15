@@ -9,9 +9,9 @@ const VideoSuggest = (props) => {
 
   return (
     <Modal ref={props.modalRef}>
-      <p className="[color:#6E7191] tw-text-center tw-text-base tw-font-semibold">
+      <div className="[color:#6E7191] tw-text-center tw-text-base tw-font-semibold">
         Saran
-      </p>
+      </div>
       <div className="tw-mt-11">
         {/* <ListVideo /> */}
         <div className="tw-border [padding:14px] [border-color:#D9DBE9] tw-rounded-lg tw-flex tw-mb-4">
@@ -23,13 +23,17 @@ const VideoSuggest = (props) => {
             />
           </div>
           <div className="tw-self-center tw-ml-4">
-            <p className="[font-size:10px] tw-font-semibold">{props.judul}</p>
-            <p className="[font-size:10px] [color:#4E4B66]">{props.durasi}</p>
+            <div className="[font-size:10px] tw-font-semibold">
+              {props.judul}
+            </div>
+            <div className="[font-size:10px] [color:#4E4B66]">
+              {props.durasi}
+            </div>
           </div>
         </div>
-        <p className="tw-font-semibold [font-size:10px] tw-px-3 [padding-bottom:6px]">
+        <span className="tw-font-semibold [font-size:10px] tw-px-3 [padding-bottom:6px]">
           Tulis saran anda mengenai video ini
-        </p>
+        </span>
         <textarea
           className="tw-w-full tw-border tw-p-4 [border-color:#D9DBE9] tw-rounded-lg tw-outline-none [font-size:10px]"
           rows={12}

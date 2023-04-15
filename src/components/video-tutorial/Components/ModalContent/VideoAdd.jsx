@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 
 // components
 import Modal from "../Modal/Modal";
@@ -12,7 +12,7 @@ import SimbolUpload from "../../assets/simbol-upload.png";
 import SimbolThumbnail from "../../assets/simbol-thumbnail.png";
 
 const VideoAdd = (props) => {
-  const { listCategories, modifyCategories, postVideo } =
+  const { listCategories, getListCategories, modifyCategories, postVideo } =
     useContext(VideoTutorialContext);
 
   const [dropDownState, setDropDownState] = useState({
@@ -28,7 +28,7 @@ const VideoAdd = (props) => {
     kategori: "",
     role: [],
     tags: [],
-    uploader_id: Math.random().toString(),
+    uploader_id: Math.random().toString(), // TODO: change with logged user
   });
 
   const [newCategory, setNewCategory] = useState("");
@@ -65,6 +65,12 @@ const VideoAdd = (props) => {
     postVideo(state);
     props.modalRef.current.closeModal();
   };
+
+  // load videos for admin and viewer also categories
+  // when component is render/mounted
+  useEffect(() => {
+    getListCategories();
+  }, []);
 
   return (
     <Modal ref={props.modalRef} modal_lg>
@@ -316,208 +322,10 @@ const VideoAdd = (props) => {
                   </button>
                 </div>
               ))}
-              {/* <div className="tw-border-b-2 tw-border-gray-300 tw-text-sm tw-p-2">
-                <button
-                  onClick={() => {
-                    setState({ ...state, kategori: "Communication" });
-                    setDropDownState({
-                      ...dropDownState,
-                      kategori: !dropDownState.kategori,
-                    });
-                  }}
-                >
-                  Communication
-                </button>
-              </div>
-
-              <div className="tw-border-b-2 tw-border-gray-300 tw-text-sm tw-p-2">
-                <button
-                  onClick={() => {
-                    setState({ ...state, kategori: "Feeds" });
-                    setDropDownState({
-                      ...dropDownState,
-                      kategori: !dropDownState.kategori,
-                    });
-                  }}
-                >
-                  Feeds
-                </button>
-              </div>
-              <div className="tw-border-b-2 tw-border-gray-300 tw-text-sm tw-p-2">
-                <button
-                  onClick={() => {
-                    setState({ ...state, kategori: "File Manajemen" });
-                    setDropDownState({
-                      ...dropDownState,
-                      kategori: !dropDownState.kategori,
-                    });
-                  }}
-                >
-                  File Manajemen
-                </button>
-              </div>
-              <div className="tw-border-b-2 tw-border-gray-300 tw-text-sm tw-p-2">
-                <button
-                  onClick={() => {
-                    setState({ ...state, kategori: "Voice & Video Call" });
-                    setDropDownState({
-                      ...dropDownState,
-                      kategori: !dropDownState.kategori,
-                    });
-                  }}
-                >
-                  Voice & Video Call
-                </button>
-              </div>
-              <div className="tw-border-b-2 tw-border-gray-300 tw-text-sm tw-p-2">
-                <button
-                  onClick={() => {
-                    setState({ ...state, kategori: "Voice & Video Call" });
-                    setDropDownState({
-                      ...dropDownState,
-                      kategori: !dropDownState.kategori,
-                    });
-                  }}
-                >
-                  Voice & Video Call
-                </button>
-              </div>
-              <div className="tw-border-b-2 tw-border-gray-300 tw-text-sm tw-p-2">
-                <button
-                  onClick={() => {
-                    setState({ ...state, kategori: "Menu Dashboard" });
-                    setDropDownState({
-                      ...dropDownState,
-                      kategori: !dropDownState.kategori,
-                    });
-                  }}
-                >
-                  Menu Dashboard
-                </button>
-              </div>
-              <div className="tw-border-b-2 tw-border-gray-300 tw-text-sm tw-p-2">
-                <button
-                  onClick={() => {
-                    setState({ ...state, kategori: "Menu Performance" });
-                    setDropDownState({
-                      ...dropDownState,
-                      kategori: !dropDownState.kategori,
-                    });
-                  }}
-                >
-                  Menu Performance
-                </button>
-              </div>
-              <div className="tw-border-b-2 tw-border-gray-300 tw-text-sm tw-p-2">
-                <button
-                  onClick={() => {
-                    setState({ ...state, kategori: "Advanced Search" });
-                    setDropDownState({
-                      ...dropDownState,
-                      kategori: !dropDownState.kategori,
-                    });
-                  }}
-                >
-                  Advanced Search
-                </button>
-              </div>
-              <div className="tw-border-b-2 tw-border-gray-300 tw-text-sm tw-p-2">
-                <button
-                  onClick={() => {
-                    setState({ ...state, kategori: "Menu List Draft" });
-                    setDropDownState({
-                      ...dropDownState,
-                      kategori: !dropDownState.kategori,
-                    });
-                  }}
-                >
-                  Menu List Draft
-                </button>
-              </div>
-              <div className="tw-border-b-2 tw-border-gray-300 tw-text-sm tw-p-2">
-                <button
-                  onClick={() => {
-                    setState({ ...state, kategori: "Menu Topik Populer" });
-                    setDropDownState({
-                      ...dropDownState,
-                      kategori: !dropDownState.kategori,
-                    });
-                  }}
-                >
-                  Menu Topik Populer
-                </button>
-              </div>
-              <div className="tw-border-b-2 tw-border-gray-300 tw-text-sm tw-p-2">
-                <button
-                  onClick={() => {
-                    setState({ ...state, kategori: "Menu Profile" });
-                    setDropDownState({
-                      ...dropDownState,
-                      kategori: !dropDownState.kategori,
-                    });
-                  }}
-                >
-                  Menu Profile
-                </button>
-              </div>
-              <div className="tw-border-b-2 tw-border-gray-300 tw-text-sm tw-p-2">
-                <button
-                  onClick={() => {
-                    setState({
-                      ...state,
-                      kategori: "Menu Struktur Organisasi",
-                    });
-                    setDropDownState({
-                      ...dropDownState,
-                      kategori: !dropDownState.kategori,
-                    });
-                  }}
-                >
-                  Menu Struktur Organisasi
-                </button>
-              </div>
-              <div className="tw-border-b-2 tw-border-gray-300 tw-text-sm tw-p-2">
-                <button
-                  onClick={() => {
-                    setState({ ...state, kategori: "Menu Daftar Satker" });
-                    setDropDownState({
-                      ...dropDownState,
-                      kategori: !dropDownState.kategori,
-                    });
-                  }}
-                >
-                  Menu Daftar Satker
-                </button>
-              </div>
-              <div className="tw-border-b-2 tw-border-gray-300 tw-text-sm tw-p-2">
-                <button
-                  onClick={() => {
-                    setState({ ...state, kategori: "Menu License" });
-                    setDropDownState({
-                      ...dropDownState,
-                      kategori: !dropDownState.kategori,
-                    });
-                  }}
-                >
-                  Menu License
-                </button>
-              </div>
-              <div className="tw-border-b-2 tw-border-gray-300 tw-text-sm tw-p-2">
-                <button
-                  onClick={() => {
-                    setState({ ...state, kategori: "Menu Tautan Akun" });
-                    setDropDownState({
-                      ...dropDownState,
-                      kategori: !dropDownState.kategori,
-                    });
-                  }}
-                >
-                  Menu Tautan Akun
-                </button>
-              </div> */}
             </div>
           </div>
           {/* <Kategori /> */}
+
           <div className="input-group">
             <label htmlFor="deskripsi">Deskripsi</label>
             <input
@@ -608,7 +416,6 @@ const VideoAdd = (props) => {
                   type="file"
                   accept=".jpeg, .jpg, .png"
                   className="tw-hidden"
-                  // value={state.thumbnail?.filename}
                   onChange={(e) => handleChangeFile(e)}
                   name="thumbnail"
                   required

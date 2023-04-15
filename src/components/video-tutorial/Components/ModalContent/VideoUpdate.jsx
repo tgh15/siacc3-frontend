@@ -4,13 +4,29 @@ import SimbolThumbnail from "../../assets/simbol-thumbnail.png";
 import Tags from "../Form/Tags";
 import { VideoTutorialContext } from "../../../../context/VideoTutorialContext";
 
+const sourceEndpoint =
+  !process.env.NODE_ENV || process.env.NODE_ENV === "production"
+    ? window._env_.REACT_APP_API_GATEWAY
+    : process.env.REACT_APP_API_GATEWAY;
+
 const VideoUpdate = (props) => {
-  const { updateVideo, videoUpdateState, setVideoUpdateState } =
-    useContext(VideoTutorialContext);
+  console.log("props", props);
+
+  const {
+    putVideo,
+    videoUpdateState,
+    setVideoUpdateState,
+    listCategories,
+    getListCategories,
+    modifyCategories,
+  } = useContext(VideoTutorialContext);
+
+  const [newCategory, setNewCategory] = useState("");
   const [dropDownState, setDropDownState] = useState({
     role: true,
     kategori: true,
   });
+
   const handleChangeFile = (e) => {
     setVideoUpdateState({
       ...videoUpdateState,
@@ -36,19 +52,28 @@ const VideoUpdate = (props) => {
       });
     }
   };
+
   const selectedTags = (tags) => {
     setVideoUpdateState({ ...videoUpdateState, tags: tags });
   };
 
   const handleSubmit = () => {
     let data = videoUpdateState;
-    data.video_id = videoUpdateState.source;
+    data.video_id = data.source;
     data.thumbnail_id = data.thumbnail;
-    data.user_id = Math.random().toString();
-    data.uploader_id = Math.random().toString();
-    updateVideo(data);
+    data.user_id = Math.random().toString(); // TODO: replace with logged user
+    data.uploader_id = Math.random().toString(); // TODO: replace with logger user
+    putVideo(data);
     props.modalRef.current.closeModal();
   };
+
+  // load videos for admin and viewer also categories
+  // when component is render/mounted
+  useEffect(() => {
+    // console.log("data", props.data);
+    // setVideoUpdateState((value) => (value = props.data));
+    getListCategories();
+  }, []);
 
   return (
     <Modal ref={props.modalRef} modal_lg>
@@ -79,7 +104,6 @@ const VideoUpdate = (props) => {
                 id="role"
                 readOnly
                 value={videoUpdateState.role?.join(" / ")}
-                // onChange={(e) => handleChange(e)}
                 placeholder="Admin/Verifikator/Agen"
               />
             </div>
@@ -112,19 +136,6 @@ const VideoUpdate = (props) => {
                 dropDownState.role && "tw-hidden"
               } tw-z-10 tw-absolute tw-max-h-64 tw-overflow-y-scroll tw-top-16 tw-left-0 tw-right-0 tw-bg-gray-200 tw-rounded-lg tw-shadow-md`}
             >
-              {/* <div className="tw-border-b-2 tw-border-gray-300 tw-text-sm tw-p-4 tw-flex tw-justify-between">
-                <label htmlFor="semua-role">Admin Daerah</label>
-                <input
-                  name="Semua Role"
-                  onChange={(e) => handleChangeRole(e)}
-                  // checked
-                  id="semua-role"
-                  type="checkbox"
-                  style={{ width: "1rem" }}
-                  checked={roleState.includes("Semua Role")}
-                />
-              </div> */}
-
               <div className="tw-border-b-2 tw-border-gray-300 tw-text-sm tw-p-4 tw-flex tw-justify-between">
                 <label htmlFor="admin-daerah">Admin Daerah</label>
                 <input
@@ -206,8 +217,8 @@ const VideoUpdate = (props) => {
               </div>
             </div>
           </div>
-
           {/* <Role /> */}
+
           <div className="input-group tw-relative tw-items-center tw-flex tw-justify-between">
             <div className="w-full">
               <label htmlFor="kategori">Kategori</label>
@@ -219,6 +230,7 @@ const VideoUpdate = (props) => {
                 readOnly
                 onChange={(e) => handleChange(e)}
                 placeholder="Kategori"
+                required
               />
             </div>
             <button
@@ -247,251 +259,79 @@ const VideoUpdate = (props) => {
             <div
               className={`${
                 dropDownState.kategori && "tw-hidden"
-              } tw-absolute tw-max-h-64 tw-overflow-y-scroll tw-top-16 tw-left-0 tw-right-0 tw-bg-gray-200 tw-rounded-lg tw-shadow-md`}
+              } tw-absolute tw-max-h-64 tw-overflow-y-scroll tw-top-16 tw-left-0 tw-right-0 tw-bg-gray-200 tw-rounded-lg tw-shadow-md tw-z-10`}
             >
-              <div className="tw-border-b-2 tw-border-gray-300 tw-text-sm tw-p-2">
+              <div className="tw-border-b-2 tw-border-gray-300 tw-text-sm tw-p-2 tw-flex tw-justify-between">
+                <input
+                  type="text"
+                  value={newCategory}
+                  onChange={(e) => setNewCategory(e.target.value)}
+                />
+
                 <button
                   onClick={() => {
-                    setVideoUpdateState({
-                      ...videoUpdateState,
-                      kategori: "Communication",
-                    });
-                    setDropDownState({
-                      ...dropDownState,
-                      kategori: !dropDownState.kategori,
-                    });
+                    modifyCategories("add", newCategory);
+                    setNewCategory("");
                   }}
                 >
-                  Communication
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth={1.5}
+                    stroke="currentColor"
+                    className="tw-w-6 tw-h-6"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"
+                    />
+                  </svg>
                 </button>
               </div>
-              <div className="tw-border-b-2 tw-border-gray-300 tw-text-sm tw-p-2">
-                <button
-                  onClick={() => {
-                    setVideoUpdateState({
-                      ...videoUpdateState,
-                      kategori: "Feeds",
-                    });
-                    setDropDownState({
-                      ...dropDownState,
-                      kategori: !dropDownState.kategori,
-                    });
-                  }}
+
+              {listCategories.map((category, index) => (
+                <div
+                  className="tw-border-b-2 tw-border-gray-300 tw-text-sm tw-p-2 tw-flex tw-justify-between"
+                  key={index}
                 >
-                  Feeds
-                </button>
-              </div>
-              <div className="tw-border-b-2 tw-border-gray-300 tw-text-sm tw-p-2">
-                <button
-                  onClick={() => {
-                    setVideoUpdateState({
-                      ...videoUpdateState,
-                      kategori: "File Manajemen",
-                    });
-                    setDropDownState({
-                      ...dropDownState,
-                      kategori: !dropDownState.kategori,
-                    });
-                  }}
-                >
-                  File Manajemen
-                </button>
-              </div>
-              <div className="tw-border-b-2 tw-border-gray-300 tw-text-sm tw-p-2">
-                <button
-                  onClick={() => {
-                    setVideoUpdateState({
-                      ...videoUpdateState,
-                      kategori: "Voice & Video Call",
-                    });
-                    setDropDownState({
-                      ...dropDownState,
-                      kategori: !dropDownState.kategori,
-                    });
-                  }}
-                >
-                  Voice & Video Call
-                </button>
-              </div>
-              <div className="tw-border-b-2 tw-border-gray-300 tw-text-sm tw-p-2">
-                <button
-                  onClick={() => {
-                    setVideoUpdateState({
-                      ...videoUpdateState,
-                      kategori: "Voice & Video Call",
-                    });
-                    setDropDownState({
-                      ...dropDownState,
-                      kategori: !dropDownState.kategori,
-                    });
-                  }}
-                >
-                  Voice & Video Call
-                </button>
-              </div>
-              <div className="tw-border-b-2 tw-border-gray-300 tw-text-sm tw-p-2">
-                <button
-                  onClick={() => {
-                    setVideoUpdateState({
-                      ...videoUpdateState,
-                      kategori: "Menu Dashboard",
-                    });
-                    setDropDownState({
-                      ...dropDownState,
-                      kategori: !dropDownState.kategori,
-                    });
-                  }}
-                >
-                  Menu Dashboard
-                </button>
-              </div>
-              <div className="tw-border-b-2 tw-border-gray-300 tw-text-sm tw-p-2">
-                <button
-                  onClick={() => {
-                    setVideoUpdateState({
-                      ...videoUpdateState,
-                      kategori: "Menu Performance",
-                    });
-                    setDropDownState({
-                      ...dropDownState,
-                      kategori: !dropDownState.kategori,
-                    });
-                  }}
-                >
-                  Menu Performance
-                </button>
-              </div>
-              <div className="tw-border-b-2 tw-border-gray-300 tw-text-sm tw-p-2">
-                <button
-                  onClick={() => {
-                    setVideoUpdateState({
-                      ...videoUpdateState,
-                      kategori: "Advanced Search",
-                    });
-                    setDropDownState({
-                      ...dropDownState,
-                      kategori: !dropDownState.kategori,
-                    });
-                  }}
-                >
-                  Advanced Search
-                </button>
-              </div>
-              <div className="tw-border-b-2 tw-border-gray-300 tw-text-sm tw-p-2">
-                <button
-                  onClick={() => {
-                    setVideoUpdateState({
-                      ...videoUpdateState,
-                      kategori: "Menu List Draft",
-                    });
-                    setDropDownState({
-                      ...dropDownState,
-                      kategori: !dropDownState.kategori,
-                    });
-                  }}
-                >
-                  Menu List Draft
-                </button>
-              </div>
-              <div className="tw-border-b-2 tw-border-gray-300 tw-text-sm tw-p-2">
-                <button
-                  onClick={() => {
-                    setVideoUpdateState({
-                      ...videoUpdateState,
-                      kategori: "Menu Topik Populer",
-                    });
-                    setDropDownState({
-                      ...dropDownState,
-                      kategori: !dropDownState.kategori,
-                    });
-                  }}
-                >
-                  Menu Topik Populer
-                </button>
-              </div>
-              <div className="tw-border-b-2 tw-border-gray-300 tw-text-sm tw-p-2">
-                <button
-                  onClick={() => {
-                    setVideoUpdateState({
-                      ...videoUpdateState,
-                      kategori: "Menu Profile",
-                    });
-                    setDropDownState({
-                      ...dropDownState,
-                      kategori: !dropDownState.kategori,
-                    });
-                  }}
-                >
-                  Menu Profile
-                </button>
-              </div>
-              <div className="tw-border-b-2 tw-border-gray-300 tw-text-sm tw-p-2">
-                <button
-                  onClick={() => {
-                    setVideoUpdateState({
-                      ...videoUpdateState,
-                      kategori: "Menu Struktur Organisasi",
-                    });
-                    setDropDownState({
-                      ...dropDownState,
-                      kategori: !dropDownState.kategori,
-                    });
-                  }}
-                >
-                  Menu Struktur Organisasi
-                </button>
-              </div>
-              <div className="tw-border-b-2 tw-border-gray-300 tw-text-sm tw-p-2">
-                <button
-                  onClick={() => {
-                    setVideoUpdateState({
-                      ...videoUpdateState,
-                      kategori: "Menu Daftar Satker",
-                    });
-                    setDropDownState({
-                      ...dropDownState,
-                      kategori: !dropDownState.kategori,
-                    });
-                  }}
-                >
-                  Menu Daftar Satker
-                </button>
-              </div>
-              <div className="tw-border-b-2 tw-border-gray-300 tw-text-sm tw-p-2">
-                <button
-                  onClick={() => {
-                    setVideoUpdateState({
-                      ...videoUpdateState,
-                      kategori: "Menu License",
-                    });
-                    setDropDownState({
-                      ...dropDownState,
-                      kategori: !dropDownState.kategori,
-                    });
-                  }}
-                >
-                  Menu License
-                </button>
-              </div>
-              <div className="tw-border-b-2 tw-border-gray-300 tw-text-sm tw-p-2">
-                <button
-                  onClick={() => {
-                    setVideoUpdateState({
-                      ...videoUpdateState,
-                      kategori: "Menu Tautan Akun",
-                    });
-                    setDropDownState({
-                      ...dropDownState,
-                      kategori: !dropDownState.kategori,
-                    });
-                  }}
-                >
-                  Menu Tautan Akun
-                </button>
-              </div>
+                  <button
+                    onClick={() => {
+                      setVideoUpdateState({
+                        ...videoUpdateState,
+                        kategori: category,
+                      });
+                      setDropDownState({
+                        ...dropDownState,
+                        kategori: !dropDownState.kategori,
+                      });
+                    }}
+                  >
+                    {category}
+                  </button>
+                  <button onClick={() => modifyCategories("remove", category)}>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      strokeWidth={1.5}
+                      stroke="currentColor"
+                      className="tw-w-6 tw-h-6"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M6 18L18 6M6 6l12 12"
+                      />
+                    </svg>
+                  </button>
+                </div>
+              ))}
             </div>
           </div>
           {/* <Kategori /> */}
+
           <div className="input-group">
             <label htmlFor="deskripsi">Deskripsi</label>
             <input
@@ -522,15 +362,9 @@ const VideoUpdate = (props) => {
                 ) : (
                   <>
                     <video
-                      src={
-                        "http://147.139.162.58:5002" + videoUpdateState.source
-                      }
+                      src={sourceEndpoint + "/" + videoUpdateState.source}
                       className="video-preview"
                     />
-                    {/* <img src={SimbolUpload} alt="" className="w-12 mb-2" />
-                    <p className="mb-2 text-sm text-gray-500">
-                      Upload Video Baru disini
-                    </p> */}
                   </>
                 )}
               </div>
@@ -538,6 +372,7 @@ const VideoUpdate = (props) => {
                 id="preview"
                 name="video_new"
                 type="file"
+                accept=".mkv, .mp4"
                 className="tw-hidden"
                 value={videoUpdateState.video_new?.filename}
                 onChange={(e) => handleChangeFile(e)}
@@ -551,7 +386,13 @@ const VideoUpdate = (props) => {
               name="filename"
               id="filename"
               readOnly
-              value={videoUpdateState.video_new?.name}
+              value={
+                videoUpdateState.source
+                  ? videoUpdateState.judul
+                  : videoUpdateState.video_new?.name
+                  ? videoUpdateState.video_new.name
+                  : "Upload Video"
+              }
               className="tw-pb-2"
             />
             <label htmlFor="videolink">Video Link</label>
@@ -564,8 +405,8 @@ const VideoUpdate = (props) => {
             />
           </div>
           <div className="input-group tw-cursor-pointer">
-            <div className="tw-flex">
-              <div className="w-full">
+            <div className="tw-flex" style={{ width: "100%" }}>
+              <div className="tw-w-full">
                 <label
                   htmlFor="thumbnail"
                   className="tw-cursor-pointer tw-w-full"
@@ -577,26 +418,32 @@ const VideoUpdate = (props) => {
                   htmlFor="thumbnail"
                 >
                   {videoUpdateState.thumbnail
-                    ? videoUpdateState.thumbnail_new?.name
+                    ? videoUpdateState.judul
+                    : videoUpdateState.thumbnail_new?.name
+                    ? videoUpdateState.thumbnail_new.name
                     : "Upload Thumbnail"}
                 </label>
                 <input
                   id="thumbnail"
                   type="file"
                   className="tw-hidden"
+                  accept=".jpeg, .jpg, .png"
                   value={videoUpdateState.thumbnail_new?.filename}
                   onChange={(e) => handleChangeFile(e)}
                   name="thumbnail_new"
                 />
               </div>
-              <div className="tw-ml-auto tw-w-auto tw-self-center">
+              <div
+                className="tw-ml-auto tw-w-auto tw-self-center"
+                style={{ marginLeft: "auto" }}
+              >
                 <img src={SimbolThumbnail} alt="" className="tw-w-9" />
               </div>
             </div>
           </div>
         </div>
       </div>
-      <div className="tw-flex tw-mt-3">
+      <div className="tw-flex tw-justify-between tw-mt-3">
         <button className="btn-x">Batal</button>
         {/* <Konfirmasidraft />
         <Berhasilunggah /> */}

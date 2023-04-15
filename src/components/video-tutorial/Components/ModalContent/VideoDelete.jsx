@@ -26,7 +26,7 @@ const VideoDelete = (props) => {
 
   return (
     <Modal ref={props.modalRef} modal_md>
-      <div className="isi-popup">
+      <div className="isi-popup" style={{ height: "auto" }}>
         {content === "confirm" ? (
           <Confirm />
         ) : content === "cancel" ? (
@@ -34,9 +34,9 @@ const VideoDelete = (props) => {
         ) : (
           <div>
             <img src={IconConfirm} alt="" className="icon-popup" />
-            <p className="ket-popup tw-my-8 tw-text-center">
+            <div className="ket-popup tw-my-8 tw-text-center">
               Anda yakin ingin menghapus video ?
-            </p>
+            </div>
 
             <div className="tw-flex tw-gap-8">
               <button className="btn-x-popup" onClick={handleCancel}>
@@ -63,7 +63,7 @@ const Confirm = () => {
 };
 const Cancel = () => {
   return (
-    <div className="isi-popup">
+    <div className="isi-popup" style={{ height: "auto" }}>
       <div>
         <img src={IconX} alt="" className="icon-popup" />
         <p className="ket-popup tw-mt-10">Video Batal Dihapus !</p>

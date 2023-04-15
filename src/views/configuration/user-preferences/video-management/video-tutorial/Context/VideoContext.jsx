@@ -34,6 +34,7 @@ const VideoContextProvider = (props) => {
         setListVideoViewer((listVideoViewer) => (listVideoViewer = res.data))
       );
   };
+
   const setVideoVisibility = async (uuid, visibility, user_id) => {
     console.log(!visibility);
     return await fetch(`${API_URL}/update-video-visibility/${uuid}`, {
@@ -59,6 +60,7 @@ const VideoContextProvider = (props) => {
         }
       });
   };
+
   const getListVideoAdmin = async (page) => {
     return await fetch(`${API_URL}/list-video-admin?sort=asc&page=${page}`, {
       method: "GET",
@@ -77,6 +79,7 @@ const VideoContextProvider = (props) => {
         console.log(pagination);
       });
   };
+
   const addVideoSuggestion = async (suggest, video_id, user_id) => {
     return await fetch(`${API_URL}/add-suggestion`, {
       method: "POST",
@@ -93,6 +96,7 @@ const VideoContextProvider = (props) => {
       .then((response) => response.json())
       .then((res) => console.log(res));
   };
+
   const deleteVideo = async (video_id) => {
     return await fetch(`${API_URL}/remove-video/${video_id}`, {
       method: "DELETE",
@@ -111,6 +115,7 @@ const VideoContextProvider = (props) => {
         }
       });
   };
+
   const videoAdminSearch = async (title) => {
     return await fetch(
       `${API_URL}/list-video-admin?sort=asc&page=1&search=${title}`,
@@ -127,6 +132,7 @@ const VideoContextProvider = (props) => {
         setListVideoAdmin((listVideoAdmin) => (listVideoAdmin = res.data))
       );
   };
+
   const postVideo = async (data) => {
     if (
       (data.video.type === "video/x-matroska" ||
@@ -230,6 +236,7 @@ const VideoContextProvider = (props) => {
         });
       });
   };
+
   const updateVideo = async (data) => {
     if (data.video_new && data.thumbnail_new) {
       console.log("upload new video and new thumbnail");
@@ -379,6 +386,7 @@ const VideoContextProvider = (props) => {
       postUpdate(data);
     }
   };
+
   const postUpdate = async (data) => {
     return await fetch(`${API_URL}/update-video/${data.uuid}`, {
       method: "PUT",
@@ -410,6 +418,7 @@ const VideoContextProvider = (props) => {
         });
       });
   };
+
   const videoFilter = async (params) => {
     let date = `${new Intl.DateTimeFormat("id-ID", {
       day: "2-digit",
@@ -446,6 +455,7 @@ const VideoContextProvider = (props) => {
         // console.log(res.data)
       );
   };
+
   const getListPlaylist = async (role, category) => {
     return await fetch(
       `${API_URL}/list-playlist?category=${category.replace(
