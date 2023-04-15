@@ -1,16 +1,16 @@
-import { lazy }             from 'react';
-import ChatRoutes           from './Chat';
-import ReportRoutes         from './Report';
-import ProfileRoutes        from './Profile';
-import AdvancedSearch       from './AdvancedSearch';
-import AnalysisRoutes       from './Analysis';
-import HelpdeskRoutes       from './Helpdesk';
-import PerformanceRoutes    from './Performance';
-import NotificationRoutes   from './Notification';
-import CrawlingdataRoutes   from './Crawlingdata';
-import PublicReportRoutes   from './PublicReport';
-import ConfigurationRoutes  from './Configuration';
-import HelpdeskUsersRoutes  from './HelpdeskUsers';
+import { lazy } from 'react';
+import ChatRoutes from './Chat';
+import ReportRoutes from './Report';
+import ProfileRoutes from './Profile';
+import AdvancedSearch from './AdvancedSearch';
+import AnalysisRoutes from './Analysis';
+import HelpdeskRoutes from './Helpdesk';
+import PerformanceRoutes from './Performance';
+import NotificationRoutes from './Notification';
+import CrawlingdataRoutes from './Crawlingdata';
+import PublicReportRoutes from './PublicReport';
+import ConfigurationRoutes from './Configuration';
+import HelpdeskUsersRoutes from './HelpdeskUsers';
 import VoiceVideoCallRoutes from './VoiceVideoCall';
 
 // ** Document title
@@ -137,6 +137,10 @@ const Routes = [
   {
     path: '/gis',
     component: lazy(() => import('../../views/gis')),
+  },
+  {
+    path: "/video/:role/:video_id",
+    component: lazy(() => import('../../components/video-tutorial/Components/ModalContent/VideoTutorial')),
   },
 
 ];

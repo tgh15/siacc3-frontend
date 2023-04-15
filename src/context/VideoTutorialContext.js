@@ -3,7 +3,6 @@ import { videoTutorAPI } from '../services/pages/configuration/user-preferences/
 import Swal from 'sweetalert2';
 
 export const VideoTutorialContext = createContext()
-
 const VideoTutorialContextProvider = (props) => {
 
     // video tutorial states
@@ -12,15 +11,13 @@ const VideoTutorialContextProvider = (props) => {
     const [listCategories, setListCategories] = useState([])
     const [listPlaylist, setListPlayList] = useState([]);
     const [progress, setProgress] = useState(false);
-    const [videoPercentage, setVideoPercentage] = useState(0)
-    const [thumbnailPercentage, setThumbnailPercentage] = useState(0)
     const [percentage, setPercentage] = useState(0)
-    // const [modalData, setModalData] = useState({});
-    // const [videoUpdateState, setVideoUpdateState] = useState({});
-    // const [pagination, setPagination] = useState({
-    //     current_page: 1,
-    //     total_page: 1,
-    // });
+    const [modalData, setModalData] = useState({});
+    const [videoUpdateState, setVideoUpdateState] = useState({});
+    const [pagination, setPagination] = useState({
+        current_page: 1,
+        total_page: 1,
+    });
 
 
     // helpers function to format date to "date/month/year" format
@@ -32,11 +29,59 @@ const VideoTutorialContextProvider = (props) => {
     }
 
 
+    function uploadVideo(payload) {
+        // video upload
+        const video = videoTutorAPI.videoUploadEndpoint(payload.video)
+
+        // onError triggered when upload failed
+        video.options.onError = function (err) {
+            console.log("videoUploadEndpointErr", err)
+            setProgress(false)
+            Swal.fire({
+                position: "center",
+                icon: "error",
+                title: "Video Gagal Diunggah",
+                showConfirmButton: false,
+                timer: 1500
+            })
+            return
+        }
+
+        // onProgress show current progress video of upload
+        video.options.onProgress = function (bu, bt) {
+            setPercentage(((bu / bt) * 100).toFixed(2))
+        }
+
+        return video
+    }
+
+
+    function uploadThumbnail(payload) {
+        // thumbnail upload
+        const thumbnail = videoTutorAPI.thumbnailUploadEndpoint(payload.thumbnail)
+
+        // onError triggered when upload failed
+        thumbnail.options.onError = function (err) {
+            console.log("thumbnailUploadEndpointErr", err)
+            Swal.fire({
+                position: "center",
+                icon: "error",
+                title: "Video Gagal Diunggah",
+                showConfirmButton: false,
+                timer: 1500
+            })
+            return
+        }
+
+        return thumbnail
+    }
+
+
     // getListVideoViewer get list video for viewer based on given role
     async function getListVideoViewer(role) {
         try {
             const res = await videoTutorAPI.getListVideoViewer(role)
-            setListVideoViewer((value) => value = res.data.result)
+            setListVideoViewer((value) => (value = res.data.result))
         }
         catch (err) {
             // TODO: handle the error with better implementation
@@ -55,7 +100,7 @@ const VideoTutorialContextProvider = (props) => {
             ];
 
             // if update_date is assigned then set date params
-            if (filters.upload_date !== undefined && filters.upload_date.length === 1) {
+            if (filters.upload_date[0].startDate !== null && filters.upload_date[0].endDate !== null) {
                 const startDate = formatDate(filters.upload_date[0].startDate)
                 const endDate = formatDate(filters.upload_date[0].endDate)
                 const date = "upload_date=" + startDate + " - " + endDate
@@ -82,7 +127,7 @@ const VideoTutorialContextProvider = (props) => {
 
             // join all params then create request to backend 
             const res = await videoTutorAPI.getListVideoAdmin("?" + params.join("&"))
-            setListVideoAdmin((value) => value = res.data.result)
+            setListVideoAdmin((value) => (value = res.data.result))
         }
         catch (err) {
             // TODO: handle the error with better implementation
@@ -94,7 +139,7 @@ const VideoTutorialContextProvider = (props) => {
     async function getListPlaylist(role, category) {
         try {
             const res = await videoTutorAPI.getListPlaylist(role, category)
-            setListPlayList((value) => value = res.data.result)
+            setListPlayList((value) => (value = res.data.result))
         }
         catch (err) {
             // TODO: handle the error with better implementation
@@ -107,7 +152,7 @@ const VideoTutorialContextProvider = (props) => {
     async function getListCategories() {
         try {
             const res = await videoTutorAPI.getListCategories()
-            setListCategories((value) => value = res.data.result)
+            setListCategories((value) => (value = res.data.result))
         }
         catch (err) {
             // TODO: handle the error with better implementation
@@ -143,106 +188,152 @@ const VideoTutorialContextProvider = (props) => {
     }
 
 
-    async function postVideo(payload) {
-        try {
-            // let video_uploaded = false, thumbnail_uploaded = false;
-
-            // video upload
-            const video = videoTutorAPI.videoUploadEndpoint(payload.video)
-
-            // onError triggered when upload failed
-            video.options.onError = function (err) {
-                console.log("videoUploadEndpointErr", err)
-            }
-
-            // onProgress show current progress video of upload
-            video.options.onProgress = function (bu, bt) {
-                setVideoPercentage(((bu / bt) * 100).toFixed(2))
-            }
-
-            // onSuccess triggered when upload succeed
-            video.options.onSuccess = function () {
-
-                // read url and hash of uploaded file
-                let url = video.url.split("/");
-                let hash = url[url.length - 1];
-
-                // add new key video_id that contain
-                // hashed filename of uplaoded file then remove
-                // the video from payload
-                payload.video_id = hash
-                delete payload.video;
-            }
-
-
-            // thumbnail upload
-            const thumbnail = videoTutorAPI.thumbnailUploadEndpoint(payload.thumbnail)
-
-            // onError triggered when upload failed
-            thumbnail.options.onError = function (err) {
-                console.log("thumbnailUploadEndpointErr", err)
-            }
-
-            // onProgress show current progress of thumbnail upload
-            thumbnail.options.onProgress = function (bu, bt) {
-                setThumbnailPercentage(((bu / bt) * 100).toFixed(2))
-            }
-
-            // onSuccess triggered when upload succeed
-            thumbnail.options.onSuccess = function () {
-
-                // read url and hash of uploaded file
-                let url = thumbnail.url.split("/");
-                let hash = url[url.length - 1];
-
-                // add new key video_id that contain
-                // hashed filename of uplaoded file then remove
-                // the video from payload
-                payload.thumbnail_id = hash
-                delete payload.thumbnail;
-            }
-
-            setProgress(true)
-            video.start()
-            thumbnail.start()
-            setPercentage((videoPercentage + thumbnailPercentage) / 2)
-            setProgress(false)
-
-
-            // post video data to backend after uploading done and succeed
-            videoTutorAPI.postVideo(payload)
-            Swal.fire({
-                position: "center",
-                icon: "success",
-                title: "Video Berhasil Diunggah",
-                showConfirmButton: false,
-                timer: 1500
-            })
-
-
-        }
+    // postSuggestion add new suggestion to video
+    async function postSuggestion(payload) {
+        try { await videoTutorAPI.postVideoSuggestion(payload) }
         catch (err) {
             // TODO: handle the error with better implementation
-            console.log("postVideoError", err)
-            Swal.fire({
-                position: "center",
-                icon: "error",
-                title: "Video Gagal Diunggah",
-                showConfirmButton: false,
-                timer: 1500
-            })
+            console.log("postSuggestion", err)
         }
     }
 
 
+    // postVideo upload new video. It would check each payload first
+    // to make sure no field is empty then start the upload of video first,
+    // next after video upload is succeed then upload the thumbnail.
+    // After all upload file succeed then add the video data to server.
+    function postVideo(payload) {
 
-    // set of providers that would be used by it's children
+        // check each field value, if one or more field is empty
+        // then abort upload and show alert
+        const keys = Object.keys(payload)
+        for (let i = 0; i < keys.length; i++) {
+            if (payload[keys[i]] === null || payload[keys[i]].length === 0) {
+                Swal.fire({
+                    position: "center",
+                    icon: "error",
+                    title: "Harap untuk mengisi field " + keys[i],
+                    showConfirmButton: false,
+                    timer: 1500
+                })
+                return
+            }
+        }
+
+        // create video upload
+        const video = uploadVideo(payload)
+        video.options.onSuccess = function () {
+
+            // read url and hash of uploaded file
+            let vurl = video.url.split("/");
+            let vhash = vurl[vurl.length - 1];
+
+            // add new key video_id that contain
+            // hashed filename of uplaoded file then remove
+            // the video from payload
+            payload.video_id = vhash
+            delete payload.video;
+
+            // create the thumbnail upload
+            const thumbnail = uploadThumbnail(payload)
+            thumbnail.options.onSuccess = function () {
+
+                // read url and hash of uploaded file
+                let turl = thumbnail.url.split("/");
+                let thash = turl[turl.length - 1];
+
+                // add new key thumbnail_id that contain
+                // hashed filename of uplaoded file then remove
+                // the video from payload
+                payload.thumbnail_id = thash
+                delete payload.thumbnail;
+
+                videoTutorAPI.postVideo(payload)
+                    .then(function () {
+                        setProgress(false)
+                        Swal.fire({
+                            position: "center",
+                            icon: "success",
+                            title: "Video Berhasil Diunggah",
+                            showConfirmButton: false,
+                            timer: 1500
+                        })
+                        return
+                    })
+                    .catch(function (err) {
+                        console.log("addVideoError", err)
+                        setProgress(false)
+                        Swal.fire({
+                            position: "center",
+                            icon: "error",
+                            title: "Video Gagal Diunggah",
+                            showConfirmButton: false,
+                            timer: 1500
+                        })
+                        return
+                    })
+
+            }
+            thumbnail.start()
+        }
+        setProgress(true)
+        video.start()
+    }
+
+
+    // TODO: write the put video context
+    function putVideo(payload) { }
+
+
+    // putVideoVisibility update visibility of selected video to it's counterpart
+    async function putVideoVisibility(video_id, visibility, user_id) {
+        try {
+            const body = { visibility: !visibility, user_id: user_id }
+            await videoTutorAPI.putVideoVisibility(video_id, body)
+            let videos = listVideoAdmin.map(function (video) {
+                if (video.uuid === video_id) video.visibility = !video.visibilitya;
+                return video;
+            })
+            setListVideoAdmin((value) => (value = videos));
+        }
+        catch (err) {
+            // TODO: handle the error with better implementation
+            console.log("modifyCategoriesError", err)
+        }
+    }
+
+
+    // deleteVideo remove current video from interface and system 
+    async function deleteVideo(video_id) {
+        try {
+            await videoTutorAPI.deleteVideo(video_id)
+            setListVideoAdmin([
+                ...listVideoAdmin.filter((list) => list.uuid !== video_id)
+            ])
+            return true
+        }
+        catch (err) {
+            // TODO: handle the error with better implementation
+            console.log("modifyCategoriesError", err)
+        }
+    }
+
+
+    // set of providers that would be used by it children
     const providers = {
         listVideoViewer, getListVideoViewer,
         listVideoAdmin, getListVideoAdmin,
         listCategories, getListCategories, modifyCategories,
         listPlaylist, getListPlaylist,
-        postVideo,
+
+        videoUpdateState, setVideoUpdateState,
+        modalData, setModalData,
+        pagination, setPagination,
+
+        progress, percentage,
+
+        postVideo, putVideo, putVideoVisibility, deleteVideo,
+        postSuggestion,
     }
 
 

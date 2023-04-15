@@ -70,9 +70,13 @@ const ConfigurationRoutes = [
     component: lazy(() => import('../../views/configuration/license/tour'))
   },
   {
-    path: '/configuration/video-tutorial',
-    component: lazy(() => import('../../views/configuration/user-preferences/video-tutorial')),
+    path: '/configuration/video-management/video-tutorial',
+    component: lazy(() => import('../../views/configuration/user-preferences/video-management/video-tutorial')),
   },
+  // {
+  //   path: '/configuration/video-management/video-tutorial/:video_id',
+  //   component: lazy(() => import('../../views/configuration/user-preferences/video-management/video-tutorial/Components/ModalContent/VideoTutorial'))
+  // },
 ];
 
 export default ConfigurationRoutes;
