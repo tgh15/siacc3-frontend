@@ -278,13 +278,13 @@ const VideoTutorialContextProvider = (props) => {
                 videoTutorAPI.postVideo(payload)
                     .then(function () {
                         setProgress(false)
-                        successUpload
+                        successUpload()
                         return
                     })
                     .catch(function (err) {
                         console.log("addVideoError", err)
                         setProgress(false)
-                        failUpload
+                        failUpload()
                         return
                     })
             }
@@ -314,7 +314,7 @@ const VideoTutorialContextProvider = (props) => {
                 delete payload.video;
 
                 // create the thumbnail upload
-                const thumbnail = uploadThumbnail(payload.thumbnail)
+                const thumbnail = uploadThumbnail(payload.thumbnail_new)
                 thumbnail.options.onSuccess = function () {
 
                     // read url and hash of uploaded file
@@ -325,23 +325,25 @@ const VideoTutorialContextProvider = (props) => {
                     // hashed filename of uplaoded file then remove
                     // the video from payload
                     payload.thumbnail_id = thash
-                    delete payload.thumbnail;
+                    delete payload.thumbnail_new;
 
-                    videoTutorAPI.putVideo(payload)
+                    videoTutorAPI.putVideo(payload.uuid, payload)
                         .then(function () {
                             setProgress(false)
-                            successUpload
+                            successUpload()
                             return
                         })
                         .catch(function (err) {
                             console.log("addVideoError", err)
                             setProgress(false)
-                            failUpload
+                            failUpload()
                             return
                         })
                 }
+                thumbnail.start()
             }
-
+            setProgress(true)
+            video.start()
             return
         }
 
@@ -359,30 +361,33 @@ const VideoTutorialContextProvider = (props) => {
                 // hashed filename of uplaoded file then remove
                 // the video from payload
                 payload.video_id = vhash
-                delete payload.video;
+                delete payload.video_new;
 
-                videoTutorAPI.putVideo(payload)
+                videoTutorAPI.putVideo(payload.uuid, payload)
                     .then(function () {
                         setProgress(false)
-                        successUpload
+                        successUpload()
                         return
                     })
                     .catch(function (err) {
                         console.log("addVideoError", err)
                         setProgress(false)
-                        failUpload
+                        failUpload()
                         return
                     })
             }
 
+            setProgress(true)
+            video.start()
             return
         }
 
 
         // only thumbnail is defined
         if (payload.thumbnail_new !== undefined && payload.video_new === undefined) {
+
             // create the thumbnail upload
-            const thumbnail = uploadThumbnail(payload.thumbnail)
+            const thumbnail = uploadThumbnail(payload.thumbnail_new)
             thumbnail.options.onSuccess = function () {
 
                 // read url and hash of uploaded file
@@ -393,29 +398,30 @@ const VideoTutorialContextProvider = (props) => {
                 // hashed filename of uplaoded file then remove
                 // the video from payload
                 payload.thumbnail_id = thash
-                delete payload.thumbnail;
+                delete payload.thumbnail_new;
 
-                videoTutorAPI.putVideo(payload)
+                videoTutorAPI.putVideo(payload.uuid, payload)
                     .then(function () {
                         setProgress(false)
-                        successUpload
+                        successUpload()
                         return
                     })
                     .catch(function (err) {
                         console.log("addVideoError", err)
                         setProgress(false)
-                        failUpload
+                        failUpload()
                         return
                     })
             }
 
+            thumbnail.start()
             return
         }
 
 
         // no files upload
         if (payload.video_new === undefined && payload.thumbnail_new === undefined) {
-            videoTutorAPI.putVideo(payload)
+            videoTutorAPI.putVideo(payload.uuid, payload)
                 .then(function () {
                     setProgress(false)
                     successUpload()
