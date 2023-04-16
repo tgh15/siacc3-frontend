@@ -141,7 +141,7 @@ const Routes = [
     component: lazy(() => import('../../views/gis')),
   },
   {
-    path: "/video/test",
+    path: "/video/:role/:video_id",
     // component: lazy(() => import('../../views/configuration/user-preferences/video-management/video-tutorial').then((module) => ({default: module.VideoShare}))),
     component: VideoShare
   },

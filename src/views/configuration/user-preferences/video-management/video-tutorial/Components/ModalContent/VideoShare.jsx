@@ -36,7 +36,7 @@ const VideoShare = (props) => {
           <input
             className="[color:#6E7191] [font-size:10px] tw-w-full tw-font-medium tw-self-center tw-outline-none"
             id="text-copy"
-            value="https://siaccinfo.id/video/agen/193709r23rh"
+            value={`https://siaccinfo.id/video/agen/${props.video_id}`}
           ></input>
           <button
             onClick={copyText}

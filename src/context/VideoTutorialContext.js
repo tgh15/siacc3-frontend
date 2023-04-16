@@ -102,6 +102,18 @@ const VideoTutorialContextProvider = (props) => {
         return thumbnail
     }
 
+    //get video details for video share
+    async function getVideoDetail(video_id){
+        try {
+            const res = await videoTutorAPI.getVideoDetail(video_id)
+            setModalData((value) => (value = res.data.result))
+        }
+        catch (err) {
+            // TODO: handle the error with better implementation
+            console.log("getListVideoViewerError", err)
+        }
+    }
+
 
     // getListVideoViewer get list video for viewer based on given role
     async function getListVideoViewer(role) {
@@ -481,7 +493,7 @@ const VideoTutorialContextProvider = (props) => {
         listVideoViewer, getListVideoViewer,
         listVideoAdmin, getListVideoAdmin,
         listCategories, getListCategories, modifyCategories,
-        listPlaylist, getListPlaylist,
+        listPlaylist, getListPlaylist, getVideoDetail,
 
         videoUpdateState, setVideoUpdateState,
         modalData, setModalData,

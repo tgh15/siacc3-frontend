@@ -31,6 +31,7 @@ const role = "Admin Daerah"
 
 import "./tailwind"
 import "./index.css"
+import ViewShare from "./ViewShare";
 tailwind.config = { prefix: "tw-" }
 
 const VideoManagement = () => {
@@ -244,12 +245,10 @@ export default () => {
 }
 
 export const VideoShare = () => {
- 
-
   return ( 
-    // <VideoDetail />
-    <div>
-      <h1 className="tw-text-xl">TEsssssss</h1>
-    </div>
+    // <ViewShare/>
+    <VideoTutorialContextProvider>
+      <ViewShare/>
+    </VideoTutorialContextProvider>
   )
 }

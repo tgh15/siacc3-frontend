@@ -29,6 +29,9 @@ const getListVideoAdmin = (params) => videoGetEndpoint("/list/video-admin" + par
 const getListPlaylist = (role, category) => videoGetEndpoint(`/list/playlist?category=${category.replace(/[&]/g, "%26")}&role=${role}`)
 const getListCategories = () => videoGetEndpoint("/list/categories")
 
+const getVideoDetail = (video_id) => videoGetEndpoint("/view/video-detail/"+video_id)
+
+
 // POST Endnpoints
 const postVideo = (body) => videoPostEndpoint("/add-video", body)
 const postVideoSuggestion = (body) => videoPostEndpoint(`/add-suggestion`, body)
@@ -72,6 +75,7 @@ export const videoTutorAPI = {
     getListVideoAdmin,
     getListPlaylist,
     getListCategories,
+    getVideoDetail,
     postVideo,
     postVideoSuggestion,
     putVideo,

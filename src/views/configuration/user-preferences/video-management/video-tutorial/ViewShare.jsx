@@ -1,25 +1,30 @@
-import { useContext, useEffect, useRef } from "react";
-import Player from "../VideoPlayer/Player";
-import Modal from "../Modal/Modal";
-import Search from "../../assets/search.png";
-import Play from "../../assets/play.png";
-import VideoSuggest from "./VideoSuggest";
-import VideoShare from "./VideoShare";
-import { VideoTutorialContext } from "../../../../../../../context/VideoTutorialContext";
+import VideoSuggest from "./Components/ModalContent/VideoSuggest"
+import VideoShare from "./Components/ModalContent/VideoShare"
+import Player from "./Components/VideoPlayer/Player"
+import { Search } from "react-feather"
+import { useContext } from "react"
+import { VideoTutorialContext } from "../../../../../context/VideoTutorialContext"
+import { useRef } from "react"
+import { useEffect } from "react"
+import { useParams } from "react-router-dom"
 
-const VideoDetail = (props) => {
-  const { listPlaylist, modalData, setModalData, basePath } =
+const ViewShare = () => {
+    const { listPlaylist, modalData, setModalData, basePath, getVideoDetail } =
     useContext(VideoTutorialContext);
-  const suggestBtnRef = useRef();
-  const shareBtnRef = useRef();
+    const suggestBtnRef = useRef();
+    const shareBtnRef = useRef();
 
-  useEffect(() => {
-    console.log(listPlaylist);
-    console.log(modalData)
-  }, [listPlaylist]);
+    const {role, video_id} = useParams()
 
-  return (
-    <Modal ref={props.modalRef} modal_lg>
+    useEffect(() => {
+        console.log(listPlaylist);
+        console.log(role)
+        console.log(video_id)
+        getVideoDetail(video_id)
+    }, [listPlaylist]);
+
+    return (
+    <div>
       <p className="tw-text-center [color:#6E7191] tw-font-semibold">
         Video Tutorial
       </p>
@@ -170,10 +175,9 @@ const VideoDetail = (props) => {
         durasi={modalData.durasi}
         thumbnail={basePath + modalData.thumbnail}
       />
-      <VideoShare modalRef={shareBtnRef}
-        video_id={modalData.uuid} />
-    </Modal>
-  );
-};
+      <VideoShare modalRef={shareBtnRef} video_id={video_id} />
+    </div>
+    )
+}
 
-export default VideoDetail;
+export default ViewShare
