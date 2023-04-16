@@ -24,6 +24,8 @@ import ImgFilter from "./assets/vector.png"
 import VideoContextProvider, { VideoContext } from "./Context/VideoContext";
 import VideoTutorialContextProvider, { VideoTutorialContext } from "../../../../../context/VideoTutorialContext"
 
+import VideoDetail from "./Components/ModalContent/VideoDetail";
+
 // TODO: get role from current login session
 const role = "Admin Daerah"
 
@@ -229,6 +231,8 @@ const VideoManagement = () => {
   );
 }
 
+
+
 export default () => {
   return (
     <VideoTutorialContextProvider>
@@ -236,5 +240,16 @@ export default () => {
         <VideoManagement />
       </VideoContextProvider>
     </VideoTutorialContextProvider>
+  )
+}
+
+export const VideoShare = () => {
+ 
+
+  return ( 
+    // <VideoDetail />
+    <div>
+      <h1 className="tw-text-xl">TEsssssss</h1>
+    </div>
   )
 }

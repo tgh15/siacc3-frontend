@@ -165,6 +165,7 @@ const VideoTutorialContextProvider = (props) => {
     async function getListPlaylist(role, category) {
         try {
             const res = await videoTutorAPI.getListPlaylist(role, category)
+            console.log(res.data.result)
             setListPlayList((value) => (value = res.data.result))
         }
         catch (err) {

@@ -13,6 +13,8 @@ import ConfigurationRoutes from './Configuration';
 import HelpdeskUsersRoutes from './HelpdeskUsers';
 import VoiceVideoCallRoutes from './VoiceVideoCall';
 
+import {VideoShare} from "../../views/configuration/user-preferences/video-management/video-tutorial"
+
 // ** Document title
 const TemplateTitle = '%s'
 
@@ -138,10 +140,11 @@ const Routes = [
     path: '/gis',
     component: lazy(() => import('../../views/gis')),
   },
-  // {
-  //   path: "/video/:role/:video_id",
-  //   component: lazy(() => import('../../components/video-tutorial/Components/ModalContent/VideoTutorial')),
-  // },
+  {
+    path: "/video/test",
+    // component: lazy(() => import('../../views/configuration/user-preferences/video-management/video-tutorial').then((module) => ({default: module.VideoShare}))),
+    component: VideoShare
+  },
 
 ];
 
