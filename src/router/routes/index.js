@@ -138,10 +138,10 @@ const Routes = [
     path: '/gis',
     component: lazy(() => import('../../views/gis')),
   },
-  {
-    path: "/video/:role/:video_id",
-    component: lazy(() => import('../../components/video-tutorial/Components/ModalContent/VideoTutorial')),
-  },
+  // {
+  //   path: "/video/:role/:video_id",
+  //   component: lazy(() => import('../../components/video-tutorial/Components/ModalContent/VideoTutorial')),
+  // },
 
 ];
 
