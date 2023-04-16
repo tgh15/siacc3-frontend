@@ -2,17 +2,11 @@ import React, { useContext, useEffect, useState } from "react";
 import Modal from "../Modal/Modal";
 import SimbolThumbnail from "../../assets/simbol-thumbnail.png";
 import Tags from "../Form/Tags";
-import { VideoTutorialContext } from "../../../../context/VideoTutorialContext";
-
-const sourceEndpoint =
-  !process.env.NODE_ENV || process.env.NODE_ENV === "production"
-    ? window._env_.REACT_APP_API_GATEWAY
-    : process.env.REACT_APP_API_GATEWAY;
+import { VideoTutorialContext } from "../../../../../../../context/VideoTutorialContext";
 
 const VideoUpdate = (props) => {
-  console.log("props", props);
-
   const {
+    basePath,
     putVideo,
     videoUpdateState,
     setVideoUpdateState,
@@ -362,7 +356,7 @@ const VideoUpdate = (props) => {
                 ) : (
                   <>
                     <video
-                      src={sourceEndpoint + "/" + videoUpdateState.source}
+                      src={basePath + videoUpdateState.source}
                       className="video-preview"
                     />
                   </>

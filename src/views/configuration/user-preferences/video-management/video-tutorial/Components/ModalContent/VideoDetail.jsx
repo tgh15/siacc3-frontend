@@ -1,20 +1,14 @@
+import { useContext, useEffect, useRef } from "react";
 import Player from "../VideoPlayer/Player";
 import Modal from "../Modal/Modal";
-
 import Search from "../../assets/search.png";
 import Play from "../../assets/play.png";
-import { useContext, useEffect, useRef } from "react";
 import VideoSuggest from "./VideoSuggest";
 import VideoShare from "./VideoShare";
-import { VideoTutorialContext } from "../../../../context/VideoTutorialContext";
-
-const sourceEndpoint =
-  !process.env.NODE_ENV || process.env.NODE_ENV === "production"
-    ? window._env_.REACT_APP_API_GATEWAY
-    : process.env.REACT_APP_API_GATEWAY;
+import { VideoTutorialContext } from "../../../../../../../context/VideoTutorialContext";
 
 const VideoDetail = (props) => {
-  const { listPlaylist, modalData, setModalData } =
+  const { listPlaylist, modalData, setModalData, basePath } =
     useContext(VideoTutorialContext);
   const suggestBtnRef = useRef();
   const shareBtnRef = useRef();
@@ -125,9 +119,9 @@ const VideoDetail = (props) => {
               <span className="[font-size:13px] tw-font-semibold">
                 {modalData.kategori}
               </span>
-              <p className="[color:#4E4B66] [font-size:10px]">
+              <div className="[color:#4E4B66] [font-size:10px]">
                 {listPlaylist.length} Video
-              </p>
+              </div>
             </div>
             <div className="tw-mt-5 [height:61vh] tw-overflow-auto">
               <div className="tw-mx-3">
@@ -141,7 +135,7 @@ const VideoDetail = (props) => {
                       className={`Player ? 'tw-relative tw-contents' : 'tw-relative'`}
                     >
                       <img
-                        src={sourceEndpoint + playlist.thumbnail}
+                        src={basePath + playlist.thumbnail}
                         alt=""
                         className="tw-w-28 tw-h-16 tw-rounded-lg"
                       />
@@ -173,7 +167,7 @@ const VideoDetail = (props) => {
         modalRef={suggestBtnRef}
         judul={modalData.judul}
         durasi={modalData.durasi}
-        thumbnail={sourceEndpoint + modalData.thumbnail}
+        thumbnail={basePath + modalData.thumbnail}
       />
       <VideoShare modalRef={shareBtnRef} />
     </Modal>

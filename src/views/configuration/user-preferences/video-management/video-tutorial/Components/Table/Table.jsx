@@ -1,13 +1,11 @@
-import { Fragment, lazy, useContext, useRef, useState } from "react";
-import { VideoContext } from "../../../../views/configuration/user-preferences/video-management/video-tutorial/Context/VideoContext";
-import { VideoTutorialContext } from "../../../../context/VideoTutorialContext";
+import { Fragment, useContext, useRef } from "react";
+import { VideoTutorialContext } from "../../../../../../../context/VideoTutorialContext";
 import VideoDelete from "../ModalContent/VideoDelete";
 import VideoDetail from "../ModalContent/VideoDetail";
 import VideoUpdate from "../ModalContent/VideoUpdate";
 import classes from "./Table.module.css";
 
-// const VideoUpdate = lazy(() => import("../ModalContent/VideoUpdate"));
-const role = "Admin Daerah";
+const role = "Admin Daerah"; // TODO: replace with current user's role
 
 const Table = (props) => {
   return <table className="tw-w-full">{props.children}</table>;
@@ -37,13 +35,8 @@ export const TBody = (props) => {
   const updateRef = useRef();
   const deleteRef = useRef();
 
-  const sourceEndpoint =
-    !process.env.NODE_ENV || process.env.NODE_ENV === "production"
-      ? window._env_.REACT_APP_API_GATEWAY
-      : process.env.REACT_APP_API_GATEWAY;
-
-  const {} = useContext(VideoContext);
   const {
+    basePath,
     modalData,
     setModalData,
     getListPlaylist,
@@ -80,7 +73,7 @@ export const TBody = (props) => {
                   onClick={() => openModalVideo(row)}
                 >
                   <img
-                    src={sourceEndpoint + row.thumbnail}
+                    src={basePath + row.thumbnail}
                     className="tw-w-40 tw-h-24 tw-object-cover tw-rounded-md tw-my-2"
                     alt={row.judul}
                   />

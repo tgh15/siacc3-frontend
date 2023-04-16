@@ -12,13 +12,13 @@ import React, { useContext, useEffect, useRef, useState } from "react";
 
 
 // components
-import Table, { TBody, THead } from "../../../../../components/video-tutorial/Components/Table/Table";
-import Navigation from "../../../../../components/video-tutorial/Components/Navigation/Navigation";
-import VideoAdd from "../../../../../components/video-tutorial/Components/ModalContent/VideoAdd";
-import VideoTutorial from "../../../../../components/video-tutorial/Components/ModalContent/VideoTutorial";
-import VideoFilter from "../../../../../components/video-tutorial/Components/ModalContent/VideoFilter";
-import SearchBar from "../../../../../components/video-tutorial/Components/SearchBar/SearchBar";
-import ImgFilter from "../../../../../components/video-tutorial/assets/vector.png"
+import Table, { TBody, THead } from "./Components/Table/Table";
+import Navigation from "./Components/Navigation/Navigation";
+import VideoAdd from "./Components/ModalContent/VideoAdd";
+import VideoTutorial from "./Components/ModalContent/VideoTutorial";
+import VideoFilter from "./Components/ModalContent/VideoFilter";
+import SearchBar from "./Components/SearchBar/SearchBar";
+import ImgFilter from "./assets/vector.png"
 
 // context and providers
 import VideoContextProvider, { VideoContext } from "./Context/VideoContext";
@@ -33,8 +33,8 @@ tailwind.config = { prefix: "tw-" }
 
 const VideoManagement = () => {
   const addRef = useRef();
-  const tutorialRef = useRef();
   const filterRef = useRef();
+  const tutorialRef = useRef();
 
   const {
     listVideoAdmin, getListVideoAdmin,

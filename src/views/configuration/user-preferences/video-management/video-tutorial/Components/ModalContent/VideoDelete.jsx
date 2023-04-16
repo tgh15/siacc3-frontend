@@ -3,7 +3,7 @@ import Modal from "../Modal/Modal";
 import IconX from "../../assets/icon-x.png";
 import IconConfirm from "../../assets/icon-confirm.png";
 import IconSuccess from "../../assets/icon-success.png";
-import { VideoTutorialContext } from "../../../../context/VideoTutorialContext";
+import { VideoTutorialContext } from "../../../../../../../context/VideoTutorialContext";
 
 const VideoDelete = (props) => {
   const [content, setContent] = useState("");

@@ -1,6 +1,5 @@
 import React, { useContext, useState } from "react";
-// import { VideoContext } from "../../Context/VideoContext";
-import { VideoTutorialContext } from "../../../../context/VideoTutorialContext";
+import { VideoTutorialContext } from "../../../../../../../context/VideoTutorialContext";
 import Modal from "../Modal/Modal";
 
 const VideoSuggest = (props) => {

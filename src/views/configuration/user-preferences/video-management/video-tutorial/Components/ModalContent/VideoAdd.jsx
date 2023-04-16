@@ -5,7 +5,7 @@ import Modal from "../Modal/Modal";
 import Tags from "../Form/Tags";
 
 // context and providers
-import { VideoTutorialContext } from "../../../../context/VideoTutorialContext";
+import { VideoTutorialContext } from "../../../../../../../context/VideoTutorialContext";
 
 // assests
 import SimbolUpload from "../../assets/simbol-upload.png";

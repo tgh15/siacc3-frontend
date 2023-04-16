@@ -1,18 +1,14 @@
 import React, { useContext, useEffect, useRef } from "react";
-import { VideoContext } from "../../../../views/configuration/user-preferences/video-management/video-tutorial/Context/VideoContext";
-import { VideoTutorialContext } from "../../../../context/VideoTutorialContext";
+import { VideoTutorialContext } from "../../../../../../../context/VideoTutorialContext";
 import Modal from "../Modal/Modal";
 import SearchBar from "../SearchBar/SearchBar";
 import VideoDetail from "./VideoDetail";
 
-const role = "Admin Daerah";
-const sourceEndpoint =
-  !process.env.NODE_ENV || process.env.NODE_ENV === "production"
-    ? window._env_.REACT_APP_API_GATEWAY
-    : process.env.REACT_APP_API_GATEWAY;
+const role = "Admin Daerah"; // TODO: replace with user's role
 
 const VideoTutorial = (props) => {
   const {
+    basePath,
     modalData,
     setModalData,
     listVideoViewer,
@@ -57,7 +53,7 @@ const VideoTutorial = (props) => {
               key={index}
             >
               <img
-                src={sourceEndpoint + item.thumbnail}
+                src={basePath + item.thumbnail}
                 alt=""
                 width="246px"
                 className="[height:108px] [object-fit:cover] tw-rounded-lg"

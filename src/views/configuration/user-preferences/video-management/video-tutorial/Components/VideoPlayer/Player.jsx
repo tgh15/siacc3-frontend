@@ -1,9 +1,11 @@
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
+import { VideoTutorialContext } from "../../../../../../../context/VideoTutorialContext";
 // import { Hls } from "hls.js";
 import "./Player.css";
 const Hls = window.Hls;
 
 const Player = (props) => {
+  const { basePath } = useContext(VideoTutorialContext);
   const videoRef = useRef(null);
   const videoContainerRef = useRef(null);
   const volumeSliderRef = useRef(null);
@@ -48,7 +50,7 @@ const Player = (props) => {
 
       videoContainer.dataset.volumeLevel = volumeLevel;
     });
-    let videoSource = `http://147.139.162.58:5002${props.source}`;
+    let videoSource = basePath + props.source;
     let videoSourceSplit = videoSource.split(".");
     let extension = videoSourceSplit[videoSourceSplit.length - 1];
     if (extension == "m3u8") {
@@ -409,7 +411,7 @@ const Player = (props) => {
           </button>
         </div>
       </div>
-      <video ref={videoRef} src={`http://147.139.162.58:5002${props.source}`} />
+      <video ref={videoRef} src={basePath + props.source} />
     </div>
   );
 };
