@@ -7,6 +7,10 @@ const VideoShare = (props) => {
   const copyText = () => {
     var copyText = document.getElementById("text-copy");
     copyText.select();
+    copyText.setSelectionRange(0, 99999); // For mobile devices
+
+    // Copy the text inside the text field
+   navigator.clipboard.writeText(copyText.value);
   };
   return (
     <Modal ref={props.modalRef} modal_md>
