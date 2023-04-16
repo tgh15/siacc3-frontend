@@ -7,14 +7,13 @@ import * as tus from "tus-js-client";
  * to create a request to Siacc API Gateway.
  * 
  * @todo:
- * - Add endpoint for upload module using tusd
- * - Migrate all request from video-tutorial/Context to this file
- * 
- */
-
+ * - Add endpoint for upload module using tusd Migrate all request from video-tutorial/Context to this file 
+ *
+ * */
 
 // base prefix for video tutorial management services/modules
-const tusPath = !process.env.NODE_ENV || process.env.NODE_ENV === 'production' ? window._env_.REACT_APP_TUS_URL : process.env.REACT_APP_TUS_URL
+// const tusPath = !process.env.NODE_ENV || process.env.NODE_ENV === 'production' ? window._env_.REACT_APP_API_GATEWAY : process.env.REACT_APP_API_GATEWAY
+const tusPath = !process.env.NODE_ENV || process.env.NODE_ENV === 'production' ? window._env_.REACT_APP_API_GATEWAY : process.env.REACT_APP_VT_URL
 const videoPrefix = "video-tutor/video"
 const uploadPrefix = "video-tutor/upload"
 
@@ -57,6 +56,7 @@ const videoUploadEndpoint = (payload) => {
 const thumbnailUploadEndpoint = (payload, options) => {
     return new tus.Upload(payload, {
         endpoint: `${tusPath}/${uploadPrefix}/thumbnails/`,
+        uploadUrl: `${tusPath}/${uploadPrefix}/thumbnails/`,
         retryDelays: [0, 3000, 5000, 10000, 20000],
         metadata: {
             filename: payload.name,
