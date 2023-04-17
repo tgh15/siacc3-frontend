@@ -244,71 +244,51 @@ const VideoTutorialContextProvider = (props) => {
     // next after video upload is succeed then upload the thumbnail.
     // After all upload file succeed then add the video data to server.
     function postVideo(payload) {
-
-        // check each field value, if one or more field is empty
-        // then abort upload and show alert
-        // const keys = Object.keys(payload)
-        // for (let i = 0; i < keys.length; i++) {
-        //     if (payload[keys[i]] === null || payload[keys[i]].length === 0) {
-        //         Swal.fire({
-        //             position: "center",
-        //             icon: "error",
-        //             title: "Harap untuk mengisi field " + keys[i],
-        //             showConfirmButton: false,
-        //             timer: 1500
-        //         })
-        //         return
-        //     }
-        // }
-
-
         // create video upload
         const video = uploadVideo(payload.video)
+        video.options.onSuccess = function () {
+
+            // read url and hash of uploaded file
+            let vurl = video.url.split("/");
+            let vhash = vurl[vurl.length - 1];
+
+            // add new key video_id that contain
+            // hashed filename of uplaoded file then remove
+            // the video from payload
+            payload.video_id = vhash
+            delete payload.video;
+
+            // create the thumbnail upload
+            const thumbnail = uploadThumbnail(payload.thumbnail)
+            thumbnail.options.onSuccess = function () {
+
+                // read url and hash of uploaded file
+                let turl = thumbnail.url.split("/");
+                let thash = turl[turl.length - 1];
+
+                // add new key thumbnail_id that contain
+                // hashed filename of uplaoded file then remove
+                // the video from payload
+                payload.thumbnail_id = thash
+                delete payload.thumbnail;
+
+                videoTutorAPI.postVideo(payload)
+                    .then(function () {
+                        setProgress(false)
+                        successUpload()
+                        return
+                    })
+                    .catch(function (err) {
+                        console.log("addVideoError", err)
+                        setProgress(false)
+                        failUpload()
+                        return
+                    })
+            }
+            thumbnail.start()
+        }
         setProgress(true)
         video.start()
-        // video.options.onSuccess = function () {
-
-        //     // read url and hash of uploaded file
-        //     let vurl = video.url.split("/");
-        //     let vhash = vurl[vurl.length - 1];
-
-        //     // add new key video_id that contain
-        //     // hashed filename of uplaoded file then remove
-        //     // the video from payload
-        //     payload.video_id = vhash
-        //     delete payload.video;
-
-        //     // create the thumbnail upload
-        //     const thumbnail = uploadThumbnail(payload.thumbnail)
-        //     thumbnail.options.onSuccess = function () {
-
-        //         // read url and hash of uploaded file
-        //         let turl = thumbnail.url.split("/");
-        //         let thash = turl[turl.length - 1];
-
-        //         // add new key thumbnail_id that contain
-        //         // hashed filename of uplaoded file then remove
-        //         // the video from payload
-        //         payload.thumbnail_id = thash
-        //         delete payload.thumbnail;
-
-        //         videoTutorAPI.postVideo(payload)
-        //             .then(function () {
-        //                 setProgress(false)
-        //                 successUpload()
-        //                 return
-        //             })
-        //             .catch(function (err) {
-        //                 console.log("addVideoError", err)
-        //                 setProgress(false)
-        //                 failUpload()
-        //                 return
-        //             })
-        //     }
-        //     thumbnail.start()
-        // }
-        // setProgress(true)
-        // video.start()
     }
 
 

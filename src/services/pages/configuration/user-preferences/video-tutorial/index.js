@@ -76,8 +76,8 @@ const videoUploadEndpoint = (payload) => {
             'Cache-Control': 'no-cache',
             'Pragma': 'no-cache',
             'Expires': '0',
-            'X-Forwarded-Host': "http://192.168.52.90:8080",
-            'X-Forwarded-Proto': "http",
+            'X-Forwarded-Host': "192.168.52.90:8080",
+            'X-Forwarded-Proto': "https",
         },
         retryDelays: [0, 3000, 5000, 10000, 20000],
         metadata: {
