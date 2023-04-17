@@ -5,8 +5,6 @@ import VideoDetail from "../ModalContent/VideoDetail";
 import VideoUpdate from "../ModalContent/VideoUpdate";
 import classes from "./Table.module.css";
 
-const role = "Admin Daerah"; // TODO: replace with current user's role
-
 const Table = (props) => {
   return <table className="tw-w-full">{props.children}</table>;
 };
@@ -37,6 +35,7 @@ export const TBody = (props) => {
 
   const {
     basePath,
+    userRole,
     modalData,
     setModalData,
     getListPlaylist,
@@ -104,11 +103,7 @@ export const TBody = (props) => {
                 <div className="tw-flex tw-gap-3 tw-z-10">
                   <button
                     onClick={() =>
-                      putVideoVisibility(
-                        row.uuid,
-                        row.visibility,
-                        Math.random().toString() // TODO: replace with current user id
-                      )
+                      putVideoVisibility(row.uuid, row.visibility, userRole)
                     }
                   >
                     {row.visibility ? (
