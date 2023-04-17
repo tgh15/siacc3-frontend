@@ -6,6 +6,18 @@
 	margin-top: 0;
 	margin-bottom: 0;
 } */
+	
+/* fix  */
+/* canvas, 
+embed, 
+iframe, 
+img,  */
+/* object,  */
+svg 
+/* video  */
+{
+	display: initial !important;
+}
 
 .input-group .tw-w-full{
 	width: 90% !important;
