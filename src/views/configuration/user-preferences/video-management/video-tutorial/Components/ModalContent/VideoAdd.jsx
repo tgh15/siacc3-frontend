@@ -12,8 +12,13 @@ import SimbolUpload from "../../assets/simbol-upload.png";
 import SimbolThumbnail from "../../assets/simbol-thumbnail.png";
 
 const VideoAdd = (props) => {
-  const { listCategories, getListCategories, modifyCategories, postVideo } =
-    useContext(VideoTutorialContext);
+  const {
+    listCategories,
+    getListCategories,
+    modifyCategories,
+    postVideo,
+    userId,
+  } = useContext(VideoTutorialContext);
 
   const [dropDownState, setDropDownState] = useState({
     role: true,
@@ -28,7 +33,7 @@ const VideoAdd = (props) => {
     kategori: "",
     role: [],
     tags: [],
-    uploader_id: Math.random().toString(), // TODO: change with logged user
+    uploader_id: userId,
   });
 
   const [newCategory, setNewCategory] = useState("");
@@ -324,8 +329,8 @@ const VideoAdd = (props) => {
               ))}
             </div>
           </div>
-          {/* <Kategori /> */}
 
+          {/* <Kategori /> */}
           <div className="input-group">
             <label htmlFor="deskripsi">Deskripsi</label>
             <input
@@ -392,7 +397,7 @@ const VideoAdd = (props) => {
               type="text"
               name="videolink"
               id="videolink"
-              value="siaccinfo.id/video/tutorial"
+              value="-"
               className="tw-pb-2"
             />
           </div>

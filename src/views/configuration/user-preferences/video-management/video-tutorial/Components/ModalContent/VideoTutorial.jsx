@@ -4,36 +4,31 @@ import Modal from "../Modal/Modal";
 import SearchBar from "../SearchBar/SearchBar";
 import VideoDetail from "./VideoDetail";
 
-const role = "Admin Daerah"; // TODO: replace with user's role
-
 const VideoTutorial = (props) => {
   const {
     basePath,
-    modalData,
     setModalData,
     listVideoViewer,
     getListVideoViewer,
     listPlaylist,
     getListPlaylist,
-    // listVideoAdmin, getListVideoAdmin
+    userRole,
   } = useContext(VideoTutorialContext);
 
   const detailRef = useRef();
 
   const handleClick = async (kategori) => {
-    await getListPlaylist(role, kategori);
+    await getListPlaylist(userRole, kategori);
     await openModal();
   };
 
   const openModal = async () => {
-    console.log("listPlaylist", listPlaylist[0]);
     await setModalData(listPlaylist[0]);
     await detailRef.current.openModal();
   };
 
   useEffect(() => {
-    getListVideoViewer(role);
-    // console.log(listPlaylist[0]);
+    getListVideoViewer(userRole);
   }, [listPlaylist]);
 
   return (

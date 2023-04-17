@@ -13,10 +13,9 @@ const VideoDetail = (props) => {
   const suggestBtnRef = useRef();
   const shareBtnRef = useRef();
 
-  useEffect(() => {
-    console.log(listPlaylist);
-    console.log(modalData)
-  }, [listPlaylist]);
+  console.log(modalData);
+
+  useEffect(() => {}, [listPlaylist]);
 
   return (
     <Modal ref={props.modalRef} modal_lg>
@@ -170,8 +169,11 @@ const VideoDetail = (props) => {
         durasi={modalData.durasi}
         thumbnail={basePath + modalData.thumbnail}
       />
-      <VideoShare modalRef={shareBtnRef}
-        video_id={modalData.uuid} />
+      <VideoShare
+        modalRef={shareBtnRef}
+        video_id={modalData.uuid}
+        roles={modalData.role}
+      />
     </Modal>
   );
 };

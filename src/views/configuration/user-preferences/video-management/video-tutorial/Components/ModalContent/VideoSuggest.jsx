@@ -1,10 +1,10 @@
 import React, { useContext, useState } from "react";
-import { VideoTutorialContext } from "../../../../../../../context/VideoTutorialContext";
 import Modal from "../Modal/Modal";
+import { VideoTutorialContext } from "../../../../../../../context/VideoTutorialContext";
 
 const VideoSuggest = (props) => {
   const [videoSuggestion, setVideoSuggestion] = useState("");
-  const { addVideoSuggestion } = useContext(VideoTutorialContext);
+  const { addVideoSuggestion, userId } = useContext(VideoTutorialContext);
 
   return (
     <Modal ref={props.modalRef}>
@@ -42,9 +42,10 @@ const VideoSuggest = (props) => {
         ></textarea>
         {/* <Terkirim/> */}
         <button
-          className="btn-y tw-mx-auto tw-flex tw-mt-8 tw-mb-3"
+          style={{ margin: "20px auto !important" }}
+          className="btn-y  tw-flex  "
           onClick={() =>
-            addVideoSuggestion(videoSuggestion, props.uuid, Math.random())
+            addVideoSuggestion(videoSuggestion, props.uuid, userId)
           }
         >
           Kirim

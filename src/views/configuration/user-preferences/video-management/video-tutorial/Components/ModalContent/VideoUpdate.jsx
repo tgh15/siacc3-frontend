@@ -7,6 +7,8 @@ import { VideoTutorialContext } from "../../../../../../../context/VideoTutorial
 const VideoUpdate = (props) => {
   const {
     basePath,
+    userId,
+    host,
     putVideo,
     videoUpdateState,
     setVideoUpdateState,
@@ -55,8 +57,8 @@ const VideoUpdate = (props) => {
     let data = videoUpdateState;
     data.video_id = data.source;
     data.thumbnail_id = data.thumbnail;
-    data.user_id = Math.random().toString(); // TODO: replace with logged user
-    data.uploader_id = Math.random().toString(); // TODO: replace with logger user
+    data.user_id = userId;
+    data.uploader_id = userId;
     putVideo(data);
     props.modalRef.current.closeModal();
   };
@@ -64,8 +66,6 @@ const VideoUpdate = (props) => {
   // load videos for admin and viewer also categories
   // when component is render/mounted
   useEffect(() => {
-    // console.log("data", props.data);
-    // setVideoUpdateState((value) => (value = props.data));
     getListCategories();
   }, []);
 
@@ -394,7 +394,7 @@ const VideoUpdate = (props) => {
               type="text"
               name="videolink"
               id="videolink"
-              value="siaccinfo.id/video/tutorial"
+              value={`${host}`}
               className="tw-pb-2"
             />
           </div>
