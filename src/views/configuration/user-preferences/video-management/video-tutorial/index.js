@@ -5,8 +5,8 @@ import React, { useContext, useEffect, useRef, useState } from "react";
  * Index file for video tutorial.
  * 
  * @todo:
- * - Get role of current login user
- * - Get user_id of current user
+ * - Get role of current login user [done]
+ * - Get user_id of current user [done]
  * 
  */
 
@@ -24,10 +24,6 @@ import ImgFilter from "./assets/vector.png"
 import VideoContextProvider, { VideoContext } from "./Context/VideoContext";
 import VideoTutorialContextProvider, { VideoTutorialContext } from "../../../../../context/VideoTutorialContext"
 
-import VideoDetail from "./Components/ModalContent/VideoDetail";
-
-// TODO: get role from current login session
-const role = "Admin Daerah"
 
 import "./tailwind"
 import "./index.css"
@@ -245,10 +241,10 @@ export default () => {
 }
 
 export const VideoShare = () => {
-  return ( 
+  return (
     // <ViewShare/>
     <VideoTutorialContextProvider>
-      <ViewShare/>
+      <ViewShare />
     </VideoTutorialContextProvider>
   )
 }
