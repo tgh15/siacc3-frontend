@@ -6,7 +6,10 @@ export const VideoTutorialContext = createContext()
 const VideoTutorialContextProvider = (props) => {
 
     // video tutorial states
-    const basePath = !process.env.NODE_ENV || process.env.NODE_ENV === 'production' ? window._env_.REACT_APP_API_GATEWAY : process.env.REACT_APP_VT_URL
+    const basePath = !process.env.NODE_ENV || process.env.NODE_ENV === 'production' ? window._env_.REACT_APP_API_GATEWAY : process.env.REACT_APP_API_GATEWAY
+    const userId = localStorage.getItem("userData.user_uuid")
+    const userRole = localStorage.getItem("role")
+    const host = window.location.host
     const [listVideoAdmin, setListVideoAdmin] = useState([]);
     const [listVideoViewer, setListVideoViewer] = useState([]);
     const [listCategories, setListCategories] = useState([])
@@ -26,7 +29,7 @@ const VideoTutorialContextProvider = (props) => {
         kategori: "",
         role: [],
         tags: [],
-        uploader_id: Math.random().toString(), // TODO: change with logged user
+        uploader_id: "",
     });
 
     const successUpload = () => Swal.fire({
@@ -58,7 +61,6 @@ const VideoTutorialContextProvider = (props) => {
     function uploadVideo(payload) {
         // video upload
         const video = videoTutorAPI.videoUploadEndpoint(payload)
-
         // onError triggered when upload failed
         video.options.onError = function (err) {
             console.log("videoUploadEndpointErr", err)
@@ -103,7 +105,7 @@ const VideoTutorialContextProvider = (props) => {
     }
 
     //get video details for video share
-    async function getVideoDetail(video_id){
+    async function getVideoDetail(video_id) {
         try {
             const res = await videoTutorAPI.getVideoDetail(video_id)
             setModalData((value) => (value = res.data.result))
@@ -245,70 +247,71 @@ const VideoTutorialContextProvider = (props) => {
 
         // check each field value, if one or more field is empty
         // then abort upload and show alert
-        const keys = Object.keys(payload)
-        for (let i = 0; i < keys.length; i++) {
-            if (payload[keys[i]] === null || payload[keys[i]].length === 0) {
-                Swal.fire({
-                    position: "center",
-                    icon: "error",
-                    title: "Harap untuk mengisi field " + keys[i],
-                    showConfirmButton: false,
-                    timer: 1500
-                })
-                return
-            }
-        }
+        // const keys = Object.keys(payload)
+        // for (let i = 0; i < keys.length; i++) {
+        //     if (payload[keys[i]] === null || payload[keys[i]].length === 0) {
+        //         Swal.fire({
+        //             position: "center",
+        //             icon: "error",
+        //             title: "Harap untuk mengisi field " + keys[i],
+        //             showConfirmButton: false,
+        //             timer: 1500
+        //         })
+        //         return
+        //     }
+        // }
 
 
         // create video upload
         const video = uploadVideo(payload.video)
-        video.options.onSuccess = function () {
-
-            // read url and hash of uploaded file
-            let vurl = video.url.split("/");
-            let vhash = vurl[vurl.length - 1];
-
-            // add new key video_id that contain
-            // hashed filename of uplaoded file then remove
-            // the video from payload
-            payload.video_id = vhash
-            delete payload.video;
-
-            // create the thumbnail upload
-            const thumbnail = uploadThumbnail(payload.thumbnail)
-            thumbnail.options.onSuccess = function () {
-
-                // read url and hash of uploaded file
-                let turl = thumbnail.url.split("/");
-                let thash = turl[turl.length - 1];
-
-                // add new key thumbnail_id that contain
-                // hashed filename of uplaoded file then remove
-                // the video from payload
-                payload.thumbnail_id = thash
-                delete payload.thumbnail;
-
-                videoTutorAPI.postVideo(payload)
-                    .then(function () {
-                        setProgress(false)
-                        successUpload()
-                        return
-                    })
-                    .catch(function (err) {
-                        console.log("addVideoError", err)
-                        setProgress(false)
-                        failUpload()
-                        return
-                    })
-            }
-            thumbnail.start()
-        }
         setProgress(true)
         video.start()
+        // video.options.onSuccess = function () {
+
+        //     // read url and hash of uploaded file
+        //     let vurl = video.url.split("/");
+        //     let vhash = vurl[vurl.length - 1];
+
+        //     // add new key video_id that contain
+        //     // hashed filename of uplaoded file then remove
+        //     // the video from payload
+        //     payload.video_id = vhash
+        //     delete payload.video;
+
+        //     // create the thumbnail upload
+        //     const thumbnail = uploadThumbnail(payload.thumbnail)
+        //     thumbnail.options.onSuccess = function () {
+
+        //         // read url and hash of uploaded file
+        //         let turl = thumbnail.url.split("/");
+        //         let thash = turl[turl.length - 1];
+
+        //         // add new key thumbnail_id that contain
+        //         // hashed filename of uplaoded file then remove
+        //         // the video from payload
+        //         payload.thumbnail_id = thash
+        //         delete payload.thumbnail;
+
+        //         videoTutorAPI.postVideo(payload)
+        //             .then(function () {
+        //                 setProgress(false)
+        //                 successUpload()
+        //                 return
+        //             })
+        //             .catch(function (err) {
+        //                 console.log("addVideoError", err)
+        //                 setProgress(false)
+        //                 failUpload()
+        //                 return
+        //             })
+        //     }
+        //     thumbnail.start()
+        // }
+        // setProgress(true)
+        // video.start()
     }
 
 
-    // TODO: write the put video context
     function putVideo(payload) {
         // when both video and thumbnail is defined
         if (payload.video_new !== undefined && payload.thumbnail_new !== undefined) {
@@ -488,7 +491,7 @@ const VideoTutorialContextProvider = (props) => {
 
     // set of providers that would be used by it children
     const providers = {
-        basePath,
+        basePath, userId, userRole, host,
 
         listVideoViewer, getListVideoViewer,
         listVideoAdmin, getListVideoAdmin,

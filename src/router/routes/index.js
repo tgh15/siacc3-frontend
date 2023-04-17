@@ -13,7 +13,7 @@ import ConfigurationRoutes from './Configuration';
 import HelpdeskUsersRoutes from './HelpdeskUsers';
 import VoiceVideoCallRoutes from './VoiceVideoCall';
 
-import {VideoShare} from "../../views/configuration/user-preferences/video-management/video-tutorial"
+import { VideoShare } from "../../views/configuration/user-preferences/video-management/video-tutorial"
 
 // ** Document title
 const TemplateTitle = '%s'
@@ -142,7 +142,6 @@ const Routes = [
   },
   {
     path: "/video/:role/:video_id",
-    // component: lazy(() => import('../../views/configuration/user-preferences/video-management/video-tutorial').then((module) => ({default: module.VideoShare}))),
     component: VideoShare
   },
 
