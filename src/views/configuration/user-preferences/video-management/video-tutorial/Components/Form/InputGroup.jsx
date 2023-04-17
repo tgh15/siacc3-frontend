@@ -2,7 +2,7 @@ import React from "react";
 
 const InputGroup = (props) => {
   return (
-    <div className="input-group">
+    <div className="input-group-vid">
       <label htmlFor={props.id}>{props.label}</label>
       <input
         type={props.type || "text"}

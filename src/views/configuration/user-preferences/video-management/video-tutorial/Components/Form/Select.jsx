@@ -4,7 +4,7 @@ import IconDropdown from "../../assets/Forward.png";
 const Select = () => {
   return (
     <div>
-      <div className="input-group">
+      <div className="input-group-vid">
         <label>Kategori</label>
         <div className="tw-flex">
           <input

@@ -109,7 +109,7 @@ const VideoFilter = (props) => {
         </label>
       </div>
       {/* // tgl upload */}
-      <div className="input-group tw-cursor-pointer">
+      <div className="input-group-vid tw-cursor-pointer">
         <label htmlFor="waktuunggah" className="tw-cursor-pointer tw-w-full">
           Waktu Unggah
         </label>
@@ -169,7 +169,7 @@ const VideoFilter = (props) => {
         </div>
       </div>
       {/* //Role */}
-      <div className="input-group tw-relative tw-items-center tw-flex tw-justify-between">
+      <div className="input-group-vid tw-relative tw-items-center tw-flex tw-justify-between">
         <div className="tw-w-full">
           <label htmlFor="role">Role</label>
           <input
@@ -305,7 +305,7 @@ const VideoFilter = (props) => {
       </div>
 
       {/* kategori */}
-      {/* <div className="input-group">
+      {/* <div className="input-group-vid">
         <label htmlFor="kategori">Kategori</label>
         <input
           type="text"
@@ -314,7 +314,7 @@ const VideoFilter = (props) => {
           placeholder="Kategori"
         />
       </div> */}
-      <div className="input-group tw-relative tw-items-center tw-flex tw-justify-between">
+      <div className="input-group-vid tw-relative tw-items-center tw-flex tw-justify-between">
         <div className="tw-w-full">
           <label htmlFor="kategori">Kategori</label>
           <input

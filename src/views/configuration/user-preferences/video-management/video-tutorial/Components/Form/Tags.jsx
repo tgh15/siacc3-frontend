@@ -14,7 +14,7 @@ const Tags = (props) => {
     }
   };
   return (
-    <div className="input-group" style={{ flexDirection: "column" }}>
+    <div className="input-group-vid" style={{ flexDirection: "column" }}>
       <label htmlFor="tags">Tags</label>
       <div></div>
       <ul id="tags">

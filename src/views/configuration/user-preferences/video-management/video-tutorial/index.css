@@ -19,7 +19,7 @@ svg
 	display: initial !important;
 }
 
-.input-group .tw-w-full{
+.input-group-vid .tw-w-full{
 	width: 90% !important;
 }
 
@@ -104,19 +104,19 @@ td {
   border-radius: 10px;
 }
 
-.input-group {
+.input-group-vid {
 	background-color: #eff0f6;
 	padding: 9px 24px;
 	border-radius: 15px;
 	margin-bottom: 12px;
 }
-.input-group label {
+.input-group-vid label {
 	display: block;
 	color: #6e7191;
 	font-size: 12px;
 	font-weight: 400;
 }
-.input-group input {
+.input-group-vid input {
 	background-color: transparent;
 	outline: none;
 	font-size: 12px;

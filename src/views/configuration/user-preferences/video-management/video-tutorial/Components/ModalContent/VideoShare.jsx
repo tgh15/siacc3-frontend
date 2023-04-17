@@ -46,7 +46,8 @@ const VideoShare = (props) => {
             </div>
           </button>
         </div>
-        {userRole.includes("Admin") && (
+        {(userRole.includes("Admin Pusat") ||
+          userRole.includes("Verifikator Pusat")) && (
           <div className="[margin-bottom:10px] tw-border [border-color:#D9DBE9] tw-rounded-lg tw-px-5 tw-py-2 tw-relative">
             <div
               className="tw-flex tw-w-full"

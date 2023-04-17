@@ -85,7 +85,7 @@ const VideoAdd = (props) => {
       {/* <form action=""> */}
       <div className="tw-mt-8 tw-mb-2 tw-grid tw-grid-cols-2 tw-gap-12">
         <div>
-          <div className="input-group">
+          <div className="input-group-vid">
             <label htmlFor="judul">Judul</label>
             <input
               type="text"
@@ -97,7 +97,7 @@ const VideoAdd = (props) => {
               required
             />
           </div>
-          <div className="input-group tw-relative tw-items-center tw-flex tw-justify-between">
+          <div className="input-group-vid tw-relative tw-items-center tw-flex tw-justify-between">
             <div className="tw-w-full">
               <label htmlFor="role">Role</label>
               <input
@@ -221,7 +221,7 @@ const VideoAdd = (props) => {
           </div>
 
           {/* <Role /> */}
-          <div className="input-group tw-relative tw-items-center tw-flex tw-justify-between">
+          <div className="input-group-vid tw-relative tw-items-center tw-flex tw-justify-between">
             <div className="w-full">
               <label htmlFor="kategori">Kategori</label>
               <input
@@ -331,7 +331,7 @@ const VideoAdd = (props) => {
           </div>
 
           {/* <Kategori /> */}
-          <div className="input-group">
+          <div className="input-group-vid">
             <label htmlFor="deskripsi">Deskripsi</label>
             <input
               required
@@ -382,7 +382,7 @@ const VideoAdd = (props) => {
               />
             </label>
           </div>
-          <div className="input-group type-video">
+          <div className="input-group-vid type-video">
             <label htmlFor="filename">Filename</label>
             <input
               type="text"
@@ -401,7 +401,7 @@ const VideoAdd = (props) => {
               className="tw-pb-2"
             />
           </div>
-          <div className="input-group  tw-cursor-pointer">
+          <div className="input-group-vid  tw-cursor-pointer">
             <div className="tw-flex" style={{ width: "100%" }}>
               <div className="tw-w-full">
                 <label
