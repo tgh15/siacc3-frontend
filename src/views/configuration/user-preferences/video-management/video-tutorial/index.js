@@ -58,7 +58,7 @@ const VideoManagement = () => {
     window.addEventListener("hashchange", () => {
       videoTutorial();
     });
-  }, [window, listVideoAdmin, percentage]);
+  }, [window, listVideoAdmin, percentage, filter]);
 
   // load videos for admin and viewer also categories
   // when component is render/mounted 
@@ -66,14 +66,12 @@ const VideoManagement = () => {
     getListVideoAdmin(filter);
   }, []);
 
-  // watch the search field
-  useEffect(() => {
+  const handleSearch = (val) => {
+    setFilter({...filter, search: val, page: "1"})
     setTimeout(() => {
-      setFilter({ ...filter, page: "1" })
-      getListVideoAdmin(filter);
+      getListVideoAdmin({...filter, search: val, page: "1"});
     }, 1000);
-  }, [filter.search]);
-
+  }
 
   const videoTutorial = () => {
     if (window.location.hash === "#tutor") {
@@ -140,7 +138,7 @@ const VideoManagement = () => {
           </button>
 
           {/* <CariVideo /> */}
-          <SearchBar state={filter.search} setState={setFilter} />
+          <SearchBar state={filter.search} setState={setFilter} handleChange={handleSearch}/>
         </div>
         <div className="tw-mb-4 tw-flex tw-justify-between">
           <button

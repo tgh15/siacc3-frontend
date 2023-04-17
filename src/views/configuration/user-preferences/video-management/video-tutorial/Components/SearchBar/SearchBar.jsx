@@ -19,7 +19,7 @@ const SearchBar = (props) => {
         type="text"
         placeholder="Cari Video Tutorial"
         value={props.state}
-        onChange={(e) => props.setState({...props.state, search: e.target.value})}
+        onChange={(e) => props.handleChange(e.target.value) }
         className="tw-outline-none tw-mr-4 tw-placeholder-gray-500 tw-text-xs [color:#575757] tw-w-9/12"
       />
     </span>

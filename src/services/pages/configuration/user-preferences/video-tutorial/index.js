@@ -1,9 +1,6 @@
 import { Get, Post, Delete, Put, PostUpload } from "../../../../core/request";
 import * as tus from "tus-js-client";
-import Uppy from "@uppy/core"
 
-import XHR from "@uppy/xhr-upload"
-import Tus from '@uppy/tus';
 /**
  * 
  * Endpoints for video tutorial management using that could be used
