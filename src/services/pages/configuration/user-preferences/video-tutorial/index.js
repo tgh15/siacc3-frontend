@@ -14,7 +14,8 @@ import * as tus from "tus-js-client";
 
 // base prefix for video tutorial management services/modules
 // const tusPath = "https://tusd.tusdemo.net/files/"
-const tusPath = !process.env.NODE_ENV || process.env.NODE_ENV === 'production' ? window._env_.REACT_APP_API_GATEWAY : process.env.REACT_APP_API_GATEWAY
+// const tusPath = !process.env.NODE_ENV || process.env.NODE_ENV === 'production' ? window._env_.REACT_APP_API_GATEWAY : process.env.REACT_APP_API_GATEWAY
+const tusPath = !process.env.NODE_ENV || process.env.NODE_ENV === 'production' ? window.env.REACT_APP_API_GATEWAY : process.env.REACT_APP_VT_URL
 // const tusPath = !process.env.NODE_ENV || process.env.NODE_ENV === 'production' ? window._env_.REACT_APP_API_GATEWAY : process.env.REACT_APP_VT_URL
 const videoPrefix = "video-tutor/video"
 const uploadPrefix = "video-tutor/upload"
@@ -69,12 +70,12 @@ const videoUploadEndpoint = (payload) => {
         endpoint: `${tusPath}/${uploadPrefix}/videos/`,
         headers: {
             "Authorization": "Bearer " + localStorage.getItem("token"),
-            "Access-Control-Allow-Origin": ".underdev.team, .siaccinfo.id, localhost:3000, localhost:3001, .mapbox.com, .test-siaccinfo.id, .siaccinfo.my.id, .underdev.team, .arcgis.com",
-            'Cache-Control': 'no-cache',
-            'Pragma': 'no-cache',
-            'Expires': '0',
-            'X-Forwarded-Host': "192.168.52.90:8080",
-            'X-Forwarded-Proto': "https",
+            // "Access-Control-Allow-Origin": ".underdev.team, .siaccinfo.id, localhost:3000, localhost:3001, .mapbox.com, .test-siaccinfo.id, .siaccinfo.my.id, .underdev.team, .arcgis.com",
+            // 'Cache-Control': 'no-cache',
+            // 'Pragma': 'no-cache',
+            // 'Expires': '0',
+            // 'X-Forwarded-Host': "192.168.52.90:8080",
+            // 'X-Forwarded-Proto': "https",
         },
         retryDelays: [0, 3000, 5000, 10000, 20000],
         metadata: {
@@ -89,12 +90,12 @@ const thumbnailUploadEndpoint = (payload) => {
         // uploadUrl: `${tusPath}/${uploadPrefix}/thumbnails/`,
         headers: {
             "Authorization": "Bearer " + localStorage.getItem("token"),
-            "Access-Control-Allow-Origin": ".underdev.team, .siaccinfo.id, localhost:3000, localhost:3001, .mapbox.com, .test-siaccinfo.id, .siaccinfo.my.id, .underdev.team, .arcgis.com",
-            "Content-Length": 0,
-            "Content-Type": "*/*",
-            'Cache-Control': 'no-cache',
-            'Pragma': 'no-cache',
-            'Expires': '0',
+            // "Access-Control-Allow-Origin": ".underdev.team, .siaccinfo.id, localhost:3000, localhost:3001, .mapbox.com, .test-siaccinfo.id, .siaccinfo.my.id, .underdev.team, .arcgis.com",
+            // "Content-Length": 0,
+            // "Content-Type": "*/*",
+            // 'Cache-Control': 'no-cache',
+            // 'Pragma': 'no-cache',
+            // 'Expires': '0',
         },
         retryDelays: [0, 3000, 5000, 10000, 20000],
         metadata: {

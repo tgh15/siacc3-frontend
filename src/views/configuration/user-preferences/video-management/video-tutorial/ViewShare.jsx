@@ -14,38 +14,29 @@ const ViewShare = () => {
     basePath,
     getVideoDetail,
     userRole,
+    getListPlaylist
   } = useContext(VideoTutorialContext);
   const suggestBtnRef = useRef();
   const shareBtnRef = useRef();
 
   const { role, video_id } = useParams();
-
+  
   useEffect(() => {
     console.log(listPlaylist);
     console.log(role);
     console.log(video_id);
     getVideoDetail(video_id);
-  }, [listPlaylist]);
+  }, []);
 
   return (
     <Fragment>
       {userRole === role && (
         <div>
-          <p className="tw-text-center [color:#6E7191] tw-font-semibold">
+          {/* <p className="tw-text-center [color:#6E7191] tw-font-semibold">
             Video Tutorial
-          </p>
-          <div className="tw-flex tw-mt-5">
-            <span className="tw-bg-white tw-border tw-border-gray-200 tw-ml-auto tw-flex [border-radius:43px] md:tw-w-96 tw-w-auto">
-              <img src={Search} alt="" className="tw-px-4 tw-py-3" />
-              <input
-                type="text"
-                placeholder="Cari Video Tutorial"
-                className="tw-outline-none tw-mr-4 tw-placeholder-gray-500 tw-text-xs [color:#575757]"
-              />
-            </span>
-          </div>
+          </p> */}
           <div className="tw-grid tw-grid-cols-3 [margin-top:30px] tw-gap-6">
-            <div className="tw-col-span-2">
+            <div className="tw-col-span-3">
               <Player
                 source={modalData.source}
                 poster="https://www.w3schools.com/html/img_girl.jpg"
@@ -125,7 +116,7 @@ const ViewShare = () => {
                 </div>
               </div>
             </div>
-            <div className="tw-col-span-1">
+            {/* <div className="tw-col-span-1">
               <div className="tw-border [border-color:#D9DBE9] tw-p-4 tw-rounded-2xl">
                 <div>
                   <span className="[font-size:13px] tw-font-semibold">
@@ -177,7 +168,7 @@ const ViewShare = () => {
                   </div>
                 </div>
               </div>
-            </div>
+            </div> */}
           </div>
           <VideoSuggest
             modalRef={suggestBtnRef}

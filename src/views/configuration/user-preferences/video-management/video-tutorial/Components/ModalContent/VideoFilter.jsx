@@ -7,7 +7,7 @@ import { VideoTutorialContext } from "../../../../../../../context/VideoTutorial
 import Modal from "../Modal/Modal";
 
 const VideoFilter = (props) => {
-  const { videoFilter } = useContext(VideoTutorialContext);
+  const { videoFilter,getListVideoAdmin } = useContext(VideoTutorialContext);
   const [showDate, setShowDate] = useState(false);
 
   const [dropDownState, setDropDownState] = useState({
@@ -26,6 +26,7 @@ const VideoFilter = (props) => {
     sort: "ASC",
     role: ["Semua Role"],
     kategori: "",
+    page: 1,
     upload_date: [
       {
         startDate: new Date(),
@@ -69,9 +70,32 @@ const VideoFilter = (props) => {
 
   const filter = () => {
     console.log(filterParams);
-    videoFilter(filterParams);
+    getListVideoAdmin(filterParams);
     props.modalRef.current.closeModal();
   };
+  
+  const reset = () => {
+    setFilterParams({
+      sort: "ASC",
+      role: ["Semua Role"],
+      kategori: "",
+      page: 1,
+      upload_date: [
+        {
+          startDate: new Date(),
+          endDate: new Date(),
+          key: "selection",
+        },
+      ],
+    })
+    getListVideoAdmin({sort: "ASC", page: 1, upload_date: [
+      {
+        startDate:null,
+        endDate: null,
+      },
+    ],});
+    props.modalRef.current.closeModal();
+  }
 
   return (
     <Modal ref={props.modalRef} modal_md>
@@ -584,12 +608,20 @@ const VideoFilter = (props) => {
           </div>
         </div>
       </div>
+      <div className="tw-flex tw-gap-4">
+      <button
+        className="tw-bg-gray-700 tw-text-white tw-p-4 tw-w-full tw-rounded-md"
+        onClick={() => reset()}
+      >
+        Reset
+      </button>
       <button
         className="tw-bg-green-700 tw-text-white tw-p-4 tw-w-full tw-rounded-md"
         onClick={() => filter()}
       >
         Filter
       </button>
+      </div>
     </Modal>
   );
 };

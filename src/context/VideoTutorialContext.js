@@ -52,7 +52,7 @@ const VideoTutorialContextProvider = (props) => {
     // helpers function to format date to "date/month/year" format
     function formatDate(date) {
         return new Intl
-            .DateTimeFormat("id-ID", { day: "2-digit", month: "2-digit", year: "numearic" })
+            .DateTimeFormat("id-ID", { day: "2-digit", month: "2-digit", year: "numeric" })
             .format(date)
             .toString()
     }
@@ -139,8 +139,9 @@ const VideoTutorialContextProvider = (props) => {
                 "page=" + filters.page
             ];
 
+
             // if update_date is assigned then set date params
-            if (filters.upload_date[0].startDate !== null && filters.upload_date[0].endDate !== null) {
+            if (filters?.upload_date[0].startDate !== null && filters?.upload_date[0].endDate !== null) {
                 const startDate = formatDate(filters.upload_date[0].startDate)
                 const endDate = formatDate(filters.upload_date[0].endDate)
                 const date = "upload_date=" + startDate + " - " + endDate
@@ -164,6 +165,7 @@ const VideoTutorialContextProvider = (props) => {
                 const search = "search=" + filters.search
                 params.push(search)
             }
+            console.log(params.join("&"))
 
             // join all params then create request to backend 
             const res = await videoTutorAPI.getListVideoAdmin("?" + params.join("&"))
@@ -441,7 +443,7 @@ const VideoTutorialContextProvider = (props) => {
             const body = { visibility: !visibility, user_id: user_id }
             await videoTutorAPI.putVideoVisibility(video_id, body)
             let videos = listVideoAdmin.map(function (video) {
-                if (video.uuid === video_id) video.visibility = !video.visibilitya;
+                if (video.uuid === video_id) video.visibility = !video.visibility;
                 return video;
             })
             setListVideoAdmin((value) => (value = videos));
@@ -468,6 +470,20 @@ const VideoTutorialContextProvider = (props) => {
         }
     }
 
+    async function videoFilter(filter){
+        try {
+            await videoTutorAPI.deleteVideo(video_id)
+            setListVideoAdmin([
+                ...listVideoAdmin.filter((list) => list.uuid !== video_id)
+            ])
+            return true
+        }
+        catch (err) {
+            // TODO: handle the error with better implementation
+            console.log("modifyCategoriesError", err)
+        }
+    }
+
 
     // set of providers that would be used by it children
     const providers = {
@@ -480,7 +496,7 @@ const VideoTutorialContextProvider = (props) => {
 
         videoUpdateState, setVideoUpdateState,
         modalData, setModalData,
-        pagination, setPagination,
+        pagination, setPagination, videoFilter,
 
         progress, percentage,
 
